@@ -1,0 +1,202 @@
+{
+  "enquiries": [
+    {
+      "id": "enq-1",
+      "type": "franchise",
+      "fields": {
+        "name": "Suresh Mehra",
+        "email": "suresh.mehra@gmail.com",
+        "phone": "+91 98234 56789",
+        "city": "Pune",
+        "state": "Maharashtra",
+        "budget": "₹25 Lakhs - ₹30 Lakhs",
+        "partnershipModel": "Preschool Franchise",
+        "message": "I own a 3,000 sq ft property in an upscale residential area of Pune. Interested in starting a premium Finnish-inspired preschool. Please call me."
+      },
+      "status": "pending",
+      "notes": "Property verified. Ready for initial call on Friday.",
+      "aiSummary": "🌟 High Interest Lead: Entrepreneur owns a prime 3,000 sq ft property in Pune with a budget matching the ₹15L-₹35L requirement. Strongly recommended to highlight the Zero Royalty benefit during the call to secure the contract.",
+      "createdAt": "2026-08-05T14:30:00Z"
+    },
+    {
+      "id": "enq-2",
+      "type": "investor",
+      "fields": {
+        "name": "Anjali Deshmukh",
+        "email": "anjali@deshmukhtrust.org",
+        "phone": "+91 91234 88812",
+        "organization": "Deshmukh Educational Trust",
+        "city": "Nagpur",
+        "state": "Maharashtra",
+        "investmentInterest": "CBSE School Setup",
+        "budget": "₹1.5 Crores - ₹2 Crores",
+        "message": "Our trust wants to establish a new CBSE K-12 school in Nagpur. We need end-to-end guidance from land approvals to curriculum."
+      },
+      "status": "reviewed",
+      "notes": "Emailed corporate presentation. Scheduled presentation with Director on Monday.",
+      "aiSummary": "💎 Elite Lead: Large budget educational trust exploring CBSE setup. Needs comprehensive operational and compliance support. Excellent candidate for KIPS multi-year project consulting.",
+      "createdAt": "2026-08-04T09:15:00Z"
+    }
+  ],
+  "blogs": [
+    {
+      "id": "blog-1",
+      "title": "The Power of Play-Based Learning: A Nordic Perspective",
+      "category": "Nordic Education",
+      "excerpt": "Discover why Finland's early childhood curriculum relies heavily on play and explore its implementation in modern Indian classrooms.",
+      "content": "## The Power of Play-Based Learning: A Nordic Perspective\n\nIn Finland, early childhood education is not about memorization or drills. Instead, it is centered around a simple, powerful concept: **play is the natural way for a child to learn.**\n\nAccording to research supported by the Finnish Way Academy, structured and free play in early childhood develops critical pathways in a child's brain:\n1. **Social & Emotional Intelligence**: Children learn negotiation, turn-taking, and empathy through collaborative games.\n2. **Problem Solving**: Setting up a block tower or playing role-play scenarios requires creative reasoning and hypothesis testing.\n3. **Resilience**: Experiencing minor set-backs during play (like a tower falling) in a low-stakes environment builds stress-management skills.\n\n### Bringing Finland to India\nAt KinderBee, we bridge the gap between rigorous academic expectations and healthy child development. By introducing the Nordic-inspired Play-Based Learning framework, we prepare preschoolers for the future of education, fostering lifetime curiosity and compliance with India's NEP 2020 guidelines.\n\n*Want to learn more? Our Finnish Way Academy Teacher Training program equips school staff with practical play strategies.*",
+      "image": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800",
+      "author": "Elina Virtanen (Nordic Curriculum Lead)",
+      "date": "2026-08-01",
+      "readTime": "5 min read",
+      "views": 1420
+    },
+    {
+      "id": "blog-2",
+      "title": "Why Investing in Early Education is India's Smartest Business Move",
+      "category": "Investment",
+      "excerpt": "With rising parental awareness and government reforms, the Indian preschool and K-12 market is experiencing unprecedented demand.",
+      "content": "## Why Investing in Early Education is India's Smartest Business Move\n\nFor entrepreneurs and investors, selecting a business sector with sustainable, recurring revenue and low volatility is a high priority. The **Indian Education Market** represents one of the most resilient industries in the country today.\n\nHere are three primary drivers that make education a smart investment:\n- **Zero Recessional Vulnerability**: Parents prioritize their children's education over luxury items, making student enrollment highly stable even in economic downturns.\n- **NEP 2020 Regulatory Push**: Government reforms are formalizing early childhood care. Standardizing under recognized educational brands creates an immediate competitive advantage.\n- **Double-Digit Growth**: The preschool franchise segment in Tier-1, Tier-2, and Tier-3 cities continues to expand at a compound annual growth rate of over 12%.\n\n### The KinderBee Advantage (KIPS)\nUnlike traditional educational franchises that charge high royalty fees (often between 15% to 25% of monthly revenues), KIPS operates on a **100% Zero Royalty Model**. This allows franchise partners to reinvest their profits directly into academic quality, ensuring faster ROI (within 18–24 months) and long-term asset value creation.\n\n*Contact our investment advisors to learn more about our tailored financial models.*",
+      "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800",
+      "author": "Amit Sharma (Chief Financial Strategist)",
+      "date": "2026-07-28",
+      "readTime": "4 min read",
+      "views": 980
+    },
+    {
+      "id": "blog-3",
+      "title": "Implementing NEP 2020: A Guide for School Administrators",
+      "category": "School Setup",
+      "excerpt": "National Education Policy 2020 is reshaping school structures. Learn how existing campuses can adapt and upgrade smoothly.",
+      "content": "## Implementing NEP 2020: A Guide for School Administrators\n\nThe National Education Policy (NEP) 2020 introduces a structural shift from the traditional 10+2 system to a new **5+3+3+4 cognitive development framework**.\n\nFor existing school administrators, this requires rethinking both physical spaces and academic syllabi:\n- **The Foundational Stage (Ages 3-8)**: Encompasses 3 years of preschool plus Grades 1 and 2. It mandates play-based, discovery-active curriculum.\n- **The Preparatory Stage (Ages 8-11)**: Integrates textbook learning with interactive, hands-on, and conversational learning.\n- **Skills and Coding Integration**: Secondary grades now require vocational training, coding readiness, and multi-disciplinary flexibility.\n\n### Seamless Campus Upgradation\nAt KinderBee, our School Setup Consultancy provides comprehensive support. We help you transform your current institution with:\n1. **Academic Upgradation**: Curriculum and lesson plans aligned with NEP 2020 learning outcomes.\n2. **Infrastructure Retrofitting**: Transforming traditional desks into smart, collaborative learning hubs.\n3. **Teacher Training**: Equipping existing educators with digital pedagogy and child-centric teaching styles.\n\n*Contact us today to receive a customized Feasibility Study and School Transformation Roadmap.*",
+      "image": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800",
+      "author": "Dr. Rajesh Iyer (Academic Advisor)",
+      "date": "2026-07-15",
+      "readTime": "7 min read",
+      "views": 2150
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-1",
+      "question": "What is the KIPS Zero Royalty model and how does it work?",
+      "answer": "Unlike traditional franchises that charge 15-25% of your recurring tuition revenues, KinderBee operates on a Zero Royalty Model. Partners pay an upfront, transparent integration/consultancy fee. You keep 100% of your tuition revenues and profits, allowing faster break-even and higher profitability.",
+      "section": "home"
+    },
+    {
+      "id": "faq-2",
+      "question": "What support does KinderBee provide during school setup?",
+      "answer": "We provide complete end-to-end support, including site selection guidance, interior layout design, furniture planning, digital classroom setup, teacher recruitment assistance, Finnish Way Academy curriculum and training, admission launch campaigns, and ongoing academic audits.",
+      "section": "home"
+    },
+    {
+      "id": "faq-3",
+      "question": "Are the teacher certifications accredited?",
+      "answer": "Yes, FinnishWay Academy certifications are globally recognized and industry-aligned, preparing educators with professional competencies, practical portfolios, and hands-on teaching strategies that meet international and NEP 2020 standards.",
+      "section": "fwa"
+    },
+    {
+      "id": "faq-4",
+      "question": "What is the minimum land/space requirement for a Preschool?",
+      "answer": "A preschool franchise typically requires a minimum land area of 2,500 to 5,000 sq. ft. and a built-up area of 1,800 to 3,500 sq. ft., accommodating 6 to 10 classrooms, administrative zones, and play areas.",
+      "section": "investor"
+    },
+    {
+      "id": "faq-5",
+      "question": "What is the typical investment and ROI timeline?",
+      "answer": "The typical investment ranges from ₹15 Lakhs to ₹35 Lakhs depending on the city, building state, and local infrastructure requirements. Due to the Zero Royalty structure, most franchise partners achieve break-even and generate positive ROI within 18 to 24 months.",
+      "section": "investor"
+    }
+  ],
+  "settings": {
+    "phone": "+91 99013 32233",
+    "email": "kinderbeeschools@gmail.com",
+    "officeAddress": "Opp Vijay Bakery, Old UCO Bank road, Ramamurthy Nagar, Bangalore, 560016",
+    "whatsappNumber": "+919901332233",
+    "facebookUrl": "https://facebook.com/kinderbee",
+    "linkedinUrl": "https://linkedin.com/company/kinderbee-education",
+    "instagramUrl": "https://instagram.com/kinderbee",
+    "workingHours": "10 AM - 5 PM"
+  },
+  "pages": [
+    {
+      "id": "home",
+      "title": "Build the Future of Education with KIPS",
+      "subtitle": "The KinderBee Integrated Partnership System (KIPS) is India's leading complete educational ecosystem. We don't just sell franchises—we help entrepreneurs plan, establish, launch, and operate highly successful, world-class schools with absolute local authority.",
+      "metaTitle": "KinderBee - Finnish-Inspired Zero Royalty Preschool Franchise & School Setup",
+      "metaDescription": "Discover KinderBee, India's leading Finnish-inspired preschool franchise system. 100% Zero Royalty model, NEP-aligned curriculum, teacher training, and school setup consultancy.",
+      "keywords": "preschool franchise, school setup india, finnish education, zero royalty franchise, nep 2020 school setup, preschool business",
+      "badgeText": "Zero Royalty. Lifetime Support. Global Standards.",
+      "content1": "India's Zero Royalty Education Franchise & School Development Partner"
+    },
+    {
+      "id": "about",
+      "title": "Empowering Educators & Entrepreneurs",
+      "subtitle": "KinderBee is on a mission to democratize premium international education across India, eliminating royalty burdens and providing school owners with elite world-class tools.",
+      "metaTitle": "About KinderBee - Global Standards, Nordic Pedagogy",
+      "metaDescription": "Learn about KinderBee's mission, values, and our partnership with Finnish Way Academy to deliver top-tier education with Zero Royalty benefits across India.",
+      "keywords": "kinderbee curriculum, finnish school franchise, nep preschool india, play-based early learning",
+      "badgeText": "OUR JOURNEY & CORE MISSION",
+      "content1": "Democratic Education with Zero Franchise Royalties"
+    },
+    {
+      "id": "partnerships",
+      "title": "Our Collaborative Education Models",
+      "subtitle": "From high-profit Preschool Franchises to comprehensive CBSE School Setup and existing school upgrades, explore our zero-royalty partnership pathways.",
+      "metaTitle": "Education Partnerships - School Setup & Upgrades | KinderBee",
+      "metaDescription": "Explore KinderBee educational models. Get comprehensive assistance for CBSE/IB school setups, play school franchise systems, and existing school transformation with zero royalties.",
+      "keywords": "cbse school setup, preschool franchise cost, school setup consultant, school rebranding",
+      "badgeText": "Strategic Association Portfolios",
+      "content1": "Custom Solutions Tailored to Your Property and Vision"
+    },
+    {
+      "id": "fwa",
+      "title": "Finnish Way Academy Teacher Training",
+      "subtitle": "Unlock globally acclaimed pedagogical expertise. Empower your teaching staff with active, play-based learning frameworks certified by Finnish childhood education experts.",
+      "metaTitle": "Finnish Way Academy - Early Educator Certifications | KinderBee",
+      "metaDescription": "Acquire international early childhood teacher diplomas and certifications. Finnish-inspired pedagogy, active play-based teacher training programs.",
+      "keywords": "teacher training diploma, preschool teacher course, finnish education training, ntt course online",
+      "badgeText": "Acclaimed Pedagogical Certifications",
+      "content1": "Globally Accredited Teacher Professional Development"
+    },
+    {
+      "id": "investors",
+      "title": "High ROI Educational Investment Opportunities",
+      "subtitle": "Invest in one of India's most resilient and expanding sectors. Benefit from rapid capital recovery, zero recurring royalties, and complete operational guidance.",
+      "metaTitle": "Investors Hub - High ROI Preschool Investment | KinderBee",
+      "metaDescription": "Explore premium preschool franchise investment options. Highly resilient cash flows, fast ROI within 18-24 months, and a 100% Zero Royalty setup.",
+      "keywords": "education investment, preschool franchise roi, profitable school franchise, education business opportunity",
+      "badgeText": "Capital Appreciation & Enterprise Growth",
+      "content1": "Robust Multi-Year Fiscal Security in Indian K-12 Spaces"
+    },
+    {
+      "id": "contact",
+      "title": "Connect with our Central Advisors",
+      "subtitle": "Speak directly with our school planning consultants to map out your educational project feasibility, site criteria, and budget expectations.",
+      "metaTitle": "Contact Us - Kinderbee School Setup Advisory",
+      "metaDescription": "Contact Kinderbee corporate office today. Schedule a phone consultation or offline visit to discuss school franchise or consulting requirements.",
+      "keywords": "contact school franchise, kinderbee office phone, preschool setup consulting call",
+      "badgeText": "Get In Touch Today",
+      "content1": "Strategic Project Blueprint Session"
+    }
+  ],
+  "settings": {
+    "phone": "+91 99013 32233",
+    "email": "kinderbeeschools@gmail.com",
+    "officeAddress": "Opp Vijay Bakery, Old UCO Bank road, Ramamurthy Nagar, Bangalore, 560016",
+    "whatsappNumber": "+919901332233",
+    "facebookUrl": "https://facebook.com/kinderbee",
+    "linkedinUrl": "https://linkedin.com/company/kinderbee-education",
+    "instagramUrl": "https://instagram.com/kinderbee",
+    "workingHours": "10 AM - 5 PM",
+    "popupEnabled": true,
+    "popupDelay": 4,
+    "popupScrollTrigger": true,
+    "popupScrollPercent": 50,
+    "popupTag": "ADMISSIONS & PARTNERSHIPS OPEN",
+    "popupTitle": "Start Your Transformation Journey",
+    "popupSubtitle": "Complete the form and our Academic & Franchise Advisor will contact you shortly.",
+    "popupImageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800",
+    "popupImageAlt": "Kinderbee Education Poster"
+  }
+}

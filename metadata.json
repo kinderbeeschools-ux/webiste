@@ -1,0 +1,8 @@
+{
+  "name": "Remix KinderBee Partnership Portal",
+  "description": "A premium, professional, and full-featured platform for the KinderBee Integrated Partnership System (KIPS), FinnishWay Academy, and its administrative control panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
