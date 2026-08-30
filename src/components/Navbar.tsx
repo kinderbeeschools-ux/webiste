@@ -52,11 +52,29 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About Kinderbee' },
-    { id: 'partnerships', label: 'Franchise' },
-    { id: 'fwa', label: 'NTT Teacher Training' },
+    { id: 'about', label: 'About Us' },
+    { 
+      id: 'partnerships', 
+      label: 'Franchise',
+      dropdown: [
+        { id: 'partnerships#preschool', label: 'Franchise Preschool' },
+        { id: 'partnerships#cbse', label: 'CBSE School setup' },
+        { id: 'partnerships#ib', label: 'IB School setup' },
+        { id: 'partnerships#degree', label: 'Degree College setup' }
+      ]
+    },
+    { 
+      id: 'fwa', 
+      label: 'Academic',
+      dropdown: [
+        { id: 'fwa#programs', label: 'Toddler program (1.5-2.5 yr)' },
+        { id: 'fwa#programs', label: 'Pre k program(2.5-3.5yr)' },
+        { id: 'fwa#programs', label: 'Kindergarten (3.5-5.5 yr)' },
+        { id: 'fwa#programs', label: 'Teacher training' }
+      ]
+    },
     { id: 'investors', label: 'Partner with us' },
-    { id: 'blogs', label: 'Blogs' },
+    { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' },
   ];
 
@@ -70,24 +88,61 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => { setCurrentTab('home'); setMobileMenuOpen(false); }}
             className="cursor-pointer flex items-center gap-3 group shrink-0"
           >
-            <div className="h-11 w-auto sm:h-13 rounded-xl overflow-hidden group-hover:scale-102 transition duration-300">
+            <div className="h-11 w-auto sm:h-13 rounded-xl overflow-hidden group-hover:scale-102 transition duration-300 flex items-center">
               <img 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
-                alt="KinderBee Logo" 
-                className="h-full w-auto object-contain"
+                src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
+                alt={settings?.logoText || "Kinderbee Logo"} 
+                className="h-full w-auto object-contain max-h-12"
               />
             </div>
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 ml-auto mr-4 whitespace-nowrap">
+          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 ml-auto mr-4 whitespace-nowrap relative">
             {navLinks.map((link) => {
               const isActive = currentTab === link.id;
+              
+              if (link.dropdown) {
+                return (
+                  <div key={link.id} className="relative group cursor-pointer">
+                    <button
+                      onClick={() => setCurrentTab(link.id)}
+                      className={`px-3.5 py-2 rounded-xl text-base font-semibold transition duration-200 whitespace-nowrap flex items-center gap-1 ${
+                        isActive
+                          ? 'bg-[#E1007A]/10 text-[#E1007A]'
+                          : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100'
+                      }`}
+                    >
+                      {link.label}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    {/* Dropdown Menu */}
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-stone-200 shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                      {link.dropdown.map((sub, i) => (
+                        <div
+                          key={i}
+                          onClick={() => {
+                            setCurrentTab(link.id);
+                            setTimeout(() => {
+                              const el = document.getElementById(sub.id.split('#')[1]);
+                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 100);
+                          }}
+                          className="px-4 py-2.5 text-sm font-medium text-stone-700 hover:text-[#E1007A] hover:bg-pink-50 transition cursor-pointer border-b border-stone-100 last:border-none"
+                        >
+                          {sub.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <button
                   key={link.id}
                   onClick={() => setCurrentTab(link.id)}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition duration-200 whitespace-nowrap cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-base font-semibold transition duration-200 whitespace-nowrap cursor-pointer ${
                     isActive
                       ? 'bg-[#E1007A]/10 text-[#E1007A]'
                       : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100'
@@ -119,9 +174,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
             <button
               onClick={onOpenConsultation}
-              className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition duration-300 text-sm flex items-center gap-2 cursor-pointer"
+              className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition duration-300 text-base flex items-center gap-2 cursor-pointer"
             >
-              <span>Request Partnership</span>
+              <span>Talk to an Expert</span>
             </button>
           </div>
 

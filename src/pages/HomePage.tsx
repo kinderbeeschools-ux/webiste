@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, TrendingUp, BookOpen, Users, Building, Play, Star } from 'lucide-react';
-import { BlogPost, FAQItem } from '../types';
+import { BlogPost, FAQItem, SystemSettings } from '../types';
+import { SEOHead } from '../components/SEOHead';
+import { SmartImage } from '../components/SmartImage';
 
 interface HomePageProps {
   setCurrentTab: (tab: string) => void;
@@ -8,41 +10,54 @@ interface HomePageProps {
   blogs: BlogPost[];
   faqs: FAQItem[];
   onSelectBlog: (blog: BlogPost) => void;
+  settings?: SystemSettings | null;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsultation, blogs, faqs, onSelectBlog }) => {
+export const HomePage: React.FC<HomePageProps> = ({ 
+  setCurrentTab, 
+  onOpenConsultation, 
+  blogs, 
+  faqs, 
+  onSelectBlog,
+  settings 
+}) => {
   const [activeFaq, setActiveFaq] = useState<string | null>(null);
 
   return (
     <div className="space-y-10 pb-12">
+      {/* Dynamic SEO Meta via React Helmet */}
+      <SEOHead settings={settings} />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-stone-950 text-white pt-16 pb-20 px-4 sm:px-8 min-h-[70vh] flex items-center justify-center text-center">
-        {/* Background Video */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Background Video with Brand Color Grading */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="w-full h-full object-cover opacity-75 scale-105"
+            className="w-full h-full object-cover opacity-70 scale-105"
             src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Video/banner%20Video.mp4"
           >
             Your browser does not support the video tag.
           </video>
-          <div className="absolute inset-0 bg-stone-950/50 backdrop-brightness-75"></div>
+          {/* Brand Tint Overlay Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-950/60 to-stone-950/90"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,0,122,0.18),transparent_60%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.10),transparent_50%)]"></div>
         </div>
         
         <div className="max-w-5xl mx-auto relative z-10 space-y-6 flex flex-col items-center">
           
-          <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-amber-400/40 text-amber-300 text-xs font-semibold uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-lg backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-amber-400" />
+          <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/40 text-pink-200 text-xs font-bold uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-lg backdrop-blur-md">
+            <Sparkles className="w-4 h-4 text-[#FFD400]" />
             <span>THE FUTURE OF EDUCATION STARTS HERE</span>
           </div>
 
           <h1 className="text-4xl sm:text-7xl font-serif-title font-normal tracking-tight leading-[1.15] text-white">
             Reimagine Education.<br />
-            <span className="italic font-serif-title text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-500 font-medium">Transform Tomorrow.</span>
+            <span className="italic font-serif-title text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] font-medium">Transform Tomorrow.</span>
           </h1>
 
           <p className="text-stone-300 text-base sm:text-lg max-w-2xl font-normal leading-relaxed mx-auto">
@@ -52,14 +67,14 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
           <div className="flex flex-wrap justify-center gap-4 pt-2">
             <button
               onClick={() => onOpenConsultation('franchise')}
-              className="bg-white hover:bg-stone-100 text-stone-900 font-semibold px-8 py-4 rounded-full shadow-2xl transition duration-300 text-base flex items-center gap-3 group"
+              className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-pink-900/30 hover:shadow-pink-900/50 hover:scale-[1.02] transition duration-300 text-base flex items-center gap-3 group cursor-pointer"
             >
               <span>Explore KIPS &rarr;</span>
             </button>
 
             <button
               onClick={() => onOpenConsultation('franchise')}
-              className="bg-stone-900/70 hover:bg-stone-900 text-stone-200 font-semibold px-8 py-4 rounded-full border border-stone-600 transition duration-300 text-base flex items-center gap-2 backdrop-blur-md shadow-xl"
+              className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/25 hover:border-pink-300/60 transition duration-300 text-base flex items-center gap-2 backdrop-blur-md shadow-xl cursor-pointer"
             >
               <span>Talk to Our Experts</span>
             </button>
@@ -68,216 +83,209 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
         </div>
       </section>
 
-      {/* Why Choose KIPS (Zero Royalty Advantage) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
-          <div className="inline-block text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-[#E1007A]/10 px-3 py-1 rounded-full">
-            The KIPS Economic Advantage
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-            Why Traditional Franchises Fail Partners — And How KIPS Succeeds
-          </h2>
-          <p className="text-stone-600 text-base">
-            Most preschool networks drain 15% to 25% of your monthly fee revenues in recurring royalties. KinderBee operates on a transparent, 100% Zero Royalty structure.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          <div className="bg-white p-8 rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-xl transition duration-300 space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-pink-50 text-[#E1007A] flex items-center justify-center font-bold text-xl">
-              0%
+      {/* KIPS Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-12 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <div className="space-y-6">
+            <div className="inline-block text-[#E1007A] font-bold text-[10px] sm:text-xs uppercase tracking-widest bg-pink-50 border border-pink-100 px-3 py-1.5 rounded-full shadow-sm">
+              ZERO ROYALTY. GLOBAL STANDARDS. COMPLETE SUPPORT.
             </div>
-            <h3 className="font-display font-bold text-xl text-[#1C1917]">100% Zero Royalty Retention</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              Every rupee of tuition fee you collect stays with your school. Reinvest earnings into your faculty, facility upgrades, and local marketing for explosive growth.
-            </p>
-            <ul className="space-y-2 text-xs font-semibold text-stone-700 pt-2 border-t border-stone-100">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> Keep all monthly fee collections</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> Faster capital break-even (18 mos)</li>
-            </ul>
-          </div>
-
-          <div className="bg-white p-8 rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-xl transition duration-300 space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xl">
-              🇫🇮
-            </div>
-            <h3 className="font-display font-bold text-xl text-[#1C1917]">Finnish Way Academy Pedagogy</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              World-renowned Nordic early childhood framework. Active play, emotional self-regulation, and holistic inquiry-based modules that outperform rote memorization.
-            </p>
-            <ul className="space-y-2 text-xs font-semibold text-stone-700 pt-2 border-t border-stone-100">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> Certified teacher training diplomas</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> Complete bilingual curriculum toolkits</li>
-            </ul>
-          </div>
-
-          <div className="bg-white p-8 rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-xl transition duration-300 space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl">
-              🏛️
-            </div>
-            <h3 className="font-display font-bold text-xl text-[#1C1917]">End-to-End School Setup</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              From site feasibility and architectural floor planning to teacher recruitment and digital marketing admission campaigns, our central team guides every step.
-            </p>
-            <ul className="space-y-2 text-xs font-semibold text-stone-700 pt-2 border-t border-stone-100">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> CBSE / K-12 setup consultancy</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> Complete operational manuals</li>
-            </ul>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Partnership Model Highlights */}
-      <section className="bg-stone-100 py-20 px-4 sm:px-8 border-y border-stone-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div className="space-y-2">
-              <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-100/60 px-3 py-1 rounded-full inline-block">
-                Tailored Pathways
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-                Choose Your Educational Partnership Model
-              </h2>
-            </div>
-            <button
-              onClick={() => setCurrentTab('partnerships')}
-              className="text-[#E1007A] hover:text-pink-700 font-semibold text-sm flex items-center gap-2"
-            >
-              <span>View All Detailed Specifications</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-sm flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="w-12 h-12 rounded-2xl bg-[#E1007A]/10 text-[#E1007A] flex items-center justify-center font-bold">
-                    01
-                  </div>
-                  <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
-                    Most Popular
-                  </span>
-                </div>
-                <h3 className="text-2xl font-display font-bold text-[#1C1917]">KinderBee Preschool Franchise</h3>
-                <p className="text-stone-600 text-sm leading-relaxed">
-                  Ideal for entrepreneurs and women educators looking to launch a premium preschool in a 2,000–3,500 sq ft residential property. Zero ongoing royalties.
-                </p>
-                <div className="grid grid-cols-2 gap-4 pt-2 text-xs font-medium text-stone-700">
-                  <div className="bg-stone-50 p-3 rounded-xl">
-                    <span className="text-stone-400 block mb-0.5">Investment</span>
-                    <span className="font-bold text-stone-900">₹15L - ₹30L</span>
-                  </div>
-                  <div className="bg-stone-50 p-3 rounded-xl">
-                    <span className="text-stone-400 block mb-0.5">Space Required</span>
-                    <span className="font-bold text-stone-900">2,000+ sq.ft</span>
-                  </div>
-                </div>
-              </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-stone-900 leading-tight">
+              Build the Future of Education with KIPS
+            </h1>
+            
+            <h3 className="text-xl sm:text-2xl font-bold text-stone-700">
+              Transform Schools. Empower Educators. Shape Futures.
+            </h3>
+            
+            <p className="text-base text-stone-600 leading-relaxed max-w-lg">
+              The KinderBee Integrated Partnership System (KIPS) empowers entrepreneurs and educational institutions to build, launch and grow future-ready schools with proven academic systems, expert support and innovative learning solutions.
+            </p>
+            
+            <div className="py-2">
+              <p className="text-sm font-bold text-stone-800 flex flex-wrap items-center gap-2">
+                <span className="text-lg">🛡</span> Zero-Royalty Partnership <span className="text-stone-300 px-1">•</span> End-to-End School Support <span className="text-stone-300 px-1">•</span> Finnish-Inspired Learning
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 pt-2">
               <button
                 onClick={() => onOpenConsultation('franchise')}
-                className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+                className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-pink-900/20 transition duration-300 text-sm flex items-center gap-2"
               >
-                <span>Inquire About Preschool Franchise</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Book a Free Consultation &rarr;</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentTab('partnerships')}
+                className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 font-bold px-8 py-4 rounded-xl shadow-sm transition duration-300 text-sm flex items-center"
+              >
+                Explore KIPS
               </button>
             </div>
-
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-sm flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
-                    02
-                  </div>
-                  <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">
-                    Trusts & Investors
-                  </span>
+          </div>
+          
+          <div className="relative mt-8 lg:mt-0">
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-stone-200 relative">
+              <SmartImage 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(12).jpeg" 
+                altContext={{ page: 'home', section: 'KIPS Future', type: 'school' }}
+                className="w-full aspect-video object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent pointer-events-none"></div>
+            </div>
+            
+            {/* Floating Stats */}
+            <div className="absolute -bottom-10 left-0 right-0 flex justify-center px-4">
+              <div className="bg-white rounded-2xl shadow-xl border border-stone-100 p-4 sm:p-5 flex gap-4 sm:gap-8 divide-x divide-stone-100">
+                <div className="pl-0 sm:pl-2 flex flex-col items-center justify-center space-y-1">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-[#E1007A]">0%</div>
+                  <div className="text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-wider text-center max-w-[80px]">ROYALTY FEES</div>
                 </div>
-                <h3 className="text-2xl font-display font-bold text-[#1C1917]">CBSE / K-12 School Setup</h3>
-                <p className="text-stone-600 text-sm leading-relaxed">
-                  Comprehensive consultancy for trusts and landowners building full-scale K-12 campuses. Land approvals, curriculum mapping, and staff recruitment.
-                </p>
-                <div className="grid grid-cols-2 gap-4 pt-2 text-xs font-medium text-stone-700">
-                  <div className="bg-stone-50 p-3 rounded-xl">
-                    <span className="text-stone-400 block mb-0.5">Investment</span>
-                    <span className="font-bold text-stone-900">₹1 Crore+</span>
-                  </div>
-                  <div className="bg-stone-50 p-3 rounded-xl">
-                    <span className="text-stone-400 block mb-0.5">Space Required</span>
-                    <span className="font-bold text-stone-900">1+ Acre Campus</span>
-                  </div>
+                <div className="pl-4 sm:pl-8 flex flex-col items-center justify-center space-y-1">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-amber-500">30+</div>
+                  <div className="text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-wider text-center max-w-[80px]">YEARS OF LEGACY</div>
+                </div>
+                <div className="pl-4 sm:pl-8 flex flex-col items-center justify-center space-y-1 pr-0 sm:pr-2">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-emerald-600">100%</div>
+                  <div className="text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-wider text-center max-w-[100px]">PARTNERSHIP SUPPORT</div>
                 </div>
               </div>
-              <button
-                onClick={() => onOpenConsultation('investor')}
-                className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
-              >
-                <span>Inquire About CBSE School Setup</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Latest Insights & Blogs */}
-      {blogs.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div className="space-y-2">
-              <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
-                Educational Leadership
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-                Latest Insights & Nordic Pedagogy Guides
-              </h2>
+      {/* Our Philosophy */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden flex flex-col relative">
+          <div className="absolute top-0 right-0 bg-[#E1007A]/90 text-white text-xs font-bold px-4 py-2 rounded-bl-3xl z-10 backdrop-blur-sm shadow-md">
+            100% PARTNERSHIP SUPPORT
+          </div>
+          
+          <div className="w-full">
+            <SmartImage 
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Our%20Philosophy.png" 
+              altContext={{ page: 'home', section: 'Our Philosophy', type: 'banner' }}
+              className="w-full h-[300px] sm:h-[450px] object-cover rounded-[30px] p-2.5 m-0"
+            />
+          </div>
+
+          <div className="space-y-6 max-w-4xl mx-auto text-center p-8 sm:p-12 pt-10">
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
+              Our Philosophy
+            </h2>
+            <div className="space-y-4 text-stone-600 text-base leading-relaxed text-left">
+              <p>
+                The Kinderbee Integrated Partnership System (KIPS) is a trusted school education and preschool development partner, dedicated to building high-quality, future-ready learning environments across India. With expertise in early childhood education, preschool management, curriculum development, and teacher training, we help educational entrepreneurs create successful and sustainable schools.
+              </p>
+              <p>
+                Our NTT (Nursery Teacher Training) Program equips aspiring and working educators with practical skills, modern teaching methodologies, and child-centric approaches for effective early years education. From preschool teacher training and curriculum support to school development and academic guidance, Kinderbee provides an integrated ecosystem designed to empower educators and transform learning.
+              </p>
             </div>
-            <button
-              onClick={() => setCurrentTab('blogs')}
-              className="text-[#E1007A] hover:text-pink-700 font-semibold text-sm flex items-center gap-2"
-            >
-              <span>View All Articles ({blogs.length})</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => setCurrentTab('fwa')}
+                className="bg-[#E1007A] hover:bg-pink-700 text-white font-semibold px-8 py-3 rounded-xl shadow-md transition text-sm flex items-center gap-2"
+              >
+                <span>Explore Our Programs &rarr; NTT Teacher training</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* One Ecosystem Section */}
+      <section className="bg-stone-50 py-20 px-4 sm:px-8 border-y border-stone-200">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="text-center">
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
+              One Ecosystem Section
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogs.slice(0, 3).map((blog) => (
-              <div 
-                key={blog.id} 
-                onClick={() => onSelectBlog(blog)}
-                className="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-xs hover:shadow-xl transition duration-300 cursor-pointer flex flex-col"
-              >
-                <div className="h-48 overflow-hidden relative">
-                  <img src={blog.image} alt={blog.title} className="w-full h-full object-cover hover:scale-105 transition duration-500" />
-                  <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs text-[#1C1917] font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow">
-                    {blog.category}
-                  </span>
-                </div>
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2">
-                    <div className="text-xs text-stone-400 font-medium">{blog.date} &bull; {blog.readTime}</div>
-                    <h3 className="font-display font-bold text-lg text-[#1C1917] line-clamp-2 hover:text-[#E1007A] transition">
-                      {blog.title}
-                    </h3>
-                    <p className="text-xs text-stone-600 line-clamp-3 leading-relaxed">
-                      {blog.excerpt}
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500 font-medium">
-                    <span>By {blog.author}</span>
-                    <span className="text-[#E1007A] font-semibold flex items-center gap-1">Read Article &rarr;</span>
-                  </div>
-                </div>
+            {/* 01 - Preschool Franchise */}
+            <div className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col justify-between">
+              <div className="w-full h-56 border-b border-stone-100">
+                <SmartImage 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg" 
+                  altContext={{ page: 'home', section: 'One Ecosystem', type: 'preschool' }}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            ))}
+              <div className="p-8 space-y-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="text-[#E1007A] font-bold text-xl">01 — Preschool Franchise</div>
+                  <h3 className="text-xl font-display font-bold text-[#1C1917]">Start a Preschool Franchise in India</h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Launch a zero-royalty preschool franchise with a NEP 2020-aligned, play-based curriculum, comprehensive school setup support and modern early childhood education solutions.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCurrentTab('partnerships')}
+                  className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+                >
+                  <span>Explore Franchise &rarr; Franchise</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 02 - FinnishWay Academy */}
+            <div className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col justify-between">
+              <div className="w-full h-56 border-b border-stone-100">
+                <SmartImage 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg" 
+                  altContext={{ page: 'home', section: 'One Ecosystem', type: 'fwa' }}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8 space-y-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="text-amber-500 font-bold text-xl">02 — FinnishWay Academy</div>
+                  <h3 className="text-xl font-display font-bold text-[#1C1917]">NTT & Preschool Teacher Training</h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Advance your career with professional NTT (Nursery Teacher Training), ECCE and preschool teacher training programs designed around modern, child-centric and Finnish-inspired teaching methodologies.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCurrentTab('fwa')}
+                  className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+                >
+                  <span>Explore NTT Teacher Training &rarr; NTT Teacher Training</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 03 - Investor Opportunities */}
+            <div className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col justify-between">
+              <div className="w-full h-56 border-b border-stone-100">
+                <SmartImage 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg" 
+                  altContext={{ page: 'home', section: 'One Ecosystem', type: 'investor' }}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8 space-y-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="text-emerald-600 font-bold text-xl">03 — Investor Opportunities</div>
+                  <h3 className="text-xl font-display font-bold text-[#1C1917]">Invest in Education</h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Explore strategic investment opportunities in the education sector with Kinderbee. Partner with a growing education ecosystem offering scalable preschool, Cbse/IB school development, teacher training, and education business models, backed by structured systems and long-term support.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCurrentTab('investors')}
+                  className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+                >
+                  <span>Explore Investment Opportunities &rarr; Investors</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Ready to start your journey section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-10">
@@ -310,14 +318,12 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 </button>
               </div>
             </div>
-            <div className="lg:col-span-5 relative">
-              <div className="rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white p-2">
-                <img 
-                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800" 
-                  alt="KinderBee Campus" 
-                  className="w-full h-64 object-cover rounded-xl"
-                />
-              </div>
+            <div className="lg:col-span-5 relative flex justify-center items-center">
+              <SmartImage 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools.png" 
+                altContext={{ page: 'home', section: 'Campus & Early Childhood Learning Hub', type: 'classroom' }}
+                className="w-full max-w-sm object-contain drop-shadow-2xl"
+              />
             </div>
           </div>
         </div>
@@ -331,7 +337,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
               Frequently Asked Questions
             </div>
             <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-              Everything You Need to Know About KIPS Partnership
+              Hbcu
             </h2>
           </div>
 
@@ -363,7 +369,6 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
           </div>
         </div>
       </section>
-
     </div>
   );
 };

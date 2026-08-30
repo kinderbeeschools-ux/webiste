@@ -113,39 +113,88 @@ At KinderBee, our School Setup Consultancy provides comprehensive support. We he
     date: "2026-07-15",
     readTime: "7 min read",
     views: 2150
+  },
+  {
+    id: "blog-4",
+    title: "FinnishWay Academy NTT Certification: Building Next-Gen Early Educators",
+    category: "Teacher Training",
+    excerpt: "Why traditional NTT certificates fall short of NEP 2020 standards and how Finnish international certification transforms classroom pedagogy.",
+    content: `## FinnishWay Academy NTT Certification: Building Next-Gen Early Educators
+
+Preschool teachers are the architects of cognitive curiosity. Yet, traditional Nursery Teacher Training (NTT) curriculums in India still emphasize passive blackboard learning, rote phonetic memorization, and rigid discipline.
+
+### The Finnish Pedagogical Shift
+The FinnishWay Academy (FWA) teacher training model flips this dynamic completely:
+1. **Facilitators of Wonder**: Teachers guide questions rather than providing single rote answers.
+2. **Socio-Emotional Assessment**: Evaluating self-regulation, empathy, and peer collaboration alongside early numeracy.
+3. **Experiential Learning Kits**: Integrating tangible nature objects, sensory games, and problem-solving puzzles.
+
+### Career Acceleration for Educators
+Graduates of the FWA program receive an international certificate, opening opportunities across leading international schools, preschool networks, and progressive educational institutions.`,
+    image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800",
+    author: "Heidi Koskinen (Master Trainer, FWA)",
+    date: "2026-07-10",
+    readTime: "6 min read",
+    views: 1820
+  },
+  {
+    id: "blog-5",
+    title: "Preschool Financial Anatomy: Why 0% Royalty Delivers 2.4x Higher Net Profits",
+    category: "Investment",
+    excerpt: "A deep financial comparison between royalty-heavy franchise brands and the KinderBee Zero Royalty partnership model.",
+    content: `## Preschool Financial Anatomy: Why 0% Royalty Delivers 2.4x Higher Net Profits
+
+When evaluating a preschool franchise in India, prospective owners often look at the initial franchise fee while underestimating the compounding drag of recurring royalty deductions.
+
+### The Royalty Drain Example
+Consider an average center with 75 students paying ₹6,000/month:
+- **Gross Annual Revenue**: ₹54.0 Lakhs
+- **20% Traditional Royalty**: ₹10.8 Lakhs every year paid to the franchisor
+- **In 5 Years**: Over ₹54 Lakhs lost purely to royalties!
+
+### The KinderBee 100% Zero Royalty Model
+With KinderBee's Integrated Partnership System (KIPS), your annual royalty is strictly **₹0**. That ₹10.8 Lakhs remains in your institutional bank account each year—allowing you to hire top-tier educators, upgrade smart classroom infrastructure, and recover initial capital within 18 months.`,
+    image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&q=80&w=800",
+    author: "Amit Sharma (Chief Financial Strategist)",
+    date: "2026-06-28",
+    readTime: "5 min read",
+    views: 3120
+  },
+  {
+    id: "blog-6",
+    title: "Designing Safe, Sensory-Rich Environments for Early Learners",
+    category: "Nordic Education",
+    excerpt: "How architectural acoustics, natural light, and biophilic classroom aesthetics enhance child focus and reduce anxiety.",
+    content: `## Designing Safe, Sensory-Rich Environments for Early Learners
+
+Nordic education views the physical classroom as the 'third teacher.' A preschool should not look like a sterile corporate office with plastic toys; it should feel like an inviting, warm discovery habitat.
+
+### Core Elements of Nordic Preschool Architecture
+- **Natural Wood & Warm Materials**: Calming pine, beechwood furniture, and non-toxic matte finishes.
+- **Acoustic Dampening**: Sound-absorbing wall baffles and rugs that eliminate echoing and sensory overload.
+- **Flexible Discovery Zones**: Reading teepees, tactile sandbox stations, and collaborative floor spaces.
+
+KinderBee provides turnkey architectural blueprints and furniture specifications for all campus partners.`,
+    image: "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&q=80&w=800",
+    author: "Elina Virtanen (Nordic Curriculum Lead)",
+    date: "2026-06-15",
+    readTime: "4 min read",
+    views: 1640
   }
 ];
 
 const seedFAQs: FAQItem[] = [
   {
     id: "faq-1",
-    question: "What is the KIPS Zero Royalty model and how does it work?",
-    answer: "Unlike traditional franchises that charge 15-25% of your recurring tuition revenues, KinderBee operates on a Zero Royalty Model. Partners pay an upfront, transparent integration/consultancy fee. You keep 100% of your tuition revenues and profits, allowing faster break-even and higher profitability.",
+    question: "Hbcu",
+    answer: "Hbcu",
     section: "home"
   },
   {
     id: "faq-2",
-    question: "What support does KinderBee provide during school setup?",
-    answer: "We provide complete end-to-end support, including site selection guidance, interior layout design, furniture planning, digital classroom setup, teacher recruitment assistance, Finnish Way Academy curriculum and training, admission launch campaigns, and ongoing academic audits.",
+    question: "Hbgtvyu",
+    answer: "Hbgtvyu",
     section: "home"
-  },
-  {
-    id: "faq-3",
-    question: "Are the teacher certifications accredited?",
-    answer: "Yes, FinnishWay Academy certifications are globally recognized and industry-aligned, preparing educators with professional competencies, practical portfolios, and hands-on teaching strategies that meet international and NEP 2020 standards.",
-    section: "fwa"
-  },
-  {
-    id: "faq-4",
-    question: "What is the minimum land/space requirement for a Preschool?",
-    answer: "A preschool franchise typically requires a minimum land area of 2,500 to 5,000 sq. ft. and a built-up area of 1,800 to 3,500 sq. ft., accommodating 6 to 10 classrooms, administrative zones, and play areas.",
-    section: "investor"
-  },
-  {
-    id: "faq-5",
-    question: "What is the typical investment and ROI timeline?",
-    answer: "The typical investment ranges from ₹15 Lakhs to ₹35 Lakhs depending on the city, building state, and local infrastructure requirements. Due to the Zero Royalty structure, most franchise partners achieve break-even and generate positive ROI within 18 to 24 months.",
-    section: "investor"
   }
 ];
 
@@ -553,7 +602,14 @@ app.get("/api/settings", (req, res) => {
   res.json(db.settings);
 });
 
-// PUT System Settings
+// POST / PUT System Settings
+app.post("/api/settings", requireAdmin, (req, res) => {
+  const db = loadDb();
+  db.settings = { ...db.settings, ...req.body };
+  saveDb(db);
+  res.json({ success: true, settings: db.settings });
+});
+
 app.put("/api/settings", requireAdmin, (req, res) => {
   const db = loadDb();
   db.settings = { ...db.settings, ...req.body };

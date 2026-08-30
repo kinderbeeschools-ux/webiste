@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Phone, Mail, MapPin, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SystemSettings } from '../types';
+import { SEOHead } from '../components/SEOHead';
 
 interface ContactPageProps {
   settings: SystemSettings | null;
@@ -52,19 +53,32 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
 
   return (
     <div className="space-y-16 pb-20">
+      {/* Dynamic SEO Meta via React Helmet */}
+      <SEOHead 
+        title="Contact KIPS Central Advisory Team & Corporate Office"
+        description="Get in touch with KinderBee Integrated Partnership System (KIPS) advisors for preschool franchise queries, CBSE school setup planning, and campus audits."
+        keywords="contact kinderbee, preschool franchise inquiry, school consulting contact, education advisory desk"
+        settings={settings}
+      />
       
-      {/* Header Banner */}
-      <section className="bg-gradient-to-b from-stone-900 to-stone-950 text-white py-20 px-4 sm:px-8 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E1007A_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div className="max-w-4xl mx-auto relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-1.5 bg-[#E1007A]/20 border border-[#E1007A]/40 text-pink-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
-            <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
+      {/* Header Banner with KinderBee Brand Colors */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
+        {/* Glow & Atmospheric Brand Overlays */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,0,122,0.28),transparent_60%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.14),transparent_50%)]"></div>
+        </div>
+        
+        <div className="max-w-4xl mx-auto relative z-10 space-y-5">
+          <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
             <span>Get In Touch Today</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight">
-            Connect with our Central Advisors
+          <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
+            Connect with our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Central Advisors</span>
           </h1>
-          <p className="text-lg text-stone-300 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="text-base sm:text-lg text-pink-100/80 max-w-2xl mx-auto font-normal leading-relaxed">
             Speak directly with our school planning consultants to map out your educational project feasibility, site criteria, and budget expectations.
           </p>
         </div>
@@ -150,13 +164,35 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Full Name *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">First Name *</label>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={e => setName(e.target.value)}
-                      placeholder="e.g. Rahul Sharma"
+                      placeholder="e.g. Rahul"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Last Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Sharma"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="rahul@gmail.com"
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
@@ -172,18 +208,19 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                     />
                   </div>
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Email Address *</label>
-                    <input
-                      type="email"
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Program of Interest *</label>
+                    <select
                       required
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="rahul@gmail.com"
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
-                    />
+                    >
+                      <option value="">Select a Program...</option>
+                      <option value="Preschool Franchise">Preschool Franchise</option>
+                      <option value="CBSE/ICSE School Setup">CBSE/ICSE School Setup</option>
+                      <option value="NTT Teacher Training">NTT Teacher Training</option>
+                      <option value="Investor Relations">Investor Relations</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">City / Location *</label>
@@ -197,19 +234,6 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                     />
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Your Message or Query *</label>
-                  <textarea
-                    rows={4}
-                    required
-                    value={message}
-                    onChange={e => setMessage(e.target.value)}
-                    placeholder="Tell us about your franchise or school setup goals..."
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
-                  ></textarea>
-                </div>
-
                 <button
                   type="submit"
                   disabled={loading}

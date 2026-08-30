@@ -16,20 +16,26 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
         {/* Col 1: About Brand */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E1007A] to-[#FFD400] flex items-center justify-center text-white font-black text-lg shadow-md">
-              KB
-            </div>
+            <img 
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
+              alt="KinderBee" 
+              className="h-12 w-auto object-contain rounded-xl bg-white shadow-sm" 
+            />
             <div>
               <div className="font-display font-extrabold text-lg text-white tracking-tight">
-                Kinder<span className="text-[#E1007A]">Bee</span>
+                {settings?.logoText ? (
+                  <span>{settings.logoText}</span>
+                ) : (
+                  <>Kinder<span className="text-[#E1007A]">Bee</span></>
+                )}
               </div>
               <div className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
-                International Preschool & KIPS
+                {settings?.logoSubtext || 'International Preschool & KIPS'}
               </div>
             </div>
           </div>
           <p className="text-sm text-stone-300 leading-relaxed">
-            India's leading Zero Royalty educational franchise and school development ecosystem. Bringing Nordic play-based excellence and NEP 2020 compliance to forward-thinking entrepreneurs.
+            {settings?.footerTagline || "India's leading Zero Royalty educational franchise and school development ecosystem. Bringing Nordic play-based excellence and NEP 2020 compliance to forward-thinking entrepreneurs."}
           </p>
           <div className="flex items-center gap-3 pt-2">
             {settings?.facebookUrl && (
@@ -97,15 +103,15 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
           <ul className="space-y-3 text-sm text-stone-400">
             <li className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-[#E1007A] shrink-0 mt-1" />
-              <span>{settings?.officeAddress || 'Ramamurthy Nagar, Bangalore, 560016'}</span>
+              <span>{settings?.officeAddress || 'Opp Vijay Bakery, Old UCO Bank road, Ramamurthy Nagar, Bangalore, 560016'}</span>
             </li>
             <li className="flex items-center gap-2.5">
               <Phone className="w-4 h-4 text-[#E1007A] shrink-0" />
-              <a href={`tel:${settings?.phone}`} className="hover:text-white transition">{settings?.phone || '+91 99013 32233'}</a>
+              <a href={`tel:${settings?.phone || '+919901332233'}`} className="hover:text-white transition">{settings?.phone || 'Talk to an Expert'}</a>
             </li>
             <li className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-[#E1007A] shrink-0" />
-              <a href={`mailto:${settings?.email}`} className="hover:text-white transition">{settings?.email || 'kinderbeeschools@gmail.com'}</a>
+              <a href={`mailto:${settings?.email || 'kinderbeeschools@gmail.com'}`} className="hover:text-white transition">{settings?.email || 'kinderbeeschools@gmail.com'}</a>
             </li>
           </ul>
         </div>
@@ -132,10 +138,17 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
       {/* Bottom Copyright */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-stone-500 gap-4">
         <div>
-          &copy; {new Date().getFullYear()} KinderBee Integrated Partnership System (KIPS) & FinnishWay Academy. All rights reserved.
+          &copy; {new Date().getFullYear()} Kinderbee Integrated Partnership System (KIPS) & FinnishWay Academy. All rights reserved.
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
           <span>Powered by Nordic Educational Excellence & NEP 2020 Frameworks</span>
+          <span>•</span>
+          <button 
+            onClick={() => setCurrentTab('admin')} 
+            className="text-stone-500 hover:text-white transition underline cursor-pointer"
+          >
+            Admin Dashboard
+          </button>
         </div>
       </div>
     </footer>

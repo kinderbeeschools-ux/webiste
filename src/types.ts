@@ -26,14 +26,21 @@ export interface Enquiry {
 export interface BlogPost {
   id: string;
   title: string;
+  slug?: string;
   category: string;
+  tags?: string[];
+  status?: 'Published' | 'Draft' | 'Trash';
   excerpt: string;
   content: string;
   image: string;
+  imageStoragePath?: string;
   author: string;
   date: string;
   readTime: string;
   views: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
 }
 
 export interface FAQItem {
@@ -52,6 +59,11 @@ export interface SystemSettings {
   linkedinUrl: string;
   instagramUrl: string;
   workingHours: string;
+  logoUrl?: string;
+  logoText?: string;
+  logoSubtext?: string;
+  footerTagline?: string;
+  footerCopyright?: string;
   popupEnabled?: boolean;
   popupDelay?: number;
   popupScrollTrigger?: boolean;
@@ -61,6 +73,27 @@ export interface SystemSettings {
   popupSubtitle?: string;
   popupImageUrl?: string;
   popupImageAlt?: string;
+  // SEO & Headings Management
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  homeHeroH1?: string;
+  homeHeroH2?: string;
+  homeHeroSubtitle?: string;
+  aboutHeroH1?: string;
+  aboutHeroSubtitle?: string;
+  franchiseHeroH1?: string;
+  franchiseHeroSubtitle?: string;
+  fwaHeroH1?: string;
+  fwaHeroSubtitle?: string;
+  investorsHeroH1?: string;
+  investorsHeroSubtitle?: string;
+  blogsHeroH1?: string;
+  blogsHeroSubtitle?: string;
+  contactHeroH1?: string;
+  contactHeroSubtitle?: string;
+  customHeaderScripts?: string;
+  googleAnalyticsId?: string;
 }
 
 export interface PageConfig {
@@ -73,3 +106,4 @@ export interface PageConfig {
   badgeText: string;
   content1: string;
 }
+

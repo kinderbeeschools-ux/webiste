@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ShieldCheck } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
@@ -10,7 +11,7 @@ import { PartnershipsPage } from './pages/PartnershipsPage';
 import { FwaPage } from './pages/FwaPage';
 import { InvestorsPage } from './pages/InvestorsPage';
 import { BlogPage } from './pages/BlogPage';
-import { BlogDetailModal } from './pages/BlogDetailModal';
+import { SinglePostView } from './pages/SinglePostView';
 import { ContactPage } from './pages/ContactPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { SystemSettings, BlogPost, FAQItem } from './types';
@@ -21,12 +22,35 @@ export function App() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
 
-  // Modals
+  // Modals & Single Post Selection
   const [consultationOpen, setConsultationOpen] = useState(false);
   const [consultationType, setConsultationType] = useState('franchise');
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem('kips_admin_token'));
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+
+  useEffect(() => {
+    // Check URL parameters and hash for direct admin routing
+    const checkAdminRoute = () => {
+      const hash = window.location.hash.toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const isParamAdmin = params.get('tab') === 'admin' || params.get('admin') === 'true' || params.get('view') === 'admin';
+      const isHashAdmin = hash === '#admin' || hash === '#/admin';
+
+      if (isHashAdmin || isParamAdmin) {
+        const token = localStorage.getItem('kips_admin_token');
+        if (token) {
+          setCurrentTab('admin');
+        } else {
+          setAdminLoginOpen(true);
+        }
+      }
+    };
+
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
+    return () => window.removeEventListener('hashchange', checkAdminRoute);
+  }, []);
 
   useEffect(() => {
     // Fetch initial settings, blogs, faqs
@@ -37,7 +61,18 @@ export function App() {
 
     fetch('/api/blogs')
       .then(res => res.json())
-      .then(data => setBlogs(data))
+      .then(data => {
+        setBlogs(data);
+        const params = new URLSearchParams(window.location.search);
+        const blogIdParam = params.get('blogId');
+        if (blogIdParam) {
+          const found = data.find((b: BlogPost) => b.id === blogIdParam);
+          if (found) {
+            setSelectedBlog(found);
+            setCurrentTab('blogs');
+          }
+        }
+      })
       .catch(err => console.error(err));
 
     fetch('/api/faqs')
@@ -63,6 +98,19 @@ export function App() {
     setCurrentTab('home');
   };
 
+  // If user is on Admin Tab and authenticated, display dedicated WordPress-style Admin Dashboard
+  if (currentTab === 'admin' && adminToken) {
+    return (
+      <AdminDashboard
+        adminToken={adminToken}
+        onLogout={handleLogoutAdmin}
+        onVisitSite={() => setCurrentTab('home')}
+        settings={settings}
+        onUpdateSettings={newSets => setSettings(newSets)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#1C1917] flex flex-col selection:bg-[#E1007A]/20 selection:text-[#E1007A]">
       
@@ -84,43 +132,48 @@ export function App() {
             blogs={blogs}
             faqs={faqs}
             onSelectBlog={blog => setSelectedBlog(blog)}
+            settings={settings}
           />
         )}
         {currentTab === 'about' && (
-          <AboutPage onOpenConsultation={() => handleOpenConsultation('franchise')} />
+          <AboutPage onOpenConsultation={() => handleOpenConsultation('franchise')} settings={settings} />
         )}
         {currentTab === 'partnerships' && (
-          <PartnershipsPage onOpenConsultation={handleOpenConsultation} />
+          <PartnershipsPage onOpenConsultation={handleOpenConsultation} settings={settings} />
         )}
         {currentTab === 'fwa' && (
-          <FwaPage onOpenConsultation={handleOpenConsultation} />
+          <FwaPage onOpenConsultation={handleOpenConsultation} settings={settings} />
         )}
         {currentTab === 'investors' && (
-          <InvestorsPage onOpenConsultation={handleOpenConsultation} />
+          <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} />
         )}
-        {currentTab === 'blogs' && (
-          <BlogPage blogs={blogs} onSelectBlog={blog => setSelectedBlog(blog)} />
+        {currentTab === 'blogs' && selectedBlog && (
+          <SinglePostView
+            blog={selectedBlog}
+            allBlogs={blogs}
+            onBack={() => setSelectedBlog(null)}
+            onSelectBlog={(blog) => setSelectedBlog(blog)}
+            settings={settings}
+          />
+        )}
+        {currentTab === 'blogs' && !selectedBlog && (
+          <BlogPage blogs={blogs} onSelectBlog={blog => setSelectedBlog(blog)} settings={settings} />
         )}
         {currentTab === 'contact' && (
           <ContactPage settings={settings} />
         )}
-        {currentTab === 'admin' && adminToken && (
-          <AdminDashboard
-            adminToken={adminToken}
-            onLogout={handleLogoutAdmin}
-            settings={settings}
-            onUpdateSettings={newSets => setSettings(newSets)}
-          />
-        )}
         {currentTab === 'admin' && !adminToken && (
-          <div className="max-w-md mx-auto my-20 p-8 bg-white rounded-3xl border border-stone-200 text-center space-y-4">
+          <div className="max-w-md mx-auto my-20 p-8 bg-white rounded-3xl border border-stone-200 text-center space-y-4 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-[#E1007A]/10 text-[#E1007A] flex items-center justify-center mx-auto">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
             <h3 className="text-xl font-bold">Admin Authentication Required</h3>
-            <p className="text-sm text-stone-600">Please sign in with your administrator password to access the control panel.</p>
+            <p className="text-sm text-stone-600">Please sign in with your administrator credentials to access the WordPress Admin control panel.</p>
             <button
               onClick={() => setAdminLoginOpen(true)}
-              className="bg-[#E1007A] text-white px-6 py-3 rounded-xl text-sm font-medium"
+              className="bg-[#E1007A] hover:bg-[#c00068] text-white px-6 py-3 rounded-xl text-sm font-semibold transition cursor-pointer"
             >
-              Open Login Prompt
+              Sign In to WordPress Admin
             </button>
           </div>
         )}
@@ -149,11 +202,6 @@ export function App() {
         isOpen={adminLoginOpen}
         onClose={() => setAdminLoginOpen(false)}
         onLoginSuccess={handleLoginSuccess}
-      />
-
-      <BlogDetailModal
-        blog={selectedBlog}
-        onClose={() => setSelectedBlog(null)}
       />
 
     </div>
