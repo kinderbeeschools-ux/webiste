@@ -104,13 +104,22 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 flex justify-center">
+              <div className="pt-2 flex flex-wrap justify-center gap-4">
                 <button
                   onClick={() => onOpenConsultation('preschool')}
                   className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
                 >
-                  <span>Book Free Consultation for Preschool Franchise &rarr;</span>
+                  <span>Book Free Consultation &rarr;</span>
                 </button>
+                <a
+                  href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download="KinderBee_Franchise_Brochure.pdf"
+                  className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-bold px-6 py-4 rounded-xl shadow-xs transition text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Download Franchise PDF &rarr;</span>
+                </a>
               </div>
             </div>
           </section>

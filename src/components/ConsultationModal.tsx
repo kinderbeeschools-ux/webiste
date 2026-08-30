@@ -95,12 +95,23 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
               </div>
             )}
 
-            <button
-              onClick={() => { setSubmitted(false); onClose(); }}
-              className="bg-[#1C1917] hover:bg-stone-800 text-white font-medium px-8 py-3 rounded-xl text-sm transition"
-            >
-              Close & Return to Portal
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
+              <a
+                href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                download="KinderBee_Franchise_Brochure.pdf"
+                className="w-full sm:w-auto bg-[#E1007A] hover:bg-pink-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <span>Download Franchise Brochure PDF &rarr;</span>
+              </a>
+              <button
+                onClick={() => { setSubmitted(false); onClose(); }}
+                className="w-full sm:w-auto bg-[#1C1917] hover:bg-stone-800 text-white font-medium px-6 py-3 rounded-xl text-sm transition cursor-pointer"
+              >
+                Close & Return to Portal
+              </button>
+            </div>
           </div>
         ) : (
           <div>

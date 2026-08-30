@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Enquiry, BlogPost, FAQItem, SystemSettings } from "./src/types";
 
 // Initialize express app
@@ -14,6 +15,28 @@ const DB_FILE = path.join(process.cwd(), "db.json");
 
 // Default Admin Password (can be changed in settings)
 let ADMIN_PASSWORD = "admin";
+
+// Lazy-initialize Supabase Client
+let supabaseClient: SupabaseClient | null = null;
+function getSupabaseClient(): SupabaseClient | null {
+  if (!supabaseClient) {
+    const supabaseUrl = process.env.SUPABASE_URL || "https://uvsqqvhjtdtsexfsinvp.supabase.co";
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
+                        process.env.SUPABASE_ANON_KEY || 
+                        process.env.SUPABASE_PUBLISHABLE_KEY || 
+                        process.env.SUPABASE_SECRET_KEY || 
+                        process.env.SUPABASE_KEY;
+    if (supabaseKey) {
+      try {
+        supabaseClient = createClient(supabaseUrl, supabaseKey);
+        console.log("Supabase Client initialized successfully.");
+      } catch (err) {
+        console.error("Failed to initialize Supabase client:", err);
+      }
+    }
+  }
+  return supabaseClient;
+}
 
 // Lazy-initialize Gemini Client
 let aiClient: GoogleGenAI | null = null;
@@ -451,6 +474,38 @@ app.post("/api/enquiries", async (req, res) => {
 
   db.enquiries.unshift(newEnquiry);
   saveDb(db);
+
+  // Sync to Supabase table 'enquiries' if client is initialized
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { error: sbError } = await supabase.from("enquiries").insert([
+        {
+          id: newEnquiry.id,
+          type: newEnquiry.type,
+          name: fields.name,
+          email: fields.email,
+          phone: fields.phone,
+          city: fields.city || null,
+          state: fields.state || null,
+          budget: fields.budget || null,
+          partnership_model: fields.partnershipModel || fields.courseOfInterest || null,
+          message: fields.message || null,
+          status: newEnquiry.status,
+          ai_summary: newEnquiry.aiSummary || null,
+          created_at: newEnquiry.createdAt,
+          raw_data: fields
+        }
+      ]);
+      if (sbError) {
+        console.warn("Supabase Lead Sync Notice:", sbError.message);
+      } else {
+        console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
+      }
+    }
+  } catch (sbErr) {
+    console.error("Supabase sync execution error:", sbErr);
+  }
 
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
 });

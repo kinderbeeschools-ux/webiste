@@ -155,7 +155,7 @@ export function App() {
           <FwaPage onOpenConsultation={handleOpenConsultation} settings={settings} />
         )}
         {currentTab === 'investors' && (
-          <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} />
+          <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} setCurrentTab={setCurrentTab} />
         )}
         {currentTab === 'blogs' && selectedBlog && (
           <SinglePostView

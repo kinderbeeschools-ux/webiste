@@ -58,10 +58,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
           </div>
 
           <div className="lg:w-1/2 relative flex justify-center">
-            <SmartImage 
-              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" 
-              altContext={{ page: 'academics', section: 'hero', type: 'kids learning' }} 
-              className="w-full max-w-md h-80 sm:h-96 object-cover rounded-3xl shadow-2xl border-4 border-white/20" 
+            <img 
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg" 
+              alt="Kinderbee Academics Hero" 
+              className="w-full max-w-xl aspect-video object-cover rounded-3xl shadow-2xl border-4 border-white/20" 
             />
           </div>
         </div>
@@ -73,77 +73,85 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
           <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">Our Programs</h2>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Toddler Program */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-            <div className="sm:w-2/5 shrink-0">
-              <SmartImage src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" altContext={{page:'academics',section:'toddler',type:'toddlers playing'}} className="w-full h-full min-h-[250px] object-cover" />
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="w-full aspect-video shrink-0 overflow-hidden">
+              <img src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" alt="Toddler Program" className="w-full h-full object-cover" />
             </div>
-            <div className="p-8 sm:w-3/5 space-y-4">
-              <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">1.5 - 2.5 Years</div>
-              <h3 className="text-2xl font-display font-extrabold text-[#1C1917]">Toddler Program</h3>
-              <ul className="space-y-2 text-stone-600 text-sm">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Sensory Exploration & Play</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Basic Motor Skill Development</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Emotional & Social Comfort</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Language & Communication Basics</li>
-              </ul>
+            <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block mb-3">1.5 - 2.5 Years</div>
+                <h3 className="text-2xl font-display font-extrabold text-[#1C1917] mb-3">Toddler Program</h3>
+                <ul className="space-y-2 text-stone-600 text-sm">
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Sensory Exploration & Play</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Basic Motor Skill Development</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Emotional & Social Comfort</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] mt-1.5 shrink-0"></span> Language & Communication Basics</li>
+                </ul>
+              </div>
             </div>
           </div>
           
           {/* Pre-K Program */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-            <div className="sm:w-2/5 shrink-0">
-              <SmartImage src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600" altContext={{page:'academics',section:'pre-k',type:'kids in classroom'}} className="w-full h-full min-h-[250px] object-cover" />
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="w-full aspect-video shrink-0 overflow-hidden">
+              <img src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg" alt="Pre-K Program" className="w-full h-full object-cover" />
             </div>
-            <div className="p-8 sm:w-3/5 space-y-4">
-              <div className="text-amber-600 font-bold text-xs uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full inline-block">2.5 - 3.5 Years</div>
-              <h3 className="text-2xl font-display font-extrabold text-[#1C1917]">Pre-K Program</h3>
-              <ul className="space-y-2 text-stone-600 text-sm">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Early Phonics & Numeracy</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Fine & Gross Motor Control</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Social Cooperation Skills</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Creative Arts & Expression</li>
-              </ul>
+            <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="text-amber-600 font-bold text-xs uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full inline-block mb-3">2.5 - 3.5 Years</div>
+                <h3 className="text-2xl font-display font-extrabold text-[#1C1917] mb-3">Pre-K Program</h3>
+                <ul className="space-y-2 text-stone-600 text-sm">
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Early Phonics & Numeracy</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Fine & Gross Motor Control</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Social Cooperation Skills</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span> Creative Arts & Expression</li>
+                </ul>
+              </div>
             </div>
           </div>
           
           {/* Kindergarten */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-            <div className="sm:w-2/5 shrink-0">
-              <SmartImage src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600" altContext={{page:'academics',section:'kindergarten',type:'kids learning'}} className="w-full h-full min-h-[250px] object-cover" />
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="w-full aspect-video shrink-0 overflow-hidden">
+              <img src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg" alt="Kindergarten Program" className="w-full h-full object-cover" />
             </div>
-            <div className="p-8 sm:w-3/5 space-y-4">
-              <div className="text-emerald-600 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full inline-block">3.5 - 5.5 Years</div>
-              <h3 className="text-2xl font-display font-extrabold text-[#1C1917]">Kindergarten</h3>
-              <ul className="space-y-2 text-stone-600 text-sm">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> School Readiness & Advanced Literacy</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Mathematics & Problem Solving</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Critical Thinking & Independence</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Environmental & Cultural Awareness</li>
-              </ul>
+            <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="text-emerald-600 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full inline-block mb-3">3.5 - 5.5 Years</div>
+                <h3 className="text-2xl font-display font-extrabold text-[#1C1917] mb-3">Kindergarten</h3>
+                <ul className="space-y-2 text-stone-600 text-sm">
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> School Readiness & Advanced Literacy</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Mathematics & Problem Solving</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Critical Thinking & Independence</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span> Environmental & Cultural Awareness</li>
+                </ul>
+              </div>
             </div>
           </div>
           
           {/* Teacher Training (NTT) */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-            <div className="sm:w-2/5 shrink-0">
-              <SmartImage src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=600" altContext={{page:'academics',section:'ntt',type:'teacher training'}} className="w-full h-full min-h-[250px] object-cover" />
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="w-full aspect-video shrink-0 overflow-hidden">
+              <img src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg" alt="Teacher Training Program" className="w-full h-full object-cover" />
             </div>
-            <div className="p-8 sm:w-3/5 space-y-4">
-              <div className="text-purple-600 font-bold text-xs uppercase tracking-widest bg-purple-50 px-3 py-1 rounded-full inline-block">Professional Certification</div>
-              <h3 className="text-2xl font-display font-extrabold text-[#1C1917]">Teacher Training (NTT)</h3>
-              <ul className="space-y-2 text-stone-600 text-sm">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Early Childhood Pedagogy Mastery</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Play-Based & Experiential Learning</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Child Psychology & Behavior Management</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> NEP 2020 Aligned Curriculum Strategies</li>
-              </ul>
+            <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="text-purple-600 font-bold text-xs uppercase tracking-widest bg-purple-50 px-3 py-1 rounded-full inline-block mb-3">Professional Certification</div>
+                <h3 className="text-2xl font-display font-extrabold text-[#1C1917] mb-3">Teacher Training (NTT)</h3>
+                <ul className="space-y-2 text-stone-600 text-sm">
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Early Childhood Pedagogy Mastery</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Play-Based & Experiential Learning</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> Child Psychology & Behavior Management</li>
+                  <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0"></span> NEP 2020 Aligned Curriculum Strategies</li>
+                </ul>
+              </div>
               <div className="pt-2">
                 <button
                   onClick={() => onOpenConsultation('fwa_course')}
-                  className="text-purple-600 font-bold text-sm flex items-center gap-1 hover:text-purple-800 transition"
+                  className="text-purple-600 font-bold text-sm flex items-center gap-1 hover:text-purple-800 transition cursor-pointer"
                 >
                   Join NTT Program <ArrowRight className="w-4 h-4" />
                 </button>

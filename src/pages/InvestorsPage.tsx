@@ -7,7 +7,7 @@ import { SmartImage } from '../components/SmartImage';
 interface InvestorsPageProps {
   onOpenConsultation: (type?: string) => void;
   settings?: SystemSettings | null;
-  setCurrentTab: (tab: string) => void;
+  setCurrentTab?: (tab: string) => void;
 }
 
 export const InvestorsPage: React.FC<InvestorsPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
@@ -73,8 +73,8 @@ export const InvestorsPage: React.FC<InvestorsPageProps> = ({ onOpenConsultation
       <section className="max-w-4xl mx-auto px-4 text-center space-y-6">
         <h2 className="text-3xl font-display font-bold text-stone-900">Partner with KinderBee today</h2>
         <button
-          onClick={() => setCurrentTab('contact')}
-          className="bg-[#E1007A] hover:bg-pink-700 text-white font-semibold px-8 py-4 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 mx-auto"
+          onClick={() => setCurrentTab ? setCurrentTab('contact') : onOpenConsultation('investor')}
+          className="bg-[#E1007A] hover:bg-pink-700 text-white font-semibold px-8 py-4 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 mx-auto cursor-pointer"
         >
           <span>Partner with us &rarr;</span>
         </button>

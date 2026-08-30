@@ -711,15 +711,15 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               <p className="text-xs text-stone-600 leading-relaxed">
                 Discover our comprehensive setup kit, curriculum licensing, and projected 18-month ROI model.
               </p>
-              <button 
-                onClick={() => {
-                  const event = new CustomEvent('open-consultation', { detail: { type: 'franchise' } });
-                  window.dispatchEvent(event);
-                }}
-                className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer"
+              <a 
+                href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                download="KinderBee_Franchise_Brochure.pdf"
+                className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
-                Request Free Prospectus
-              </button>
+                Download Free Prospectus PDF &rarr;
+              </a>
             </div>
 
           </aside>

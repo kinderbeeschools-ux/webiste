@@ -22,7 +22,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       
       
       {/* Story & Philosophy */}
-      <section id="story" className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section id="story" className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
           <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
             OUR JOURNEY & CORE MISSION
@@ -51,9 +51,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         <div className="relative">
           <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A] to-amber-500 rounded-3xl blur-xl opacity-20"></div>
           <div className="relative rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-white">
-            <SmartImage
+            <img
               src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg"
-              altContext={{ page: 'about', section: 'Interactive Finnish Early Learning Classroom', type: 'classroom' }}
+              alt="Kinderbee Early Learning Classroom"
               className="w-full h-[400px] object-cover"
             />
           </div>

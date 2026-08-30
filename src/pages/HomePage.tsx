@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, TrendingUp, BookOpen, Users, Building, Play, Star } from 'lucide-react';
+import { ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, TrendingUp, BookOpen, Users, Building, Play, Star, Download } from 'lucide-react';
 import { BlogPost, FAQItem, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
@@ -128,9 +128,9 @@ export const HomePage: React.FC<HomePageProps> = ({
           
           <div className="relative mt-8 lg:mt-0">
             <div className="rounded-3xl overflow-hidden shadow-2xl border border-stone-200 relative">
-              <SmartImage 
+              <img 
                 src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg" 
-                altContext={{ page: 'home', section: 'KIPS Future', type: 'school' }}
+                alt="Kinderbee Schools - Build the Future of Education with KIPS"
                 className="w-full aspect-video object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent pointer-events-none"></div>
@@ -308,14 +308,16 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <span>Book a Free Consultation &rarr;</span>
                 </button>
 
-                <button
-                  onClick={() => {
-                    alert('Downloading NTT Teacher Training Brochure...');
-                  }}
-                  className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-semibold px-7 py-3.5 rounded-xl transition text-sm flex items-center gap-2 shadow-xs"
+                <a
+                  href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download="KinderBee_Franchise_Brochure.pdf"
+                  className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-semibold px-7 py-3.5 rounded-xl transition text-sm flex items-center gap-2 shadow-xs cursor-pointer"
                 >
-                  <span>Download NTT Teacher Training Brochure &rarr;</span>
-                </button>
+                  <Download className="w-4 h-4 text-[#E1007A]" />
+                  <span>Download Franchise & NTT Brochure &rarr;</span>
+                </a>
               </div>
             </div>
             <div className="lg:col-span-5 relative flex justify-center items-center">
