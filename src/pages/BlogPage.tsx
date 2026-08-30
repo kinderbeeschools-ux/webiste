@@ -156,7 +156,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         <div className="max-w-4xl mx-auto relative z-10 space-y-5">
           <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-            <span>WordPress Editorial & Nordic Research</span>
+            <span>KinderBee Editorial & Research</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
             Insights & Nordic <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Pedagogy Blogs</span>

@@ -104,7 +104,7 @@ export const BlogDetailModal: React.FC<BlogDetailModalProps> = ({ blog, onClose 
             </span>
             <span className="bg-amber-100 text-amber-900 font-bold text-xs px-3 py-1 rounded-full flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-[#FFD400]" />
-              WordPress Editorial
+              KinderBee Editorial
             </span>
           </div>
 
@@ -120,7 +120,6 @@ export const BlogDetailModal: React.FC<BlogDetailModalProps> = ({ blog, onClose 
               </div>
               <div>
                 <div className="font-bold text-stone-900 text-sm">{blog.author}</div>
-                <div className="text-[11px] text-stone-400">KinderBee Research & Curriculum Specialist</div>
               </div>
             </div>
 

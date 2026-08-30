@@ -219,7 +219,7 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
                 </div>
               </div>
               <div>
-                <div className="font-bold text-stone-900 text-xs">{post.author || 'Verita2023'}</div>
+                <div className="font-bold text-stone-900 text-xs">{post.author || 'KinderBee'}</div>
                 <div className="text-[10px] text-stone-400">Author & Content Strategist</div>
               </div>
             </div>

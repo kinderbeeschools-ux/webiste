@@ -96,7 +96,7 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
   const [tags, setTags] = useState<string[]>(initialPost?.tags || ['Zero Royalty', 'NEP 2020', 'Nordic Pedagogy']);
   const [tagInput, setTagInput] = useState('');
   
-  const [author, setAuthor] = useState(initialPost?.author || 'Verita2023');
+  const [author, setAuthor] = useState(initialPost?.author || 'KinderBee');
   const [status, setStatus] = useState<'Published' | 'Draft' | 'Trash'>(initialPost?.status || 'Published');
   const [date, setDate] = useState(initialPost?.date || new Date().toISOString().split('T')[0]);
   const [readTime, setReadTime] = useState(initialPost?.readTime || '5 min read');
@@ -427,7 +427,7 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
       content: compiledContent || title,
       category,
       tags,
-      author: author || 'Verita2023',
+      author: author || 'KinderBee',
       status: targetStatus,
       date: date || new Date().toISOString().split('T')[0],
       readTime: readTime || '5 min read',

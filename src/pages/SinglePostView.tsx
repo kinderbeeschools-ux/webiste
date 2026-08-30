@@ -129,7 +129,6 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
               </div>
               <div>
                 <div className="font-bold text-white text-sm">{blog.author}</div>
-                <div className="text-[11px] text-pink-300">KinderBee Research & Curriculum Specialist</div>
               </div>
             </div>
 

@@ -104,8 +104,59 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   settings: initialSettings, 
   onUpdateSettings 
 }) => {
-  const [activeTab, setActiveTab] = useState<WpMenuTab>('posts');
+  const [activeTab, setActiveTab] = useState<WpMenuTab>(() => {
+    const saved = localStorage.getItem('kips_admin_active_tab') as WpMenuTab;
+    return saved || 'posts';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('kips_admin_active_tab', activeTab);
+  }, [activeTab]);
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
+  // Users and Roles State
+  interface WPUser {
+    username: string;
+    name: string;
+    email: string;
+    role: 'Administrator' | 'Editor' | 'Author' | 'Contributor';
+  }
+
+  const [users, setUsers] = useState<WPUser[]>(() => {
+    const saved = localStorage.getItem('kips_wp_users');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return [
+      {
+        username: 'kinderbee_admin',
+        name: 'KinderBee Schools Admin',
+        email: 'kinderbeeschools@gmail.com',
+        role: 'Administrator'
+      },
+      {
+        username: 'admin',
+        name: 'KinderBee Corporate Admin',
+        email: 'info@kinderbee.in',
+        role: 'Administrator'
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('kips_wp_users', JSON.stringify(users));
+  }, [users]);
+
+  // Add User Modal State
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
+  const [newFullName, setNewFullName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newRole, setNewRole] = useState<'Administrator' | 'Editor' | 'Author' | 'Contributor'>('Administrator');
+
   const [activePostCategoryFilter, setActivePostCategoryFilter] = useState('All');
   const [activePostStatusFilter, setActivePostStatusFilter] = useState<'All' | 'Published' | 'Draft' | 'Trash'>('All');
   const [activePostDateFilter, setActivePostDateFilter] = useState('All');
@@ -359,7 +410,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   ];
 
-  const [blogs, setBlogs] = useState<BlogPost[]>(initialDefaultBlogs);
+  const [blogs, setBlogs] = useState<BlogPost[]>(() => {
+    return initialDefaultBlogs.map(b => b.author === 'Verita2023' ? { ...b, author: 'KinderBee' } : b);
+  });
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [analytics, setAnalytics] = useState<any>(null);
   
@@ -786,12 +839,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (action === 'trash' || action === 'Move to Trash') {
       const count = selectedPostIds.length;
       const trashedIds = [...selectedPostIds];
+
+      // Sync to backend
+      Promise.all(trashedIds.map(id => 
+        fetch(`/api/blogs/${id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({ status: 'Trash' })
+        })
+      )).then(() => {
+        fetchData();
+      }).catch(err => console.error('Bulk trash error:', err));
+
       setBlogs(blogs.map(b => trashedIds.includes(b.id) ? { ...b, status: 'Trash' } : b));
       setSelectedPostIds([]);
       setAdminNotice({
         type: 'success',
         message: `${count} post${count > 1 ? 's' : ''} moved to the Trash.`,
         undoAction: () => {
+          Promise.all(trashedIds.map(id => 
+            fetch(`/api/blogs/${id}`, {
+              method: 'PUT',
+              headers,
+              body: JSON.stringify({ status: 'Published' })
+            })
+          )).then(() => {
+            fetchData();
+          }).catch(err => console.error('Bulk untrash error:', err));
+
           setBlogs(blogs.map(b => trashedIds.includes(b.id) ? { ...b, status: 'Published' } : b));
           setAdminNotice(null);
         }
@@ -800,7 +875,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setIsBulkEditing(true);
     } else if (action === 'restore' || action === 'Restore') {
       const count = selectedPostIds.length;
-      setBlogs(blogs.map(b => selectedPostIds.includes(b.id) ? { ...b, status: 'Published' } : b));
+      const restoreIds = [...selectedPostIds];
+
+      // Sync to backend
+      Promise.all(restoreIds.map(id => 
+        fetch(`/api/blogs/${id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({ status: 'Published' })
+        })
+      )).then(() => {
+        fetchData();
+      }).catch(err => console.error('Bulk restore error:', err));
+
+      setBlogs(blogs.map(b => restoreIds.includes(b.id) ? { ...b, status: 'Published' } : b));
       setSelectedPostIds([]);
       setAdminNotice({
         type: 'success',
@@ -809,7 +897,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     } else if (action === 'delete' || action === 'Delete permanently') {
       if (!confirm(`Permanently delete ${selectedPostIds.length} item(s)? This cannot be undone.`)) return;
       const count = selectedPostIds.length;
-      setBlogs(blogs.filter(b => !selectedPostIds.includes(b.id)));
+      const deleteIds = [...selectedPostIds];
+
+      // Sync to backend
+      Promise.all(deleteIds.map(id => 
+        fetch(`/api/blogs/${id}`, {
+          method: 'DELETE',
+          headers
+        })
+      )).then(() => {
+        fetchData();
+      }).catch(err => console.error('Bulk delete error:', err));
+
+      setBlogs(blogs.filter(b => !deleteIds.includes(b.id)));
       setSelectedPostIds([]);
       setAdminNotice({
         type: 'success',
@@ -824,7 +924,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       return;
     }
     const count = selectedPostIds.length;
-    setBlogs(blogs.map(b => {
+    const updatedBlogs = blogs.map(b => {
       if (!selectedPostIds.includes(b.id)) return b;
       const updated = { ...b };
       if (bulkEditCategory) updated.category = bulkEditCategory;
@@ -837,7 +937,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         updated.tags = Array.from(new Set([...(updated.tags || []), ...newTags]));
       }
       return updated;
-    }));
+    });
+
+    // Save to server in parallel
+    Promise.all(selectedPostIds.map(id => {
+      const blogToSave = updatedBlogs.find(ub => ub.id === id);
+      if (!blogToSave) return Promise.resolve();
+      return fetch(`/api/blogs/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          category: blogToSave.category,
+          author: blogToSave.author,
+          status: blogToSave.status,
+          tags: blogToSave.tags
+        })
+      });
+    })).then(() => {
+      fetchData();
+    }).catch(err => console.error('Bulk edit save error:', err));
+
+    setBlogs(updatedBlogs);
     setIsBulkEditing(false);
     setSelectedPostIds([]);
     setAdminNotice({
@@ -853,63 +973,114 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       title: b.title,
       slug: b.slug || b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       date: b.date || new Date().toISOString().split('T')[0],
-      author: b.author || 'Verita2023',
+      author: b.author || 'KinderBee',
       category: b.category || 'Pedagogy & Curriculum',
       tags: b.tags ? b.tags.join(', ') : '',
       status: (b.status as any) === 'Draft' ? 'Draft' : 'Published'
     });
   };
 
-  const handleSaveQuickEdit = (e: React.FormEvent) => {
+  const handleSaveQuickEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!quickEditingPostId) return;
-    setBlogs(blogs.map(b => {
-      if (b.id !== quickEditingPostId) return b;
-      return {
-        ...b,
-        title: quickEditForm.title,
-        slug: quickEditForm.slug,
-        date: quickEditForm.date,
-        author: quickEditForm.author,
-        category: quickEditForm.category,
-        status: quickEditForm.status,
-        tags: quickEditForm.tags ? quickEditForm.tags.split(',').map(t => t.trim()).filter(Boolean) : []
-      };
-    }));
-    setQuickEditingPostId(null);
-    setAdminNotice({
-      type: 'success',
-      message: 'Post updated.'
-    });
-  };
 
-  const handleTrashSinglePost = (id: string) => {
-    setBlogs(blogs.map(b => b.id === id ? { ...b, status: 'Trash' } : b));
-    setAdminNotice({
-      type: 'success',
-      message: '1 post moved to the Trash.',
-      undoAction: () => {
-        setBlogs(blogs.map(b => b.id === id ? { ...b, status: 'Published' } : b));
-        setAdminNotice(null);
+    const quickEditTagsArray = quickEditForm.tags ? quickEditForm.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const originalPost = blogs.find(b => b.id === quickEditingPostId);
+    
+    const updatedBlog = {
+      ...originalPost,
+      title: quickEditForm.title,
+      slug: quickEditForm.slug,
+      date: quickEditForm.date,
+      author: quickEditForm.author,
+      category: quickEditForm.category,
+      status: quickEditForm.status,
+      tags: quickEditTagsArray
+    };
+
+    try {
+      const res = await fetch(`/api/blogs/${quickEditingPostId}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(updatedBlog)
+      });
+      if (res.ok) {
+        fetchData();
+        setQuickEditingPostId(null);
+        setAdminNotice({
+          type: 'success',
+          message: 'Post updated successfully.'
+        });
       }
-    });
+    } catch (err) {
+      console.error('Quick edit error:', err);
+    }
   };
 
-  const handleRestoreSinglePost = (id: string) => {
-    setBlogs(blogs.map(b => b.id === id ? { ...b, status: 'Published' } : b));
-    setAdminNotice({
-      type: 'success',
-      message: '1 post restored from the Trash.'
-    });
+  const handleTrashSinglePost = async (id: string) => {
+    try {
+      const res = await fetch(`/api/blogs/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ status: 'Trash' })
+      });
+      if (res.ok) {
+        setBlogs(blogs.map(b => b.id === id ? { ...b, status: 'Trash' } : b));
+        setAdminNotice({
+          type: 'success',
+          message: '1 post moved to the Trash.',
+          undoAction: async () => {
+            await fetch(`/api/blogs/${id}`, {
+              method: 'PUT',
+              headers,
+              body: JSON.stringify({ status: 'Published' })
+            });
+            fetchData();
+            setAdminNotice(null);
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Trash post error:', err);
+    }
   };
 
-  const handlePermanentDeleteSinglePost = (id: string) => {
+  const handleRestoreSinglePost = async (id: string) => {
+    try {
+      const res = await fetch(`/api/blogs/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ status: 'Published' })
+      });
+      if (res.ok) {
+        setBlogs(blogs.map(b => b.id === id ? { ...b, status: 'Published' } : b));
+        setAdminNotice({
+          type: 'success',
+          message: '1 post restored from the Trash.'
+        });
+      }
+    } catch (err) {
+      console.error('Restore post error:', err);
+    }
+  };
+
+  const handlePermanentDeleteSinglePost = async (id: string) => {
     if (!confirm('Permanently delete this post? This cannot be undone.')) return;
-    setBlogs(blogs.filter(b => b.id !== id));
-    setAdminNotice({
-      type: 'success',
-      message: '1 post permanently deleted.'
-    });
+    try {
+      const res = await fetch(`/api/blogs/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (res.ok) {
+        setBlogs(blogs.filter(b => b.id !== id));
+        setAdminNotice({
+          type: 'success',
+          message: '1 post permanently deleted.'
+        });
+      }
+    } catch (err) {
+      console.error('Delete post error:', err);
+    }
   };
 
   return (
@@ -1851,18 +2022,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       </button>
                                       <span className="text-stone-300">|</span>
                                       <button 
-                                        onClick={() => {
-                                          const duplicated: BlogPost = {
-                                            ...b,
-                                            id: `dup_${Date.now()}`,
+                                        onClick={async () => {
+                                          const duplicatePayload = {
                                             title: `${b.title} (Copy)`,
+                                            category: b.category,
+                                            excerpt: b.excerpt,
+                                            content: b.content,
+                                            image: b.image,
+                                            author: b.author,
+                                            readTime: b.readTime,
+                                            views: 1,
+                                            status: b.status,
+                                            tags: b.tags,
                                             slug: `${b.slug || 'post'}-copy-${Date.now()}`
                                           };
-                                          setBlogs([duplicated, ...blogs]);
-                                          setAdminNotice({
-                                            type: 'success',
-                                            message: `Post duplicated successfully.`
-                                          });
+                                          try {
+                                            const res = await fetch('/api/blogs', {
+                                              method: 'POST',
+                                              headers,
+                                              body: JSON.stringify(duplicatePayload)
+                                            });
+                                            const data = await res.json();
+                                            if (data.success) {
+                                              fetchData();
+                                              setAdminNotice({
+                                                type: 'success',
+                                                message: `Post duplicated successfully.`
+                                              });
+                                            }
+                                          } catch (err) {
+                                            console.error('Duplicate post error:', err);
+                                          }
                                         }}
                                         className="hover:underline text-[#2271b1] cursor-pointer"
                                       >
@@ -1873,7 +2063,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </div>
                               </div>
                             </td>
-                            <td className="p-2.5 text-[#2271b1] hover:underline cursor-pointer font-medium">{b.author || 'Verita2023'}</td>
+                            <td className="p-2.5 text-[#2271b1] hover:underline cursor-pointer font-medium">{b.author || 'KinderBee'}</td>
                             <td className="p-2.5 text-stone-700">
                               <span className="text-stone-700">{b.category || 'Pedagogy & Curriculum'}</span>
                             </td>
@@ -2742,7 +2932,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="bg-white border border-[#c3c4c7] p-5 rounded-xs space-y-4">
                 <div className="flex items-center justify-between border-b pb-3">
                   <h3 className="font-bold text-base text-[#1d2327]">Users & Roles</h3>
-                  <button className="bg-[#2271b1] text-white px-3 py-1 rounded font-semibold cursor-pointer">
+                  <button 
+                    onClick={() => {
+                      setNewUsername('');
+                      setNewFullName('');
+                      setNewEmail('');
+                      setNewRole('Administrator');
+                      setShowAddUserModal(true);
+                    }}
+                    className="bg-[#2271b1] hover:bg-[#135e96] text-white px-3 py-1.5 rounded font-semibold cursor-pointer transition-colors"
+                  >
                     Add New User
                   </button>
                 </div>
@@ -2754,26 +2953,162 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <th className="p-2.5 font-bold">Email</th>
                       <th className="p-2.5 font-bold">Role</th>
                       <th className="p-2.5 font-bold">Posts</th>
+                      <th className="p-2.5 font-bold text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-200">
-                    <tr>
-                      <td className="p-2.5 font-bold text-[#2271b1]">Verita2023</td>
-                      <td className="p-2.5 text-stone-800">Verita Lead Editor</td>
-                      <td className="p-2.5 text-stone-500">editorial@kinderbee.in</td>
-                      <td className="p-2.5 text-stone-700">Administrator</td>
-                      <td className="p-2.5 font-bold text-stone-800">{blogs.length}</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-bold text-[#2271b1]">admin</td>
-                      <td className="p-2.5 text-stone-800">KinderBee Corporate Admin</td>
-                      <td className="p-2.5 text-stone-500">info@kinderbee.in</td>
-                      <td className="p-2.5 text-stone-700">Administrator</td>
-                      <td className="p-2.5 text-stone-500">0</td>
-                    </tr>
+                    {users.map((u) => {
+                      // Dynamically count posts for each user/author
+                      const postsCount = blogs.filter(b => 
+                        b.author && (
+                          b.author.toLowerCase() === u.username.toLowerCase() || 
+                          b.author.toLowerCase() === u.name.toLowerCase() ||
+                          (u.username === 'kinderbee_admin' && b.author === 'KinderBee')
+                        )
+                      ).length;
+
+                      return (
+                        <tr key={u.username} className="hover:bg-stone-50">
+                          <td className="p-2.5 font-bold text-[#2271b1]">{u.username}</td>
+                          <td className="p-2.5 text-stone-800">{u.name}</td>
+                          <td className="p-2.5 text-stone-500">{u.email}</td>
+                          <td className="p-2.5">
+                            <select
+                              value={u.role}
+                              onChange={(e) => {
+                                const updatedRole = e.target.value as any;
+                                setUsers(users.map(user => user.username === u.username ? { ...user, role: updatedRole } : user));
+                              }}
+                              className="bg-white border border-[#8c8f94] rounded px-1.5 py-0.5 text-xs text-stone-700"
+                            >
+                              <option value="Administrator">Administrator</option>
+                              <option value="Editor">Editor</option>
+                              <option value="Author">Author</option>
+                              <option value="Contributor">Contributor</option>
+                            </select>
+                          </td>
+                          <td className="p-2.5 font-bold text-stone-800">{postsCount}</td>
+                          <td className="p-2.5 text-right">
+                            {u.username !== 'admin' && u.username !== 'kinderbee_admin' ? (
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Are you sure you want to remove user "${u.username}"?`)) {
+                                    setUsers(users.filter(user => user.username !== u.username));
+                                  }
+                                }}
+                                className="text-red-600 hover:text-red-800 font-semibold cursor-pointer"
+                              >
+                                Delete
+                              </button>
+                            ) : (
+                              <span className="text-stone-400 italic">System Default</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
+
+              {/* Add User Modal */}
+              {showAddUserModal && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50">
+                  <div className="bg-white rounded-lg shadow-xl border border-stone-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-150">
+                    <div className="bg-stone-100 border-b p-4 flex items-center justify-between">
+                      <h4 className="text-base font-bold text-[#1d2327]">Add New User</h4>
+                      <button 
+                        onClick={() => setShowAddUserModal(false)}
+                        className="text-stone-400 hover:text-stone-600 text-lg font-bold"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!newUsername.trim() || !newFullName.trim() || !newEmail.trim()) {
+                        alert('All fields are required');
+                        return;
+                      }
+                      const cleanUsername = newUsername.trim().toLowerCase().replace(/\s+/g, '_');
+                      if (users.some(user => user.username === cleanUsername)) {
+                        alert('Username already exists');
+                        return;
+                      }
+                      const newUser: WPUser = {
+                        username: cleanUsername,
+                        name: newFullName.trim(),
+                        email: newEmail.trim(),
+                        role: newRole
+                      };
+                      setUsers([...users, newUser]);
+                      setShowAddUserModal(false);
+                    }} className="p-5 space-y-4 text-xs text-stone-700">
+                      <div className="space-y-1">
+                        <label className="block font-semibold">Username (required, unique)</label>
+                        <input
+                          type="text"
+                          value={newUsername}
+                          onChange={(e) => setNewUsername(e.target.value)}
+                          placeholder="e.g. janesmith"
+                          className="w-full border border-stone-300 rounded p-2 focus:ring-1 focus:ring-[#2271b1] focus:outline-hidden"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block font-semibold">Full Name</label>
+                        <input
+                          type="text"
+                          value={newFullName}
+                          onChange={(e) => setNewFullName(e.target.value)}
+                          placeholder="e.g. Jane Smith"
+                          className="w-full border border-stone-300 rounded p-2 focus:ring-1 focus:ring-[#2271b1] focus:outline-hidden"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block font-semibold">Email address</label>
+                        <input
+                          type="email"
+                          value={newEmail}
+                          onChange={(e) => setNewEmail(e.target.value)}
+                          placeholder="e.g. jane@kinderbee.in"
+                          className="w-full border border-stone-300 rounded p-2 focus:ring-1 focus:ring-[#2271b1] focus:outline-hidden"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block font-semibold">Role</label>
+                        <select
+                          value={newRole}
+                          onChange={(e) => setNewRole(e.target.value as any)}
+                          className="w-full border border-stone-300 rounded p-2 bg-white focus:ring-1 focus:ring-[#2271b1] focus:outline-hidden"
+                        >
+                          <option value="Administrator">Administrator</option>
+                          <option value="Editor">Editor</option>
+                          <option value="Author">Author</option>
+                          <option value="Contributor">Contributor</option>
+                        </select>
+                      </div>
+                      <div className="flex justify-end gap-2 pt-2 border-t">
+                        <button
+                          type="button"
+                          onClick={() => setShowAddUserModal(false)}
+                          className="border border-stone-300 rounded px-4 py-2 hover:bg-stone-50 font-semibold text-stone-600 cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-[#2271b1] hover:bg-[#135e96] text-white rounded px-4 py-2 font-semibold cursor-pointer"
+                        >
+                          Add User
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -2895,7 +3230,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               content: postPayload.content || '',
               category: postPayload.category || 'Pedagogy & Curriculum',
               tags: postPayload.tags || [],
-              author: postPayload.author || 'Verita2023',
+              author: postPayload.author || 'KinderBee',
               date: postPayload.date || new Date().toISOString().split('T')[0],
               status: postPayload.status || 'Published',
               views: postPayload.views || 0,

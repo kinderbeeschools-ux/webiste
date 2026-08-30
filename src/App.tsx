@@ -17,7 +17,26 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<string>('home');
+  const [currentTab, setCurrentTab] = useState<string>(() => {
+    const hash = window.location.hash.toLowerCase();
+    const pathname = window.location.pathname.toLowerCase();
+    const params = new URLSearchParams(window.location.search);
+    const isPathAdmin = pathname === '/admin' || pathname.endsWith('/admin');
+    const isParamAdmin = params.get('tab') === 'admin' || params.get('admin') === 'true' || params.get('view') === 'admin';
+    const isHashAdmin = hash === '#admin' || hash === '#/admin';
+
+    if (isPathAdmin || isHashAdmin || isParamAdmin) {
+      return 'admin';
+    }
+
+    // Default to last active tab if logged in as admin
+    const token = localStorage.getItem('kips_admin_token');
+    const savedTab = localStorage.getItem('kips_current_tab');
+    if (token && savedTab) {
+      return savedTab;
+    }
+    return savedTab || 'home';
+  });
   const [settings, setSettings] = useState<SystemSettings | null>(null);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
@@ -28,6 +47,11 @@ export function App() {
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem('kips_admin_token'));
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+
+  // Persist tab changes
+  useEffect(() => {
+    localStorage.setItem('kips_current_tab', currentTab);
+  }, [currentTab]);
 
   useEffect(() => {
     // Check URL parameters, pathname and hash for direct admin routing
