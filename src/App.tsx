@@ -138,8 +138,18 @@ export function App() {
         {currentTab === 'about' && (
           <AboutPage onOpenConsultation={() => handleOpenConsultation('franchise')} settings={settings} />
         )}
-        {currentTab === 'partnerships' && (
-          <PartnershipsPage onOpenConsultation={handleOpenConsultation} settings={settings} />
+        {currentTab.startsWith('partnerships') && (
+          <PartnershipsPage 
+            subTab={
+              currentTab === 'partnerships-cbse' ? 'cbse' :
+              currentTab === 'partnerships-ib' ? 'ib' :
+              currentTab === 'partnerships-degree' ? 'degree' :
+              'preschool'
+            }
+            onSelectSubTab={(sub) => setCurrentTab(`partnerships-${sub}`)}
+            onOpenConsultation={handleOpenConsultation} 
+            settings={settings} 
+          />
         )}
         {currentTab === 'fwa' && (
           <FwaPage onOpenConsultation={handleOpenConsultation} settings={settings} />

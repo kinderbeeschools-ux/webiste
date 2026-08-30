@@ -2,6 +2,7 @@ import React from 'react';
 import { Settings2, Handshake, BookOpen, CheckCircle2 } from 'lucide-react';
 import { SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
+import { SmartImage } from '../components/SmartImage';
 
 interface InvestorsPageProps {
   onOpenConsultation: (type?: string) => void;
@@ -11,26 +12,10 @@ interface InvestorsPageProps {
 
 export const InvestorsPage: React.FC<InvestorsPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
   return (
-    <div className="space-y-12 pb-16">
+    <div className="space-y-12 pb-16 pt-8">
       <SEOHead 
         settings={settings}
       />
-      
-      {/* Header Banner */}
-      <section className="bg-stone-900 text-white py-16 px-4 text-center">
-        <div className="max-w-4xl mx-auto space-y-4">
-          <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-white">
-            Partner with us
-          </h1>
-          <p className="text-xl text-stone-300 font-medium">
-            Invest in Education. Build the Future.
-          </p>
-          <p className="text-stone-400 max-w-2xl mx-auto">
-            Join Kinderbee's growing education ecosystem.
-            Kinderbee is India's most trusted education and school development partner...
-          </p>
-        </div>
-      </section>
 
       {/* What We Offer */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">

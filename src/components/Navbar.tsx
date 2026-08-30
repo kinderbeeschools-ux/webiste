@@ -57,22 +57,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       id: 'partnerships', 
       label: 'Franchise',
       dropdown: [
-        { id: 'partnerships#preschool', label: 'Franchise Preschool' },
-        { id: 'partnerships#cbse', label: 'CBSE School setup' },
-        { id: 'partnerships#ib', label: 'IB School setup' },
-        { id: 'partnerships#degree', label: 'Degree College setup' }
+        { id: 'partnerships-preschool', label: 'Franchise Preschool' },
+        { id: 'partnerships-cbse', label: 'CBSE School setup' },
+        { id: 'partnerships-ib', label: 'IB School setup' },
+        { id: 'partnerships-degree', label: 'Degree College setup' }
       ]
     },
-    { 
-      id: 'fwa', 
-      label: 'Academic',
-      dropdown: [
-        { id: 'fwa#programs', label: 'Toddler program (1.5-2.5 yr)' },
-        { id: 'fwa#programs', label: 'Pre k program(2.5-3.5yr)' },
-        { id: 'fwa#programs', label: 'Kindergarten (3.5-5.5 yr)' },
-        { id: 'fwa#programs', label: 'Teacher training' }
-      ]
-    },
+    { id: 'fwa', label: 'Academic' },
     { id: 'investors', label: 'Partner with us' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' },
@@ -100,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 ml-auto mr-4 whitespace-nowrap relative">
             {navLinks.map((link) => {
-              const isActive = currentTab === link.id;
+              const isActive = currentTab === link.id || currentTab.startsWith(`${link.id}-`);
               
               if (link.dropdown) {
                 return (
@@ -122,13 +113,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <div
                           key={i}
                           onClick={() => {
-                            setCurrentTab(link.id);
-                            setTimeout(() => {
-                              const el = document.getElementById(sub.id.split('#')[1]);
-                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 100);
+                            setCurrentTab(sub.id);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          className="px-4 py-2.5 text-sm font-medium text-stone-700 hover:text-[#E1007A] hover:bg-pink-50 transition cursor-pointer border-b border-stone-100 last:border-none"
+                          className={`px-4 py-2.5 text-sm font-medium transition cursor-pointer border-b border-stone-100 last:border-none ${
+                            currentTab === sub.id ? 'text-[#E1007A] bg-pink-50 font-bold' : 'text-stone-700 hover:text-[#E1007A] hover:bg-pink-50'
+                          }`}
                         >
                           {sub.label}
                         </div>

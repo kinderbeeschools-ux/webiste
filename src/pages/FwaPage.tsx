@@ -20,7 +20,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-16 px-4 sm:px-8 border-b border-pink-950/40">
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
@@ -28,31 +28,41 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.14),transparent_50%)]"></div>
         </div>
         
-        <div className="max-w-4xl mx-auto relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-            <span>THE KINDERBEE APPROACH</span>
+        <div className="max-w-6xl mx-auto relative z-10 flex flex-col lg:flex-row items-center gap-10">
+          <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
+              <span>THE KINDERBEE APPROACH</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
+              Learning Through Play. <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Growing Through Joy.</span>
+            </h1>
+            <p className="text-base sm:text-lg text-pink-100/80 max-w-2xl font-normal leading-relaxed">
+              Every child is unique. Our holistic approach blends active inquiry, creativity, and foundational academics to build confident, lifelong learners.
+            </p>
+            
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2">
+              <button
+                onClick={() => onOpenConsultation('admissions')}
+                className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-pink-900/30 hover:scale-[1.02] transition duration-300 text-sm flex items-center gap-2 cursor-pointer"
+              >
+                <span>Enroll Now &rarr;</span>
+              </button>
+              <button
+                onClick={() => { document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }) }}
+                className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3.5 rounded-xl border border-white/25 transition duration-300 text-sm flex items-center gap-2 backdrop-blur-md cursor-pointer"
+              >
+                <span>Learn More</span>
+              </button>
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
-            Learning Through Play. <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Growing Through Joy.</span>
-          </h1>
-          <p className="text-base sm:text-lg text-pink-100/80 max-w-2xl mx-auto font-normal leading-relaxed">
-            Every child is unique. Our holistic approach blends active inquiry, creativity, and foundational academics to build confident, lifelong learners.
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <button
-              onClick={() => onOpenConsultation('admissions')}
-              className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-pink-900/30 hover:scale-[1.02] transition duration-300 text-sm flex items-center gap-2"
-            >
-              <span>Enroll Now &rarr;</span>
-            </button>
-            <button
-              onClick={() => { document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }) }}
-              className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3.5 rounded-xl border border-white/25 transition duration-300 text-sm flex items-center gap-2 backdrop-blur-md"
-            >
-              <span>Learn More</span>
-            </button>
+
+          <div className="lg:w-1/2 relative flex justify-center">
+            <SmartImage 
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" 
+              altContext={{ page: 'academics', section: 'hero', type: 'kids learning' }} 
+              className="w-full max-w-md h-80 sm:h-96 object-cover rounded-3xl shadow-2xl border-4 border-white/20" 
+            />
           </div>
         </div>
       </section>
@@ -68,7 +78,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
           {/* Toddler Program */}
           <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col sm:flex-row">
             <div className="sm:w-2/5 shrink-0">
-              <SmartImage src="https://images.unsplash.com/photo-1544365558-35aa4afcf11f?auto=format&fit=crop&q=80&w=600" altContext={{page:'academics',section:'toddler',type:'toddlers playing'}} className="w-full h-full min-h-[250px] object-cover" />
+              <SmartImage src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" altContext={{page:'academics',section:'toddler',type:'toddlers playing'}} className="w-full h-full min-h-[250px] object-cover" />
             </div>
             <div className="p-8 sm:w-3/5 space-y-4">
               <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">1.5 - 2.5 Years</div>

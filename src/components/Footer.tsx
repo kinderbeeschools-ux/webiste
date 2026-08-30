@@ -18,21 +18,9 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
           <div className="flex items-center gap-3">
             <img 
               src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
-              alt="KinderBee" 
-              className="h-12 w-auto object-contain rounded-xl bg-white shadow-sm" 
+              alt="KinderBee Logo" 
+              className="h-12 w-auto object-contain rounded-xl bg-white shadow-sm p-1" 
             />
-            <div>
-              <div className="font-display font-extrabold text-lg text-white tracking-tight">
-                {settings?.logoText ? (
-                  <span>{settings.logoText}</span>
-                ) : (
-                  <>Kinder<span className="text-[#E1007A]">Bee</span></>
-                )}
-              </div>
-              <div className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
-                {settings?.logoSubtext || 'International Preschool & KIPS'}
-              </div>
-            </div>
           </div>
           <p className="text-sm text-stone-300 leading-relaxed">
             {settings?.footerTagline || "India's leading Zero Royalty educational franchise and school development ecosystem. Bringing Nordic play-based excellence and NEP 2020 compliance to forward-thinking entrepreneurs."}
