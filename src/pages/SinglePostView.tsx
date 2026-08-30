@@ -22,7 +22,7 @@ import {
 import { BlogPost, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
-import { WpFullPostView } from '../components/WpFullPostView';
+import { renderMarkdown } from '../utils/markdownRenderer';
 
 interface SinglePostViewProps {
   blog: BlogPost;
@@ -211,28 +211,8 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
             </div>
 
             {/* Formatted Article Body */}
-            <div className="prose prose-stone max-w-none text-stone-800 text-base leading-relaxed space-y-5 whitespace-pre-line">
-              {blog.content}
-            </div>
-
-            {/* Author Bio Box (Classic WordPress Style) */}
-            <div className="mt-12 p-6 rounded-2xl bg-stone-50 border border-stone-200/90 flex flex-col sm:flex-row items-center sm:items-start gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E1007A] to-amber-400 p-0.5 shrink-0 shadow-md">
-                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center font-display font-black text-[#E1007A] text-xl">
-                  {blog.author.charAt(0)}
-                </div>
-              </div>
-              <div className="space-y-1 text-center sm:text-left flex-1">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <span className="font-bold text-stone-900 text-base">{blog.author}</span>
-                  <span className="text-[10px] bg-pink-100 text-[#E1007A] font-bold px-2.5 py-0.5 rounded-full">
-                    Verified KinderBee Fellow
-                  </span>
-                </div>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  Senior educator and curriculum director at KinderBee International Preschools, leading early development programs aligned with Finnish active learning systems.
-                </p>
-              </div>
+            <div className="prose prose-stone max-w-none text-stone-800 text-base leading-relaxed space-y-5">
+              {renderMarkdown(blog.content)}
             </div>
 
             {/* Article Navigation & Related Stories */}

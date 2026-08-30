@@ -144,24 +144,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Action Button & Admin Controls */}
+          {/* Action Button */}
           <div className="hidden sm:flex items-center gap-3 shrink-0">
-            {isAdminLoggedIn && (
-              <div className="flex items-center gap-2 mr-1">
-                <button 
-                  onClick={() => setCurrentTab('admin')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${currentTab === 'admin' ? 'bg-[#E1007A] text-white' : 'bg-pink-50 text-[#E1007A] hover:bg-pink-100'}`}
-                >
-                  Admin Panel
-                </button>
-                <button 
-                  onClick={onLogoutAdmin}
-                  className="text-stone-500 hover:text-stone-800 text-xs underline cursor-pointer"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
             <button
               onClick={onOpenConsultation}
               className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition duration-300 text-base flex items-center gap-2 cursor-pointer"

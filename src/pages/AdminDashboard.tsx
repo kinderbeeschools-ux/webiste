@@ -2937,16 +2937,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       {/* ----------------- WORDPRESS FULL PAGE BLOG VIEW MODAL ----------------- */}
       {viewingFullPost && (
-        <WpFullPostView
-          post={viewingFullPost}
-          onBack={() => setViewingFullPost(null)}
-          onEditInGutenberg={() => {
-            const target = viewingFullPost;
-            setViewingFullPost(null);
-            setCurrentBlogForm(target);
-            setIsEditingBlog(true);
-          }}
-        />
+        <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+          <WpFullPostView
+            post={viewingFullPost}
+            onBack={() => setViewingFullPost(null)}
+            onEditInGutenberg={() => {
+              const target = viewingFullPost;
+              setViewingFullPost(null);
+              setCurrentBlogForm(target);
+              setIsEditingBlog(true);
+            }}
+          />
+        </div>
       )}
 
       {/* ----------------- MODAL: EDIT / CREATE FAQ ----------------- */}

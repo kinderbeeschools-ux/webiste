@@ -39,11 +39,13 @@ import {
   Tablet,
   Smartphone,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Video
 } from 'lucide-react';
 import { BlogPost } from '../../types';
 import { WpFeaturedImageModal, MediaItem } from './WpFeaturedImageModal';
 import { WpFullPostView } from '../WpFullPostView';
+import { extractYouTubeId } from '../../utils/markdownRenderer';
 
 interface GutenbergEditorProps {
   initialPost?: Partial<BlogPost>;
@@ -52,7 +54,7 @@ interface GutenbergEditorProps {
   onClose: () => void;
 }
 
-export type BlockType = 'paragraph' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'list' | 'quote' | 'image';
+export type BlockType = 'paragraph' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'list' | 'quote' | 'image' | 'youtube';
 
 export interface ContentBlock {
   id: string;
@@ -246,6 +248,7 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
     { type: 'paragraph' as BlockType, label: 'Paragraph', icon: Type, subtitle: 'Start with the basic building block of all narrative.' },
     { type: 'heading2' as BlockType, label: 'Heading 2', icon: HeadingIcon, subtitle: 'Introduce new sections and organize content.' },
     { type: 'heading1' as BlockType, label: 'Heading 1', icon: HeadingIcon, subtitle: 'Main section header.' },
+    { type: 'youtube' as BlockType, label: 'YouTube Video', icon: Video, subtitle: 'Embed an interactive YouTube video player.' },
     { type: 'list' as BlockType, label: 'List', icon: List, subtitle: 'Create a bulleted or numbered list.' },
     { type: 'heading3' as BlockType, label: 'Heading 3', icon: HeadingIcon, subtitle: 'Subsections and talking points.' },
     { type: 'image' as BlockType, label: 'Image', icon: ImageIcon, subtitle: 'Insert an image to make a visual statement.' }
@@ -333,6 +336,68 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
     setShowMoreOptions(false);
   };
 
+  // Apply inline formatting (Bold, Italic, Link) with selection support
+  const applyFormatToBlock = (blockId: string, format: 'bold' | 'italic' | 'link') => {
+    const activeEl = document.activeElement as HTMLTextAreaElement | HTMLInputElement | null;
+    const block = blocks.find(b => b.id === blockId);
+    if (!block) return;
+
+    let content = block.content.replace(/\*{4,}/g, '**');
+    const start = activeEl?.selectionStart ?? 0;
+    const end = activeEl?.selectionEnd ?? 0;
+    const hasSelection = activeEl && (start !== end);
+
+    if (hasSelection && activeEl) {
+      const selected = activeEl.value.substring(start, end);
+      let replacement = selected;
+
+      if (format === 'bold') {
+        if (selected.startsWith('**') && selected.endsWith('**') && selected.length >= 4) {
+          replacement = selected.slice(2, -2);
+        } else {
+          replacement = `**${selected}**`;
+        }
+      } else if (format === 'italic') {
+        if (selected.startsWith('*') && selected.endsWith('*') && selected.length >= 2) {
+          replacement = selected.slice(1, -1);
+        } else {
+          replacement = `*${selected}*`;
+        }
+      } else if (format === 'link') {
+        const url = prompt('Enter hyperlink URL (e.g. https://...):', 'https://');
+        if (!url) return;
+        replacement = `[${selected}](${url})`;
+      }
+
+      const updated = activeEl.value.substring(0, start) + replacement + activeEl.value.substring(end);
+      handleUpdateBlock(blockId, updated);
+    } else {
+      if (format === 'bold') {
+        if (content.startsWith('**') && content.endsWith('**') && content.length >= 4) {
+          handleUpdateBlock(blockId, content.slice(2, -2));
+        } else {
+          handleUpdateBlock(blockId, `**${content}**`);
+        }
+      } else if (format === 'italic') {
+        if (content.startsWith('*') && content.endsWith('*') && content.length >= 2) {
+          handleUpdateBlock(blockId, content.slice(1, -1));
+        } else {
+          handleUpdateBlock(blockId, `*${content}*`);
+        }
+      } else if (format === 'link') {
+        const url = prompt('Enter hyperlink URL (e.g. https://...):', 'https://');
+        if (url) {
+          const displayLabel = prompt('Enter text to display & highlight for this link:', 'Click here');
+          if (displayLabel) {
+            handleUpdateBlock(blockId, `[${displayLabel}](${url})`);
+          } else {
+            handleUpdateBlock(blockId, `[${content || 'Link'}](${url})`);
+          }
+        }
+      }
+    }
+  };
+
   // Compile content to markdown
   const compileContent = () => {
     return blocks.map(b => {
@@ -345,6 +410,7 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
       if (b.type === 'quote') return `> ${b.content}`;
       if (b.type === 'list') return b.content;
       if (b.type === 'image' && b.imageUrl) return `![${b.imageAlt || 'Image'}](${b.imageUrl})`;
+      if (b.type === 'youtube' && b.content) return `[youtube](${b.content})`;
       return b.content;
     }).filter(c => c.trim().length > 0).join('\n\n');
   };
@@ -434,6 +500,7 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
     if (type === 'list') return 'List';
     if (type === 'quote') return 'Quote';
     if (type === 'image') return 'Image';
+    if (type === 'youtube') return 'YouTube';
     return 'Paragraph';
   };
 
@@ -795,18 +862,6 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
                           })}
                         </div>
 
-                        {/* Dark Footer: Browse all */}
-                        <div className="bg-[#1e1e1e] p-2 text-center">
-                          <button
-                            onClick={() => {
-                              handleAddBlock('paragraph', index - 1);
-                            }}
-                            className="text-white text-xs font-semibold hover:text-[#72aee6] transition"
-                          >
-                            Browse all
-                          </button>
-                        </div>
-
                       </div>
                     )}
 
@@ -874,6 +929,12 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
                                   className="w-full text-left px-3 py-1.5 hover:bg-[#f0f6fc] text-stone-700 italic"
                                 >
                                   Quote
+                                </button>
+                                <button
+                                  onClick={() => handleChangeBlockType(block.id, 'youtube')}
+                                  className="w-full text-left px-3 py-1.5 hover:bg-[#f0f6fc] text-red-600 font-semibold"
+                                >
+                                  YouTube Video
                                 </button>
                               </div>
                             )}
@@ -950,11 +1011,12 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
 
                           {/* Bold B */}
                           <button
-                            onClick={() => {
-                              // Wrap text in markdown bold
-                              handleUpdateBlock(block.id, `**${block.content}**`);
+                            onMouseDown={(e) => {
+                              // Prevent losing focus / selection in text area when clicking toolbar button
+                              e.preventDefault();
+                              applyFormatToBlock(block.id, 'bold');
                             }}
-                            className="p-1 rounded hover:bg-stone-100 text-stone-800 font-bold w-6 text-center"
+                            className="p-1 rounded hover:bg-stone-200 text-stone-900 font-bold w-6 text-center cursor-pointer transition active:bg-stone-300"
                             title="Bold (Ctrl+B)"
                           >
                             B
@@ -962,10 +1024,11 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
 
                           {/* Italic I */}
                           <button
-                            onClick={() => {
-                              handleUpdateBlock(block.id, `*${block.content}*`);
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              applyFormatToBlock(block.id, 'italic');
                             }}
-                            className="p-1 rounded hover:bg-stone-100 text-stone-800 italic w-6 text-center"
+                            className="p-1 rounded hover:bg-stone-200 text-stone-900 italic w-6 text-center cursor-pointer transition active:bg-stone-300"
                             title="Italic (Ctrl+I)"
                           >
                             I
@@ -973,13 +1036,11 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
 
                           {/* Link 🔗 */}
                           <button
-                            onClick={() => {
-                              const url = prompt('Enter hyperlink URL (e.g. https://...):');
-                              if (url) {
-                                handleUpdateBlock(block.id, `[${block.content}](${url})`);
-                              }
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              applyFormatToBlock(block.id, 'link');
                             }}
-                            className="p-1 rounded hover:bg-stone-100 text-stone-600"
+                            className="p-1 rounded hover:bg-stone-200 text-stone-700 cursor-pointer transition active:bg-stone-300"
                             title="Link (Ctrl+K)"
                           >
                             <Link2 className="w-3.5 h-3.5" />
@@ -1148,6 +1209,52 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
                               >
                                 Media Library
                               </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {block.type === 'youtube' && (
+                        <div className="border-2 border-dashed border-red-200 rounded-xl p-5 bg-red-50/30 space-y-3 my-2">
+                          <div className="flex items-center gap-2 text-red-600 font-bold text-xs uppercase tracking-wider">
+                            <Video className="w-4 h-4" />
+                            <span>YouTube Video Embed</span>
+                          </div>
+                          {extractYouTubeId(block.content) ? (
+                            <div className="space-y-3">
+                              <div className="aspect-video w-full rounded-xl overflow-hidden shadow-md bg-black">
+                                <iframe
+                                  src={`https://www.youtube.com/embed/${extractYouTubeId(block.content)}`}
+                                  title="YouTube Video Preview"
+                                  className="w-full h-full border-0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                />
+                              </div>
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-stone-500 truncate max-w-xs">{block.content}</span>
+                                <button
+                                  onClick={() => handleUpdateBlock(block.id, '')}
+                                  className="text-red-600 font-bold hover:underline cursor-pointer"
+                                >
+                                  Change URL
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <p className="text-xs text-stone-600 font-medium">
+                                Paste a YouTube URL below to play the video right inside the article:
+                              </p>
+                              <div className="flex gap-2">
+                                <input
+                                  type="text"
+                                  value={block.content}
+                                  onChange={(e) => handleUpdateBlock(block.id, e.target.value)}
+                                  placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/..."
+                                  className="flex-1 px-3 py-2 text-xs border border-stone-300 rounded-lg outline-none focus:border-red-500 bg-white"
+                                />
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1578,11 +1685,13 @@ export const GutenbergEditor: React.FC<GutenbergEditorProps> = ({
 
       {/* WordPress Full Page View Modal */}
       {viewingFullPageView && (
-        <WpFullPostView
-          post={viewingFullPageView}
-          onBack={() => setViewingFullPageView(null)}
-          onEditInGutenberg={() => setViewingFullPageView(null)}
-        />
+        <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+          <WpFullPostView
+            post={viewingFullPageView}
+            onBack={() => setViewingFullPageView(null)}
+            onEditInGutenberg={() => setViewingFullPageView(null)}
+          />
+        </div>
       )}
 
     </div>

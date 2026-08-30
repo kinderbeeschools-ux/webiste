@@ -30,14 +30,16 @@ export function App() {
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
 
   useEffect(() => {
-    // Check URL parameters and hash for direct admin routing
+    // Check URL parameters, pathname and hash for direct admin routing
     const checkAdminRoute = () => {
+      const pathname = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
       const params = new URLSearchParams(window.location.search);
+      const isPathAdmin = pathname === '/admin' || pathname.endsWith('/admin');
       const isParamAdmin = params.get('tab') === 'admin' || params.get('admin') === 'true' || params.get('view') === 'admin';
       const isHashAdmin = hash === '#admin' || hash === '#/admin';
 
-      if (isHashAdmin || isParamAdmin) {
+      if (isPathAdmin || isHashAdmin || isParamAdmin) {
         const token = localStorage.getItem('kips_admin_token');
         if (token) {
           setCurrentTab('admin');
@@ -51,6 +53,10 @@ export function App() {
     window.addEventListener('hashchange', checkAdminRoute);
     return () => window.removeEventListener('hashchange', checkAdminRoute);
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentTab, selectedBlog]);
 
   useEffect(() => {
     // Fetch initial settings, blogs, faqs

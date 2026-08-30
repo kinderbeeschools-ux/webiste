@@ -130,13 +130,6 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
         </div>
         <div className="flex items-center gap-3">
           <span>Powered by Nordic Educational Excellence & NEP 2020 Frameworks</span>
-          <span>•</span>
-          <button 
-            onClick={() => setCurrentTab('admin')} 
-            className="text-stone-500 hover:text-white transition underline cursor-pointer"
-          >
-            Admin Dashboard
-          </button>
         </div>
       </div>
     </footer>

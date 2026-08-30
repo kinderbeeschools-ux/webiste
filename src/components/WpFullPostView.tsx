@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { BlogPost, SystemSettings } from '../types';
 import { SmartImage } from './SmartImage';
+import { renderMarkdown } from '../utils/markdownRenderer';
 
 interface Comment {
   id: string;
@@ -139,124 +140,45 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
   return (
     <div className={`min-h-screen bg-[#f8f9fa] text-[#2c3338] font-sans antialiased selection:bg-[#2271b1] selection:text-white ${isFullscreen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
       
-      {/* ========================================================
-          1. WORDPRESS ADMIN TOP BAR (Authentic WP Toolbar)
-         ======================================================== */}
-      <div className="bg-[#1d2327] text-[#c3c4c7] text-xs h-8 px-4 flex items-center justify-between sticky top-0 z-40 select-none border-b border-stone-800 shadow-xs">
-        
-        {/* Left Side: WP Logo, Site Identity, Customize, New, Edit */}
-        <div className="flex items-center gap-4">
-          
-          {/* WordPress Logo Icon */}
-          <div className="flex items-center gap-1.5 text-stone-300 hover:text-[#2271b1] cursor-pointer transition font-bold">
-            <div className="w-4 h-4 rounded-full bg-stone-700 flex items-center justify-center text-[10px] text-white font-serif">
-              W
-            </div>
-            <span className="hidden sm:inline font-semibold">KinderBee KIPS</span>
-          </div>
-
-          {/* Visit Site / Dashboard toggle */}
+      {/* Top Preview Control Bar */}
+      <div className="bg-[#1C1917] text-stone-200 text-xs py-2 px-4 flex items-center justify-between sticky top-0 z-40 border-b border-stone-800 shadow-xs">
+        <div className="flex items-center gap-3">
           {onBack && (
             <button 
               onClick={onBack}
-              className="hover:text-white flex items-center gap-1 transition cursor-pointer text-[11px]"
+              className="bg-stone-800 hover:bg-stone-700 text-white font-semibold px-3 py-1 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer"
             >
-              <ArrowLeft className="w-3 h-3" />
-              <span>Exit Full View</span>
+              <ArrowLeft className="w-3.5 h-3.5 text-[#E1007A]" />
+              <span>Back to Editor</span>
             </button>
           )}
+          <span className="text-stone-500 hidden sm:inline">|</span>
+          <span className="font-semibold text-white text-xs hidden sm:inline">Full Article Preview</span>
+        </div>
 
-          {/* Edit in Gutenberg Direct Action */}
+        <div className="flex items-center gap-3 text-xs text-stone-300">
           {onEditInGutenberg && (
             <button
               onClick={() => onEditInGutenberg(post)}
-              className="bg-[#2271b1] hover:bg-[#135e96] text-white font-semibold px-2.5 py-0.5 rounded text-[11px] flex items-center gap-1 shadow-xs transition cursor-pointer"
+              className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-3 py-1 rounded-lg text-xs flex items-center gap-1 transition cursor-pointer"
             >
-              <Edit className="w-3 h-3" />
-              <span>Edit Post in Gutenberg</span>
+              <Edit className="w-3.5 h-3.5" />
+              <span>Edit Post</span>
             </button>
           )}
-
-          {/* Jetpack SEO Score badge */}
-          <div className="hidden md:flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>SEO: 96/100 (Astra Pro)</span>
-          </div>
-
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="p-1 text-stone-400 hover:text-white transition cursor-pointer"
+              title="Close Preview"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
-
-        {/* Right Side: Quick Stats, Fullscreen, User Info */}
-        <div className="flex items-center gap-3 text-[11px]">
-          <span className="hidden lg:inline text-stone-400">
-            Published on {post.date || 'August 29, 2026'}
-          </span>
-
-          <button
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1 text-stone-400 hover:text-white transition"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          >
-            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-          </button>
-
-          <div className="flex items-center gap-1.5 text-stone-300">
-            <span className="hidden sm:inline">Howdy, <strong className="text-white">{post.author || 'Verita2023'}</strong></span>
-            <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#2271b1] to-purple-600 flex items-center justify-center text-[10px] text-white font-bold">
-              {(post.author || 'V').charAt(0)}
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      {/* ========================================================
-          2. WORDPRESS ASTRA THEME BRANDED HEADER
-         ======================================================== */}
-      <header className="bg-white border-b border-stone-200 shadow-xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          
-          {/* Logo & Tagline */}
-          <div className="flex items-center gap-3">
-            {settings?.logoUrl ? (
-              <img src={settings.logoUrl} alt="Logo" className="h-9 object-contain" />
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-[#E1007A] flex items-center justify-center text-white font-display font-bold text-lg shadow-xs">
-                K
-              </div>
-            )}
-            <div>
-              <div className="font-display font-black text-lg text-stone-900 leading-none">
-                {settings?.logoText || 'KinderBee'}
-              </div>
-              <div className="text-[10px] tracking-wider text-stone-400 font-bold uppercase mt-0.5">
-                {settings?.logoSubtext || 'Integrated Partnership System'}
-              </div>
-            </div>
-          </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-stone-600">
-            <span className="hover:text-[#E1007A] transition cursor-pointer">Home</span>
-            <span className="hover:text-[#E1007A] transition cursor-pointer">About KIPS</span>
-            <span className="hover:text-[#E1007A] transition cursor-pointer">Franchise Models</span>
-            <span className="hover:text-[#E1007A] transition cursor-pointer">Teacher Training</span>
-            <span className="text-[#E1007A] font-bold border-b-2 border-[#E1007A] pb-1 cursor-pointer">Blog & Publications</span>
-            <span className="hover:text-[#E1007A] transition cursor-pointer">Contact</span>
-          </nav>
-
-          {/* Action Button */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleShare}
-              className="px-3 py-1.5 rounded-lg border border-stone-200 hover:border-stone-300 text-stone-600 hover:text-stone-900 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Link Copied' : 'Share'}</span>
-            </button>
-          </div>
-
-        </div>
-      </header>
 
       {/* ========================================================
           3. MAIN ARTICLE CONTAINER (WordPress Editorial Layout)
@@ -361,8 +283,8 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
             ARTICLE BODY (Formatted Gutenberg Content)
            ======================================================== */}
         <article className="bg-white rounded-2xl p-6 sm:p-10 border border-stone-200 shadow-xs space-y-6">
-          <div className="prose prose-stone max-w-none text-stone-800 text-base leading-relaxed space-y-6 whitespace-pre-line">
-            {post.content}
+          <div className="prose prose-stone max-w-none text-stone-800 text-base leading-relaxed space-y-6">
+            {renderMarkdown(post.content)}
           </div>
 
           {/* Tags Cloud */}
@@ -440,31 +362,6 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
           </div>
 
         </article>
-
-        {/* ========================================================
-            AUTHOR BIO CARD (Classic WordPress Box)
-           ======================================================== */}
-        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#2271b1] to-purple-600 p-0.5 shrink-0 shadow-md">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center font-display font-black text-[#2271b1] text-2xl">
-              {(post.author || 'V').charAt(0)}
-            </div>
-          </div>
-          <div className="space-y-1.5 text-center sm:text-left flex-1">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h3 className="font-bold text-stone-900 text-base">{post.author || 'Verita2023'}</h3>
-              <span className="text-[10px] bg-blue-50 text-[#2271b1] border border-blue-200 font-bold px-2 py-0.5 rounded-full">
-                Author
-              </span>
-            </div>
-            <p className="text-xs text-stone-600 leading-relaxed">
-              Curriculum specialist and operational analyst at KinderBee International. Publishing research papers, NEP 2020 guidelines, and Finnish early learning methodology.
-            </p>
-            <div className="pt-2 text-xs font-semibold text-[#2271b1] hover:underline cursor-pointer">
-              View all posts by {post.author || 'Verita2023'} &rarr;
-            </div>
-          </div>
-        </div>
 
         {/* ========================================================
             POST NAVIGATION (Previous / Next Post)
@@ -634,24 +531,10 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
 
       </main>
 
-      {/* Floating Bottom Bar for Quick Editing */}
-      {onEditInGutenberg && (
-        <div className="fixed bottom-6 right-6 z-40">
-          <button
-            onClick={() => onEditInGutenberg(post)}
-            className="bg-[#2271b1] hover:bg-[#135e96] text-white font-bold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-xs transition cursor-pointer hover:scale-105"
-          >
-            <Edit className="w-4 h-4" />
-            <span>Edit in Gutenberg</span>
-          </button>
-        </div>
-      )}
-
-      {/* WordPress Footer */}
+      {/* Footer */}
       <footer className="bg-white border-t border-stone-200 mt-16 py-8 text-center text-xs text-stone-400">
         <div className="max-w-4xl mx-auto px-4 space-y-2">
           <p>© {new Date().getFullYear()} KinderBee Integrated Partnership System (KIPS). All rights reserved.</p>
-          <p className="text-[11px]">Powered by WordPress 6.7 & Astra Pro Theme</p>
         </div>
       </footer>
 
