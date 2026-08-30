@@ -52,7 +52,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A] to-amber-500 rounded-3xl blur-xl opacity-20"></div>
           <div className="relative rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-white">
             <SmartImage
-              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg"
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg"
               altContext={{ page: 'about', section: 'Interactive Finnish Early Learning Classroom', type: 'classroom' }}
               className="w-full h-[400px] object-cover"
             />

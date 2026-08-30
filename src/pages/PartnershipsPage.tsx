@@ -58,90 +58,59 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
         settings={settings}
       />
 
-      {/* Franchise Sub-Navigation Bar */}
-      <div className="bg-white border-b border-stone-200 sticky top-[65px] z-30 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto py-3 no-scrollbar">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition duration-200 whitespace-nowrap cursor-pointer shrink-0 border ${
-                    isActive
-                      ? 'bg-[#E1007A] text-white border-[#E1007A] shadow-md'
-                      : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-200'
-                  }`}
-                >
-                  {tab.icon}
-                  <span>{tab.label}</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-pink-100 text-[#E1007A]'
-                  }`}>
-                    {tab.badge}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+
 
       {/* PAGE 1: PRESCHOOL FRANCHISE */}
       {activeTab === 'preschool' && (
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner */}
-          <section className="relative overflow-hidden bg-white pt-8 pb-12 px-4 sm:px-8 border-b border-stone-200">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-              <div className="md:w-1/2 space-y-5">
-                <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-200 text-[#E1007A] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-                  <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
-                  <span>ZERO ROYALTY PRESCHOOL FRANCHISE</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
-                  Build a Thriving <br/>
-                  <span className="text-[#E1007A]">Preschool Franchise</span>
-                </h1>
-                <p className="text-stone-600 text-base leading-relaxed">
-                  Join India’s premier zero-royalty preschool franchise ecosystem. Combine Nordic early childhood standards with NEP 2020 frameworks to build a high-profit, child-centered school.
-                </p>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                  <div className="p-3 border border-stone-200 rounded-xl bg-stone-50 text-center">
-                    <div className="font-extrabold text-[#E1007A] text-base">₹0</div>
-                    <div className="text-[11px] text-stone-600 font-medium">Royalty Fee</div>
-                  </div>
-                  <div className="p-3 border border-stone-200 rounded-xl bg-stone-50 text-center">
-                    <div className="font-extrabold text-[#E1007A] text-base">100%</div>
-                    <div className="text-[11px] text-stone-600 font-medium">Profit Retention</div>
-                  </div>
-                  <div className="p-3 border border-stone-200 rounded-xl bg-stone-50 text-center">
-                    <div className="font-extrabold text-[#E1007A] text-base">Finnish</div>
-                    <div className="text-[11px] text-stone-600 font-medium">Pedagogy</div>
-                  </div>
-                  <div className="p-3 border border-stone-200 rounded-xl bg-stone-50 text-center">
-                    <div className="font-extrabold text-[#E1007A] text-base">Full</div>
-                    <div className="text-[11px] text-stone-600 font-medium">Setup Support</div>
-                  </div>
-                </div>
+          <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-amber-50/30 pt-10 pb-12 px-4 sm:px-8 border-b border-pink-100">
+            {/* Soft decorative background glows */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-40">
+              <div className="absolute -top-20 left-1/4 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl"></div>
+              <div className="absolute top-10 right-1/4 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl"></div>
+            </div>
 
-                <div className="pt-3">
-                  <button
-                    onClick={() => onOpenConsultation('preschool')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-md transition text-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Book Free Consultation for Preschool Franchise &rarr;</span>
-                  </button>
+            <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+              <div className="inline-flex items-center gap-2 bg-pink-100/80 border border-pink-200 text-[#E1007A] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
+                <span>ZERO ROYALTY PRESCHOOL FRANCHISE</span>
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
+                Build a Thriving <span className="text-[#E1007A]">Preschool Franchise</span>
+              </h1>
+              
+              <p className="text-stone-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-normal">
+                Join India’s premier zero-royalty preschool franchise ecosystem. Combine Nordic early childhood standards with NEP 2020 frameworks to build a high-profit, child-centered school.
+              </p>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-2">
+                <div className="p-3.5 border border-pink-100 rounded-2xl bg-white/90 shadow-xs text-center">
+                  <div className="font-extrabold text-[#E1007A] text-lg">₹0</div>
+                  <div className="text-xs text-stone-600 font-medium">Royalty Fee</div>
+                </div>
+                <div className="p-3.5 border border-pink-100 rounded-2xl bg-white/90 shadow-xs text-center">
+                  <div className="font-extrabold text-[#E1007A] text-lg">100%</div>
+                  <div className="text-xs text-stone-600 font-medium">Profit Retention</div>
+                </div>
+                <div className="p-3.5 border border-pink-100 rounded-2xl bg-white/90 shadow-xs text-center">
+                  <div className="font-extrabold text-[#E1007A] text-lg">Finnish</div>
+                  <div className="text-xs text-stone-600 font-medium">Pedagogy</div>
+                </div>
+                <div className="p-3.5 border border-pink-100 rounded-2xl bg-white/90 shadow-xs text-center">
+                  <div className="font-extrabold text-[#E1007A] text-lg">Full</div>
+                  <div className="text-xs text-stone-600 font-medium">Setup Support</div>
                 </div>
               </div>
 
-              <div className="md:w-1/2 relative flex justify-center">
-                <SmartImage 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg" 
-                  altContext={{ page: 'partnerships', section: 'preschool', type: 'mascot' }} 
-                  className="w-full max-w-md object-cover rounded-3xl shadow-xl border-4 border-white" 
-                />
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => onOpenConsultation('preschool')}
+                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Book Free Consultation for Preschool Franchise &rarr;</span>
+                </button>
               </div>
             </div>
           </section>
@@ -210,37 +179,34 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
       {activeTab === 'cbse' && (
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner */}
-          <section className="relative overflow-hidden bg-white pt-8 pb-12 px-4 sm:px-8 border-b border-stone-200">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-              <div className="md:w-1/2 space-y-5">
-                <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>FLAGSHIP K-12 SCHOOL PARTNERSHIP</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
-                  CBSE School Setup <br/>
-                  <span className="text-[#E1007A]">& Consultancy</span>
-                </h1>
-                <p className="text-stone-600 text-base leading-relaxed">
-                  Establish a high-quality CBSE school in India with comprehensive support for school planning, affiliation guidance, infrastructure design, teacher training, and digital admissions growth.
-                </p>
+          <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-amber-50/30 pt-10 pb-12 px-4 sm:px-8 border-b border-pink-100">
+            {/* Soft decorative background glows */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-40">
+              <div className="absolute -top-20 left-1/4 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl"></div>
+              <div className="absolute top-10 right-1/4 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl"></div>
+            </div>
 
-                <div className="pt-2">
-                  <button
-                    onClick={() => onOpenConsultation('cbse')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-md transition text-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Book Free Consultation for CBSE Setup &rarr;</span>
-                  </button>
-                </div>
+            <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+              <div className="inline-flex items-center gap-2 bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>FLAGSHIP K-12 SCHOOL PARTNERSHIP</span>
               </div>
+              
+              <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
+                CBSE School Setup <span className="text-[#E1007A]">& Consultancy</span>
+              </h1>
+              
+              <p className="text-stone-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-normal">
+                Establish a high-quality CBSE school in India with comprehensive support for school planning, affiliation guidance, infrastructure design, teacher training, and digital admissions growth.
+              </p>
 
-              <div className="md:w-1/2 relative flex justify-center">
-                <SmartImage 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg" 
-                  altContext={{ page: 'partnerships', section: 'cbse', type: 'school' }} 
-                  className="w-full max-w-lg h-72 sm:h-96 object-cover rounded-3xl shadow-xl border-4 border-white" 
-                />
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => onOpenConsultation('cbse')}
+                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Book Free Consultation for CBSE Setup &rarr;</span>
+                </button>
               </div>
             </div>
           </section>
@@ -323,36 +289,26 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner */}
           <section className="relative overflow-hidden bg-white pt-8 pb-12 px-4 sm:px-8 border-b border-stone-200">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-              <div className="md:w-1/2 space-y-5">
-                <div className="inline-flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                  <span>INTERNATIONAL SCHOOL PARTNERSHIP</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
-                  IB World School <br/>
-                  <span className="text-[#E1007A]">Setup & Partnership</span>
-                </h1>
-                <p className="text-stone-600 text-base leading-relaxed">
-                  Establish a premium IB World School in India with strategic support for international curriculum development, school planning, academic systems, teacher development, and global accreditation.
-                </p>
-
-                <div className="pt-2">
-                  <button
-                    onClick={() => onOpenConsultation('ib')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-md transition text-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Book Free Consultation for IB Setup &rarr;</span>
-                  </button>
-                </div>
+            <div className="max-w-4xl mx-auto text-center space-y-5">
+              <div className="inline-flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                <span>INTERNATIONAL SCHOOL PARTNERSHIP</span>
               </div>
+              <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
+                IB World School <br/>
+                <span className="text-[#E1007A]">Setup & Partnership</span>
+              </h1>
+              <p className="text-stone-600 text-base leading-relaxed max-w-2xl mx-auto">
+                Establish a premium IB World School in India with strategic support for international curriculum development, school planning, academic systems, teacher development, and global accreditation.
+              </p>
 
-              <div className="md:w-1/2 relative flex justify-center">
-                <SmartImage 
-                  src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&q=80&w=800" 
-                  altContext={{ page: 'partnerships', section: 'ib', type: 'school' }} 
-                  className="w-full max-w-lg h-72 object-cover rounded-3xl shadow-xl border-4 border-white" 
-                />
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => onOpenConsultation('ib')}
+                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-md transition text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Book Free Consultation for IB Setup &rarr;</span>
+                </button>
               </div>
             </div>
           </section>
@@ -429,37 +385,34 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
       {activeTab === 'degree' && (
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner */}
-          <section className="relative overflow-hidden bg-white pt-8 pb-12 px-4 sm:px-8 border-b border-stone-200">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-              <div className="md:w-1/2 space-y-5">
-                <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>HIGHER EDUCATION PARTNERSHIP</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
-                  Degree College Setup <br/>
-                  <span className="text-[#E1007A]">& Consultancy</span>
-                </h1>
-                <p className="text-stone-600 text-base leading-relaxed">
-                  Establish or transform a degree college in India with comprehensive support for higher education planning, university affiliation, academic development, infrastructure, compliance, faculty training, student admissions, and digital transformation.
-                </p>
+          <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-amber-50/30 pt-10 pb-12 px-4 sm:px-8 border-b border-pink-100">
+            {/* Soft decorative background glows */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-40">
+              <div className="absolute -top-20 left-1/4 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl"></div>
+              <div className="absolute top-10 right-1/4 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl"></div>
+            </div>
 
-                <div className="pt-2">
-                  <button
-                    onClick={() => onOpenConsultation('degree')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-md transition text-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Book Free Consultation for College Setup &rarr;</span>
-                  </button>
-                </div>
+            <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+              <div className="inline-flex items-center gap-2 bg-blue-100/80 border border-blue-200 text-blue-800 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                <span>HIGHER EDUCATION PARTNERSHIP</span>
               </div>
+              
+              <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
+                Degree College Setup <span className="text-[#E1007A]">& Consultancy</span>
+              </h1>
+              
+              <p className="text-stone-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-normal">
+                Establish or transform a degree college in India with comprehensive support for higher education planning, university affiliation, academic development, infrastructure, compliance, faculty training, student admissions, and digital transformation.
+              </p>
 
-              <div className="md:w-1/2 relative flex justify-center">
-                <SmartImage 
-                  src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=800" 
-                  altContext={{ page: 'partnerships', section: 'degree', type: 'college' }} 
-                  className="w-full max-w-lg h-72 object-cover rounded-3xl shadow-xl border-4 border-white" 
-                />
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => onOpenConsultation('degree')}
+                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Book Free Consultation for College Setup &rarr;</span>
+                </button>
               </div>
             </div>
           </section>

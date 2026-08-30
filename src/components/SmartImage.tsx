@@ -17,28 +17,31 @@ export const SmartImage: React.FC<SmartImageProps> = ({
   src,
   alt,
   altContext,
-  fallbackSrc = 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800',
+  fallbackSrc,
   className = '',
   loading = 'lazy',
   ...props
 }) => {
-  const [currentSrc, setCurrentSrc] = useState(src);
-  const [hasError, setHasError] = useState(false);
+  const [imgSrc, setImgSrc] = useState(src);
+
+  React.useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
 
   // Derive descriptive alt text automatically
   const computedAlt = generateDescriptiveAlt(src, altContext || alt, alt);
 
   const handleError = () => {
-    if (!hasError && fallbackSrc && currentSrc !== fallbackSrc) {
-      setHasError(true);
-      setCurrentSrc(fallbackSrc);
+    if (fallbackSrc && imgSrc !== fallbackSrc) {
+      setImgSrc(fallbackSrc);
     }
   };
 
   return (
     <img
       {...props}
-      src={currentSrc}
+      key={src}
+      src={imgSrc}
       alt={computedAlt}
       title={props.title || computedAlt}
       loading={loading}

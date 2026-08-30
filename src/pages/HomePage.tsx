@@ -129,7 +129,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="relative mt-8 lg:mt-0">
             <div className="rounded-3xl overflow-hidden shadow-2xl border border-stone-200 relative">
               <SmartImage 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(12).jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg" 
                 altContext={{ page: 'home', section: 'KIPS Future', type: 'school' }}
                 className="w-full aspect-video object-cover"
               />
