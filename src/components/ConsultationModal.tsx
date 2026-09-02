@@ -100,7 +100,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                 href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                download="KinderBee_Franchise_Brochure.pdf"
+                download="Kinderbee_Franchise_Brochure.pdf"
                 className="w-full sm:w-auto bg-[#E1007A] hover:bg-pink-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
               >
                 <span>Download Franchise Brochure PDF &rarr;</span>

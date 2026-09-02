@@ -479,100 +479,128 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   ]);
 
   // Categories & Tags State
-  const [categoriesList, setCategoriesList] = useState<CategoryItem[]>([
-    {
-      id: 'cat_1',
-      name: 'Pedagogy & Curriculum',
-      slug: 'pedagogy-curriculum',
-      parent: 'None',
-      description: 'Nordic early learning, STEAM discovery, and experiential child development methodology.',
-      count: 4,
-      metaTitle: 'Preschool Pedagogy & Curriculum - KinderBee',
-      metaDesc: 'Explore play-based curriculum insights, Nordic teaching methods, and experiential tools.',
-      index: true
-    },
-    {
-      id: 'cat_2',
-      name: 'Franchise & Business',
-      slug: 'franchise-business',
-      parent: 'None',
-      description: 'Zero royalty franchise model, ROI projections, capex breakdowns, and entrepreneur guides.',
-      count: 5,
-      metaTitle: 'Preschool Franchise & Business Models - KinderBee',
-      metaDesc: 'Comprehensive guide to launching a zero royalty preschool in India.',
-      index: true
-    },
-    {
-      id: 'cat_3',
-      name: 'Policy & NEP 2020',
-      slug: 'policy-nep-2020',
-      parent: 'None',
-      description: 'Government compliance, ECCE framework alignment, and NEP 2020 pedagogical integration.',
-      count: 3,
-      metaTitle: 'NEP 2020 ECCE Policy Framework - KinderBee',
-      metaDesc: 'How to align early childhood centers with National Education Policy 2020 standards.',
-      index: true
-    },
-    {
-      id: 'cat_4',
-      name: 'Early Childhood Development',
-      slug: 'early-childhood-development',
-      parent: 'None',
-      description: 'Cognitive growth, sensory milestones, and emotional resilience in the first 2,000 days.',
-      count: 3,
-      metaTitle: 'Early Childhood Cognitive Growth - KinderBee',
-      metaDesc: 'Research-backed insights on child neuroscience and sensory development.',
-      index: true
+  const [categoriesList, setCategoriesList] = useState<CategoryItem[]>(() => {
+    const saved = localStorage.getItem('kb_categories_list');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Error parsing categories:', e);
+      }
     }
-  ]);
+    return [
+      {
+        id: 'cat_1',
+        name: 'Pedagogy & Curriculum',
+        slug: 'pedagogy-curriculum',
+        parent: 'None',
+        description: 'Nordic early learning, STEAM discovery, and experiential child development methodology.',
+        count: 4,
+        metaTitle: 'Preschool Pedagogy & Curriculum - KinderBee',
+        metaDesc: 'Explore play-based curriculum insights, Nordic teaching methods, and experiential tools.',
+        index: true
+      },
+      {
+        id: 'cat_2',
+        name: 'Franchise & Business',
+        slug: 'franchise-business',
+        parent: 'None',
+        description: 'Zero royalty franchise model, ROI projections, capex breakdowns, and entrepreneur guides.',
+        count: 5,
+        metaTitle: 'Preschool Franchise & Business Models - KinderBee',
+        metaDesc: 'Comprehensive guide to launching a zero royalty preschool in India.',
+        index: true
+      },
+      {
+        id: 'cat_3',
+        name: 'Policy & NEP 2020',
+        slug: 'policy-nep-2020',
+        parent: 'None',
+        description: 'Government compliance, ECCE framework alignment, and NEP 2020 pedagogical integration.',
+        count: 3,
+        metaTitle: 'NEP 2020 ECCE Policy Framework - KinderBee',
+        metaDesc: 'How to align early childhood centers with National Education Policy 2020 standards.',
+        index: true
+      },
+      {
+        id: 'cat_4',
+        name: 'Early Childhood Development',
+        slug: 'early-childhood-development',
+        parent: 'None',
+        description: 'Cognitive growth, sensory milestones, and emotional resilience in the first 2,000 days.',
+        count: 3,
+        metaTitle: 'Early Childhood Cognitive Growth - KinderBee',
+        metaDesc: 'Research-backed insights on child neuroscience and sensory development.',
+        index: true
+      }
+    ];
+  });
 
-  const [tagsList, setTagsList] = useState<TagItem[]>([
-    {
-      id: 'tag_1',
-      name: 'Zero Royalty',
-      slug: 'zero-royalty',
-      description: '100% revenue retention franchise model for educational entrepreneurs.',
-      count: 6,
-      metaTitle: 'Zero Royalty Preschool Partnership - KinderBee',
-      index: true
-    },
-    {
-      id: 'tag_2',
-      name: 'NEP 2020',
-      slug: 'nep-2020',
-      description: 'Foundational stage learning aligned with National Education Policy.',
-      count: 5,
-      metaTitle: 'NEP 2020 Aligned Preschools',
-      index: true
-    },
-    {
-      id: 'tag_3',
-      name: 'Nordic Pedagogy',
-      slug: 'nordic-pedagogy',
-      description: 'Finnish-inspired outdoor and experiential learning philosophy.',
-      count: 4,
-      metaTitle: 'Finnish Way & Nordic Pedagogy',
-      index: true
-    },
-    {
-      id: 'tag_4',
-      name: 'Teacher Training',
-      slug: 'teacher-training',
-      description: 'FinnishWay Academy teacher certifications and ongoing competence programs.',
-      count: 3,
-      metaTitle: 'Certified Preschool Educator Training',
-      index: true
-    },
-    {
-      id: 'tag_5',
-      name: 'ROI & Capex',
-      slug: 'roi-capex',
-      description: 'Financial feasibility, breakeven analysis, and operational cost management.',
-      count: 4,
-      metaTitle: 'Preschool Business Financial Projections',
-      index: true
+  const [tagsList, setTagsList] = useState<TagItem[]>(() => {
+    const saved = localStorage.getItem('kb_tags_list');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Error parsing tags:', e);
+      }
     }
-  ]);
+    return [
+      {
+        id: 'tag_1',
+        name: 'Zero Royalty',
+        slug: 'zero-royalty',
+        description: '100% revenue retention franchise model for educational entrepreneurs.',
+        count: 6,
+        metaTitle: 'Zero Royalty Preschool Partnership - KinderBee',
+        index: true
+      },
+      {
+        id: 'tag_2',
+        name: 'NEP 2020',
+        slug: 'nep-2020',
+        description: 'Foundational stage learning aligned with National Education Policy.',
+        count: 5,
+        metaTitle: 'NEP 2020 Aligned Preschools',
+        index: true
+      },
+      {
+        id: 'tag_3',
+        name: 'Nordic Pedagogy',
+        slug: 'nordic-pedagogy',
+        description: 'Finnish-inspired outdoor and experiential learning philosophy.',
+        count: 4,
+        metaTitle: 'Finnish Way & Nordic Pedagogy',
+        index: true
+      },
+      {
+        id: 'tag_4',
+        name: 'Teacher Training',
+        slug: 'teacher-training',
+        description: 'FinnishWay Academy teacher certifications and ongoing competence programs.',
+        count: 3,
+        metaTitle: 'Certified Preschool Educator Training',
+        index: true
+      },
+      {
+        id: 'tag_5',
+        name: 'ROI & Capex',
+        slug: 'roi-capex',
+        description: 'Financial feasibility, breakeven analysis, and operational cost management.',
+        count: 4,
+        metaTitle: 'Preschool Business Financial Projections',
+        index: true
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('kb_categories_list', JSON.stringify(categoriesList));
+  }, [categoriesList]);
+
+  useEffect(() => {
+    localStorage.setItem('kb_tags_list', JSON.stringify(tagsList));
+  }, [tagsList]);
 
   const headers = { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' };
 

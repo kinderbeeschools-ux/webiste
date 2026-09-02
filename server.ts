@@ -209,14 +209,74 @@ KinderBee provides turnkey architectural blueprints and furniture specifications
 const seedFAQs: FAQItem[] = [
   {
     id: "faq-1",
-    question: "Hbcu",
-    answer: "Hbcu",
+    question: "1. What is KinderBee Integrated Partnership System (KIPS)?",
+    answer: "KIPS is an **integrated education partnership system** offering **academic**, **operational**, **branding**, and **teacher training support** to schools and preschools.",
     section: "home"
   },
   {
     id: "faq-2",
-    question: "Hbgtvyu",
-    answer: "Hbgtvyu",
+    question: "2. What is the KinderBee preschool franchise?",
+    answer: "The **KinderBee preschool franchise** provides **curriculum**, **teacher training**, **branding**, and **operational support** to help partners establish and manage a quality preschool.",
+    section: "home"
+  },
+  {
+    id: "faq-3",
+    question: "3. How can I start a preschool with KinderBee?",
+    answer: "You can start by **submitting an enquiry**. KinderBee provides guidance on **preschool setup**, **curriculum**, **training**, **infrastructure**, and **operations**.",
+    section: "home"
+  },
+  {
+    id: "faq-4",
+    question: "4. Does KinderBee offer a preschool franchise in India?",
+    answer: "Yes. KinderBee offers **preschool partnership opportunities in India** with **structured academic and operational support**.",
+    section: "home"
+  },
+  {
+    id: "faq-5",
+    question: "5. What support does KinderBee provide?",
+    answer: "KinderBee provides **curriculum support**, **teacher training**, **branding**, **marketing**, **academic planning**, and **operational guidance**.",
+    section: "home"
+  },
+  {
+    id: "faq-6",
+    question: "6. What is the KinderBee curriculum?",
+    answer: "The KinderBee curriculum focuses on **child-centred**, **activity-based**, and **holistic early childhood education**.",
+    section: "home"
+  },
+  {
+    id: "faq-7",
+    question: "7. Is KinderBee aligned with NEP 2020?",
+    answer: "Yes. KinderBee's approach follows key principles of **NEP 2020**, including **foundational learning**, **experiential learning**, and **holistic child development**.",
+    section: "home"
+  },
+  {
+    id: "faq-8",
+    question: "8. What is FinnishWay Academy?",
+    answer: "**FinnishWay Academy** provides **professional teacher training** and early childhood education programmes based on **modern educational practices**.",
+    section: "home"
+  },
+  {
+    id: "faq-9",
+    question: "9. Who can become a KinderBee partner?",
+    answer: "**Preschool owners**, **educators**, **education entrepreneurs**, **institutions**, and individuals interested in early childhood education can explore **KinderBee partnerships**.",
+    section: "home"
+  },
+  {
+    id: "faq-10",
+    question: "10. Can existing schools partner with KinderBee?",
+    answer: "Yes. Existing schools can partner with KinderBee for **academic development**, **teacher training**, **curriculum support**, **branding**, and **institutional growth**.",
+    section: "home"
+  },
+  {
+    id: "faq-11",
+    question: "11. What makes KinderBee different?",
+    answer: "KinderBee combines **preschool education**, **teacher training**, **curriculum development**, **branding**, and **operational support** into one **integrated education ecosystem**.",
+    section: "home"
+  },
+  {
+    id: "faq-12",
+    question: "12. How can I become a KinderBee partner?",
+    answer: "**Submit an enquiry** through the website to learn about **KinderBee partnership**, **preschool franchise opportunities**, **eligibility**, and the next steps.",
     section: "home"
   }
 ];

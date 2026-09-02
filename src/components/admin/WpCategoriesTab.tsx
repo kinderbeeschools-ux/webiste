@@ -33,6 +33,45 @@ export const WpCategoriesTab: React.FC<WpCategoriesTabProps> = ({
   const [description, setDescription] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkAction, setBulkAction] = useState('Bulk actions');
+
+  const filtered = categories.filter(c =>
+    !searchTerm ||
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const isAllSelected = filtered.length > 0 && filtered.every(cat => selectedIds.includes(cat.id));
+
+  const handleSelectAllToggle = () => {
+    if (isAllSelected) {
+      setSelectedIds(selectedIds.filter(id => !filtered.some(f => f.id === id)));
+    } else {
+      const newSelected = [...selectedIds];
+      filtered.forEach(cat => {
+        if (!newSelected.includes(cat.id)) {
+          newSelected.push(cat.id);
+        }
+      });
+      setSelectedIds(newSelected);
+    }
+  };
+
+  const handleBulkApply = () => {
+    if (bulkAction === 'Delete') {
+      if (selectedIds.length === 0) {
+        alert('Please select one or more categories first.');
+        return;
+      }
+      if (confirm(`Are you sure you want to delete ${selectedIds.length} selected categories?`)) {
+        selectedIds.forEach(id => {
+          onDeleteCategory(id);
+        });
+        setSelectedIds([]);
+        setBulkAction('Bulk actions');
+      }
+    }
+  };
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,12 +96,6 @@ export const WpCategoriesTab: React.FC<WpCategoriesTabProps> = ({
     setParent('None');
     setDescription('');
   };
-
-  const filtered = categories.filter(c =>
-    !searchTerm ||
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.slug.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-4 font-sans">
@@ -164,11 +197,19 @@ export const WpCategoriesTab: React.FC<WpCategoriesTabProps> = ({
           
           <div className="flex items-center justify-between text-xs text-stone-600">
             <div className="flex items-center gap-2">
-              <select className="bg-white border border-[#8c8f94] text-xs px-2.5 py-1 rounded outline-none">
-                <option>Bulk actions</option>
-                <option>Delete</option>
+              <select 
+                value={bulkAction} 
+                onChange={(e) => setBulkAction(e.target.value)} 
+                className="bg-white border border-[#8c8f94] text-xs px-2.5 py-1 rounded outline-none"
+              >
+                <option value="Bulk actions">Bulk actions</option>
+                <option value="Delete">Delete</option>
               </select>
-              <button className="border border-[#8c8f94] hover:bg-stone-100 px-2.5 py-1 rounded text-xs font-semibold">
+              <button 
+                type="button"
+                onClick={handleBulkApply} 
+                className="border border-[#8c8f94] hover:bg-stone-100 px-2.5 py-1 rounded text-xs font-semibold cursor-pointer"
+              >
                 Apply
               </button>
             </div>
@@ -180,7 +221,12 @@ export const WpCategoriesTab: React.FC<WpCategoriesTabProps> = ({
               <thead>
                 <tr className="bg-[#f6f7f7] border-b border-[#c3c4c7] text-[#1d2327] font-semibold">
                   <th className="p-2.5 w-8">
-                    <input type="checkbox" className="rounded text-[#2271b1]" />
+                    <input 
+                      type="checkbox" 
+                      checked={isAllSelected}
+                      onChange={handleSelectAllToggle}
+                      className="rounded text-[#2271b1]" 
+                    />
                   </th>
                   <th className="p-2.5 font-bold">Name</th>
                   <th className="p-2.5 font-bold">Description</th>
@@ -220,8 +266,13 @@ export const WpCategoriesTab: React.FC<WpCategoriesTabProps> = ({
                           <button className="text-[#2271b1] hover:underline">Quick Edit</button>
                           <span>|</span>
                           <button 
-                            onClick={() => onDeleteCategory(cat.id)}
-                            className="text-[#d63638] hover:underline"
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete the category "${cat.name}"?`)) {
+                                onDeleteCategory(cat.id);
+                              }
+                            }}
+                            className="text-[#d63638] hover:underline cursor-pointer font-semibold"
                           >
                             Delete
                           </button>

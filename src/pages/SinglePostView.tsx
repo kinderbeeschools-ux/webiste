@@ -257,10 +257,10 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
                 <Award className="w-4 h-4 text-[#E1007A]" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">KinderBee Research Desk</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">Kinderbee Research Desk</h4>
               </div>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Published by KinderBee International Research & Pedagogical Advisory Council. Dedicated to zero-royalty education and Finnish active play frameworks.
+                Published by Kinderbee International Research & Pedagogical Advisory Council. Dedicated to zero-royalty education and Finnish active play frameworks.
               </p>
             </div>
 
@@ -349,7 +349,7 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
                 href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                download="KinderBee_Franchise_Brochure.pdf"
+                download="Kinderbee_Franchise_Brochure.pdf"
                 className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Download Free Prospectus PDF &rarr;

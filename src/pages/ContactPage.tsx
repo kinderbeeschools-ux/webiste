@@ -56,12 +56,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
         title="Contact KIPS Central Advisory Team & Corporate Office"
-        description="Get in touch with KinderBee Integrated Partnership System (KIPS) advisors for preschool franchise queries, CBSE school setup planning, and campus audits."
+        description="Get in touch with Kinderbee Integrated Partnership System (KIPS) advisors for preschool franchise queries, CBSE school setup planning, and campus audits."
         keywords="contact kinderbee, preschool franchise inquiry, school consulting contact, education advisory desk"
         settings={settings}
       />
       
-      {/* Header Banner with KinderBee Brand Colors */}
+      {/* Header Banner with Kinderbee Brand Colors */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">

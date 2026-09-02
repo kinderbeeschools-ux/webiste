@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
           <div className="flex items-center gap-3">
             <img 
               src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
-              alt="KinderBee Logo" 
+              alt="Kinderbee Logo" 
               className="h-12 w-auto object-contain rounded-xl bg-white shadow-sm p-1" 
             />
           </div>
@@ -57,9 +57,9 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
               </button>
             </li>
             <li>
-              <button onClick={() => setCurrentTab('partnerships')} className="hover:text-[#E1007A] transition flex items-center gap-2">
+              <button onClick={() => setCurrentTab('partnerships-cbse')} className="hover:text-[#E1007A] transition flex items-center gap-2 cursor-pointer">
                 <ArrowRight className="w-3.5 h-3.5 text-[#E1007A]" />
-                CBSE & K-12 School Setup
+                CBSE & IB School Setup
               </button>
             </li>
             <li>

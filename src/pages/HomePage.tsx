@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, TrendingUp, BookOpen, Users, Building, Play, Star, Download } from 'lucide-react';
+import { ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, TrendingUp, BookOpen, Users, Building, Play, Star, Download, ChevronDown, HelpCircle } from 'lucide-react';
 import { BlogPost, FAQItem, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
@@ -13,6 +13,96 @@ interface HomePageProps {
   settings?: SystemSettings | null;
 }
 
+const DEFAULT_FAQS: FAQItem[] = [
+  {
+    id: "faq-1",
+    question: "1. What is KinderBee Integrated Partnership System (KIPS)?",
+    answer: "KIPS is an **integrated education partnership system** offering **academic**, **operational**, **branding**, and **teacher training support** to schools and preschools.",
+    section: "home"
+  },
+  {
+    id: "faq-2",
+    question: "2. What is the KinderBee preschool franchise?",
+    answer: "The **KinderBee preschool franchise** provides **curriculum**, **teacher training**, **branding**, and **operational support** to help partners establish and manage a quality preschool.",
+    section: "home"
+  },
+  {
+    id: "faq-3",
+    question: "3. How can I start a preschool with KinderBee?",
+    answer: "You can start by **submitting an enquiry**. KinderBee provides guidance on **preschool setup**, **curriculum**, **training**, **infrastructure**, and **operations**.",
+    section: "home"
+  },
+  {
+    id: "faq-4",
+    question: "4. Does KinderBee offer a preschool franchise in India?",
+    answer: "Yes. KinderBee offers **preschool partnership opportunities in India** with **structured academic and operational support**.",
+    section: "home"
+  },
+  {
+    id: "faq-5",
+    question: "5. What support does KinderBee provide?",
+    answer: "KinderBee provides **curriculum support**, **teacher training**, **branding**, **marketing**, **academic planning**, and **operational guidance**.",
+    section: "home"
+  },
+  {
+    id: "faq-6",
+    question: "6. What is the KinderBee curriculum?",
+    answer: "The KinderBee curriculum focuses on **child-centred**, **activity-based**, and **holistic early childhood education**.",
+    section: "home"
+  },
+  {
+    id: "faq-7",
+    question: "7. Is KinderBee aligned with NEP 2020?",
+    answer: "Yes. KinderBee's approach follows key principles of **NEP 2020**, including **foundational learning**, **experiential learning**, and **holistic child development**.",
+    section: "home"
+  },
+  {
+    id: "faq-8",
+    question: "8. What is FinnishWay Academy?",
+    answer: "**FinnishWay Academy** provides **professional teacher training** and early childhood education programmes based on **modern educational practices**.",
+    section: "home"
+  },
+  {
+    id: "faq-9",
+    question: "9. Who can become a KinderBee partner?",
+    answer: "**Preschool owners**, **educators**, **education entrepreneurs**, **institutions**, and individuals interested in early childhood education can explore **KinderBee partnerships**.",
+    section: "home"
+  },
+  {
+    id: "faq-10",
+    question: "10. Can existing schools partner with KinderBee?",
+    answer: "Yes. Existing schools can partner with KinderBee for **academic development**, **teacher training**, **curriculum support**, **branding**, and **institutional growth**.",
+    section: "home"
+  },
+  {
+    id: "faq-11",
+    question: "11. What makes KinderBee different?",
+    answer: "KinderBee combines **preschool education**, **teacher training**, **curriculum development**, **branding**, and **operational support** into one **integrated education ecosystem**.",
+    section: "home"
+  },
+  {
+    id: "faq-12",
+    question: "12. How can I become a KinderBee partner?",
+    answer: "**Submit an enquiry** through the website to learn about **KinderBee partnership**, **preschool franchise opportunities**, **eligibility**, and the next steps.",
+    section: "home"
+  }
+];
+
+const renderFormattedAnswer = (text: string) => {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="text-stone-900 font-bold">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
 export const HomePage: React.FC<HomePageProps> = ({ 
   setCurrentTab, 
   onOpenConsultation, 
@@ -21,7 +111,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onSelectBlog,
   settings 
 }) => {
-  const [activeFaq, setActiveFaq] = useState<string | null>(null);
+  const [activeFaq, setActiveFaq] = useState<string | null>('faq-1');
+  const displayFaqs = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
 
   return (
     <div className="space-y-10 pb-12">
@@ -96,16 +187,29 @@ export const HomePage: React.FC<HomePageProps> = ({
             </h1>
             
             <h3 className="text-xl sm:text-2xl font-bold text-stone-700">
-              Transform Schools. Empower Educators. Shape Futures.
+              Transform Schools. Empower Educators.
             </h3>
             
             <p className="text-base text-stone-600 leading-relaxed max-w-lg">
-              The KinderBee Integrated Partnership System (KIPS) empowers entrepreneurs and educational institutions to build, launch and grow future-ready schools with proven academic systems, expert support and innovative learning solutions.
+              The Kinderbee Integrated Partnership System (KIPS) empowers entrepreneurs and educational institutions to build, launch and grow future-ready schools with proven academic systems, expert support and innovative learning solutions.
             </p>
             
             <div className="py-2">
-              <p className="text-sm font-bold text-stone-800 flex flex-wrap items-center gap-2">
-                <span className="text-lg">🛡</span> Zero-Royalty Partnership <span className="text-stone-300 px-1">•</span> End-to-End School Support <span className="text-stone-300 px-1">•</span> Finnish-Inspired Learning
+              <p className="text-sm font-bold text-stone-800 flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                  <ShieldCheck className="w-4 h-4 text-[#E1007A]" />
+                  <span>Zero-Royalty Partnership</span>
+                </span>
+                <span className="text-stone-300 hidden sm:inline">•</span>
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                  <Building className="w-4 h-4 text-[#E1007A]" />
+                  <span>End-to-End School Support</span>
+                </span>
+                <span className="text-stone-300 hidden sm:inline">•</span>
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                  <Sparkles className="w-4 h-4 text-[#FFD400]" />
+                  <span>Finnish-Inspired Learning</span>
+                </span>
               </p>
             </div>
             
@@ -129,7 +233,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="relative mt-8 lg:mt-0">
             <div className="rounded-3xl overflow-hidden shadow-2xl border border-stone-200 relative">
               <img 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg" 
                 alt="Kinderbee Schools - Build the Future of Education with KIPS"
                 className="w-full aspect-video object-cover"
               />
@@ -166,7 +270,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           
           <div className="w-full">
             <SmartImage 
-              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Our%20Philosophy.png" 
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Our%20Philosophy.jpeg" 
               altContext={{ page: 'home', section: 'Our Philosophy', type: 'banner' }}
               className="w-full h-[300px] sm:h-[450px] object-cover rounded-[30px] p-2.5 m-0"
             />
@@ -178,10 +282,10 @@ export const HomePage: React.FC<HomePageProps> = ({
             </h2>
             <div className="space-y-4 text-stone-600 text-base leading-relaxed text-left">
               <p>
-                The Kinderbee Integrated Partnership System (KIPS) is a trusted school education and preschool development partner, dedicated to building high-quality, future-ready learning environments across India. With expertise in early childhood education, preschool management, curriculum development, and teacher training, we help educational entrepreneurs create successful and sustainable schools.
+                The <strong>Kinderbee Integrated Partnership System (KIPS)</strong> is a trusted <strong>school education</strong> and <strong>preschool development partner</strong>, dedicated to building high-quality, future-ready learning environments across India. With expertise in <strong>early childhood education</strong>, <strong>preschool management</strong>, <strong>curriculum development</strong>, and <strong>teacher training</strong>, we help educational entrepreneurs create successful and sustainable schools.
               </p>
               <p>
-                Our NTT (Nursery Teacher Training) Program equips aspiring and working educators with practical skills, modern teaching methodologies, and child-centric approaches for effective early years education. From preschool teacher training and curriculum support to school development and academic guidance, Kinderbee provides an integrated ecosystem designed to empower educators and transform learning.
+                Our <strong>NTT (Nursery Teacher Training) Program</strong> equips aspiring and working educators with practical skills, modern teaching methodologies, and child-centric approaches for effective early years education. From <strong>preschool teacher training</strong> and <strong>curriculum support</strong> to <strong>school development</strong> and <strong>academic guidance</strong>, Kinderbee provides an <strong>integrated ecosystem</strong> designed to empower educators and transform learning.
               </p>
             </div>
             <div className="flex justify-center pt-2">
@@ -189,7 +293,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 onClick={() => setCurrentTab('fwa')}
                 className="bg-[#E1007A] hover:bg-pink-700 text-white font-semibold px-8 py-3 rounded-xl shadow-md transition text-sm flex items-center gap-2"
               >
-                <span>Explore Our Programs &rarr; NTT Teacher training</span>
+                <span>Explore Our Programs &rarr;</span>
               </button>
             </div>
           </div>
@@ -201,7 +305,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-              One Ecosystem Section
+              One Ecosystem
             </h2>
           </div>
 
@@ -220,14 +324,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <div className="text-[#E1007A] font-bold text-xl">01 — Preschool Franchise</div>
                   <h3 className="text-xl font-display font-bold text-[#1C1917]">Start a Preschool Franchise in India</h3>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    Launch a zero-royalty preschool franchise with a NEP 2020-aligned, play-based curriculum, comprehensive school setup support and modern early childhood education solutions.
+                    Launch a <strong>zero-royalty preschool franchise</strong> with a <strong>NEP 2020-aligned</strong>, <strong>play-based curriculum</strong>, comprehensive <strong>school setup support</strong> and modern <strong>early childhood education</strong> solutions.
                   </p>
                 </div>
                 <button
                   onClick={() => setCurrentTab('partnerships')}
                   className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
                 >
-                  <span>Explore Franchise &rarr; Franchise</span>
+                  <span>Explore Franchisee &rarr;</span>
                 </button>
               </div>
             </div>
@@ -236,7 +340,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col justify-between">
               <div className="w-full h-56 border-b border-stone-100">
                 <SmartImage 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg" 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/NTT%20Teacher%20Training.jpeg" 
                   altContext={{ page: 'home', section: 'One Ecosystem', type: 'fwa' }}
                   className="w-full h-full object-cover"
                 />
@@ -246,14 +350,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <div className="text-amber-500 font-bold text-xl">02 — FinnishWay Academy</div>
                   <h3 className="text-xl font-display font-bold text-[#1C1917]">NTT & Preschool Teacher Training</h3>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    Advance your career with professional NTT (Nursery Teacher Training), ECCE and preschool teacher training programs designed around modern, child-centric and Finnish-inspired teaching methodologies.
+                    Advance your career with professional <strong>NTT (Nursery Teacher Training)</strong>, <strong>ECCE</strong> and <strong>preschool teacher training programs</strong> designed around modern, child-centric and <strong>Finnish-inspired teaching methodologies</strong>.
                   </p>
                 </div>
                 <button
                   onClick={() => setCurrentTab('fwa')}
                   className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
                 >
-                  <span>Explore NTT Teacher Training &rarr; NTT Teacher Training</span>
+                  <span>Explore NTT Teacher Training &rarr;</span>
                 </button>
               </div>
             </div>
@@ -262,7 +366,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col justify-between">
               <div className="w-full h-56 border-b border-stone-100">
                 <SmartImage 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg" 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Investor.jpeg" 
                   altContext={{ page: 'home', section: 'One Ecosystem', type: 'investor' }}
                   className="w-full h-full object-cover"
                 />
@@ -272,14 +376,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <div className="text-emerald-600 font-bold text-xl">03 — Investor Opportunities</div>
                   <h3 className="text-xl font-display font-bold text-[#1C1917]">Invest in Education</h3>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    Explore strategic investment opportunities in the education sector with Kinderbee. Partner with a growing education ecosystem offering scalable preschool, Cbse/IB school development, teacher training, and education business models, backed by structured systems and long-term support.
+                    Explore <strong>strategic investment opportunities</strong> in the <strong>education sector</strong> with <strong>Kinderbee</strong>. Partner with a <strong>growing education ecosystem</strong> offering scalable <strong>preschool, CBSE/IB school development</strong>, <strong>teacher training</strong>, and <strong>education business models</strong>, backed by structured systems and long-term support.
                   </p>
                 </div>
                 <button
                   onClick={() => setCurrentTab('investors')}
                   className="w-full bg-[#1C1917] hover:bg-stone-800 text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
                 >
-                  <span>Explore Investment Opportunities &rarr; Investors</span>
+                  <span>Explore Investment Opportunity &rarr;</span>
                 </button>
               </div>
             </div>
@@ -298,7 +402,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-stone-900">Ready to start your journey.</h2>
               <p className="text-stone-700 text-sm leading-relaxed">
-                Connect with KinderBee, India’s trusted education and school development partner. Explore zero-royalty preschool franchise opportunities, CBSE school setup, NTT teacher training programs, preschool teacher training, and complete school education solutions designed for long-term growth and success.
+                Connect with Kinderbee, India’s trusted education and school development partner. Explore zero-royalty preschool franchise opportunities, CBSE school setup, NTT teacher training programs, preschool teacher training, and complete school education solutions designed for long-term growth and success.
               </p>
               <div className="flex flex-wrap gap-4 pt-2">
                 <button
@@ -309,14 +413,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
 
                 <a
-                  href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                  href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/BROUCHRE/4_FSCD_Programme_Brochure_2026-27.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  download="KinderBee_Franchise_Brochure.pdf"
+                  download="Kinderbee_NTT_Brochure.pdf"
                   className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-semibold px-7 py-3.5 rounded-xl transition text-sm flex items-center gap-2 shadow-xs cursor-pointer"
                 >
                   <Download className="w-4 h-4 text-[#E1007A]" />
-                  <span>Download Franchise & NTT Brochure &rarr;</span>
+                  <span>NTT Brochure &rarr;</span>
                 </a>
               </div>
             </div>
@@ -332,42 +436,61 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-stone-50 py-20 px-4 sm:px-8 border-t border-stone-200">
+      <section id="faq" className="bg-stone-50 py-20 px-4 sm:px-8 border-t border-stone-200 scroll-mt-24">
         <div className="max-w-4xl mx-auto space-y-10">
           <div className="text-center space-y-3">
-            <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-100/60 px-3 py-1 rounded-full inline-block">
-              Frequently Asked Questions
+            <div className="inline-flex items-center gap-2 text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-100/70 border border-pink-200 px-4 py-1.5 rounded-full shadow-xs">
+              <HelpCircle className="w-3.5 h-3.5 text-[#E1007A]" />
+              <span>FREQUENTLY ASKED QUESTIONS</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-              Hbcu
+              Questions About <strong className="text-[#E1007A] font-extrabold">KinderBee Partnerships</strong>
             </h2>
+            <p className="text-stone-600 text-sm sm:text-base max-w-2xl mx-auto">
+              Everything you need to know about <strong className="text-stone-900 font-bold">KinderBee</strong>, our <strong className="text-stone-900 font-bold">Integrated Partnership System (KIPS)</strong>, preschool franchise opportunities, curriculum, and teacher training.
+            </p>
           </div>
 
-          <div className="space-y-4">
-            {faqs.map((faq) => {
+          <div className="space-y-3.5">
+            {displayFaqs.map((faq) => {
               const isOpen = activeFaq === faq.id;
               return (
                 <div 
                   key={faq.id} 
-                  className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs transition"
+                  className="bg-white rounded-2xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200"
                 >
                   <button
                     onClick={() => setActiveFaq(isOpen ? null : faq.id)}
-                    className="w-full text-left px-6 py-4 font-display font-bold text-stone-900 flex justify-between items-center gap-4 hover:bg-stone-50/50"
+                    className="w-full text-left p-5 sm:p-6 font-display font-bold text-stone-900 flex justify-between items-center gap-4 hover:bg-stone-50/50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E1007A]"
+                    aria-expanded={isOpen}
                   >
-                    <span>{faq.question}</span>
-                    <span className={`w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 transition transform ${isOpen ? 'rotate-180 bg-[#E1007A] text-white' : ''}`}>
-                      &darr;
-                    </span>
+                    <span className="text-base sm:text-lg leading-snug text-[#1C1917]">{faq.question}</span>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-[#E1007A] text-white shadow-sm' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
                   </button>
                   {isOpen && (
-                    <div className="px-6 pb-5 text-sm text-stone-600 leading-relaxed border-t border-stone-100 pt-3 animate-fadeIn">
-                      {faq.answer}
+                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 text-sm sm:text-base text-stone-600 leading-relaxed border-t border-stone-100 pt-4 bg-stone-50/50 animate-fadeIn">
+                      {renderFormattedAnswer(faq.answer)}
                     </div>
                   )}
                 </div>
               );
             })}
+          </div>
+
+          {/* Quick Help Footer Strip */}
+          <div className="mt-8 bg-gradient-to-r from-amber-50 via-pink-50/50 to-amber-50/40 rounded-2xl p-5 sm:p-6 border border-amber-200/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+              <h4 className="font-bold text-[#1C1917] text-sm sm:text-base">Have more questions about our partnerships?</h4>
+              <p className="text-stone-600 text-xs sm:text-sm mt-0.5">Our leadership and admissions team is ready to guide you step-by-step.</p>
+            </div>
+            <button
+              onClick={() => onOpenConsultation && onOpenConsultation('franchise')}
+              className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-sm hover:shadow transition text-xs sm:text-sm whitespace-nowrap cursor-pointer shrink-0"
+            >
+              Submit Enquiry &rarr;
+            </button>
           </div>
         </div>
       </section>

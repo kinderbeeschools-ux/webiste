@@ -144,7 +144,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         settings={settings}
       />
 
-      {/* Header Banner with KinderBee Brand Colors */}
+      {/* Header Banner with Kinderbee Brand Colors */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">
@@ -156,7 +156,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         <div className="max-w-4xl mx-auto relative z-10 space-y-5">
           <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-            <span>KinderBee Editorial & Research</span>
+            <span>Kinderbee Editorial & Research</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
             Insights & Nordic <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Pedagogy Blogs</span>
@@ -378,7 +378,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-stone-900">{featuredPost.author}</div>
-                    <div className="text-[10px] text-stone-400">KinderBee Editorial Team</div>
+                    <div className="text-[10px] text-stone-400">Kinderbee Editorial Team</div>
                   </div>
                 </div>
 
@@ -583,7 +583,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
                 <Award className="w-4 h-4 text-[#E1007A]" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">KinderBee Research Desk</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">Kinderbee Research Desk</h4>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E1007A] to-amber-400 p-0.5 shadow-md">
@@ -715,7 +715,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                download="KinderBee_Franchise_Brochure.pdf"
+                download="Kinderbee_Franchise_Brochure.pdf"
                 className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Download Free Prospectus PDF &rarr;

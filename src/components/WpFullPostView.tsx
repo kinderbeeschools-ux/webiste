@@ -219,7 +219,7 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
                 </div>
               </div>
               <div>
-                <div className="font-bold text-stone-900 text-xs">{post.author || 'KinderBee'}</div>
+                <div className="font-bold text-stone-900 text-xs">{post.author || 'Kinderbee'}</div>
                 <div className="text-[10px] text-stone-400">Author & Content Strategist</div>
               </div>
             </div>
@@ -534,7 +534,7 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
       {/* Footer */}
       <footer className="bg-white border-t border-stone-200 mt-16 py-8 text-center text-xs text-stone-400">
         <div className="max-w-4xl mx-auto px-4 space-y-2">
-          <p>© {new Date().getFullYear()} KinderBee Integrated Partnership System (KIPS). All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Kinderbee Integrated Partnership System (KIPS). All rights reserved.</p>
         </div>
       </footer>
 

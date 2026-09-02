@@ -58,12 +58,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Franchise',
       dropdown: [
         { id: 'partnerships-preschool', label: 'Franchise Preschool' },
-        { id: 'partnerships-cbse', label: 'CBSE School setup' },
-        { id: 'partnerships-ib', label: 'IB School setup' },
+        { id: 'partnerships-cbse', label: 'CBSE & IB School setup' },
         { id: 'partnerships-degree', label: 'Degree College setup' }
       ]
     },
-    { id: 'fwa', label: 'Academic' },
+    { id: 'fwa', label: 'NTT Teacher Training' },
     { id: 'investors', label: 'Partner with us' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' },
@@ -187,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <img 
                   src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
-                  alt="KinderBee Logo" 
+                  alt="Kinderbee Logo" 
                   className="h-8 w-auto object-contain"
                 />
               </div>

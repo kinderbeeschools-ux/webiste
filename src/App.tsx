@@ -166,13 +166,16 @@ export function App() {
           />
         )}
         {currentTab === 'about' && (
-          <AboutPage onOpenConsultation={() => handleOpenConsultation('franchise')} settings={settings} />
+          <AboutPage 
+            setCurrentTab={setCurrentTab} 
+            onOpenConsultation={handleOpenConsultation} 
+            settings={settings} 
+          />
         )}
         {currentTab.startsWith('partnerships') && (
           <PartnershipsPage 
             subTab={
-              currentTab === 'partnerships-cbse' ? 'cbse' :
-              currentTab === 'partnerships-ib' ? 'ib' :
+              (currentTab === 'partnerships-cbse' || currentTab === 'partnerships-ib') ? 'cbse' :
               currentTab === 'partnerships-degree' ? 'degree' :
               'preschool'
             }

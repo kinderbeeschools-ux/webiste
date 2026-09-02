@@ -23,7 +23,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   blogPost,
   settings
 }) => {
-  const brandName = settings?.logoText || 'KinderBee';
+  const brandName = settings?.logoText || 'Kinderbee';
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kinderbee.in';
   
   // Format dynamic title
@@ -41,13 +41,13 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   // Format meta description
   let finalDescription = '';
   if (blogPost) {
-    finalDescription = blogPost.excerpt || `${blogPost.title} - Published by KinderBee Research Desk on ${blogPost.date}.`;
+    finalDescription = blogPost.excerpt || `${blogPost.title} - Published by Kinderbee Research Desk on ${blogPost.date}.`;
   } else if (description) {
     finalDescription = description;
   } else if (settings?.metaDescription) {
     finalDescription = settings.metaDescription;
   } else {
-    finalDescription = "Discover KinderBee, India's leading Zero Royalty preschool franchise system and FinnishWay teacher training academy. 18-month payback, Nordic play-based pedagogy & NEP 2020 compliance.";
+    finalDescription = "Discover Kinderbee, India's leading Zero Royalty preschool franchise system and FinnishWay teacher training academy. 18-month payback, Nordic play-based pedagogy & NEP 2020 compliance.";
   }
 
   // Keywords
