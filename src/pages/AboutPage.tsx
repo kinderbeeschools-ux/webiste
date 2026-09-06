@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Sparkles, CheckCircle2, Award, Users, Globe, Target, Store, GraduationCap, School, ArrowRight, Volume2, VolumeX, Play, Pause, Quote, HeartHandshake } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Sparkles, CheckCircle2, Award, Users, Globe, Target, Store, GraduationCap, School, ArrowRight, Volume2, VolumeX, Play, Pause, Quote, HeartHandshake, X, ChevronLeft, ChevronRight, Camera, Maximize2 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
@@ -10,10 +10,132 @@ interface AboutPageProps {
   setCurrentTab?: (tab: string) => void;
 }
 
+interface GalleryPhoto {
+  id: string;
+  url: string;
+  title: string;
+  category: string;
+  aspect: string;
+}
+
+const galleryPhotos: GalleryPhoto[] = [
+  // Column 1 (5 items)
+  {
+    id: 'photo-1',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(1).jpeg',
+    title: 'Hands-On Play & Tactile Exploration',
+    category: 'Creative Play',
+    aspect: 'aspect-[3/4]',
+  },
+  {
+    id: 'photo-2',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg',
+    title: 'Expressive Art & Sensory Painting',
+    category: 'Art & Creativity',
+    aspect: 'aspect-[4/3]',
+  },
+  {
+    id: 'photo-3',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg',
+    title: 'Interactive Circle Time & Rhymes',
+    category: 'Language & Social',
+    aspect: 'aspect-[4/3]',
+  },
+  {
+    id: 'photo-4',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(7).jpeg',
+    title: 'Curiosity & Science Discovery Labs',
+    category: 'STEM Exploration',
+    aspect: 'aspect-[4/3]',
+  },
+  {
+    id: 'photo-5',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg',
+    title: 'Safe, Joyful & Child-Centric Spaces',
+    category: 'Campus Life',
+    aspect: 'aspect-[4/3]',
+  },
+
+  // Column 2 (5 items)
+  {
+    id: 'photo-6',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(2).jpeg',
+    title: 'Collaborative Teamwork & Play',
+    category: 'Collaborative Play',
+    aspect: 'aspect-[16/10]',
+  },
+  {
+    id: 'photo-7',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg',
+    title: 'Building Blocks & Fine Motor Skills',
+    category: 'Cognitive Skills',
+    aspect: 'aspect-square',
+  },
+  {
+    id: 'photo-8',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(3).jpeg',
+    title: 'Curious Minds & Guided Discovery',
+    category: 'Active Discovery',
+    aspect: 'aspect-[4/5]',
+  },
+  {
+    id: 'photo-9',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(5).jpeg',
+    title: 'Outdoor Play & Physical Agility',
+    category: 'Outdoor Activities',
+    aspect: 'aspect-[16/10]',
+  },
+  {
+    id: 'photo-10',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(11).jpeg',
+    title: 'Music, Rhythm & Dance Celebrations',
+    category: 'Performing Arts',
+    aspect: 'aspect-[4/3]',
+  },
+
+  // Column 3 (5 items)
+  {
+    id: 'photo-11',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(4).jpeg',
+    title: 'Early STEM, Logic & Puzzles',
+    category: 'Early Math & STEM',
+    aspect: 'aspect-[16/10]',
+  },
+  {
+    id: 'photo-12',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg',
+    title: 'Reading Nook & Storybook Magic',
+    category: 'Literacy & Imagination',
+    aspect: 'aspect-[16/10]',
+  },
+  {
+    id: 'photo-13',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg',
+    title: 'Celebrating Playful Milestones',
+    category: 'Milestones & Events',
+    aspect: 'aspect-[4/5]',
+  },
+  {
+    id: 'photo-14',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg',
+    title: 'Lifelong Friendships & Social Bonding',
+    category: 'Social Connection',
+    aspect: 'aspect-[16/10]',
+  },
+  {
+    id: 'photo-15',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(12).jpeg',
+    title: 'Confidence, Curiosity & Daily Wonder',
+    category: 'Holistic Growth',
+    aspect: 'aspect-[4/3]',
+  },
+];
+
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -43,6 +165,22 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       onOpenConsultation(tab);
     }
   };
+
+  // Keyboard navigation for gallery lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedPhotoIndex === null) return;
+      if (e.key === 'Escape') {
+        setSelectedPhotoIndex(null);
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedPhotoIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : galleryPhotos.length - 1));
+      } else if (e.key === 'ArrowRight') {
+        setSelectedPhotoIndex((prev) => (prev !== null && prev < galleryPhotos.length - 1 ? prev + 1 : 0));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPhotoIndex]);
   return (
     <div className="space-y-20 pb-20">
       {/* Dynamic SEO Meta via React Helmet */}
@@ -337,6 +475,137 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         </div>
       </section>
 
+      {/* Life at Kinderbee - Gallery Section (Matching Reference Design) */}
+      <section id="life-at-kinderbee" className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 bg-[#FFF0F7] border border-pink-200/80 text-[#E1007A] text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
+            <span>MORE THAN JUST A PRESCHOOL</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#1C1917] tracking-tight">
+            Life at Kinderbee
+          </h2>
+
+          <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed font-normal pt-1">
+            At Kinderbee, we believe early childhood should be a place where children discover, create, collaborate, and enjoy every step of the journey. From hands-on exploration to celebrating playful milestones, every day brings new opportunities to connect and grow.
+          </p>
+        </div>
+
+        {/* 3-Column Staggered Masonry Grid matching Reference */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
+          {/* Column 1 */}
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {galleryPhotos.slice(0, 5).map((photo, colIndex) => {
+              const globalIndex = colIndex;
+              return (
+                <div
+                  key={photo.id}
+                  onClick={() => setSelectedPhotoIndex(globalIndex)}
+                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                >
+                  <img
+                    src={photo.url}
+                    alt={photo.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                    <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Camera className="w-3 h-3" />
+                      {photo.category}
+                    </span>
+                    <h4 className="text-sm sm:text-base font-bold text-white leading-snug drop-shadow-xs">
+                      {photo.title}
+                    </h4>
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
+                    <Maximize2 className="w-4 h-4" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Column 2 */}
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {galleryPhotos.slice(5, 10).map((photo, colIndex) => {
+              const globalIndex = 5 + colIndex;
+              return (
+                <div
+                  key={photo.id}
+                  onClick={() => setSelectedPhotoIndex(globalIndex)}
+                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                >
+                  <img
+                    src={photo.url}
+                    alt={photo.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                    <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Camera className="w-3 h-3" />
+                      {photo.category}
+                    </span>
+                    <h4 className="text-sm sm:text-base font-bold text-white leading-snug drop-shadow-xs">
+                      {photo.title}
+                    </h4>
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
+                    <Maximize2 className="w-4 h-4" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Column 3 */}
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {galleryPhotos.slice(10, 15).map((photo, colIndex) => {
+              const globalIndex = 10 + colIndex;
+              return (
+                <div
+                  key={photo.id}
+                  onClick={() => setSelectedPhotoIndex(globalIndex)}
+                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                >
+                  <img
+                    src={photo.url}
+                    alt={photo.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                    <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Camera className="w-3 h-3" />
+                      {photo.category}
+                    </span>
+                    <h4 className="text-sm sm:text-base font-bold text-white leading-snug drop-shadow-xs">
+                      {photo.title}
+                    </h4>
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
+                    <Maximize2 className="w-4 h-4" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Footer Sub-note */}
+        <div className="text-center pt-8">
+          <p className="text-xs sm:text-sm text-stone-500 font-medium">
+            Click on any moment to open full-screen view • 15 joyful campus memories
+          </p>
+        </div>
+      </section>
+
       {/* Founder Video & Vision Section (9:16 Ratio with Autoplay & Unmute Sound Controls) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-10">
         <div className="bg-gradient-to-br from-stone-900 via-[#1C1917] to-stone-950 rounded-3xl p-6 sm:p-10 lg:p-12 text-white shadow-2xl relative overflow-hidden border border-stone-800">
@@ -579,6 +848,81 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </button>
         </div>
       </section>
+
+      {/* Fullscreen Lightbox Modal */}
+      {selectedPhotoIndex !== null && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-8 animate-fadeIn select-none"
+          onClick={() => setSelectedPhotoIndex(null)}
+        >
+          {/* Top Controls Bar */}
+          <div
+            className="absolute top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 flex items-center justify-between z-30 text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <span className="bg-white/15 backdrop-blur-md text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full border border-white/20">
+                {selectedPhotoIndex + 1} / {galleryPhotos.length}
+              </span>
+              <span className="hidden sm:inline text-xs uppercase tracking-widest text-[#FFD400] font-bold">
+                {galleryPhotos[selectedPhotoIndex].category}
+              </span>
+            </div>
+
+            <button
+              onClick={() => setSelectedPhotoIndex(null)}
+              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer border border-white/20"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Main Image Container */}
+          <div
+            className="relative max-w-5xl max-h-[75vh] sm:max-h-[80vh] flex flex-col items-center justify-center z-20 px-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={galleryPhotos[selectedPhotoIndex].url}
+              alt={galleryPhotos[selectedPhotoIndex].title}
+              className="max-w-full max-h-[68vh] sm:max-h-[74vh] object-contain rounded-2xl shadow-2xl border border-white/10"
+            />
+            <div className="mt-4 text-center">
+              <h3 className="text-white font-bold text-base sm:text-xl drop-shadow-sm">
+                {galleryPhotos[selectedPhotoIndex].title}
+              </h3>
+              <p className="text-stone-400 text-xs sm:text-sm mt-1">
+                Kinderbee Preschool & Early Childhood Learning Campus
+              </p>
+            </div>
+          </div>
+
+          {/* Previous Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedPhotoIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : galleryPhotos.length - 1));
+            }}
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center backdrop-blur-md transition-all z-30 cursor-pointer border border-white/20"
+            aria-label="Previous photo"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* Next Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedPhotoIndex((prev) => (prev !== null && prev < galleryPhotos.length - 1 ? prev + 1 : 0));
+            }}
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center backdrop-blur-md transition-all z-30 cursor-pointer border border-white/20"
+            aria-label="Next photo"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      )}
 
     </div>
   );

@@ -678,35 +678,131 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
       {/* PAGE 3: DEGREE COLLEGE SETUP */}
       {resolvedTab === 'degree' && (
         <div className="space-y-16 animate-fadeIn">
-          {/* Hero Banner */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-amber-50/30 pt-10 pb-12 px-4 sm:px-8 border-b border-pink-100">
-            {/* Soft decorative background glows */}
+          {/* Hero Banner matching Reference Design */}
+          <section className="relative overflow-hidden bg-gradient-to-br from-[#FFFDF9] via-[#FFF9F6] to-[#FFF5F8] pt-10 pb-12 lg:pt-14 lg:pb-16 px-4 sm:px-8 border-b border-stone-200/80">
+            {/* Soft decorative ambient glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-40">
-              <div className="absolute -top-20 left-1/4 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl"></div>
-              <div className="absolute top-10 right-1/4 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl"></div>
+              <div className="absolute -top-20 left-1/4 w-96 h-96 bg-amber-100/50 rounded-full blur-3xl"></div>
+              <div className="absolute top-10 right-1/4 w-80 h-80 bg-pink-100/50 rounded-full blur-3xl"></div>
             </div>
 
-            <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-              <div className="inline-flex items-center gap-2 bg-blue-100/80 border border-blue-200 text-blue-800 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                <span>HIGHER EDUCATION PARTNERSHIP</span>
-              </div>
-              
-              <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] leading-tight">
-                Degree College Setup <span className="text-[#E1007A]">& Consultancy</span>
-              </h1>
-              
-              <p className="text-stone-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-normal">
-                Establish or transform a degree college in India with comprehensive support for higher education planning, university affiliation, academic development, infrastructure, compliance, faculty training, student admissions, and digital transformation.
-              </p>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+              {/* Left Column: Pill, Title, Subtitle, 4 Process Icons, CTA Button */}
+              <div className="lg:col-span-6 space-y-6 text-left">
+                {/* Amber Pill Badge */}
+                <div className="inline-flex items-center gap-2 bg-[#FEF3C7] border border-[#FDE68A] text-[#92400E] text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D97706]" />
+                  <span>HIGHER EDUCATION PARTNERSHIP</span>
+                </div>
 
-              <div className="pt-2 flex justify-center">
-                <button
-                  onClick={() => onOpenConsultation('degree')}
-                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Book Free Consultation for College Setup &rarr;</span>
-                </button>
+                {/* Main Headline */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.14]">
+                  Degree College Setup <br className="hidden sm:inline" />
+                  <span className="text-[#E1007A]">&amp; Consultancy</span>
+                </h1>
+
+                {/* Subtitle */}
+                <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed max-w-xl font-normal">
+                  Establish or transform a degree college in India with comprehensive support for higher education planning, university affiliation, academic development, infrastructure, compliance, faculty training, student admissions, and digital transformation.
+                </p>
+
+                {/* 4 Feature / Process Icons in a Row matching Reference Design */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-2 max-w-xl pt-2 pb-1">
+                  {/* 1. College Planning & Affiliation */}
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left group">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 text-[#E1007A] transition group-hover:scale-105">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-9 h-9 text-[#E1007A]">
+                        <path d="M12 3v3" />
+                        <path d="M12 3l3 1.5-3 1.5" />
+                        <path d="M4 10l8-4 8 4" />
+                        <path d="M6 10v10" />
+                        <path d="M10 10v10" />
+                        <path d="M14 10v10" />
+                        <path d="M18 10v10" />
+                        <path d="M2 20h20" />
+                      </svg>
+                    </div>
+                    <span className="text-xs sm:text-[13px] font-bold text-stone-800 leading-snug">
+                      College Planning &amp; Affiliation
+                    </span>
+                  </div>
+
+                  {/* 2. Infrastructure Design */}
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left group">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 text-[#E1007A] transition group-hover:scale-105">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-9 h-9 text-[#E1007A]">
+                        <path d="M21 21L3 3" />
+                        <path d="M21 21H3V3" />
+                        <path d="M7 17l4-4" />
+                        <path d="M11 17l4-4" />
+                        <path d="M15 17l4-4" />
+                        <path d="M7 13l2-2" />
+                      </svg>
+                    </div>
+                    <span className="text-xs sm:text-[13px] font-bold text-stone-800 leading-snug">
+                      Infrastructure Design
+                    </span>
+                  </div>
+
+                  {/* 3. Faculty Training */}
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left group">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 text-[#E1007A] transition group-hover:scale-105">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-9 h-9 text-[#E1007A]">
+                        <path d="M2 3h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2" />
+                        <path d="M10 17v4" />
+                        <path d="M6 21h8" />
+                        <circle cx="20" cy="8" r="2" />
+                        <path d="M18 14a3 3 0 0 1 4 0" />
+                        <path d="M6 8h6" />
+                        <path d="M6 12h4" />
+                      </svg>
+                    </div>
+                    <span className="text-xs sm:text-[13px] font-bold text-stone-800 leading-snug">
+                      Faculty Training
+                    </span>
+                  </div>
+
+                  {/* 4. Digital Admissions Support */}
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left group">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 text-[#E1007A] transition group-hover:scale-105">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-9 h-9 text-[#E1007A]">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <path d="M8 21h8" />
+                        <path d="M12 17v4" />
+                        <circle cx="12" cy="9" r="2.5" />
+                        <path d="M8.5 14a3.5 3.5 0 0 1 7 0" />
+                      </svg>
+                    </div>
+                    <span className="text-xs sm:text-[13px] font-bold text-stone-800 leading-snug">
+                      Digital Admissions Support
+                    </span>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-2">
+                  <button
+                    onClick={() => onOpenConsultation('degree')}
+                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl shadow-md hover:shadow-lg transition text-sm sm:text-base flex items-center gap-2 cursor-pointer group"
+                  >
+                    <span>Book Free Consultation for College Setup</span>
+                    <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Golden Framed Hero Image matching Reference Design */}
+              <div className="lg:col-span-6 flex justify-center">
+                <div className="w-full relative max-w-xl lg:max-w-none">
+                  <div className="relative w-full rounded-3xl sm:rounded-[2.25rem] border-[3.5px] border-[#FBBF24] overflow-hidden shadow-xl bg-white aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3]">
+                    <img 
+                      src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Preschool/Degree%20College%20Setup%20&%20Consultancy.jpeg"
+                      alt="Degree College Setup & Consultancy"
+                      className="w-full h-full object-cover object-center"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </section>
