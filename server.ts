@@ -4,7 +4,7 @@ import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { Enquiry, BlogPost, FAQItem, SystemSettings } from "./src/types";
+import { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
 
 // Initialize express app
 const app = express();
@@ -209,74 +209,62 @@ KinderBee provides turnkey architectural blueprints and furniture specifications
 const seedFAQs: FAQItem[] = [
   {
     id: "faq-1",
-    question: "1. What is KinderBee Integrated Partnership System (KIPS)?",
-    answer: "KIPS is an **integrated education partnership system** offering **academic**, **operational**, **branding**, and **teacher training support** to schools and preschools.",
+    question: "1. What is the Kinderbee Integrated Partnership System (KIPS)?",
+    answer: "KIPS is a globally oriented educational partnership system that provides schools with comprehensive academic, operational, branding, and teacher-training support.",
     section: "home"
   },
   {
     id: "faq-2",
-    question: "2. What is the KinderBee preschool franchise?",
-    answer: "The **KinderBee preschool franchise** provides **curriculum**, **teacher training**, **branding**, and **operational support** to help partners establish and manage a quality preschool.",
+    question: "2. Why choose the Kinderbee Preschool Franchise?",
+    answer: "The Kinderbee Preschool Franchise offers a well-tested, pilot-run model featuring a Nordic-inspired, play-based curriculum, comprehensive teacher training, 360-degree institutional support, and a no-royalty partnership model—enabling partners to establish and manage a high-quality, child-centred preschool.",
     section: "home"
   },
   {
     id: "faq-3",
-    question: "3. How can I start a preschool with KinderBee?",
-    answer: "You can start by **submitting an enquiry**. KinderBee provides guidance on **preschool setup**, **curriculum**, **training**, **infrastructure**, and **operations**.",
+    question: "3. What is the process for starting a Kinderbee Preschool?",
+    answer: "Begin by submitting a partnership enquiry. The Kinderbee team will then guide you through the initial consultation, location and infrastructure assessment, partnership formalities, preschool setup, curriculum implementation, teacher training, branding, and operational launch.",
     section: "home"
   },
   {
     id: "faq-4",
-    question: "4. Does KinderBee offer a preschool franchise in India?",
-    answer: "Yes. KinderBee offers **preschool partnership opportunities in India** with **structured academic and operational support**.",
+    question: "4. Who can become a Kinderbee Preschool Partner?",
+    answer: "Educators, entrepreneurs, existing school owners, educational institutions, and investors with a commitment to quality early-childhood education can become Kinderbee partners. Prior experience in preschool management is an advantage but not essential, as Kinderbee provides comprehensive training and ongoing institutional support.",
     section: "home"
   },
   {
     id: "faq-5",
-    question: "5. What support does KinderBee provide?",
-    answer: "KinderBee provides **curriculum support**, **teacher training**, **branding**, **marketing**, **academic planning**, and **operational guidance**.",
+    question: "5. What makes the Kinderbee curriculum distinctive?",
+    answer: "The Kinderbee curriculum is a Nordic-inspired, play-based learning framework that nurtures the whole child through joyful exploration, creativity, collaboration, and real-world experiences. It combines global educational practices with age-appropriate, child-centred learning.",
     section: "home"
   },
   {
     id: "faq-6",
-    question: "6. What is the KinderBee curriculum?",
-    answer: "The KinderBee curriculum focuses on **child-centred**, **activity-based**, and **holistic early childhood education**.",
+    question: "6. What ongoing support does Kinderbee provide to its partners?",
+    answer: "Kinderbee provides continuous support in curriculum implementation, academic planning, teacher training, branding, marketing, admissions, preschool operations, quality assurance, and institutional development, helping partners maintain consistent educational and service standards.",
     section: "home"
   },
   {
     id: "faq-7",
-    question: "7. Is KinderBee aligned with NEP 2020?",
-    answer: "Yes. KinderBee's approach follows key principles of **NEP 2020**, including **foundational learning**, **experiential learning**, and **holistic child development**.",
+    question: "7. How does the Kinderbee curriculum align with NEP 2020?",
+    answer: "The Kinderbee curriculum reflects the core principles of NEP 2020 through play-based and experiential learning, foundational literacy and numeracy, age-appropriate activities, multilingual exposure, and holistic child development.",
     section: "home"
   },
   {
     id: "faq-8",
     question: "8. What is FinnishWay Academy?",
-    answer: "**FinnishWay Academy** provides **professional teacher training** and early childhood education programmes based on **modern educational practices**.",
+    answer: "FinnishWay Academy is the professional teacher-training and development wing of the Kinderbee ecosystem. It equips educators with practical expertise in Nordic-inspired, play-based learning, early-childhood education, classroom management, curriculum implementation, and modern pedagogical perspectives and practices.",
     section: "home"
   },
   {
     id: "faq-9",
-    question: "9. Who can become a KinderBee partner?",
-    answer: "**Preschool owners**, **educators**, **education entrepreneurs**, **institutions**, and individuals interested in early childhood education can explore **KinderBee partnerships**.",
+    question: "9. Is prior experience in education required to become a Kinderbee partner?",
+    answer: "No. Prior experience in education is helpful but not mandatory. Kinderbee provides the training, curriculum, operational guidance, and ongoing support required to help committed entrepreneurs establish and manage a quality preschool.",
     section: "home"
   },
   {
     id: "faq-10",
-    question: "10. Can existing schools partner with KinderBee?",
-    answer: "Yes. Existing schools can partner with KinderBee for **academic development**, **teacher training**, **curriculum support**, **branding**, and **institutional growth**.",
-    section: "home"
-  },
-  {
-    id: "faq-11",
-    question: "11. What makes KinderBee different?",
-    answer: "KinderBee combines **preschool education**, **teacher training**, **curriculum development**, **branding**, and **operational support** into one **integrated education ecosystem**.",
-    section: "home"
-  },
-  {
-    id: "faq-12",
-    question: "12. How can I become a KinderBee partner?",
-    answer: "**Submit an enquiry** through the website to learn about **KinderBee partnership**, **preschool franchise opportunities**, **eligibility**, and the next steps.",
+    question: "10. Can I rebrand my existing preschool with Kinderbee?",
+    answer: "Yes. Existing preschools can transition to the Kinderbee brand and benefit from its proven partnership model, distinctive curriculum, teacher training, academic systems, branding, marketing, and operational guidance—helping them improve quality, strengthen parent confidence, and accelerate institutional growth.",
     section: "home"
   }
 ];
@@ -405,11 +393,15 @@ const seedPages = [
 ];
 
 // Helper to load database
-function loadDb(): { enquiries: Enquiry[]; blogs: BlogPost[]; faqs: FAQItem[]; settings: SystemSettings; pages: any[] } {
+function loadDb(): { enquiries: Enquiry[]; blogs: BlogPost[]; faqs: FAQItem[]; settings: SystemSettings; pages: any[]; payments: PaymentRecord[] } {
   try {
     if (fs.existsSync(DB_FILE)) {
       const data = fs.readFileSync(DB_FILE, "utf-8");
       const parsed = JSON.parse(data);
+      if (!parsed.payments || !Array.isArray(parsed.payments)) {
+        parsed.payments = [];
+        saveDb(parsed);
+      }
       if (!parsed.settings || parsed.settings.email === "partner@kinderbee.in" || parsed.settings.phone === "+91 91500 48800") {
         parsed.settings = seedSettings;
         saveDb(parsed);
@@ -437,7 +429,8 @@ function loadDb(): { enquiries: Enquiry[]; blogs: BlogPost[]; faqs: FAQItem[]; s
     blogs: seedBlogs,
     faqs: seedFAQs,
     settings: seedSettings,
-    pages: seedPages
+    pages: seedPages,
+    payments: []
   };
   saveDb(initialData);
   return initialData;
@@ -612,6 +605,89 @@ app.delete("/api/enquiries/:id", requireAdmin, (req, res) => {
   saveDb(db);
   res.json({ success: true });
 });
+
+// ==========================================
+// PAYMENT CONFIRMATION / VERIFICATION ROUTES
+// ==========================================
+
+// Submit payment transaction confirmation
+app.post("/api/payments", async (req, res) => {
+  const { applicantName, admissionNumber, programme, amount, upiRefNumber, payerPhone, payerEmail, notes, paymentDate } = req.body;
+  if (!applicantName || !programme || !amount || !upiRefNumber || !payerPhone) {
+    return res.status(400).json({ error: "Please fill in all mandatory payment confirmation fields (Name, Programme, Amount, UPI Ref, and Contact Number)." });
+  }
+
+  const db = loadDb();
+  const newPayment: PaymentRecord = {
+    id: `PAY-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+    applicantName,
+    admissionNumber: admissionNumber || "",
+    programme,
+    amount,
+    upiRefNumber,
+    payerPhone,
+    payerEmail: payerEmail || "",
+    paymentDate: paymentDate || new Date().toISOString().split("T")[0],
+    notes: notes || "",
+    status: "pending_verification",
+    createdAt: new Date().toISOString()
+  };
+
+  db.payments.unshift(newPayment);
+  saveDb(db);
+
+  // Sync to Supabase if available
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      await supabase.from("payments").insert([
+        {
+          id: newPayment.id,
+          applicant_name: applicantName,
+          admission_number: admissionNumber || null,
+          programme,
+          amount: String(amount),
+          upi_ref: upiRefNumber,
+          payer_phone: payerPhone,
+          payer_email: payerEmail || null,
+          status: newPayment.status,
+          created_at: newPayment.createdAt
+        }
+      ]);
+    }
+  } catch (err) {
+    console.warn("Supabase payment sync notice:", err);
+  }
+
+  res.json({
+    success: true,
+    paymentRecord: newPayment,
+    message: "Payment transaction reference received and recorded for verification."
+  });
+});
+
+// GET all payments (Admin)
+app.get("/api/payments", requireAdmin, (req, res) => {
+  const db = loadDb();
+  res.json(db.payments || []);
+});
+
+// UPDATE payment verification status (Admin)
+app.put("/api/payments/:id", requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { status, notes } = req.body;
+  const db = loadDb();
+  const idx = db.payments.findIndex(p => p.id === id);
+  if (idx !== -1) {
+    if (status) db.payments[idx].status = status;
+    if (notes !== undefined) db.payments[idx].notes = notes;
+    saveDb(db);
+    res.json({ success: true, payment: db.payments[idx] });
+  } else {
+    res.status(404).json({ error: "Payment record not found." });
+  }
+});
+
 
 // GET all public blogs
 app.get("/api/blogs", (req, res) => {

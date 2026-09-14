@@ -19,7 +19,7 @@ interface GalleryPhoto {
 }
 
 const galleryPhotos: GalleryPhoto[] = [
-  // Column 1 (5 items)
+  // Column 1 (6 items)
   {
     id: 'photo-1',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(1).jpeg',
@@ -51,83 +51,104 @@ const galleryPhotos: GalleryPhoto[] = [
   {
     id: 'photo-5',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg',
-    title: 'Safe, Joyful & Child-Centric Spaces',
+    title: 'Safe, Joyful & Child-Centred Spaces',
     category: 'Campus Life',
     aspect: 'aspect-[4/3]',
   },
-
-  // Column 2 (5 items)
   {
     id: 'photo-6',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg',
+    title: 'Practical Life Skills & Montessori Corner',
+    category: 'Life Skills',
+    aspect: 'aspect-[16/10]',
+  },
+
+  // Column 2 (6 items)
+  {
+    id: 'photo-7',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(2).jpeg',
-    title: 'Collaborative Teamwork & Play',
+    title: 'Collaborative Teamwork & Social Play',
     category: 'Collaborative Play',
     aspect: 'aspect-[16/10]',
   },
   {
-    id: 'photo-7',
+    id: 'photo-8',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg',
     title: 'Building Blocks & Fine Motor Skills',
     category: 'Cognitive Skills',
     aspect: 'aspect-square',
   },
   {
-    id: 'photo-8',
+    id: 'photo-9',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(3).jpeg',
     title: 'Curious Minds & Guided Discovery',
     category: 'Active Discovery',
     aspect: 'aspect-[4/5]',
   },
   {
-    id: 'photo-9',
+    id: 'photo-10',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(5).jpeg',
     title: 'Outdoor Play & Physical Agility',
     category: 'Outdoor Activities',
     aspect: 'aspect-[16/10]',
   },
   {
-    id: 'photo-10',
+    id: 'photo-11',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(9).jpeg',
+    title: 'Sensory Sand, Color & Water Play',
+    category: 'Sensory Learning',
+    aspect: 'aspect-[3/4]',
+  },
+  {
+    id: 'photo-12',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(11).jpeg',
     title: 'Music, Rhythm & Dance Celebrations',
     category: 'Performing Arts',
     aspect: 'aspect-[4/3]',
   },
 
-  // Column 3 (5 items)
+  // Column 3 (6 items)
   {
-    id: 'photo-11',
+    id: 'photo-13',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(4).jpeg',
     title: 'Early STEM, Logic & Puzzles',
     category: 'Early Math & STEM',
     aspect: 'aspect-[16/10]',
   },
   {
-    id: 'photo-12',
+    id: 'photo-14',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg',
     title: 'Reading Nook & Storybook Magic',
     category: 'Literacy & Imagination',
     aspect: 'aspect-[16/10]',
   },
   {
-    id: 'photo-13',
+    id: 'photo-15',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg',
     title: 'Celebrating Playful Milestones',
     category: 'Milestones & Events',
     aspect: 'aspect-[4/5]',
   },
   {
-    id: 'photo-14',
+    id: 'photo-16',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg',
     title: 'Lifelong Friendships & Social Bonding',
     category: 'Social Connection',
     aspect: 'aspect-[16/10]',
   },
   {
-    id: 'photo-15',
+    id: 'photo-17',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(12).jpeg',
     title: 'Confidence, Curiosity & Daily Wonder',
     category: 'Holistic Growth',
     aspect: 'aspect-[4/3]',
+  },
+  {
+    id: 'photo-18',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Our%20Philosophy.jpeg',
+    title: 'Nordic Play Heritage & Joyful Learning',
+    category: 'Nordic Heritage',
+    aspect: 'aspect-square',
   },
 ];
 
@@ -181,6 +202,18 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedPhotoIndex]);
+
+  // Lock background scroll when lightbox is open
+  useEffect(() => {
+    if (selectedPhotoIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedPhotoIndex]);
   return (
     <div className="space-y-20 pb-20">
       {/* Dynamic SEO Meta via React Helmet */}
@@ -196,16 +229,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       <section id="story" className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
           <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
-            OUR JOURNEY & CORE MISSION
+            Our Story and Purpose
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
             Nurturing Young Minds. Shaping Bright Futures.
           </h2>
           <p className="text-stone-600 text-base leading-relaxed">
-            Kinderbee Preschool is committed to delivering <strong className="text-stone-900 font-bold">high-quality early childhood education</strong> through <strong className="text-stone-900 font-bold">play-based learning</strong>, <strong className="text-stone-900 font-bold">innovative teaching practices</strong>, and a <strong className="text-stone-900 font-bold">child-centric approach</strong>. We empower <strong className="text-stone-900 font-bold">children</strong>, <strong className="text-stone-900 font-bold">educators</strong>, and <strong className="text-stone-900 font-bold">preschool entrepreneurs</strong> to build a strong foundation for lifelong learning.
+            Kinderbee was founded with a simple yet meaningful purpose: to create joyful early-learning environments where every child feels safe, valued and inspired to explore. Our child-centred approach combines play-based learning, thoughtful guidance and modern pedagogical perspectives to support each child’s holistic development.
           </p>
           <p className="text-stone-600 text-base leading-relaxed">
-            With a commitment to early childhood education, Kinderbee Preschool creates <strong className="text-stone-900 font-bold">nurturing, engaging and future-ready learning environments</strong> where children can learn, explore and grow. Our approach combines <strong className="text-stone-900 font-bold">play-based learning</strong>, <strong className="text-stone-900 font-bold">child-centric teaching</strong>, <strong className="text-stone-900 font-bold">Finnish-inspired education</strong> and <strong className="text-stone-900 font-bold">NEP 2020-aligned practices</strong> to give every child a strong foundation for <strong className="text-stone-900 font-bold">lifelong learning</strong>.
+            With a commitment to early childhood education, Kinderbee creates <strong className="text-stone-900 font-bold">nurturing, engaging and future-ready learning environments</strong> where children can learn, explore and grow. Our approach combines <strong className="text-stone-900 font-bold">play-based learning</strong>, <strong className="text-stone-900 font-bold">child-centred teaching</strong>, <strong className="text-stone-900 font-bold">Nordic-inspired education</strong>, and <strong className="text-stone-900 font-bold">practices aligned with the principles of NEP 2020</strong> to give every child a strong foundation for <strong className="text-stone-900 font-bold">lifelong learning</strong>.
           </p>
           <div className="grid grid-cols-2 gap-4 pt-4">
             <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-1">
@@ -251,7 +284,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
               <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-stone-900 mb-1">Finnish-Inspired Curriculum</h4>
+                <h4 className="font-bold text-stone-900 mb-1">Nordic-Inspired Curriculum</h4>
                 <p className="text-stone-600 text-sm"><strong className="text-stone-800 font-semibold">Modern early learning practices</strong> focused on <strong className="text-stone-800 font-semibold">holistic child development</strong>.</p>
               </div>
             </div>
@@ -259,7 +292,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
               <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-bold text-stone-900 mb-1">Expert Teacher Training</h4>
-                <p className="text-stone-600 text-sm"><strong className="text-stone-800 font-semibold">Professional preschool teacher training</strong> and <strong className="text-stone-800 font-semibold">NTT programs</strong> that empower educators with effective teaching methodologies.</p>
+                <p className="text-stone-600 text-sm"><strong className="text-stone-800 font-semibold">Professional preschool teacher training</strong> that empowers educators with effective teaching methodologies.</p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
@@ -272,9 +305,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </div>
           
           <div className="mt-8 flex flex-wrap justify-center items-center gap-4 sm:gap-8 font-bold text-stone-700 text-sm">
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">NEP 2020 Aligned</strong></span>
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Finnish-Inspired Learning</strong></span>
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Child-Centric Education</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Aligned with NEP 2020</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Nordic-Inspired Learning</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Child-Centred Education</strong></span>
           </div>
         </div>
       </section>
@@ -497,7 +530,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
           {/* Column 1 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(0, 5).map((photo, colIndex) => {
+            {galleryPhotos.slice(0, 6).map((photo, colIndex) => {
               const globalIndex = colIndex;
               return (
                 <div
@@ -531,8 +564,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 2 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(5, 10).map((photo, colIndex) => {
-              const globalIndex = 5 + colIndex;
+            {galleryPhotos.slice(6, 12).map((photo, colIndex) => {
+              const globalIndex = 6 + colIndex;
               return (
                 <div
                   key={photo.id}
@@ -565,8 +598,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 3 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(10, 15).map((photo, colIndex) => {
-              const globalIndex = 10 + colIndex;
+            {galleryPhotos.slice(12, 18).map((photo, colIndex) => {
+              const globalIndex = 12 + colIndex;
               return (
                 <div
                   key={photo.id}
@@ -601,7 +634,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         {/* Footer Sub-note */}
         <div className="text-center pt-8">
           <p className="text-xs sm:text-sm text-stone-500 font-medium">
-            Click on any moment to open full-screen view • 15 joyful campus memories
+            Click on any moment to open full-screen view • 18 joyful campus memories
           </p>
         </div>
       </section>
@@ -716,13 +749,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                   onClick={togglePlay}
                 />
 
-                {/* Top Badge: Founder's Address */}
-                <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none z-20">
-                  <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Founder's Address
-                  </span>
-                  <span className="bg-black/60 backdrop-blur-md text-[#FFD400] text-[10px] font-bold px-2 py-1 rounded-full border border-white/20">
+                {/* Top Badge: Video Indicator */}
+                <div className="absolute top-3.5 right-3.5 flex items-center pointer-events-none z-20">
+                  <span className="bg-black/60 backdrop-blur-md text-[#FFD400] text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
                     9:16 HD
                   </span>
                 </div>
@@ -761,7 +790,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                   </button>
 
                   <div className="text-[11px] text-white/90 font-medium truncate max-w-[140px]">
-                    Kinderbee Leadership
+                    Kinderbee Video
                   </div>
 
                   <button

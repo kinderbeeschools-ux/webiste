@@ -106,9 +106,19 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
-              <div>
+              <div className="space-y-1">
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Office Address</h4>
-                <p className="text-xs text-stone-600 leading-relaxed">{settings?.officeAddress || 'Ramamurthy Nagar, Bangalore, 560016'}</p>
+                <p className="text-xs text-stone-600 leading-relaxed">
+                  {settings?.officeAddress || 'No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016'}
+                </p>
+                <a 
+                  href="https://share.google/ciljJNjjxvWZUTcWi" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#E1007A] hover:underline pt-1"
+                >
+                  <span>View on Google Maps &rarr;</span>
+                </a>
               </div>
             </div>
 
@@ -118,7 +128,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
               <div>
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Phone Enquiries</h4>
-                <a href={`tel:${settings?.phone}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '+91 99013 32233'}</a>
+                <a href={`tel:${settings?.phone || '+91 81223 44040'}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '81223 44040'}</a>
+                <div className="text-[11px] text-stone-400 mt-0.5">10am–5pm (Mon–Fri) | 10am–1pm (Sat)</div>
               </div>
             </div>
 
@@ -128,7 +139,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
               <div>
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Email Support</h4>
-                <a href={`mailto:${settings?.email}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.email || 'kinderbeeschools@gmail.com'}</a>
+                <a href={`mailto:${settings?.email || 'kinderbeeschools@gmail.com'}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.email || 'kinderbeeschools@gmail.com'}</a>
               </div>
             </div>
           </div>
@@ -203,7 +214,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       required
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
-                      placeholder="+91 99013 32233"
+                      placeholder="+91 81223 44040"
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
@@ -216,9 +227,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     >
                       <option value="">Select a Program...</option>
-                      <option value="Preschool Franchise">Preschool Franchise</option>
+                      <option value="Preschool Partnership">Preschool Partnership</option>
                       <option value="CBSE/ICSE School Setup">CBSE/ICSE School Setup</option>
-                      <option value="NTT Teacher Training">NTT Teacher Training</option>
+                      <option value="Teacher Training">Teacher Training</option>
                       <option value="Investor Relations">Investor Relations</option>
                     </select>
                   </div>
@@ -237,12 +248,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-medium py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-medium py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? 'Sending Message...' : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Send Message to Advisory Team</span>
+                      <span>Send an Enquiry</span>
                     </>
                   )}
                 </button>

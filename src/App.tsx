@@ -9,11 +9,17 @@ import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { PartnershipsPage } from './pages/PartnershipsPage';
 import { FwaPage } from './pages/FwaPage';
+import { ProgramsOverviewPage } from './pages/ProgramsOverviewPage';
 import { InvestorsPage } from './pages/InvestorsPage';
 import { BlogPage } from './pages/BlogPage';
 import { SinglePostView } from './pages/SinglePostView';
 import { ContactPage } from './pages/ContactPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { TermsPage } from './pages/TermsPage';
+import { RefundPolicyPage } from './pages/RefundPolicyPage';
+import { PaymentPage } from './pages/PaymentPage';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 
 export function App() {
@@ -27,6 +33,10 @@ export function App() {
 
     if (isPathAdmin || isHashAdmin || isParamAdmin) {
       return 'admin';
+    }
+
+    if (hash === '#payments' || hash === '#/payments' || pathname === '/payments') {
+      return 'payments';
     }
 
     // Default to last active tab if logged in as admin
@@ -47,6 +57,10 @@ export function App() {
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem('kips_admin_token'));
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+
+  // Payment Pre-selection
+  const [paymentProgramme, setPaymentProgramme] = useState('Advanced Diploma in Early Childhood Care & Education (ECCE)');
+  const [paymentAmount, setPaymentAmount] = useState('4999');
 
   // Persist tab changes
   useEffect(() => {
@@ -114,6 +128,16 @@ export function App() {
   const handleOpenConsultation = (type = 'franchise') => {
     setConsultationType(type);
     setConsultationOpen(true);
+  };
+
+  const handleNavigateToPayment = (
+    programme = 'Advanced Diploma in Early Childhood Care & Education (ECCE)',
+    amount = '4999'
+  ) => {
+    setPaymentProgramme(programme);
+    setPaymentAmount(amount);
+    setCurrentTab('payments');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLoginSuccess = (token: string) => {
@@ -185,7 +209,18 @@ export function App() {
           />
         )}
         {currentTab === 'fwa' && (
-          <FwaPage onOpenConsultation={handleOpenConsultation} settings={settings} />
+          <FwaPage 
+            onOpenConsultation={handleOpenConsultation} 
+            onNavigateToPayment={handleNavigateToPayment}
+            settings={settings} 
+          />
+        )}
+        {(currentTab === 'programs' || currentTab === 'programs-overview') && (
+          <ProgramsOverviewPage 
+            onOpenConsultation={handleOpenConsultation} 
+            settings={settings} 
+            setCurrentTab={setCurrentTab} 
+          />
         )}
         {currentTab === 'investors' && (
           <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} setCurrentTab={setCurrentTab} />
@@ -204,6 +239,22 @@ export function App() {
         )}
         {currentTab === 'contact' && (
           <ContactPage settings={settings} />
+        )}
+        {(currentTab === 'payments' || currentTab === 'pay-fees' || currentTab === 'fee-payment') && (
+          <PaymentPage 
+            onNavigate={setCurrentTab}
+            preselectedProgramme={paymentProgramme}
+            preselectedAmount={paymentAmount}
+          />
+        )}
+        {currentTab === 'privacy-policy' && (
+          <PrivacyPolicyPage setCurrentTab={setCurrentTab} settings={settings} />
+        )}
+        {(currentTab === 'terms-and-conditions' || currentTab === 'terms') && (
+          <TermsPage setCurrentTab={setCurrentTab} settings={settings} />
+        )}
+        {(currentTab === 'cancellation-refund' || currentTab === 'refund-policy') && (
+          <RefundPolicyPage setCurrentTab={setCurrentTab} settings={settings} />
         )}
         {currentTab === 'admin' && !adminToken && (
           <div className="max-w-md mx-auto my-20 p-8 bg-white rounded-3xl border border-stone-200 text-center space-y-4 shadow-sm">
@@ -234,11 +285,15 @@ export function App() {
         onOpenConsultation={() => handleOpenConsultation('franchise')}
       />
 
+      {/* Global Floating WhatsApp Quick Action */}
+      <WhatsAppButton phoneNumber={settings?.phone || '81223 44040'} />
+
       {/* Modals */}
       <ConsultationModal
         isOpen={consultationOpen}
         onClose={() => setConsultationOpen(false)}
         defaultType={consultationType}
+        onNavigateToPayment={handleNavigateToPayment}
       />
 
       <AdminLoginModal

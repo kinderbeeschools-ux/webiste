@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Menu, X, MessageSquare } from 'lucide-react';
+import { Menu, X, ChevronDown, MessageSquare, ArrowRight, CreditCard, QrCode } from 'lucide-react';
 import { SystemSettings } from '../types';
 
 interface NavbarProps {
@@ -23,6 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenConsultation
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(true);
 
   // Lock background scroll when drawer is open
   useEffect(() => {
@@ -57,71 +58,99 @@ export const Navbar: React.FC<NavbarProps> = ({
       id: 'partnerships', 
       label: 'Franchise',
       dropdown: [
-        { id: 'partnerships-preschool', label: 'Franchise Preschool' },
-        { id: 'partnerships-cbse', label: 'CBSE & IB School setup' },
-        { id: 'partnerships-degree', label: 'Degree College setup' }
+        { id: 'partnerships-preschool', label: 'Franchise Preschool', desc: 'Zero royalty play school ecosystem' },
+        { id: 'partnerships-cbse', label: 'CBSE & IB School Setup', desc: 'End-to-end K-12 school establishment' },
+        { id: 'partnerships-degree', label: 'Degree College Setup', desc: 'Higher education institution consultancy' },
+        { id: 'programs', label: 'Programs & Solutions Overview', desc: 'All institutional academic pathways' }
       ]
     },
     { id: 'fwa', label: 'NTT Teacher Training' },
     { id: 'investors', label: 'Partner with us' },
+    { id: 'payments', label: 'Pay Fees' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' },
   ];
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
-        {/* Main Navbar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between gap-4">
-          {/* Brand Logo */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-xs">
+        {/* Main Navbar: Fixed vertical height (h-20) and items-center ensures all elements share the exact same vertical midline */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
+          
+          {/* Brand Logo - Aligned left and vertically centered */}
           <div 
             onClick={() => { setCurrentTab('home'); setMobileMenuOpen(false); }}
             className="cursor-pointer flex items-center gap-3 group shrink-0"
           >
-            <div className="h-11 w-auto sm:h-13 rounded-xl overflow-hidden group-hover:scale-102 transition duration-300 flex items-center">
+            <div className="h-12 sm:h-13 lg:h-14 w-auto flex items-center group-hover:scale-102 transition duration-300">
               <img 
                 src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
                 alt={settings?.logoText || "Kinderbee Logo"} 
-                className="h-full w-auto object-contain max-h-12"
+                className="h-full w-auto max-h-12 sm:max-h-13 lg:max-h-14 object-contain contrast-[1.08] brightness-[1.02] filter drop-shadow-xs transition duration-300"
+                style={{ imageRendering: '-webkit-optimize-contrast' }}
               />
             </div>
           </div>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 ml-auto mr-4 whitespace-nowrap relative">
+          {/* Desktop Nav Links - Centered between Logo & CTA with balanced spacing and unified line-height */}
+          <nav className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 flex-1 px-2 whitespace-nowrap">
             {navLinks.map((link) => {
-              const isActive = currentTab === link.id || currentTab.startsWith(`${link.id}-`);
-              
+              const isActive = 
+                currentTab === link.id || 
+                (link.dropdown && link.dropdown.some(sub => sub.id === currentTab)) ||
+                (link.id === 'partnerships' && currentTab.startsWith('partnerships'));
+
               if (link.dropdown) {
                 return (
-                  <div key={link.id} className="relative group cursor-pointer">
+                  <div key={link.id} className="relative group inline-flex items-center h-10">
                     <button
                       onClick={() => setCurrentTab(link.id)}
-                      className={`px-3.5 py-2 rounded-xl text-base font-semibold transition duration-200 whitespace-nowrap flex items-center gap-1 ${
+                      className={`h-10 px-3 xl:px-3.5 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
                         isActive
-                          ? 'bg-[#E1007A]/10 text-[#E1007A]'
-                          : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100'
+                          ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
+                          : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
                       }`}
+                      aria-expanded="false"
+                      aria-haspopup="true"
                     >
-                      {link.label}
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      <span>{link.label}</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-current transition-transform duration-200 group-hover:rotate-180 opacity-70 group-hover:opacity-100 shrink-0 mt-0.5" />
                     </button>
-                    {/* Dropdown Menu */}
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-stone-200 shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                      {link.dropdown.map((sub, i) => (
-                        <div
-                          key={i}
-                          onClick={() => {
-                            setCurrentTab(sub.id);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }}
-                          className={`px-4 py-2.5 text-sm font-medium transition cursor-pointer border-b border-stone-100 last:border-none ${
-                            currentTab === sub.id ? 'text-[#E1007A] bg-pink-50 font-bold' : 'text-stone-700 hover:text-[#E1007A] hover:bg-pink-50'
-                          }`}
-                        >
-                          {sub.label}
-                        </div>
-                      ))}
+
+                    {/* Dropdown Menu - Top padding bridge ensures hover never flickers or drops */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 pointer-events-none group-hover:pointer-events-auto">
+                      <div className="bg-white border border-stone-200/90 shadow-xl rounded-2xl p-2 overflow-hidden ring-1 ring-black/5">
+                        {link.dropdown.map((sub, i) => {
+                          const isSubActive = currentTab === sub.id;
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setCurrentTab(sub.id);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                              }}
+                              className={`w-full text-left px-3.5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer flex flex-col gap-0.5 ${
+                                isSubActive 
+                                  ? 'bg-pink-50 text-[#E1007A] font-bold' 
+                                  : 'text-stone-700 hover:text-[#E1007A] hover:bg-pink-50/60'
+                              }`}
+                            >
+                              <span className="text-sm font-semibold flex items-center justify-between">
+                                <span>{sub.label}</span>
+                                {isSubActive && (
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] shrink-0" />
+                                )}
+                              </span>
+                              {sub.desc && (
+                                <span className={`text-[11px] font-normal ${isSubActive ? 'text-[#E1007A]/80' : 'text-stone-400'}`}>
+                                  {sub.desc}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 );
@@ -131,10 +160,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => setCurrentTab(link.id)}
-                  className={`px-3.5 py-2 rounded-xl text-base font-semibold transition duration-200 whitespace-nowrap cursor-pointer ${
+                  className={`h-10 px-3 xl:px-3.5 inline-flex items-center justify-center rounded-xl text-sm xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
                     isActive
-                      ? 'bg-[#E1007A]/10 text-[#E1007A]'
-                      : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100'
+                      ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
+                      : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
                   }`}
                 >
                   {link.label}
@@ -143,20 +172,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Action Button */}
+          {/* Action Button - Aligned right and vertically leveled with nav (h-10) */}
           <div className="hidden sm:flex items-center gap-3 shrink-0">
             <button
               onClick={onOpenConsultation}
-              className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition duration-300 text-base flex items-center gap-2 cursor-pointer"
+              className="h-10 px-4 xl:px-5 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-[#c8006d] hover:to-pink-700 text-white font-bold text-xs xl:text-sm shadow-sm hover:shadow-md transition duration-200 cursor-pointer"
             >
-              <span>Talk to an Expert</span>
+              <span>Speak to an Advisor</span>
+              <ArrowRight className="w-4 h-4 shrink-0" />
             </button>
           </div>
 
-          {/* Mobile & Tablet Hamburger Button */}
+          {/* Mobile & Tablet Hamburger Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="lg:hidden p-2.5 rounded-xl text-stone-800 bg-stone-100/90 hover:bg-stone-200 active:scale-95 transition shrink-0 cursor-pointer"
+            className="lg:hidden h-10 w-10 inline-flex items-center justify-center rounded-xl text-stone-800 bg-stone-100 hover:bg-stone-200 active:scale-95 transition shrink-0 cursor-pointer"
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5 text-stone-800" />
@@ -174,76 +204,130 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-hidden="true"
           />
 
-          {/* Left-to-Right Drawer Container (80% Viewable Width, Proportional & Fully Responsive) */}
+          {/* Left-to-Right Drawer Container */}
           <div 
-            className="relative w-[80vw] max-w-[280px] bg-white h-[100dvh] shadow-2xl flex flex-col justify-between z-10 animate-slideRight border-r border-stone-200 select-none overflow-hidden"
+            className="relative w-[85vw] max-w-[320px] bg-white h-[100dvh] shadow-2xl flex flex-col justify-between z-10 animate-slideRight border-r border-stone-200 select-none overflow-hidden"
           >
-            {/* Drawer Header */}
-            <div className="p-3.5 flex items-center justify-between border-b border-stone-100 shrink-0 bg-white">
+            {/* Drawer Header with Perfect Alignment */}
+            <div className="h-18 px-4 flex items-center justify-between border-b border-stone-100 shrink-0 bg-white">
               <div 
                 onClick={() => { setCurrentTab('home'); setMobileMenuOpen(false); }}
-                className="cursor-pointer flex items-center gap-2"
+                className="cursor-pointer flex items-center"
               >
                 <img 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png" 
+                  src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
                   alt="Kinderbee Logo" 
-                  className="h-8 w-auto object-contain"
+                  className="h-9 sm:h-10 w-auto object-contain contrast-[1.06] brightness-[1.02]"
+                  style={{ imageRendering: '-webkit-optimize-contrast' }}
                 />
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition cursor-pointer"
+                className="h-9 w-9 inline-flex items-center justify-center rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition cursor-pointer"
                 aria-label="Close menu"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Scrollable Area (Links + Action Buttons) */}
-            <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 space-y-1 scroll-smooth bg-white">
+            {/* Scrollable Nav Items */}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 space-y-1.5 scroll-smooth bg-white">
               {navLinks.map((link) => {
-                const isActive = currentTab === link.id;
+                const isActive = 
+                  currentTab === link.id || 
+                  (link.dropdown && link.dropdown.some(d => d.id === currentTab)) ||
+                  (link.id === 'partnerships' && currentTab.startsWith('partnerships'));
+                
+                if (link.dropdown) {
+                  return (
+                    <div key={link.id} className="rounded-xl border border-stone-100/90 overflow-hidden bg-stone-50/50">
+                      <div 
+                        onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                        className={`w-full h-11 px-3.5 flex items-center justify-between rounded-xl text-sm font-semibold transition cursor-pointer ${
+                          isActive ? 'text-[#E1007A] font-bold bg-pink-50/70' : 'text-stone-700 hover:bg-stone-100/80'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span>{link.label}</span>
+                        </span>
+                        <ChevronDown className={`w-4 h-4 text-stone-500 transition-transform duration-200 ${mobileDropdownOpen ? 'rotate-180 text-[#E1007A]' : ''}`} />
+                      </div>
+
+                      {mobileDropdownOpen && (
+                        <div className="px-2 pb-2 pt-1 space-y-1 bg-white/70 border-t border-stone-100">
+                          {link.dropdown.map((sub) => {
+                            const isSubActive = currentTab === sub.id;
+                            return (
+                              <button
+                                key={sub.id}
+                                onClick={() => {
+                                  setCurrentTab(sub.id);
+                                  setMobileMenuOpen(false);
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition text-left cursor-pointer ${
+                                  isSubActive
+                                    ? 'bg-pink-50 text-[#E1007A] font-bold'
+                                    : 'text-stone-600 hover:text-[#E1007A] hover:bg-stone-50'
+                                }`}
+                              >
+                                <span>{sub.label}</span>
+                                {isSubActive && (
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
                 return (
                   <button
                     key={link.id}
                     onClick={() => {
                       setCurrentTab(link.id);
                       setMobileMenuOpen(false);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-[13px] sm:text-sm font-semibold transition-all duration-150 text-left cursor-pointer ${
+                    className={`w-full h-11 px-3.5 inline-flex items-center justify-between rounded-xl text-sm font-semibold transition text-left cursor-pointer ${
                       isActive
-                        ? 'bg-pink-50 text-[#E1007A] font-bold'
+                        ? 'bg-pink-50 text-[#E1007A] font-bold shadow-2xs'
                         : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-50'
                     }`}
                   >
                     <span>{link.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] shrink-0"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E1007A] shrink-0" />
                     )}
                   </button>
                 );
               })}
 
-              {/* Extra spacing inside scrollable area to prevent cut off */}
+              {/* Drawer Bottom Action Buttons */}
               <div className="pt-4 pb-2 space-y-2 border-t border-stone-100 mt-3">
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     onOpenConsultation();
                   }}
-                  className="w-full border border-stone-200 hover:border-pink-200 bg-white hover:bg-pink-50/50 text-stone-800 text-xs font-semibold py-2.5 px-3 rounded-lg shadow-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  className="w-full h-10 border border-stone-200 hover:border-pink-200 bg-white hover:bg-pink-50/50 text-stone-800 text-xs font-bold px-3 rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-[#E1007A]" />
-                  <span>Talk to an Expert</span>
+                  <span>Speak to an Advisor</span>
                 </button>
                 <button
                   onClick={() => {
+                    setCurrentTab('investors');
                     setMobileMenuOpen(false);
-                    onOpenConsultation();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="w-full bg-gradient-to-r from-[#E1007A] via-[#E1007A] to-orange-400 hover:opacity-95 text-white font-bold py-2.5 px-3 rounded-lg shadow-sm text-xs text-center transition cursor-pointer"
+                  className="w-full h-10 bg-gradient-to-r from-[#E1007A] to-pink-600 hover:opacity-95 text-white font-bold px-3 rounded-xl shadow-xs text-xs text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
-                  Partner With Us
+                  <span>Partner With Us</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>

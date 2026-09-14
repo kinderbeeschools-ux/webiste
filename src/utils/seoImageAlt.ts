@@ -27,28 +27,28 @@ export function generateDescriptiveAlt(
   // Case 1: Blog Post context
   if (ctx.title || ctx.type === 'blog') {
     const postTitle = ctx.title ? ` - ${ctx.title}` : '';
-    const cat = ctx.category ? ` on ${ctx.category}` : ' Finnish Education';
-    return `KinderBee Editorial Article Illustration${postTitle}${cat} - Nordic Pedagogy Research`;
+    const cat = ctx.category ? ` on ${ctx.category}` : ' Nordic Education';
+    return `Kinderbee Editorial Article Illustration${postTitle}${cat} - Nordic Pedagogy Research`;
   }
 
   // Case 2: Logo / Brand
   if (ctx.type === 'logo' || (src && src.toLowerCase().includes('logo'))) {
-    return 'KinderBee International Preschool & FinnishWay Academy Official Brand Logo';
+    return 'Kinderbee International Preschool & Finnish-way Academy Official Brand Logo';
   }
 
   // Case 3: Specific Page & Section
   if (ctx.page) {
     if (ctx.page === 'franchise' || ctx.type === 'franchise') {
-      return `KinderBee Zero Royalty Preschool Franchise Architecture & ${ctx.section || 'Classroom Setup Model'}`;
+      return `Kinderbee Zero-Royalty Preschool Partnership Architecture & ${ctx.section || 'Classroom Setup Model'}`;
     }
     if (ctx.page === 'fwa' || ctx.type === 'pedagogy') {
-      return `FinnishWay Academy Teacher Training & Nordic Play-Based Pedagogy Session`;
+      return `Finnish-way Academy Teacher Training & Nordic Play-Based Pedagogy Session`;
     }
     if (ctx.page === 'about') {
-      return `KinderBee Integrated Educational Leadership & Global Curriculum Framework`;
+      return `Kinderbee Integrated Educational Leadership & Global Curriculum Framework`;
     }
     if (ctx.page === 'investors') {
-      return `KinderBee Integrated Partnership System (KIPS) Institutional Investment & School Development`;
+      return `Kinderbee Integrated Partnership System (KIPS) Institutional Investment & School Development`;
     }
   }
 
@@ -56,7 +56,7 @@ export function generateDescriptiveAlt(
   if (src) {
     const parsedFromUrl = parseKeywordsFromUrl(src);
     if (parsedFromUrl) {
-      return `KinderBee Early Childhood Education - ${parsedFromUrl}`;
+      return `Kinderbee Early Childhood Education - ${parsedFromUrl}`;
     }
   }
 
@@ -65,7 +65,7 @@ export function generateDescriptiveAlt(
     return cleanAltText(fallback);
   }
 
-  return 'KinderBee Finnish-Inspired Early Childhood Learning Environment & Preschool Setup in India';
+  return 'Kinderbee Nordic-Inspired Early Childhood Learning Environment & Preschool Setup in India';
 }
 
 function isGenericAlt(alt: string): boolean {

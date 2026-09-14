@@ -9,7 +9,7 @@ interface StickyContactWidgetProps {
 
 export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settings, onOpenConsultation }) => {
   const [showPopup, setShowPopup] = useState(false);
-  const phoneNumber = settings?.phone || '+91 99013 32233';
+  const phoneNumber = settings?.phone || '+91 81223 44040';
   const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=Hi%2C%20I%20am%20interested%20in%20Kinderbee%20School%20%26%20Admission%20%2F%20Franchise%20Inquiry.`;
 
@@ -30,7 +30,7 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
           </button>
           
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#E1007A] animate-ping"></span>
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#E1007A]">Admissions Desk</span>
           </div>
 
@@ -63,17 +63,17 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
         </div>
       )}
 
-      {/* ADMISSIONS OPEN Pill Button (Green Round Pill with Amber Dot and Arrow) */}
+      {/* ADMISSIONS OPEN Pill Button (Brand Magenta & Gold Accent Pill) */}
       <button
         onClick={onOpenConsultation}
-        className="group flex items-center gap-2 bg-[#083E2A] hover:bg-[#063322] text-white px-4 py-2 rounded-full shadow-xl hover:shadow-2xl border border-emerald-600/50 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98"
+        className="group flex items-center gap-2 bg-gradient-to-r from-[#E1007A] via-[#d6006e] to-[#be005d] hover:from-[#c2005f] hover:to-[#9e0049] text-white px-4.5 py-2.5 rounded-full shadow-xl shadow-pink-950/25 hover:shadow-2xl hover:shadow-pink-950/35 border border-pink-300/40 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98 cursor-pointer"
         title="Admissions Open - Click to Enquire"
       >
-        <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] shrink-0 animate-pulse"></span>
+        <span className="w-2.5 h-2.5 rounded-full bg-[#FFD400] shrink-0 animate-pulse"></span>
         <span className="text-[11px] sm:text-xs font-extrabold tracking-wider uppercase text-white whitespace-nowrap">
           ADMISSIONS OPEN
         </span>
-        <ArrowRight className="w-3.5 h-3.5 text-[#FFB800] group-hover:translate-x-0.5 transition-transform" />
+        <ArrowRight className="w-3.5 h-3.5 text-[#FFD400] group-hover:translate-x-0.5 transition-transform" />
       </button>
 
       {/* Round Call Button (Sunset Pink-to-Orange Gradient with Soft Glow Ring) */}

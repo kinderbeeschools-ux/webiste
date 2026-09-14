@@ -107,3 +107,18 @@ export interface PageConfig {
   content1: string;
 }
 
+export interface PaymentRecord {
+  id: string;
+  applicantName: string;
+  admissionNumber?: string;
+  programme: string;
+  amount: number | string;
+  upiRefNumber: string;
+  payerPhone: string;
+  payerEmail: string;
+  paymentDate?: string;
+  notes?: string;
+  status: 'pending_verification' | 'verified' | 'rejected';
+  createdAt: string;
+}
+

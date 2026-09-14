@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, BookOpen, GraduationCap, FileText, Award, Star, Globe, Eye, X } from 'lucide-react';
+import { 
+  Sparkles, ArrowRight, ChevronLeft, ChevronRight, BookOpen, GraduationCap, 
+  FileText, Award, Star, Globe, Eye, X, Clock, Calendar, Tag, Phone, Mail, Copy, Check, Flame, CreditCard
+} from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
 
 interface FwaPageProps {
   onOpenConsultation: (type?: string) => void;
+  onNavigateToPayment?: (programme?: string, amount?: string) => void;
   settings?: SystemSettings | null;
 }
 
@@ -32,11 +36,20 @@ const programSliders = [
   }
 ];
 
-export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }) => {
+export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigateToPayment, settings }) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [copiedCaption, setCopiedCaption] = useState(false);
+
+  const instagramCaption = `🎉 TEACHERS’ DAY MEGA OFFER! 🎉\nEnrol in the Advanced Diploma in Early Childhood Care & Education and receive an incredible 90% discount!\n🔥 Now only ₹4,999\n⏱️ 3 Months | 120 Hours\n📅 Offer valid until 5 October 2026\nUpgrade your skills and begin a rewarding career in early childhood education.\nHurry—limited-period offer!\n📞 81223 44040\n📧 kinderbeeschools@gmail.com\nFinnish-way Academy\nA KIPS Initiative by Kinderbee`;
+
+  const handleCopyCaption = () => {
+    navigator.clipboard.writeText(instagramCaption);
+    setCopiedCaption(true);
+    setTimeout(() => setCopiedCaption(false), 2500);
+  };
 
   useEffect(() => {
     if (isHovered) return;
@@ -191,17 +204,173 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
 
       {/* Programs Grid */}
       <section id="programs" className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <span className="text-xs font-bold tracking-widest text-[#E1007A] uppercase bg-pink-50 px-4 py-1.5 rounded-full inline-block mb-3">Professional Pedagogical Excellence</span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">Our Programs</h2>
           <p className="text-stone-500 mt-2 max-w-2xl mx-auto text-sm sm:text-base">Upgrade your skills with our highly specialized nursery teacher training, early childhood, and foundational stage curriculum design courses.</p>
+        </div>
+
+        {/* Teachers' Day Mega Offer Showcase Banner */}
+        <div className="mb-12 bg-gradient-to-br from-stone-900 via-[#1F0214] to-stone-950 rounded-3xl p-6 sm:p-8 lg:p-10 text-white shadow-2xl border-2 border-[#E1007A]/40 relative overflow-hidden">
+          {/* Glowing Accents */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#E1007A]/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#FFD400]/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="space-y-4 max-w-3xl">
+              <div className="inline-flex items-center gap-2 bg-[#E1007A] text-white text-xs font-black uppercase tracking-widest px-3.5 py-1.5 rounded-full shadow-md">
+                <Flame className="w-3.5 h-3.5 fill-white" />
+                <span>TEACHERS’ DAY MEGA OFFER • 90% DISCOUNT</span>
+              </div>
+              
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-display font-black text-white leading-tight">
+                Advanced Diploma in Early Childhood Care &amp; Education
+              </h3>
+
+              <p className="text-pink-100/90 text-sm sm:text-base leading-relaxed">
+                Enrol in our premier ECCE diploma and unlock a life-transforming career in modern Nordic-inspired early education.
+              </p>
+
+              {/* Offer Key Highlights Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/15">
+                  <div className="text-[11px] uppercase tracking-wider text-[#FFD400] font-bold flex items-center gap-1 mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Duration</span>
+                  </div>
+                  <div className="text-lg sm:text-xl font-extrabold text-white">3 Months</div>
+                  <div className="text-[10px] text-white/70">12 Weeks Intensive</div>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/15">
+                  <div className="text-[11px] uppercase tracking-wider text-[#FFD400] font-bold flex items-center gap-1 mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Course Hours</span>
+                  </div>
+                  <div className="text-lg sm:text-xl font-extrabold text-white">120 Hours</div>
+                  <div className="text-[10px] text-white/70">~10 hrs/week calculated</div>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/15">
+                  <div className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold flex items-center gap-1 mb-1">
+                    <Tag className="w-3.5 h-3.5" />
+                    <span>Special Fee</span>
+                  </div>
+                  <div className="text-lg sm:text-xl font-extrabold text-[#FFD400]">₹4,999 only</div>
+                  <div className="text-[10px] text-white/70">90% off (was ₹49,990)</div>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/15">
+                  <div className="text-[11px] uppercase tracking-wider text-pink-300 font-bold flex items-center gap-1 mb-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Valid Until</span>
+                  </div>
+                  <div className="text-sm sm:text-base font-extrabold text-white">5 Oct 2026</div>
+                  <div className="text-[10px] text-pink-200/80">Limited seats</div>
+                </div>
+              </div>
+
+              {/* Hours calculation breakdown explainer */}
+              <div className="bg-black/40 backdrop-blur-sm rounded-xl p-3 text-xs text-white/80 border border-white/10 space-y-1">
+                <span className="font-bold text-[#FFD400] block">⏱️ 120 Course Hours Calculated Breakdown:</span>
+                <p className="leading-relaxed">
+                  <strong>60 Hours</strong> of Live Interactive Pedagogical Masterclasses (5 hrs/week) + <strong>40 Hours</strong> of Hands-on Practical Teaching Simulation Labs (3.3 hrs/week) + <strong>20 Hours</strong> of Capstone Action-Research &amp; Portfolio Assessment (1.7 hrs/week).
+                </p>
+              </div>
+
+              {/* Direct Contacts */}
+              <div className="flex flex-wrap items-center gap-4 text-xs text-pink-100/90 pt-1">
+                <a href="tel:8122344040" className="flex items-center gap-1.5 hover:text-white font-semibold transition">
+                  <Phone className="w-3.5 h-3.5 text-[#FFD400]" />
+                  <span>Call: 81223 44040</span>
+                </a>
+                <span>•</span>
+                <a href="mailto:kinderbeeschools@gmail.com" className="flex items-center gap-1.5 hover:text-white font-semibold transition">
+                  <Mail className="w-3.5 h-3.5 text-[#FFD400]" />
+                  <span>kinderbeeschools@gmail.com</span>
+                </a>
+                <span>•</span>
+                <span className="text-white/60">Finnish-way Academy — A KIPS Initiative by Kinderbee</span>
+              </div>
+            </div>
+
+            {/* Right Action & Caption Box */}
+            <div className="w-full lg:w-80 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 flex flex-col justify-between space-y-4 shrink-0">
+              <div>
+                <span className="text-[11px] uppercase tracking-wider text-[#FFD400] font-bold block mb-1">
+                  Instagram Caption
+                </span>
+                <div className="bg-black/60 rounded-xl p-3 text-[11px] font-mono text-pink-100/90 max-h-36 overflow-y-auto leading-relaxed border border-white/10">
+                  🎉 TEACHERS’ DAY MEGA OFFER! 🎉<br />
+                  Enrol in the Advanced Diploma in Early Childhood Care &amp; Education and receive an incredible 90% discount!<br />
+                  🔥 Now only ₹4,999<br />
+                  ⏱️ 3 Months | 120 Hours<br />
+                  📅 Offer valid until 5 October 2026<br />
+                  Upgrade your skills and begin a rewarding career in early childhood education.<br />
+                  Hurry—limited-period offer!<br />
+                  📞 81223 44040<br />
+                  📧 kinderbeeschools@gmail.com<br />
+                  Finnish-way Academy<br />
+                  A KIPS Initiative by Kinderbee
+                </div>
+              </div>
+
+              <div className="space-y-2.5">
+                <button
+                  onClick={handleCopyCaption}
+                  className="w-full bg-white/20 hover:bg-white/30 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer border border-white/20"
+                >
+                  {copiedCaption ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span className="text-emerald-300 font-bold">Caption Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-[#FFD400]" />
+                      <span>Copy Instagram Caption</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => onOpenConsultation('fwa_course')}
+                  className="w-full bg-[#E1007A] hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Apply / Enrol for ₹4,999</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                {onNavigateToPayment && (
+                  <button
+                    onClick={() => onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', '4999')}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>Proceed to Fee Payment (₹4,999) &rarr;</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Program 1 */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50">
+          <div className="bg-white rounded-3xl border-2 border-[#E1007A]/40 shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 relative">
+            {/* Top Ribbon */}
+            <div className="bg-gradient-to-r from-[#A3001D] to-[#E1007A] text-white px-5 py-2 flex items-center justify-between text-xs font-bold tracking-wide">
+              <span className="flex items-center gap-1.5">
+                <Flame className="w-4 h-4 fill-amber-300 text-amber-300" />
+                TEACHERS' DAY MEGA OFFER • 90% OFF
+              </span>
+              <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold">
+                ₹4,999 Only
+              </span>
+            </div>
+
+            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50 relative">
               <SmartImage 
                 src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20&%20Education.jpeg" 
                 altContext={{ page: 'academics', section: 'Our Programs', type: 'advanced-diploma' }}
@@ -215,9 +384,31 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
                     <GraduationCap className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#E1007A] uppercase tracking-wider block mb-1">Advanced Credential</span>
-                    <h3 className="text-xl sm:text-2xl font-display font-extrabold text-[#1C1917] leading-tight">Advanced Diploma in Early Childhood Care & Education</h3>
+                    <span className="text-xs font-bold text-[#E1007A] uppercase tracking-wider block mb-1">Advanced Credential • Limited Period</span>
+                    <h3 className="text-xl sm:text-2xl font-display font-extrabold text-[#1C1917] leading-tight">Advanced Diploma in Early Childhood Care &amp; Education</h3>
                   </div>
+                </div>
+
+                {/* Offer Metrics Bar */}
+                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 mb-4 grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-stone-500 font-medium block">Duration &amp; Hours:</span>
+                    <strong className="text-stone-900 font-bold text-sm">3 Months | 120 Hours</strong>
+                    <span className="text-[10px] text-stone-600 block mt-0.5">(Calculated: ~10 hrs/week)</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-500 font-medium block">Special Fee:</span>
+                    <div className="flex items-baseline gap-1.5">
+                      <strong className="text-[#A3001D] font-extrabold text-base">₹4,999</strong>
+                      <span className="line-through text-stone-400 text-xs">₹49,990</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-emerald-700 block mt-0.5">Offer valid until 5 Oct 2026</span>
+                  </div>
+                </div>
+
+                {/* Calculation summary */}
+                <div className="bg-stone-50 rounded-xl p-2.5 text-[11px] text-stone-600 border border-stone-200/80 mb-4 leading-relaxed">
+                  <strong>Course Hours Calculation:</strong> 120 Hours across 12 Weeks (60 hrs interactive masterclasses + 40 hrs simulation labs + 20 hrs capstone project).
                 </div>
                 
                 <div className="border-t border-stone-100 pt-4 mt-4">
@@ -225,7 +416,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-stone-700 text-sm">
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">1</span>
-                      <span>Child Development & Psychology</span>
+                      <span>Child Development &amp; Psychology</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">2</span>
@@ -233,7 +424,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">3</span>
-                      <span>Curriculum & Activity Planning</span>
+                      <span>Curriculum &amp; Activity Planning</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">4</span>
@@ -244,14 +435,35 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
               </div>
               
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs text-stone-500 font-medium">Eligible: Aspiring & Working Teachers</span>
-                <button
-                  onClick={() => onOpenConsultation('fwa_course')}
-                  className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
-                >
-                  <span>Inquire Now</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div>
+                  <span className="text-xs text-stone-500 font-medium block">Eligible: Aspiring &amp; Working Teachers</span>
+                  <span className="text-[11px] text-stone-700 font-semibold">📞 81223 44040</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={handleCopyCaption}
+                    className="bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold p-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+                    title="Copy Instagram Caption"
+                  >
+                    {copiedCaption ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => onOpenConsultation('fwa_course')}
+                    className="bg-[#A3001D] hover:bg-[#850017] text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                  >
+                    <span>Apply / Enrol</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  {onNavigateToPayment && (
+                    <button
+                      onClick={() => onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', '4999')}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Proceed to Payment</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -302,13 +514,24 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
               
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">Eligible: Preschool Educators</span>
-                <button
-                  onClick={() => onOpenConsultation('fwa_course')}
-                  className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
-                >
-                  <span>Inquire Now</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => onOpenConsultation('fwa_course')}
+                    className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  >
+                    <span>Apply / Enrol</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  {onNavigateToPayment && (
+                    <button
+                      onClick={() => onNavigateToPayment('Diploma in Play school Teacher Training', '12000')}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Proceed to Payment</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -359,13 +582,24 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
               
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">Global Standards Certification</span>
-                <button
-                  onClick={() => onOpenConsultation('fwa_course')}
-                  className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
-                >
-                  <span>Inquire Now</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => onOpenConsultation('fwa_course')}
+                    className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  >
+                    <span>Apply / Enrol</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  {onNavigateToPayment && (
+                    <button
+                      onClick={() => onNavigateToPayment('Certificate in Nordic inspired Preschool Teaching', '8500')}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Proceed to Payment</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -416,13 +650,24 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, settings }
               
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">NEP 2020 & NCF Compliant</span>
-                <button
-                  onClick={() => onOpenConsultation('fwa_course')}
-                  className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
-                >
-                  <span>Inquire Now</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => onOpenConsultation('fwa_course')}
+                    className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  >
+                    <span>Apply / Enrol</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  {onNavigateToPayment && (
+                    <button
+                      onClick={() => onNavigateToPayment('Foundational Stage Curriculum Design', '9500')}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Proceed to Payment</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
