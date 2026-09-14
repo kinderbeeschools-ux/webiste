@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         { id: 'programs', label: 'Programs & Solutions Overview', desc: 'All institutional academic pathways' }
       ]
     },
-    { id: 'fwa', label: 'NTT Teacher Training' },
+    { id: 'fwa', label: 'Teacher Training', fullLabel: 'NTT Teacher Training' },
     { id: 'investors', label: 'Partner with us' },
     { id: 'payments', label: 'Pay Fees' },
     { id: 'blogs', label: 'Blog' },
@@ -74,26 +74,26 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-xs">
-        {/* Main Navbar: Fixed vertical height (h-20) and items-center ensures all elements share the exact same vertical midline */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Main Navbar Container: Full responsive max-w with flexible item scaling */}
+        <div className="max-w-[1440px] w-full mx-auto px-3 sm:px-4 lg:px-4 xl:px-8 h-20 flex items-center justify-between gap-1.5 sm:gap-3 xl:gap-4 min-w-0">
           
           {/* Brand Logo - Aligned left and vertically centered */}
           <div 
             onClick={() => { setCurrentTab('home'); setMobileMenuOpen(false); }}
-            className="cursor-pointer flex items-center gap-3 group shrink-0"
+            className="cursor-pointer flex items-center gap-2 group shrink-0"
           >
-            <div className="h-12 sm:h-13 lg:h-14 w-auto flex items-center group-hover:scale-102 transition duration-300">
+            <div className="h-10 sm:h-11 lg:h-11 xl:h-13 w-auto flex items-center group-hover:scale-102 transition duration-300">
               <img 
                 src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
                 alt={settings?.logoText || "Kinderbee Logo"} 
-                className="h-full w-auto max-h-12 sm:max-h-13 lg:max-h-14 object-contain contrast-[1.08] brightness-[1.02] filter drop-shadow-xs transition duration-300"
+                className="h-full w-auto max-h-10 sm:max-h-11 lg:max-h-11 xl:max-h-13 object-contain contrast-[1.08] brightness-[1.02] filter drop-shadow-xs transition duration-300"
                 style={{ imageRendering: '-webkit-optimize-contrast' }}
               />
             </div>
           </div>
 
-          {/* Desktop Nav Links - Centered between Logo & CTA with balanced spacing and unified line-height */}
-          <nav className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 flex-1 px-2 whitespace-nowrap">
+          {/* Desktop Nav Links - Centered between Logo & CTA with balanced spacing and adaptive typography */}
+          <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 px-1 xl:px-2 whitespace-nowrap min-w-0">
             {navLinks.map((link) => {
               const isActive = 
                 currentTab === link.id || 
@@ -102,10 +102,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               if (link.dropdown) {
                 return (
-                  <div key={link.id} className="relative group inline-flex items-center h-10">
+                  <div key={link.id} className="relative group inline-flex items-center h-9 xl:h-10 shrink-0">
                     <button
                       onClick={() => setCurrentTab(link.id)}
-                      className={`h-10 px-3 xl:px-3.5 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
+                      className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center gap-1 xl:gap-1.5 rounded-xl text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
                         isActive
                           ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
                           : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
@@ -160,26 +160,35 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => setCurrentTab(link.id)}
-                  className={`h-10 px-3 xl:px-3.5 inline-flex items-center justify-center rounded-xl text-sm xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
+                  className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center rounded-xl text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer shrink-0 ${
                     isActive
                       ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
+                      : link.id === 'payments'
+                      ? 'text-stone-800 hover:text-[#E1007A] hover:bg-amber-50/80 font-bold'
                       : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
                   }`}
                 >
-                  {link.label}
+                  {link.id === 'payments' ? (
+                    <span className="inline-flex items-center gap-1 text-[#E1007A] font-bold">
+                      <CreditCard className="w-3.5 h-3.5 shrink-0 hidden 2xl:inline-block" />
+                      <span>{link.label}</span>
+                    </span>
+                  ) : (
+                    link.label
+                  )}
                 </button>
               );
             })}
           </nav>
 
-          {/* Action Button - Aligned right and vertically leveled with nav (h-10) */}
-          <div className="hidden sm:flex items-center gap-3 shrink-0">
+          {/* Action Button - Aligned right and vertically leveled with nav (h-9 / h-10) */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
             <button
               onClick={onOpenConsultation}
-              className="h-10 px-4 xl:px-5 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-[#c8006d] hover:to-pink-700 text-white font-bold text-xs xl:text-sm shadow-sm hover:shadow-md transition duration-200 cursor-pointer"
+              className="h-9 xl:h-10 px-3 xl:px-4 2xl:px-5 inline-flex items-center justify-center gap-1.5 xl:gap-2 rounded-xl bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-[#c8006d] hover:to-pink-700 text-white font-bold text-xs xl:text-sm shadow-sm hover:shadow-md transition duration-200 cursor-pointer whitespace-nowrap"
             >
               <span>Speak to an Advisor</span>
-              <ArrowRight className="w-4 h-4 shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0" />
             </button>
           </div>
 
