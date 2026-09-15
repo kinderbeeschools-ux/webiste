@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, BookOpen, 
   Users, Building, Star, Download, ChevronDown, HelpCircle, 
   GraduationCap, School, Camera, Heart, Sun, Smile, Clock, 
-  MapPin, Phone, Mail, Send, Calendar, Check, Play, UserCheck
+  MapPin, Phone, Mail, Send, Calendar, Check, Play, Pause, UserCheck,
+  Quote, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { BlogPost, FAQItem, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
@@ -96,6 +97,98 @@ const renderFormattedAnswer = (text: string) => {
   });
 };
 
+interface Testimonial {
+  id: string;
+  title: string;
+  quote: string;
+  author: string;
+  role: string;
+  category: 'franchise' | 'teacher' | 'parent';
+  categoryLabel: string;
+  badgeColor: string;
+  rating: number;
+}
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    id: 'test-1',
+    title: 'A Wonderful Opportunity to Make a Difference',
+    quote: 'Partnering with KinderBee has been an incredible journey. The structured curriculum, continuous guidance, and strong operational support have helped us build a nurturing preschool. We are proud to be part of a brand that truly values children’s holistic development.',
+    author: 'Siraj (Kanpur)',
+    role: 'KinderBee Preschool Franchise Partner',
+    category: 'franchise',
+    categoryLabel: 'Franchise Partner',
+    badgeColor: 'bg-amber-400/20 text-amber-300 border-amber-400/30',
+    rating: 5
+  },
+  {
+    id: 'test-2',
+    title: 'A Transformative Learning Experience',
+    quote: 'The KinderBee Teacher Training Programme completely changed my approach to teaching. I learned how to create engaging classroom experiences, understand children’s needs, and make learning more joyful through play-based methods.',
+    author: 'Nivetha',
+    role: 'Teacher Training Programme Participant',
+    category: 'teacher',
+    categoryLabel: 'Teacher Training',
+    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    rating: 5
+  },
+  {
+    id: 'test-3',
+    title: 'Confidence to Teach Creatively',
+    quote: 'This programme helped me develop the confidence and practical skills needed to become a better early-years educator. The hands-on activities, modern teaching strategies, and expert guidance were incredibly valuable.',
+    author: 'Swetha',
+    role: 'Early Childhood Educator',
+    category: 'teacher',
+    categoryLabel: 'Early Educator',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    rating: 5
+  },
+  {
+    id: 'test-4',
+    title: 'Building a Preschool with Purpose',
+    quote: 'KinderBee gave us the confidence and resources to turn our vision of a quality preschool into reality. The FinnishWay-inspired learning approach, professional support, and focus on child development make this partnership truly special.',
+    author: 'Soman',
+    role: 'KinderBee Preschool Franchise Partner',
+    category: 'franchise',
+    categoryLabel: 'Franchise Partner',
+    badgeColor: 'bg-amber-400/20 text-amber-300 border-amber-400/30',
+    rating: 5
+  },
+  {
+    id: 'test-5',
+    title: 'Joyful Awakening Every Morning',
+    quote: 'Sending Aarav to Kinderbee was the best decision we made. He went from being shy to eagerly waking up every morning excited for school! The teachers are extraordinarily attentive and loving.',
+    author: 'Pooja & Rohit Sharma',
+    role: 'Parents of Aarav (Nursery)',
+    category: 'parent',
+    categoryLabel: 'Preschool Parent',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    rating: 5
+  },
+  {
+    id: 'test-6',
+    title: 'Nordic Play-Based Method Really Works',
+    quote: 'The Nordic play-based method really works! My daughter Ananya speaks with remarkable vocabulary and solves puzzles with genuine patience. The campus safety and CCTV transparency gives us total peace of mind.',
+    author: 'Dr. Sneha Kulkarni',
+    role: 'Mother of Ananya (LKG)',
+    category: 'parent',
+    categoryLabel: 'Preschool Parent',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    rating: 5
+  },
+  {
+    id: 'test-7',
+    title: 'Spotless Care & Total Peace of Mind',
+    quote: 'The daycare facility is spotless and heartwarming. As working parents, knowing our child is eating healthy warm meals and doing creative art projects in the afternoon is invaluable.',
+    author: 'Karthik & Meera Iyer',
+    role: 'Parents of Vihaan (Daycare & UKG)',
+    category: 'parent',
+    categoryLabel: 'Daycare Parent',
+    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    rating: 5
+  }
+];
+
 export const HomePage: React.FC<HomePageProps> = ({ 
   setCurrentTab, 
   onOpenConsultation, 
@@ -105,6 +198,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   settings 
 }) => {
   const [activeFaq, setActiveFaq] = useState<string | null>('faq-1');
+  const [testimonialFilter, setTestimonialFilter] = useState<'all' | 'franchise' | 'teacher' | 'parent'>('all');
+  const [isMarqueePaused, setIsMarqueePaused] = useState(false);
+  const testimonialScrollRef = useRef<HTMLDivElement>(null);
   const displayFaqs = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
 
   // Contact Form State
@@ -702,77 +798,187 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* =========================================================================
-          SECTION 6: PARENT TESTIMONIALS
+          SECTION 6: COMMUNITY & PARENT TESTIMONIALS (SMOOTH LEFT MOVEMENT)
           ========================================================================= */}
-      <section className="bg-stone-900 text-white py-16 sm:py-24 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#FFD400] bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-xs">
-              <Star className="w-3.5 h-3.5 text-[#FFD400]" />
-              <span>TESTIMONIALS</span>
+      <section className="bg-stone-900 text-white py-16 sm:py-24 overflow-hidden relative">
+        {/* Ambient Glows */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#E1007A]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[#FFD400]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 relative z-10">
+          
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#FFD400] bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-xs">
+                <Star className="w-3.5 h-3.5 text-[#FFD400] fill-current" />
+                <span>COMMUNITY VOICES &amp; TESTIMONIALS</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
+                What Our Community Says About KinderBee
+              </h2>
+              <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
+                Real reflections from our preschool franchise partners, teacher-training educators, and parent community.
+              </p>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
-              What Parents Say About Kinderbee
-            </h2>
-            <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-              Hear from our family community about the care, communication, and joyful transformation they experience every day.
-            </p>
+
+            {/* Controls: Category Filter + Pause/Scroll Actions */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Category Pills */}
+              <div className="inline-flex items-center bg-stone-800/90 p-1 rounded-2xl border border-stone-700/80">
+                {[
+                  { id: 'all', label: 'All Voices' },
+                  { id: 'franchise', label: 'Franchise' },
+                  { id: 'teacher', label: 'Teacher Training' },
+                  { id: 'parent', label: 'Parents' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setTestimonialFilter(tab.id as any)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                      testimonialFilter === tab.id
+                        ? 'bg-[#E1007A] text-white shadow-xs'
+                        : 'text-stone-300 hover:text-white hover:bg-stone-700/50'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Pause / Play + Arrow Controls */}
+              <div className="flex items-center gap-1.5 bg-stone-800/90 p-1 rounded-2xl border border-stone-700/80">
+                <button
+                  onClick={() => setIsMarqueePaused(!isMarqueePaused)}
+                  className="p-2 rounded-xl text-stone-300 hover:text-white hover:bg-stone-700/60 transition cursor-pointer text-xs flex items-center gap-1"
+                  title={isMarqueePaused ? 'Resume auto-scroll' : 'Pause auto-scroll'}
+                  aria-label={isMarqueePaused ? 'Resume auto-scroll' : 'Pause auto-scroll'}
+                >
+                  {isMarqueePaused ? (
+                    <Play className="w-4 h-4 fill-current text-[#FFD400]" />
+                  ) : (
+                    <Pause className="w-4 h-4 text-stone-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    if (testimonialScrollRef.current) {
+                      testimonialScrollRef.current.scrollBy({ left: -380, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 rounded-xl text-stone-300 hover:text-white hover:bg-stone-700/60 transition cursor-pointer"
+                  title="Scroll Left"
+                  aria-label="Scroll Left"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    if (testimonialScrollRef.current) {
+                      testimonialScrollRef.current.scrollBy({ left: 380, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 rounded-xl text-stone-300 hover:text-white hover:bg-stone-700/60 transition cursor-pointer"
+                  title="Scroll Right"
+                  aria-label="Scroll Right"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div className="bg-stone-800/90 border border-stone-700/80 p-8 rounded-3xl space-y-5 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex text-[#FFD400] gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
+        {/* Smooth Left Moving Testimonials Rail */}
+        <div 
+          ref={testimonialScrollRef}
+          className="mt-10 overflow-x-auto no-scrollbar relative w-full group select-none"
+          onMouseEnter={() => setIsMarqueePaused(true)}
+          onMouseLeave={() => setIsMarqueePaused(false)}
+          onTouchStart={() => setIsMarqueePaused(true)}
+          onTouchEnd={() => setIsMarqueePaused(false)}
+        >
+          {/* Edge gradient masks for seamless aesthetic */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-stone-900 via-stone-900/80 to-transparent z-20"></div>
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-stone-900 via-stone-900/80 to-transparent z-20"></div>
+
+          {/* Marquee Track: Dual repeated arrays for continuous infinite left loop */}
+          <div 
+            className={`flex gap-6 py-2 px-4 ${
+              isMarqueePaused ? '' : 'animate-marquee-left'
+            }`}
+            style={{
+              animationPlayState: isMarqueePaused ? 'paused' : 'running'
+            }}
+          >
+            {[
+              ...(testimonialFilter === 'all' 
+                ? TESTIMONIALS 
+                : TESTIMONIALS.filter(t => t.category === testimonialFilter)),
+              ...(testimonialFilter === 'all' 
+                ? TESTIMONIALS 
+                : TESTIMONIALS.filter(t => t.category === testimonialFilter))
+            ].map((item, index) => (
+              <div
+                key={`${item.id}-${index}`}
+                className="w-[340px] sm:w-[410px] md:w-[440px] shrink-0 bg-stone-800/90 border border-stone-700/80 hover:border-[#FFD400]/50 rounded-3xl p-6 sm:p-7 flex flex-col justify-between space-y-5 transition-all duration-300 shadow-xl backdrop-blur-md"
+              >
+                {/* Card Top: Stars + Category Pill */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex text-[#FFD400] gap-1">
+                      {[...Array(item.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-current" />
+                      ))}
+                    </div>
+                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${item.badgeColor}`}>
+                      {item.categoryLabel}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+                    {item.title}
+                  </h3>
+
+                  {/* Quote text */}
+                  <div className="relative">
+                    <Quote className="w-6 h-6 text-stone-600 absolute -top-2 -left-1 opacity-20" />
+                    <p className="text-stone-300 text-xs sm:text-sm leading-relaxed italic pl-1">
+                      &ldquo;{item.quote}&rdquo;
+                    </p>
+                  </div>
                 </div>
-                <p className="text-stone-200 text-sm sm:text-base leading-relaxed italic">
-                  &ldquo;Sending Aarav to Kinderbee was the best decision we made. He went from being shy to eagerly waking up every morning excited for school! The teachers are extraordinarily attentive and loving.&rdquo;
-                </p>
-              </div>
-              <div className="border-t border-stone-700 pt-4">
-                <div className="font-bold text-white text-sm">Pooja &amp; Rohit Sharma</div>
-                <div className="text-xs text-stone-400">Parents of Aarav (Nursery)</div>
-              </div>
-            </div>
 
-            <div className="bg-stone-800/90 border border-stone-700/80 p-8 rounded-3xl space-y-5 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex text-[#FFD400] gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
+                {/* Card Bottom: Author + Role */}
+                <div className="border-t border-stone-700/70 pt-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#E1007A] to-[#FFD400] flex items-center justify-center font-bold text-stone-900 text-sm shrink-0 shadow-sm">
+                    {item.author.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-white text-sm flex items-center gap-1.5 truncate">
+                      <span>{item.author}</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    </div>
+                    <div className="text-xs text-stone-400 truncate">
+                      {item.role}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-stone-200 text-sm sm:text-base leading-relaxed italic">
-                  &ldquo;The Nordic play-based method really works! My daughter Ananya speaks with remarkable vocabulary and solves puzzles with genuine patience. The campus safety and CCTV transparency gives us total peace of mind.&rdquo;
-                </p>
               </div>
-              <div className="border-t border-stone-700 pt-4">
-                <div className="font-bold text-white text-sm">Dr. Sneha Kulkarni</div>
-                <div className="text-xs text-stone-400">Mother of Ananya (LKG)</div>
-              </div>
-            </div>
-
-            <div className="bg-stone-800/90 border border-stone-700/80 p-8 rounded-3xl space-y-5 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex text-[#FFD400] gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-stone-200 text-sm sm:text-base leading-relaxed italic">
-                  &ldquo;The daycare facility is spotless and heartwarming. As working parents, knowing our child is eating healthy warm meals and doing creative art projects in the afternoon is invaluable.&rdquo;
-                </p>
-              </div>
-              <div className="border-t border-stone-700 pt-4">
-                <div className="font-bold text-white text-sm">Karthik &amp; Meera Iyer</div>
-                <div className="text-xs text-stone-400">Parents of Vihaan (Daycare &amp; UKG)</div>
-              </div>
-            </div>
-
+            ))}
           </div>
+        </div>
+
+        {/* Bottom Helper Hint */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 mt-6 flex items-center justify-between text-[11px] text-stone-400">
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
+            <span>Hover or touch any card to pause reading • Continuous smooth left movement</span>
+          </span>
+          <span className="hidden sm:inline text-stone-400 font-medium">
+            7 Verified Reflections
+          </span>
         </div>
       </section>
 
@@ -791,36 +997,15 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
-                Advanced Diploma in Early Childhood Care &amp; Education (ECCE)
+                Advanced Diploma in Early Childhood Care &amp; Education (NTT)
               </h2>
 
               <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-2xl">
                 Elevate your career with globally accredited, Nordic-inspired teacher training. Master play-based pedagogy, child psychology, classroom leadership, and NEP 2020 frameworks.
               </p>
-
-              {/* Course Highlights Pill Box */}
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                <div>
-                  <div className="text-xs text-stone-300 font-semibold uppercase">Duration</div>
-                  <div className="text-lg sm:text-xl font-bold text-[#FFD400]">3 Months</div>
-                </div>
-                <div className="border-l border-white/15">
-                  <div className="text-xs text-stone-300 font-semibold uppercase">Course Hours</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">120 Hours</div>
-                </div>
-                <div className="border-l border-white/15">
-                  <div className="text-xs text-stone-300 font-semibold uppercase">Special Fee</div>
-                  <div className="text-lg sm:text-xl font-bold text-emerald-400">₹4,999 Only</div>
-                  <div className="text-[10px] text-pink-300 line-through">₹49,999 (90% Off)</div>
-                </div>
-                <div className="border-l border-white/15">
-                  <div className="text-xs text-stone-300 font-semibold uppercase">Offer Valid Until</div>
-                  <div className="text-sm sm:text-base font-bold text-[#FFD400]">5 October 2026</div>
-                </div>
-              </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center sm:items-end justify-center space-y-4">
+            <div className="lg:col-span-4 flex flex-col items-center sm:items-end justify-center">
               <button
                 onClick={() => {
                   setCurrentTab('fwa');
@@ -830,13 +1015,6 @@ export const HomePage: React.FC<HomePageProps> = ({
               >
                 <span>Explore Teacher Training</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => onOpenConsultation('fwa_course')}
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3.5 rounded-xl border border-white/20 transition text-xs sm:text-sm cursor-pointer"
-              >
-                Enrol for ₹4,999 Special Batch
               </button>
             </div>
           </div>

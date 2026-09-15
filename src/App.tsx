@@ -196,7 +196,7 @@ export function App() {
             settings={settings} 
           />
         )}
-        {currentTab.startsWith('partnerships') && (
+        {(currentTab === 'franchise' || currentTab.startsWith('partnerships')) && (
           <PartnershipsPage 
             subTab={
               (currentTab === 'partnerships-cbse' || currentTab === 'partnerships-ib') ? 'cbse' :

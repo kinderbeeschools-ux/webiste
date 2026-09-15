@@ -152,31 +152,55 @@ const galleryPhotos: GalleryPhoto[] = [
   },
 ];
 
+interface VisionGalleryItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  url: string;
+  tag: string;
+}
+
+const VISION_16_9_IMAGES: VisionGalleryItem[] = [
+  {
+    id: 'vision-1',
+    title: 'Modern Child-Centred Campus',
+    subtitle: 'Safe, rounded wooden interior & vibrant learning zones',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg',
+    tag: 'Campus Architecture',
+  },
+  {
+    id: 'vision-2',
+    title: 'Experiential Nordic Play',
+    subtitle: 'Hands-on sensory exploration & inquisitive learning',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg',
+    tag: 'Nordic Pedagogy',
+  },
+  {
+    id: 'vision-3',
+    title: 'Educator Mentorship & Care',
+    subtitle: 'Passionate NTT certified teachers nurturing every milestone',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(7).jpeg',
+    tag: 'Teacher Excellence',
+  },
+  {
+    id: 'vision-4',
+    title: 'Creative Art & Motor Growth',
+    subtitle: 'Unlocking imagination through tactile creativity & building',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg',
+    tag: 'Creative Discovery',
+  },
+  {
+    id: 'vision-5',
+    title: 'Collaborative Joy & Friendships',
+    subtitle: 'Fostering empathy, communication, and emotional resilience',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg',
+    tag: 'Social Growth',
+  },
+];
+
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [activeVisionIndex, setActiveVisionIndex] = useState(0);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      const nextMuted = !videoRef.current.muted;
-      videoRef.current.muted = nextMuted;
-      setIsMuted(nextMuted);
-    }
-  };
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setIsPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      }
-    }
-  };
 
   const handleNavigate = (tab: string) => {
     if (setCurrentTab) {
@@ -732,80 +756,98 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
               </div>
             </div>
 
-            {/* Right Column: 9:16 Ratio Video Reel (5 columns on lg) */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              {/* Smartphone / 9:16 Mockup Frame */}
-              <div className="relative w-full max-w-[280px] sm:max-w-[310px] aspect-[9/16] rounded-[32px] overflow-hidden border-[6px] border-stone-800/90 shadow-2xl bg-black group">
-                
-                {/* Autoplaying 9:16 Video */}
-                <video
-                  ref={videoRef}
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Founder%20Video/Founder.mp4"
-                  autoPlay
-                  loop
-                  muted={isMuted}
-                  playsInline
-                  className="w-full h-full object-cover block cursor-pointer"
-                  onClick={togglePlay}
+            {/* Right Column: 5 16:9 Image Placeholders & Vision Showcase (5 columns on lg) */}
+            <div className="lg:col-span-5 flex flex-col space-y-4">
+              
+              {/* Primary 16:9 Featured Image Showcase */}
+              <div className="relative w-full aspect-video rounded-3xl overflow-hidden border-2 border-stone-700/80 shadow-2xl bg-stone-950 group">
+                <img
+                  src={VISION_16_9_IMAGES[activeVisionIndex].url}
+                  alt={VISION_16_9_IMAGES[activeVisionIndex].title}
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                  referrerPolicy="no-referrer"
                 />
 
-                {/* Top Badge: Video Indicator */}
-                <div className="absolute top-3.5 right-3.5 flex items-center pointer-events-none z-20">
-                  <span className="bg-black/60 backdrop-blur-md text-[#FFD400] text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
-                    9:16 HD
+                {/* Top Overlay Badges */}
+                <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none z-10">
+                  <span className="bg-stone-900/80 backdrop-blur-md text-[#FFD400] text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1 shadow-sm">
+                    <Sparkles className="w-3 h-3 text-[#FFD400]" />
+                    <span>16:9 HD Vision</span>
+                  </span>
+                  <span className="bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/15">
+                    Photo {activeVisionIndex + 1} of 5
                   </span>
                 </div>
 
-                {/* Primary Tap to Unmute / Mute Floating Overlay Pill */}
-                <button
-                  onClick={toggleMute}
-                  className={`absolute top-14 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full text-xs font-bold shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer ${
-                    isMuted
-                      ? 'bg-[#E1007A] text-white animate-bounce shadow-pink-900/50 hover:bg-pink-600'
-                      : 'bg-black/70 backdrop-blur-md text-white border border-white/25 hover:bg-black/80'
-                  }`}
-                  title={isMuted ? "Click to unmute sound" : "Click to mute"}
-                >
-                  {isMuted ? (
-                    <>
-                      <VolumeX className="w-4 h-4 text-white animate-pulse" />
-                      <span>Tap to Unmute Sound 🔊</span>
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 className="w-4 h-4 text-[#FFD400]" />
-                      <span>Sound On (Click to Mute)</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Bottom Video Controls Bar */}
-                <div className="absolute bottom-0 inset-x-0 p-3.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center justify-between z-20">
-                  <button
-                    onClick={togglePlay}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition cursor-pointer"
-                    aria-label={isPlaying ? "Pause video" : "Play video"}
-                  >
-                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
-                  </button>
-
-                  <div className="text-[11px] text-white/90 font-medium truncate max-w-[140px]">
-                    Kinderbee Video
+                {/* Bottom Caption Overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/70 to-transparent flex flex-col justify-end z-10 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-pink-300 bg-pink-950/60 px-2 py-0.5 rounded-md border border-pink-500/30">
+                      {VISION_16_9_IMAGES[activeVisionIndex].tag}
+                    </span>
+                    
+                    {/* Prev / Next Controls */}
+                    <div className="flex items-center gap-1 pointer-events-auto">
+                      <button
+                        onClick={() => setActiveVisionIndex((prev) => (prev === 0 ? VISION_16_9_IMAGES.length - 1 : prev - 1))}
+                        className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white backdrop-blur-xs transition cursor-pointer"
+                        title="Previous Image"
+                        aria-label="Previous Image"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setActiveVisionIndex((prev) => (prev === VISION_16_9_IMAGES.length - 1 ? 0 : prev + 1))}
+                        className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white backdrop-blur-xs transition cursor-pointer"
+                        title="Next Image"
+                        aria-label="Next Image"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
-                  <button
-                    onClick={toggleMute}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition cursor-pointer"
-                    aria-label={isMuted ? "Unmute" : "Mute"}
-                  >
-                    {isMuted ? <VolumeX className="w-4 h-4 text-white" /> : <Volume2 className="w-4 h-4 text-[#FFD400]" />}
-                  </button>
+                  <h3 className="font-bold text-white text-sm sm:text-base leading-snug">
+                    {VISION_16_9_IMAGES[activeVisionIndex].title}
+                  </h3>
+                  <p className="text-stone-300 text-xs line-clamp-1">
+                    {VISION_16_9_IMAGES[activeVisionIndex].subtitle}
+                  </p>
                 </div>
               </div>
 
-              {/* Sub-label under phone frame */}
-              <p className="text-stone-400 text-xs mt-3 flex items-center gap-1.5 font-medium">
-                <span>Direct message from Kinderbee Leadership</span>
+              {/* 5 Thumbnails Grid in 16:9 Ratio */}
+              <div className="grid grid-cols-5 gap-2 pt-1">
+                {VISION_16_9_IMAGES.map((img, idx) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setActiveVisionIndex(idx)}
+                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer group/thumb bg-stone-900 ${
+                      activeVisionIndex === idx
+                        ? 'border-[#FFD400] shadow-lg shadow-amber-500/20 scale-105 ring-2 ring-[#FFD400]/40'
+                        : 'border-stone-700/70 hover:border-white/50 opacity-70 hover:opacity-100'
+                    }`}
+                    title={img.title}
+                    aria-label={`View ${img.title}`}
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.title}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover/thumb:bg-transparent transition-colors"></div>
+                    <div className="absolute bottom-1 right-1 bg-black/80 text-[8px] text-white px-1 py-0.5 rounded font-mono font-bold leading-none">
+                      {idx + 1}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Sub-label */}
+              <p className="text-stone-400 text-xs text-center flex items-center justify-center gap-1.5 font-medium">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
+                <span>5 Dedicated 16:9 Vision &amp; Campus Environments</span>
               </p>
             </div>
           </div>

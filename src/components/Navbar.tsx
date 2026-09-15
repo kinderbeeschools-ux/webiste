@@ -54,19 +54,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
+    { id: 'franchise', label: 'Franchise' },
+    { id: 'fwa', label: 'Teacher Training', fullLabel: 'NTT Teacher Training' },
     { 
-      id: 'partnerships', 
-      label: 'Franchise',
+      id: 'investors', 
+      label: 'Partner with us',
       dropdown: [
-        { id: 'partnerships-preschool', label: 'Franchise Preschool', desc: 'Zero royalty play school ecosystem' },
         { id: 'partnerships-cbse', label: 'CBSE & IB School Setup', desc: 'End-to-end K-12 school establishment' },
         { id: 'partnerships-degree', label: 'Degree College Setup', desc: 'Higher education institution consultancy' },
         { id: 'programs', label: 'Programs & Solutions Overview', desc: 'All institutional academic pathways' }
       ]
     },
-    { id: 'fwa', label: 'Teacher Training', fullLabel: 'NTT Teacher Training' },
-    { id: 'investors', label: 'Partner with us' },
-    { id: 'payments', label: 'Pay Fees' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' },
   ];
@@ -97,8 +95,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             {navLinks.map((link) => {
               const isActive = 
                 currentTab === link.id || 
+                (link.id === 'franchise' && (currentTab === 'franchise' || currentTab === 'partnerships' || currentTab === 'partnerships-preschool')) ||
                 (link.dropdown && link.dropdown.some(sub => sub.id === currentTab)) ||
-                (link.id === 'partnerships' && currentTab.startsWith('partnerships'));
+                (link.id === 'investors' && (currentTab === 'investors' || currentTab === 'partnerships-cbse' || currentTab === 'partnerships-degree' || currentTab === 'programs'));
 
               if (link.dropdown) {
                 return (
@@ -244,8 +243,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               {navLinks.map((link) => {
                 const isActive = 
                   currentTab === link.id || 
+                  (link.id === 'franchise' && (currentTab === 'franchise' || currentTab === 'partnerships' || currentTab === 'partnerships-preschool')) ||
                   (link.dropdown && link.dropdown.some(d => d.id === currentTab)) ||
-                  (link.id === 'partnerships' && currentTab.startsWith('partnerships'));
+                  (link.id === 'investors' && (currentTab === 'investors' || currentTab === 'partnerships-cbse' || currentTab === 'partnerships-degree' || currentTab === 'programs'));
                 
                 if (link.dropdown) {
                   return (

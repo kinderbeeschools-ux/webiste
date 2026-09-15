@@ -530,16 +530,6 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               {/* TAB 3: PTT / TEACHER TRAINING (FINNISH-WAY ACADEMY) */}
               {activeTab === 'ptt' && (
                 <div className="space-y-3.5 animate-fadeIn">
-                  <div className="bg-pink-50/70 border border-pink-200 rounded-xl p-3 flex items-center justify-between text-xs">
-                    <div>
-                      <span className="font-bold text-[#E1007A] block">Advanced Diploma in ECCE (120 Hours)</span>
-                      <span className="text-stone-600">Special 90% Discount: ₹4,999 (Valid until 5 October 2026)</span>
-                    </div>
-                    <span className="bg-[#E1007A] text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">
-                      Offer: ₹4,999
-                    </span>
-                  </div>
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-xs font-bold text-stone-700 mb-1">Applicant / Educator Name *</label>

@@ -39,12 +39,6 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const tabs: { id: FranchiseType; label: string; icon: React.ReactNode; badge: string }[] = [
-    { id: 'preschool', label: 'Franchise Preschool', icon: <School className="w-4 h-4" />, badge: 'Zero Royalty' },
-    { id: 'cbse', label: 'CBSE & IB School Setup', icon: <BookOpen className="w-4 h-4" />, badge: 'K-12 & IB' },
-    { id: 'degree', label: 'Degree College Setup', icon: <GraduationCap className="w-4 h-4" />, badge: 'Higher Ed' },
-  ];
-
   return (
     <div className="space-y-12 pb-20 bg-[#FAF9F6]">
       <SEOHead 
@@ -58,37 +52,6 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
         settings={settings}
       />
 
-
-
-      {/* Top Model Switcher Tab Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-4">
-        <div className="bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-full border border-stone-200 shadow-xs grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2">
-          {tabs.map((tab) => {
-            const isTabActive = resolvedTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={`w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 sm:px-5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
-                  isTabActive
-                    ? 'bg-[#E1007A] text-white shadow-sm'
-                    : 'text-stone-600 hover:text-[#E1007A] hover:bg-stone-50'
-                }`}
-              >
-                {tab.icon}
-                <span className="truncate">{tab.label}</span>
-                <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-extrabold hidden md:inline-block ${
-                  isTabActive
-                    ? 'bg-white/20 text-white'
-                    : 'bg-stone-100 text-stone-500'
-                }`}>
-                  {tab.badge}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
       {resolvedTab === 'preschool' && (
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner matching Reference Design */}
