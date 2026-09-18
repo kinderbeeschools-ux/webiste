@@ -80,86 +80,65 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
         ogType="article"
       />
       
-      {/* WordPress Editorial Top Header Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-16 px-4 sm:px-8 border-b border-pink-950/40">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,0,122,0.28),transparent_60%)]"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.14),transparent_50%)]"></div>
-        </div>
-
-        <div className="max-w-5xl mx-auto relative z-10 space-y-4">
-          
-          {/* Breadcrumb Navigation with WordPress Category Taxonomy */}
-          <div className="flex items-center gap-2 text-xs text-pink-200 font-medium flex-wrap">
-            <button 
-              onClick={onBack}
-              className="text-pink-300 hover:text-white flex items-center gap-1 font-semibold transition cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Blogs Feed</span>
-            </button>
-            <span className="text-pink-500">/</span>
-            <button
-              onClick={() => {
-                if (onSelectCategory) {
-                  onSelectCategory(blog.category);
-                  onBack();
-                } else {
-                  onBack();
-                }
-              }}
-              className="bg-pink-950/60 hover:bg-pink-900 border border-pink-700/40 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-[#FFD400] transition cursor-pointer"
-            >
-              {blog.category}
-            </button>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white leading-tight tracking-tight pt-2">
-            {blog.title}
-          </h1>
-
-          {/* Author Byline & Meta details */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-pink-900/40 text-xs text-pink-200/90">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E1007A] to-amber-400 p-0.5 shadow-md">
-                <div className="w-full h-full bg-stone-900 rounded-full flex items-center justify-center font-bold text-[#FFD400]">
-                  {blog.author.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <div className="font-bold text-white text-sm">{blog.author}</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#FFD400]" /> {blog.date}</span>
-              <span>&bull;</span>
-              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#FFD400]" /> {blog.readTime}</span>
-              <span>&bull;</span>
-              <span className="flex items-center gap-1 text-[#FFD400] font-bold"><Eye className="w-3.5 h-3.5" /> {blog.views || 0} views</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
       {/* Main Single Page Article & WordPress Sidebar Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
           {/* Main Article Content (8 Columns) */}
           <article className="lg:col-span-8 bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden p-6 sm:p-10 space-y-8">
             
-            {/* Action Bar (Share, Bookmark, Back) */}
-            <div className="flex items-center justify-between pb-6 border-b border-stone-100">
-              <button
+            {/* Breadcrumb Navigation with WordPress Category Taxonomy */}
+            <div className="flex items-center gap-2 text-xs text-stone-500 font-medium flex-wrap">
+              <button 
                 onClick={onBack}
-                className="inline-flex items-center gap-2 text-xs font-bold text-stone-600 hover:text-[#E1007A] transition cursor-pointer"
+                className="text-stone-600 hover:text-[#E1007A] flex items-center gap-1 font-semibold transition cursor-pointer"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>&larr; Return to All Articles</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Blogs</span>
               </button>
+              <span className="text-stone-300">/</span>
+              <button
+                onClick={() => {
+                  if (onSelectCategory) {
+                    onSelectCategory(blog.category);
+                    onBack();
+                  } else {
+                    onBack();
+                  }
+                }}
+                className="bg-pink-50 hover:bg-pink-100 border border-pink-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-[#E1007A] transition cursor-pointer"
+              >
+                {blog.category}
+              </button>
+            </div>
+
+            {/* Title & Author Meta */}
+            <div className="space-y-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-stone-900 leading-tight tracking-tight">
+                {blog.title}
+              </h1>
+
+              <div className="flex flex-wrap items-center justify-between gap-4 py-3 border-y border-stone-100 text-xs text-stone-500">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-pink-100 text-[#E1007A] flex items-center justify-center font-bold text-xs border border-pink-200">
+                    {blog.author.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-bold text-stone-900 text-xs">{blog.author}</div>
+                    <div className="text-[10px] text-stone-400">Kinderbee Editorial Team</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-stone-500">
+                  <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#E1007A]" /> {blog.date}</span>
+                  <span>&bull;</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#E1007A]" /> {blog.readTime}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Bar (Share, Bookmark) */}
+            <div className="flex items-center justify-end pb-2">
 
               <div className="flex items-center gap-2">
                 <button
@@ -284,7 +263,7 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
                       <h5 className="text-xs font-bold text-stone-900 group-hover:text-[#E1007A] transition line-clamp-2 leading-snug">
                         {trend.title}
                       </h5>
-                      <div className="text-[10px] text-stone-400">{trend.views || 0} views &bull; {trend.date}</div>
+                      <div className="text-[10px] text-stone-400">{trend.date}</div>
                     </div>
                   </div>
                 ))}

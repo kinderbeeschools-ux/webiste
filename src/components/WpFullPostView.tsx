@@ -235,11 +235,6 @@ export const WpFullPostView: React.FC<WpFullPostViewProps> = ({
                 {post.readTime || '5 min read'}
               </span>
               <span>&bull;</span>
-              <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                <Eye className="w-3.5 h-3.5" />
-                {post.views || 520} views
-              </span>
-              <span>&bull;</span>
               <span className="flex items-center gap-1 text-blue-600 font-semibold">
                 <MessageSquare className="w-3.5 h-3.5" />
                 {comments.length} comments

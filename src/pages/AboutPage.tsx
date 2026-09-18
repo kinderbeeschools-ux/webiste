@@ -13,142 +13,117 @@ interface AboutPageProps {
 interface GalleryPhoto {
   id: string;
   url: string;
+  fallbackUrl?: string;
   title: string;
   category: string;
   aspect: string;
 }
 
+const SUPABASE_BASE = "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public";
+
 const galleryPhotos: GalleryPhoto[] = [
-  // Column 1 (6 items)
+  // Column 1 (5 items)
   {
     id: 'photo-1',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(1).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(1).jfif`,
     title: 'Hands-On Play & Tactile Exploration',
     category: 'Creative Play',
     aspect: 'aspect-[3/4]',
   },
   {
     id: 'photo-2',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(1).jpeg`,
     title: 'Expressive Art & Sensory Painting',
     category: 'Art & Creativity',
     aspect: 'aspect-[4/3]',
   },
   {
     id: 'photo-3',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(2).jfif`,
     title: 'Interactive Circle Time & Rhymes',
     category: 'Language & Social',
     aspect: 'aspect-[4/3]',
   },
   {
     id: 'photo-4',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(7).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(2).jpeg`,
     title: 'Curiosity & Science Discovery Labs',
     category: 'STEM Exploration',
     aspect: 'aspect-[4/3]',
   },
   {
     id: 'photo-5',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(3).jfif`,
     title: 'Safe, Joyful & Child-Centred Spaces',
     category: 'Campus Life',
     aspect: 'aspect-[4/3]',
   },
+
+  // Column 2 (5 items)
   {
     id: 'photo-6',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(3).jpeg`,
     title: 'Practical Life Skills & Montessori Corner',
     category: 'Life Skills',
     aspect: 'aspect-[16/10]',
   },
-
-  // Column 2 (6 items)
   {
     id: 'photo-7',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(2).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(4).jfif`,
     title: 'Collaborative Teamwork & Social Play',
     category: 'Collaborative Play',
     aspect: 'aspect-[16/10]',
   },
   {
     id: 'photo-8',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(2).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(5).jfif`,
     title: 'Building Blocks & Fine Motor Skills',
     category: 'Cognitive Skills',
     aspect: 'aspect-square',
   },
   {
     id: 'photo-9',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(3).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(6).jfif`,
     title: 'Curious Minds & Guided Discovery',
     category: 'Active Discovery',
     aspect: 'aspect-[4/5]',
   },
   {
     id: 'photo-10',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(5).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(7).jfif`,
     title: 'Outdoor Play & Physical Agility',
     category: 'Outdoor Activities',
     aspect: 'aspect-[16/10]',
   },
+
+  // Column 3 (4 items)
   {
     id: 'photo-11',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(9).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(8).jfif`,
     title: 'Sensory Sand, Color & Water Play',
     category: 'Sensory Learning',
     aspect: 'aspect-[3/4]',
   },
   {
     id: 'photo-12',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(11).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(9).jfif`,
     title: 'Music, Rhythm & Dance Celebrations',
     category: 'Performing Arts',
     aspect: 'aspect-[4/3]',
   },
-
-  // Column 3 (6 items)
   {
     id: 'photo-13',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/Gallery/kids%20(4).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(10).jfif`,
     title: 'Early STEM, Logic & Puzzles',
     category: 'Early Math & STEM',
     aspect: 'aspect-[16/10]',
   },
   {
     id: 'photo-14',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(3).jpeg',
+    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(11).jfif`,
     title: 'Reading Nook & Storybook Magic',
     category: 'Literacy & Imagination',
     aspect: 'aspect-[16/10]',
-  },
-  {
-    id: 'photo-15',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(6).jpeg',
-    title: 'Celebrating Playful Milestones',
-    category: 'Milestones & Events',
-    aspect: 'aspect-[4/5]',
-  },
-  {
-    id: 'photo-16',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(8).jpeg',
-    title: 'Lifelong Friendships & Social Bonding',
-    category: 'Social Connection',
-    aspect: 'aspect-[16/10]',
-  },
-  {
-    id: 'photo-17',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(12).jpeg',
-    title: 'Confidence, Curiosity & Daily Wonder',
-    category: 'Holistic Growth',
-    aspect: 'aspect-[4/3]',
-  },
-  {
-    id: 'photo-18',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Our%20Philosophy.jpeg',
-    title: 'Nordic Play Heritage & Joyful Learning',
-    category: 'Nordic Heritage',
-    aspect: 'aspect-square',
   },
 ];
 
@@ -554,7 +529,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
           {/* Column 1 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(0, 6).map((photo, colIndex) => {
+            {galleryPhotos.slice(0, 5).map((photo, colIndex) => {
               const globalIndex = colIndex;
               return (
                 <div
@@ -588,8 +563,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 2 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(6, 12).map((photo, colIndex) => {
-              const globalIndex = 6 + colIndex;
+            {galleryPhotos.slice(5, 10).map((photo, colIndex) => {
+              const globalIndex = 5 + colIndex;
               return (
                 <div
                   key={photo.id}
@@ -622,8 +597,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 3 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(12, 18).map((photo, colIndex) => {
-              const globalIndex = 12 + colIndex;
+            {galleryPhotos.slice(10, 14).map((photo, colIndex) => {
+              const globalIndex = 10 + colIndex;
               return (
                 <div
                   key={photo.id}
@@ -658,7 +633,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         {/* Footer Sub-note */}
         <div className="text-center pt-8">
           <p className="text-xs sm:text-sm text-stone-500 font-medium">
-            Click on any moment to open full-screen view • 18 joyful campus memories
+            Click on any moment to open full-screen view • 14 joyful campus memories
           </p>
         </div>
       </section>

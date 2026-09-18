@@ -144,31 +144,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         settings={settings}
       />
 
-      {/* Header Banner with Kinderbee Brand Colors */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
-        {/* Glow & Atmospheric Brand Overlays */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,0,122,0.28),transparent_60%)]"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.14),transparent_50%)]"></div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto relative z-10 space-y-5">
-          <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-            <span>Kinderbee Editorial & Research</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
-            Insights & Nordic <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Pedagogy Blogs</span>
-          </h1>
-          <p className="text-base sm:text-lg text-pink-100/80 max-w-2xl mx-auto font-normal leading-relaxed">
-            Explore peer-reviewed articles on early childhood development, NEP 2020 compliance, zero-royalty preschool franchise models, and institutional excellence.
-          </p>
-        </div>
-      </section>
-
       {/* WordPress Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8 space-y-10">
 
         {/* WordPress Editorial Top Bar */}
         <div className="bg-white rounded-2xl border border-stone-200/80 p-4 sm:p-5 shadow-xs space-y-4">
@@ -355,11 +332,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                     <Clock className="w-3.5 h-3.5 text-[#E1007A]" />
                     {featuredPost.readTime}
                   </span>
-                  <span>&bull;</span>
-                  <span className="flex items-center gap-1.5 text-[#E1007A] font-bold">
-                    <Eye className="w-3.5 h-3.5" />
-                    {featuredPost.views || 0} views
-                  </span>
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-[#1C1917] leading-tight group-hover:text-[#E1007A] transition-colors">
@@ -496,8 +468,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                         <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-[#E1007A]" />{blog.date}</span>
                         <span>&bull;</span>
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{blog.readTime}</span>
-                        <span>&bull;</span>
-                        <span className="text-[#E1007A] font-semibold flex items-center gap-1"><Eye className="w-3 h-3" />{blog.views || 0} views</span>
                       </div>
 
                       <h4 className="font-display font-bold text-lg text-[#1C1917] group-hover:text-[#E1007A] transition-colors leading-snug">
@@ -623,8 +593,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                       </h5>
                       <div className="flex items-center gap-2 text-[10px] text-stone-400">
                         <span>{blog.date}</span>
-                        <span>&bull;</span>
-                        <span className="text-[#E1007A] font-semibold">{blog.views || 0} views</span>
                       </div>
                     </div>
                   </div>
