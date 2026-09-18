@@ -4,7 +4,7 @@ import {
   Users, Building, Star, Download, ChevronDown, HelpCircle, 
   GraduationCap, School, Camera, Heart, Sun, Smile, Clock, 
   MapPin, Phone, Mail, Send, Calendar, Check, Play, Pause, UserCheck,
-  Quote, ChevronLeft, ChevronRight
+  Quote, ChevronLeft, ChevronRight, Volume2, VolumeX, Video
 } from 'lucide-react';
 import { BlogPost, FAQItem, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
@@ -203,6 +203,30 @@ export const HomePage: React.FC<HomePageProps> = ({
   const testimonialScrollRef = useRef<HTMLDivElement>(null);
   const displayFaqs = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
 
+  // Hero Video Background State
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
+
+  const toggleVideoPlay = () => {
+    if (heroVideoRef.current) {
+      if (isVideoPlaying) {
+        heroVideoRef.current.pause();
+        setIsVideoPlaying(false);
+      } else {
+        heroVideoRef.current.play().catch(() => {});
+        setIsVideoPlaying(true);
+      }
+    }
+  };
+
+  const toggleVideoMute = () => {
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = !isVideoMuted;
+      setIsVideoMuted(!isVideoMuted);
+    }
+  };
+
   // Contact Form State
   const [enquiryName, setEnquiryName] = useState('');
   const [enquiryPhone, setEnquiryPhone] = useState('');
@@ -268,6 +292,625 @@ export const HomePage: React.FC<HomePageProps> = ({
         description="At Kinderbee International Preschool, children learn through play, exploration and meaningful everyday experiences in a warm, safe and child-centred environment."
         settings={settings} 
       />
+
+      {/* =========================================================================
+          SECTION 1: HERO BANNER (VIDEO BACKGROUND)
+          ========================================================================= */}
+      <section className="relative min-h-[580px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center overflow-hidden bg-stone-950 text-white pt-14 pb-16 sm:pb-24 border-b border-stone-800">
+        {/* Background Video with AutoPlay, Loop, Muted, PlaysInline */}
+        <video
+          ref={heroVideoRef}
+          autoPlay
+          loop
+          muted={isVideoMuted}
+          playsInline
+          poster="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"
+          className="absolute inset-0 w-full h-full object-cover object-center scale-[1.02] transition-opacity duration-700 pointer-events-none"
+        >
+          <source src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Video/banner%20Video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Cinematic Translucent Dark Overlay for High Contrast Legibility */}
+        <div className="absolute inset-0 bg-black/60 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-black/40 to-stone-950/70 z-10 pointer-events-none" />
+
+        {/* Video Interactive Control Pill (Play/Pause, Sound Toggle) */}
+        <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 text-xs text-white shadow-lg">
+          <button
+            onClick={toggleVideoPlay}
+            className="hover:text-[#FFD400] transition flex items-center gap-1 cursor-pointer font-medium"
+            title={isVideoPlaying ? "Pause Video" : "Play Video"}
+          >
+            {isVideoPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            <span className="text-[11px]">{isVideoPlaying ? "Pause" : "Play"}</span>
+          </button>
+          <span className="text-white/30">•</span>
+          <button
+            onClick={toggleVideoMute}
+            className="hover:text-[#FFD400] transition flex items-center gap-1 cursor-pointer font-medium"
+            title={isVideoMuted ? "Unmute Sound" : "Mute Sound"}
+          >
+            {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+            <span className="text-[11px]">{isVideoMuted ? "Sound On" : "Mute"}</span>
+          </button>
+        </div>
+
+        {/* Foreground Content: Centered to match exact design in screenshot */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-20 w-full text-center space-y-6 sm:space-y-8 my-auto">
+          {/* Top Pill Badge: THE FUTURE OF EDUCATION STARTS HERE */}
+          <div className="flex justify-center">
+            <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#FFD400] bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
+              <Sparkles className="w-4 h-4 text-[#FFD400]" />
+              <span>THE FUTURE OF EDUCATION STARTS HERE</span>
+            </div>
+          </div>
+
+          {/* Main Headline */}
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
+              Reimagine Education.
+              <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1">
+                Transform Tomorrow.
+              </span>
+            </h1>
+            <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-2 drop-shadow-sm">
+              A future-ready education ecosystem empowering schools, educators and young minds through innovation, excellence and transformative learning.
+            </p>
+          </div>
+
+          {/* Call-to-Action: Explore KIPS → */}
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={scrollToPreschool}
+              className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-8 py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center gap-2 text-base cursor-pointer"
+            >
+              <span>Explore KIPS</span>
+              <span className="text-lg">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 2: PRESCHOOL PROGRAMMES (WITH IMAGE BOXES)
+          ========================================================================= */}
+      <section id="preschool-programmes" className="max-w-7xl mx-auto px-4 sm:px-8 pt-4">
+        <div className="space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
+              <GraduationCap className="w-3.5 h-3.5 text-[#E1007A]" />
+              <span>EARLY CHILDHOOD DEVELOPMENT PATHWAYS</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
+              Our Preschool Programmes
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              Age-aligned developmental stages thoughtfully designed to ignite innate curiosity, nurture emotional confidence, and cultivate foundational literacy and numeracy.
+            </p>
+          </div>
+
+          {/* 5 Distinct Cards with High-Resolution Image Boxes & Uniform Proportions */}
+          <div className="flex flex-wrap justify-center gap-6">
+            {/* 1. Playgroup */}
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm lg:max-w-none bg-white rounded-3xl border border-stone-200 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+              <div className="space-y-4">
+                {/* Image Box */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
+                  <img
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg"
+                    alt="Playgroup Toddler Explorers at Kinderbee"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-[#FFD400] text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                    Ages 1.5 – 2.5 Years
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-amber-700 flex items-center justify-center shadow-xs">
+                    <Sun className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
+                    Playgroup (Toddler Explorers)
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                    A gentle, joyful transition from home to school. Focuses on sensory play, gross motor coordination, emotional bonding, and rhythm circles.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-2 border-t border-stone-100">
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Sensory sandbox &amp; water play exploration</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Warm settling-in &amp; emotional comfort routines</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Musical rhymes, language sounds &amp; story time</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5">
+                <button
+                  onClick={() => onOpenConsultation('admission')}
+                  className="w-full bg-stone-50 hover:bg-[#E1007A] hover:text-white text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition border border-stone-200 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Enquire for Playgroup</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Nursery */}
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm lg:max-w-none bg-white rounded-3xl border border-stone-200 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+              <div className="space-y-4">
+                {/* Image Box */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
+                  <img
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(1).jpeg"
+                    alt="Nursery Curious Discoverers at Kinderbee"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-pink-300 text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                    Ages 2.5 – 3.5 Years
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-[#E1007A] flex items-center justify-center shadow-xs">
+                    <Smile className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
+                    Nursery (Curious Discoverers)
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                    Expanding conversational language, phonetic awareness, tactile creativity, and independence in everyday self-care routines.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-2 border-t border-stone-100">
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Expressive art, finger painting &amp; clay modelling</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Early phonics, vocabulary expansion &amp; songs</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Collaborative peer play and sharing habits</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5">
+                <button
+                  onClick={() => onOpenConsultation('admission')}
+                  className="w-full bg-stone-50 hover:bg-[#E1007A] hover:text-white text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition border border-stone-200 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Enquire for Nursery</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 3. Junior KG (LKG) */}
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm lg:max-w-none bg-white rounded-3xl border border-stone-200 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+              <div className="space-y-4">
+                {/* Image Box */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
+                  <img
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg"
+                    alt="Junior KG Young Thinkers at Kinderbee"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-blue-300 text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                    Ages 3.5 – 4.5 Years
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-blue-700 flex items-center justify-center shadow-xs">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
+                    Junior KG / LKG (Young Thinkers)
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                    Building foundational reading, numerical understanding, logical sequencing, and structured social interactions.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-2 border-t border-stone-100">
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Systematic Jolly-phonics &amp; pre-writing readiness</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Hands-on numeracy, sorting, patterns &amp; counting</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Curiosity science questions &amp; nature observations</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5">
+                <button
+                  onClick={() => onOpenConsultation('admission')}
+                  className="w-full bg-stone-50 hover:bg-[#E1007A] hover:text-white text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition border border-stone-200 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Enquire for Junior KG</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 4. Senior KG (UKG) */}
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm lg:max-w-none bg-white rounded-3xl border border-stone-200 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+              <div className="space-y-4">
+                {/* Image Box */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
+                  <img
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(3).jpeg"
+                    alt="Senior KG Future Achievers at Kinderbee"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-emerald-300 text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                    Ages 4.5 – 5.5 Years
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-emerald-700 flex items-center justify-center shadow-xs">
+                    <School className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
+                    Senior KG / UKG (Future Achievers)
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                    Preparing confident, articulate young learners for Grade 1 entrance with comprehensive literacy, scientific inquiry, and problem-solving.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-2 border-t border-stone-100">
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Independent reading fluency &amp; sentence building</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Early addition/subtraction &amp; logical reasoning</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>NEP 2020 seamless primary school transition</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5">
+                <button
+                  onClick={() => onOpenConsultation('admission')}
+                  className="w-full bg-stone-50 hover:bg-[#E1007A] hover:text-white text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition border border-stone-200 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Enquire for Senior KG</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 5. Daycare & Extended Care - Uniform Proportion & Clean Symmetry */}
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm lg:max-w-none bg-white rounded-3xl border border-stone-200 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+              <div className="space-y-4">
+                {/* Image Box */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
+                  <img
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg"
+                    alt="Daycare and Extended Care at Kinderbee"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-purple-300 text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                    Ages 1.5 – 8 Years
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-purple-700 flex items-center justify-center shadow-xs">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
+                    Daycare &amp; Extended Care
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                    A loving, secure home-away-from-home for working parents. Afternoon nap pods, nutritious meals, curated hobby stations, and care.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-2 border-t border-stone-100">
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Nutritious meals, dining &amp; CCTV nap pods</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Evening creative crafts &amp; hobby stations</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-stone-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Trained early childhood loving caregivers</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5">
+                <button
+                  onClick={() => onOpenConsultation('daycare')}
+                  className="w-full bg-stone-50 hover:bg-[#E1007A] hover:text-white text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition border border-stone-200 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Enquire for Daycare</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 3: WHY PARENTS CHOOSE KINDERBEE
+          ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="bg-stone-50 border border-stone-200 rounded-3xl p-8 sm:p-12 lg:p-16 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
+                <Award className="w-3.5 h-3.5 text-[#E1007A]" />
+                <span>THE KINDERBEE DIFFERENCE</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
+                Why Parents Choose Kinderbee
+              </h2>
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+                We combine global early learning benchmarks with authentic care, creating a joyful second home where every child thrives naturally.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenConsultation('campus')}
+              className="inline-flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-xl transition cursor-pointer self-start md:self-end"
+            >
+              <span>Schedule a Campus Walkthrough</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-pink-100 text-[#E1007A] flex items-center justify-center font-bold">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-stone-900">
+                Nordic Play Pedagogy
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                Children explore through structured inquiry and hands-on discovery rather than passive rote memorization, building deep critical thinking.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-stone-900">
+                Uncompromising Safety
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                Child-safe rounded wooden furniture, 24/7 CCTV streaming for parents, biometric campus security, and vetted certified staff.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                <GraduationCap className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-stone-900">
+                FWA-Trained Educators
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                Every teacher undergoes intensive certification from FinnishWay Academy in child psychology, observational assessments, and positive guidance.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-stone-900">
+                Active Parent Partnership
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                Daily digital logs, developmental portfolios, weekend workshops, and open-door educator discussions ensure parents are genuine partners.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 4: OUR HOLISTIC LEARNING APPROACH
+          ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
+              <Heart className="w-3.5 h-3.5 text-[#E1007A]" />
+              <span>WHOLE-CHILD PEDAGOGY</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
+              Our Holistic Learning Approach
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              Every day at Kinderbee integrates cognitive, language, social-emotional, and physical growth through balanced, playful exploration.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#E1007A] flex items-center justify-center font-bold">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Cognitive &amp; STEM</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Pattern matching, block engineering, sensory science experiments, and mathematical reasoning.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Language &amp; Phonics</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Phonetic awareness, story immersion circles, multilingual vocabulary, and active listening skills.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <Smile className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Social &amp; Emotional</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Self-regulation, empathy, conflict resolution, collaborative teamwork, and positive communication.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                <Sun className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Physical Agility</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Fine motor precision (puzzles, scissors, threading) and gross motor agility (climbing, balance beams).
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3 sm:col-span-2 lg:col-span-1">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <Award className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Creative Arts &amp; Music</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Sensory painting, dramatic puppet role-play, rhythmic instruments, and free imaginative expression.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 5: CAMPUS & INSPIRING SPACES
+          ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xl">
+          <div className="p-8 sm:p-12 space-y-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
+                  <School className="w-3.5 h-3.5 text-[#E1007A]" />
+                  <span>CAMPUS &amp; LEARNING ARCHITECTURE</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
+                  Safe, Inspiring &amp; Child-Centred Spaces
+                </h2>
+                <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+                  Conceived as the &ldquo;Third Teacher&rdquo;—every corner of a Kinderbee campus promotes active discovery, unhurried focus, and uncompromised child safety.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => onOpenConsultation('campus')}
+                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 py-3 rounded-xl shadow-xs transition text-xs sm:text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>Book Campus Tour</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentTab('about');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold px-5 py-3 rounded-xl transition text-xs sm:text-sm cursor-pointer"
+                >
+                  Explore Campus Gallery
+                </button>
+              </div>
+            </div>
+
+            {/* Photo Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
+                <img
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg"
+                  alt="Modern Child-Centred Campus"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <div className="text-xs font-bold">Nordic Classrooms</div>
+                    <div className="text-[11px] text-stone-300">Natural wood &amp; ergonomic seating</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
+                <img
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(1).jpeg"
+                  alt="Expressive Art & Sensory Zone"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <div className="text-xs font-bold">Sensory &amp; Art Studio</div>
+                    <div className="text-[11px] text-stone-300">Tactile colors &amp; clay creation</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
+                <img
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(2).jpeg"
+                  alt="Curiosity Discovery Labs"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <div className="text-xs font-bold">Discovery Labs</div>
+                    <div className="text-[11px] text-stone-300">STEM puzzles &amp; natural inquiry</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
+                <img
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(3).jpeg"
+                  alt="Reading Nook & Montessori Corner"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <div className="text-xs font-bold">Reading Nook</div>
+                    <div className="text-[11px] text-stone-300">Storybook magic &amp; cozy cushions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* =========================================================================
           SECTION 6: COMMUNITY & PARENT TESTIMONIALS (SMOOTH LEFT MOVEMENT)

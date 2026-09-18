@@ -489,6 +489,11 @@ loadDb();
 // API ROUTES
 // ==========================================
 
+// Health Check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 // Authenticate Admin
 app.post("/api/auth/login", (req, res) => {
   const { password } = req.body;

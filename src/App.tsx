@@ -21,6 +21,7 @@ import { PaymentPage } from './pages/PaymentPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
+import { DEFAULT_BLOGS } from './data/defaultBlogs';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<string>(() => {
@@ -48,7 +49,7 @@ export function App() {
     return savedTab || 'home';
   });
   const [settings, setSettings] = useState<SystemSettings | null>(null);
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>(DEFAULT_BLOGS);
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
 
   // Modals & Single Post Selection
@@ -104,20 +105,36 @@ export function App() {
       .catch(err => console.error(err));
 
     fetch('/api/blogs')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('API network response was not ok');
+        return res.json();
+      })
       .then(data => {
-        setBlogs(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setBlogs(data);
+          const params = new URLSearchParams(window.location.search);
+          const blogIdParam = params.get('blogId');
+          if (blogIdParam) {
+            const found = data.find((b: BlogPost) => b.id === blogIdParam);
+            if (found) {
+              setSelectedBlog(found);
+              setCurrentTab('blogs');
+            }
+          }
+        }
+      })
+      .catch(err => {
+        console.warn('Using default blogs due to API note:', err);
         const params = new URLSearchParams(window.location.search);
         const blogIdParam = params.get('blogId');
         if (blogIdParam) {
-          const found = data.find((b: BlogPost) => b.id === blogIdParam);
+          const found = DEFAULT_BLOGS.find((b: BlogPost) => b.id === blogIdParam);
           if (found) {
             setSelectedBlog(found);
             setCurrentTab('blogs');
           }
         }
-      })
-      .catch(err => console.error(err));
+      });
 
     fetch('/api/faqs')
       .then(res => res.json())
