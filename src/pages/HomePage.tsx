@@ -203,30 +203,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   const testimonialScrollRef = useRef<HTMLDivElement>(null);
   const displayFaqs = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
 
-  // Hero Video Background State
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-  const [isVideoMuted, setIsVideoMuted] = useState(true);
-
-  const toggleVideoPlay = () => {
-    if (heroVideoRef.current) {
-      if (isVideoPlaying) {
-        heroVideoRef.current.pause();
-        setIsVideoPlaying(false);
-      } else {
-        heroVideoRef.current.play().catch(() => {});
-        setIsVideoPlaying(true);
-      }
-    }
-  };
-
-  const toggleVideoMute = () => {
-    if (heroVideoRef.current) {
-      heroVideoRef.current.muted = !isVideoMuted;
-      setIsVideoMuted(!isVideoMuted);
-    }
-  };
-
   // Contact Form State
   const [enquiryName, setEnquiryName] = useState('');
   const [enquiryPhone, setEnquiryPhone] = useState('');
@@ -296,13 +272,12 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* =========================================================================
           SECTION 1: HERO BANNER (VIDEO BACKGROUND)
           ========================================================================= */}
-      <section className="relative min-h-[580px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center overflow-hidden bg-stone-950 text-white pt-14 pb-16 sm:pb-24 border-b border-stone-800">
-        {/* Background Video with AutoPlay, Loop, Muted, PlaysInline */}
+      <section className="relative min-h-[460px] sm:min-h-[500px] lg:min-h-[540px] flex items-center justify-center overflow-hidden bg-stone-950 text-white py-10 sm:py-14 border-b border-stone-800">
+        {/* Background Video with AutoPlay, Loop, Muted, PlaysInline - purely plays without sound */}
         <video
-          ref={heroVideoRef}
           autoPlay
           loop
-          muted={isVideoMuted}
+          muted
           playsInline
           poster="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"
           className="absolute inset-0 w-full h-full object-cover object-center scale-[1.02] transition-opacity duration-700 pointer-events-none"
@@ -314,29 +289,8 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="absolute inset-0 bg-black/60 z-10 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-black/40 to-stone-950/70 z-10 pointer-events-none" />
 
-        {/* Video Interactive Control Pill (Play/Pause, Sound Toggle) */}
-        <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 text-xs text-white shadow-lg">
-          <button
-            onClick={toggleVideoPlay}
-            className="hover:text-[#FFD400] transition flex items-center gap-1 cursor-pointer font-medium"
-            title={isVideoPlaying ? "Pause Video" : "Play Video"}
-          >
-            {isVideoPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            <span className="text-[11px]">{isVideoPlaying ? "Pause" : "Play"}</span>
-          </button>
-          <span className="text-white/30">•</span>
-          <button
-            onClick={toggleVideoMute}
-            className="hover:text-[#FFD400] transition flex items-center gap-1 cursor-pointer font-medium"
-            title={isVideoMuted ? "Unmute Sound" : "Mute Sound"}
-          >
-            {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-            <span className="text-[11px]">{isVideoMuted ? "Sound On" : "Mute"}</span>
-          </button>
-        </div>
-
         {/* Foreground Content: Centered to match exact design in screenshot */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-20 w-full text-center space-y-6 sm:space-y-8 my-auto">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-20 w-full text-center space-y-5 sm:space-y-6 my-auto">
           {/* Top Pill Badge: THE FUTURE OF EDUCATION STARTS HERE */}
           <div className="flex justify-center">
             <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#FFD400] bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
@@ -358,14 +312,24 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
           </div>
 
-          {/* Call-to-Action: Explore KIPS → */}
-          <div className="flex justify-center pt-2">
+          {/* Call-to-Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1 sm:pt-2">
             <button
               onClick={scrollToPreschool}
-              className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-8 py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center gap-2 text-base cursor-pointer"
+              className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
             >
               <span>Explore KIPS</span>
               <span className="text-lg">→</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentTab('contact');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-stone-800/80 hover:bg-stone-700/90 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl border border-white/20 backdrop-blur-md shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
+            >
+              <span>Talk to Our Experts</span>
             </button>
           </div>
         </div>
@@ -1240,8 +1204,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogs && blogs.slice(0, 3).map((blog) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto gap-8">
+            {blogs && blogs.slice(0, 2).map((blog) => (
               <div 
                 key={blog.id} 
                 onClick={() => onSelectBlog(blog)}

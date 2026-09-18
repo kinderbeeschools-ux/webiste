@@ -9,9 +9,11 @@ interface ContactPageProps {
 
 export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
   const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
+  const [program, setProgram] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -20,6 +22,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const fullName = lastName ? `${name} ${lastName}`.trim() : name;
     try {
       const res = await fetch('/api/enquiries', {
         method: 'POST',
@@ -27,12 +30,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
         body: JSON.stringify({
           type: 'contact',
           fields: {
-            name,
+            name: fullName,
             email,
             phone,
             city,
             message,
-            partnershipModel: 'General Contact Enquiry'
+            partnershipModel: program || 'General Contact Enquiry'
           }
         })
       });
@@ -52,7 +55,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
   };
 
   return (
-    <div className="space-y-16 pb-20">
+    <div className="space-y-12 pb-14">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
         title="Contact KIPS Central Advisory Team & Corporate Office"
@@ -62,7 +65,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
       />
       
       {/* Header Banner with Kinderbee Brand Colors */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-20 px-4 sm:px-8 text-center border-b border-pink-950/40">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-14 sm:py-16 px-4 sm:px-8 text-center border-b border-pink-950/40">
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
@@ -70,39 +73,39 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,212,0,0.14),transparent_50%)]"></div>
         </div>
         
-        <div className="max-w-4xl mx-auto relative z-10 space-y-5">
+        <div className="max-w-4xl mx-auto relative z-10 space-y-4">
           <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
             <span>Get In Touch Today</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
             Connect with our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Central Advisors</span>
           </h1>
-          <p className="text-base sm:text-lg text-pink-100/80 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="text-sm sm:text-base text-pink-100/80 max-w-2xl mx-auto font-normal leading-relaxed">
             Speak directly with our school planning consultants to map out your educational project feasibility, site criteria, and budget expectations.
           </p>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
         {/* Left: Contact Info */}
-        <div className="lg:col-span-5 space-y-8">
-          <div className="space-y-3">
+        <div className="lg:col-span-5 space-y-6">
+          <div className="space-y-2">
             <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
               Corporate Headquarters
             </div>
-            <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">
+            <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-[#1C1917]">
               We Are Here to Support Your School Project
             </h2>
-            <p className="text-stone-600 text-sm leading-relaxed">
+            <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
               Whether you are an individual educator looking to launch a preschool franchise or an educational trust planning a CBSE campus, our team is ready to assist.
             </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 sm:p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
               <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
@@ -122,7 +125,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
+            <div className="flex items-start gap-4 p-4 sm:p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
@@ -133,7 +136,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
+            <div className="flex items-start gap-4 p-4 sm:p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
@@ -146,34 +149,34 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
         </div>
 
         {/* Right: Form */}
-        <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-stone-200 shadow-lg">
+        <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-lg self-start">
           {submitted ? (
-            <div className="text-center py-12 space-y-6">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="text-center py-10 space-y-5">
+              <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-display font-bold text-stone-900">Message Sent Successfully!</h3>
-                <p className="text-sm text-stone-600 max-w-md mx-auto">
+              <div className="space-y-1.5">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-stone-900">Message Sent Successfully!</h3>
+                <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
                   Thank you, <span className="font-semibold text-stone-900">{name}</span>. Our central team will respond via phone or email within 24 hours.
                 </p>
               </div>
               <button
                 onClick={() => setSubmitted(false)}
-                className="bg-[#1C1917] hover:bg-stone-800 text-white font-medium px-8 py-3 rounded-xl text-sm transition"
+                className="bg-[#1C1917] hover:bg-stone-800 text-white font-medium px-6 py-2.5 rounded-xl text-xs sm:text-sm transition cursor-pointer"
               >
                 Send Another Message
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="space-y-1">
-                <h3 className="text-2xl font-display font-bold text-stone-900">Send Us a Direct Enquiry</h3>
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-stone-900">Send Us a Direct Enquiry</h3>
                 <p className="text-xs text-stone-500">Fill in your requirements and our advisor will call you promptly.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">First Name *</label>
                     <input
@@ -182,20 +185,21 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={name}
                       onChange={e => setName(e.target.value)}
                       placeholder="e.g. Rahul"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Last Name *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Last Name</label>
                     <input
                       type="text"
-                      required
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
                       placeholder="e.g. Sharma"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Email Address *</label>
                     <input
@@ -204,7 +208,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="rahul@gmail.com"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                   <div>
@@ -215,21 +219,25 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+91 81223 44040"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Program of Interest *</label>
                     <select
                       required
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      value={program}
+                      onChange={e => setProgram(e.target.value)}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     >
                       <option value="">Select a Program...</option>
-                      <option value="Preschool Partnership">Preschool Partnership</option>
+                      <option value="Preschool Partnership (Zero Royalty)">Preschool Partnership (Zero Royalty)</option>
                       <option value="CBSE/ICSE School Setup">CBSE/ICSE School Setup</option>
-                      <option value="Teacher Training">Teacher Training</option>
+                      <option value="Teacher Training (FWA NTT)">Teacher Training (FWA NTT)</option>
+                      <option value="Preschool Admission">Preschool Admission</option>
+                      <option value="Daycare & Extended Care">Daycare &amp; Extended Care</option>
                       <option value="Investor Relations">Investor Relations</option>
                     </select>
                   </div>
@@ -241,14 +249,26 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       placeholder="e.g. Bangalore"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Message / Requirements</label>
+                  <textarea
+                    rows={3}
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    placeholder="Tell us about your campus space, timeline, or requirements..."
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                  />
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-medium py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-medium py-3 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                   {loading ? 'Sending Message...' : (
                     <>
