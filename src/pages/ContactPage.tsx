@@ -55,7 +55,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
   };
 
   return (
-    <div className="space-y-12 pb-14">
+    <div className="space-y-10 pb-8">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
         title="Contact KIPS Central Advisory Team & Corporate Office"
@@ -149,9 +149,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
         </div>
 
         {/* Right: Form */}
-        <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-lg self-start">
+        <div className="lg:col-span-7 bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-stone-200 shadow-lg h-fit self-start">
           {submitted ? (
-            <div className="text-center py-10 space-y-5">
+            <div className="text-center py-8 space-y-4">
               <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
@@ -169,14 +169,14 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </button>
             </div>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="space-y-1">
                 <h3 className="text-xl sm:text-2xl font-display font-bold text-stone-900">Send Us a Direct Enquiry</h3>
                 <p className="text-xs text-stone-500">Fill in your requirements and our advisor will call you promptly.</p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">First Name *</label>
                     <input
@@ -185,7 +185,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={name}
                       onChange={e => setName(e.target.value)}
                       placeholder="e.g. Rahul"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                   <div>
@@ -195,11 +195,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={lastName}
                       onChange={e => setLastName(e.target.value)}
                       placeholder="e.g. Sharma"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Email Address *</label>
                     <input
@@ -208,7 +208,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="rahul@gmail.com"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                   <div>
@@ -219,18 +219,18 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+91 81223 44040"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Program of Interest *</label>
                     <select
                       required
                       value={program}
                       onChange={e => setProgram(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     >
                       <option value="">Select a Program...</option>
                       <option value="Preschool Partnership (Zero Royalty)">Preschool Partnership (Zero Royalty)</option>
@@ -249,7 +249,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       placeholder="e.g. Bangalore"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>
                 </div>
@@ -257,7 +257,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Message / Requirements</label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     value={message}
                     onChange={e => setMessage(e.target.value)}
                     placeholder="Tell us about your campus space, timeline, or requirements..."
@@ -268,7 +268,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-medium py-3 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
+                  className="w-full bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-700 hover:to-pink-800 text-white font-bold py-3 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? 'Sending Message...' : (
                     <>
@@ -277,6 +277,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                     </>
                   )}
                 </button>
+
+                <p className="text-center text-[11px] text-stone-400 pt-0.5">
+                  We respond within 24 business hours. Your details remain confidential.
+                </p>
               </form>
             </div>
           )}

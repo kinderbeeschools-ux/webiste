@@ -361,7 +361,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {/* Image Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
                   <img
-                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg"
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Playgroup%20(Toddler%20Explorers).jpeg"
                     alt="Playgroup Toddler Explorers at Kinderbee"
                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -414,7 +414,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {/* Image Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
                   <img
-                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(1).jpeg"
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Nursery%20(Curious%20Discoverers).jpeg"
                     alt="Nursery Curious Discoverers at Kinderbee"
                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -467,7 +467,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {/* Image Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
                   <img
-                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg"
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Junior%20KG%20%20LKG%20(Young%20Thinkers).jpeg"
                     alt="Junior KG Young Thinkers at Kinderbee"
                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -520,7 +520,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {/* Image Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
                   <img
-                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(3).jpeg"
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Senior%20KG%20%20UKG%20(Future%20Achievers).jpeg"
                     alt="Senior KG Future Achievers at Kinderbee"
                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -573,7 +573,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {/* Image Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 group/img border border-stone-100 shadow-2xs">
                   <img
-                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg"
+                    src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Daycare%20%26%20Extended%20Care.jpeg"
                     alt="Daycare and Extended Care at Kinderbee"
                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -818,7 +818,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg"
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Nordic%20classroom.jfif"
                   alt="Modern Child-Centred Campus"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -832,7 +832,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(1).jpeg"
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Sensory%20art%20studio.jpeg"
                   alt="Expressive Art & Sensory Zone"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -846,7 +846,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(2).jpeg"
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Discovery%20labs.jpeg"
                   alt="Curiosity Discovery Labs"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -860,7 +860,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Gallery%20Images/Kids%20%20(3).jpeg"
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Reading%20Nook.jpeg"
                   alt="Reading Nook & Montessori Corner"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -1167,8 +1167,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="lg:col-span-5">
               <div className="rounded-2xl overflow-hidden shadow-lg border border-stone-200">
                 <img 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Preschool/Preschool.jpeg" 
-                  alt="Kinderbee Preschool Franchise" 
+                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Partner/Partner%20With%20Kinderbee.jpeg" 
+                  alt="Partner With Kinderbee - Zero-Royalty Preschool Partnership" 
                   className="w-full aspect-video object-cover"
                 />
               </div>

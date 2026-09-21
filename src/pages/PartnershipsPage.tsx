@@ -56,18 +56,18 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner matching Reference Design */}
           <section className="relative overflow-hidden bg-[#FFF6F9] border-b border-pink-100/80 min-h-[580px] lg:min-h-[640px] flex items-center">
-            {/* Background Image on Right with Seamless Fade */}
-            <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[58%] xl:w-[56%] pointer-events-none overflow-hidden select-none">
+            {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
+            <div className="absolute top-0 right-0 bottom-0 w-full md:w-[55%] lg:w-[60%] xl:w-[62%] pointer-events-none overflow-hidden select-none">
               <img 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Preschool/Preschool.jpeg"
-                alt="KinderBee Preschool & FinnishWay Academy Campus"
-                className="w-full h-full object-cover object-[center_right] lg:object-left"
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/Franchaise%20Banner.jfif"
+                alt="KinderBee Preschool Franchise Banner"
+                className="w-full h-full object-cover object-right"
                 referrerPolicy="no-referrer"
               />
-              {/* Desktop smooth gradient blend towards left content */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FFF6F9] via-[#FFF6F9]/85 via-15% lg:via-25% to-transparent"></div>
-              {/* Mobile overlay to ensure text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFF6F9]/92 via-[#FFF6F9]/80 to-[#FFF6F9]/95 lg:hidden"></div>
+              {/* Smooth gradient feather on the left edge only, keeping the entire building 100% visible */}
+              <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 lg:w-44 bg-gradient-to-r from-[#FFF6F9] to-transparent pointer-events-none"></div>
+              {/* Soft mobile contrast adjustment (hidden on md and desktop) */}
+              <div className="absolute inset-0 bg-[#FFF6F9]/50 md:hidden pointer-events-none"></div>
             </div>
 
             {/* Soft decorative botanical leaves watermark at top-left corner */}

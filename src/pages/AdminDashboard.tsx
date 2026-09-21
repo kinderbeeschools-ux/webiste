@@ -210,6 +210,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [quickDraftSuccess, setQuickDraftSuccess] = useState(false);
 
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [emailTesting, setEmailTesting] = useState(false);
+  const [emailTestStatus, setEmailTestStatus] = useState<string | null>(null);
   
   // Initial 13 authentic posts matching WordPress screenshot #1
   const initialDefaultBlogs: BlogPost[] = [
@@ -657,6 +659,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  // Send Test Verification Email
+  const handleSendTestEmail = async () => {
+    setEmailTesting(true);
+    setEmailTestStatus(null);
+    try {
+      const res = await fetch('/api/email/test', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ toEmail: 'kinderbeeschools@gmail.com' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEmailTestStatus('✓ Test email dispatched to kinderbeeschools@gmail.com');
+      } else {
+        setEmailTestStatus(`Notice: ${data.error || 'Check server configuration'}`);
+      }
+    } catch (err: any) {
+      setEmailTestStatus(`Dispatch error: ${err.message}`);
+    } finally {
+      setEmailTesting(false);
     }
   };
 
@@ -2443,6 +2468,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* -------------------- TAB 6: ENQUIRIES CRM -------------------- */}
           {activeTab === 'enquiries' && (
             <div className="space-y-4">
+              {/* Automated Email Dispatch Status Banner */}
+              <div className="bg-white border border-stone-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-display font-bold text-stone-900 text-sm">Automated Email Dispatch System</h4>
+                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Active</span>
+                    </div>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      Submissions automatically trigger an inquiry confirmation to the applicant and an instant new-lead alert to <strong className="text-stone-800">kinderbeeschools@gmail.com</strong>.
+                    </p>
+                    {emailTestStatus && (
+                      <div className="text-xs font-semibold text-[#e1007a] mt-1.5 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{emailTestStatus}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={handleSendTestEmail}
+                  disabled={emailTesting}
+                  className="bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shrink-0 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5 text-[#FFD400]" />
+                  <span>{emailTesting ? 'Sending...' : 'Send Test Lead Email'}</span>
+                </button>
+              </div>
+
               <div className="bg-white border border-[#c3c4c7] shadow-xs rounded-sm overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>

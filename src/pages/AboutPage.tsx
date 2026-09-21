@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Sparkles, CheckCircle2, Award, Users, Globe, Target, Store, GraduationCap, School, ArrowRight, Volume2, VolumeX, Play, Pause, Quote, HeartHandshake, X, ChevronLeft, ChevronRight, Camera, Maximize2 } from 'lucide-react';
+import { 
+  Sparkles, CheckCircle2, Award, Users, Globe, Target, Store, GraduationCap, School, 
+  ArrowRight, Volume2, VolumeX, Play, Pause, Quote, HeartHandshake, X, ChevronLeft, 
+  ChevronRight, Camera, Maximize2, ChevronUp, ChevronDown, ArrowUp, ArrowDown, Sliders, 
+  RotateCcw, Eye, Layers
+} from 'lucide-react';
+import { motion } from 'motion/react';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
@@ -135,46 +141,47 @@ interface VisionGalleryItem {
   tag: string;
 }
 
-const VISION_16_9_IMAGES: VisionGalleryItem[] = [
+const ABOUT_MENTORS_IMAGES: VisionGalleryItem[] = [
   {
-    id: 'vision-1',
-    title: 'Modern Child-Centred Campus',
-    subtitle: 'Safe, rounded wooden interior & vibrant learning zones',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(1).jpeg',
-    tag: 'Campus Architecture',
+    id: 'mentor-1',
+    title: 'Foundational Leadership & Mentorship',
+    subtitle: 'Guiding visionary preschool educators, pedagogical leaders, and early childhood excellence',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(1).jpeg',
+    tag: 'Preschool Mentors',
   },
   {
-    id: 'vision-2',
-    title: 'Experiential Nordic Play',
-    subtitle: 'Hands-on sensory exploration & inquisitive learning',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(4).jpeg',
-    tag: 'Nordic Pedagogy',
+    id: 'mentor-2',
+    title: 'Experiential Pedagogy & Nordic Guides',
+    subtitle: 'Master trainers specialized in child-led curiosity, active inquiry & Finnish learning methods',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(2).jpeg',
+    tag: 'Academic Mentors',
   },
   {
-    id: 'vision-3',
-    title: 'Educator Mentorship & Care',
-    subtitle: 'Passionate NTT certified teachers nurturing every milestone',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(7).jpeg',
-    tag: 'Teacher Excellence',
+    id: 'mentor-3',
+    title: 'Early Childhood Master Educators',
+    subtitle: 'Hands-on NTT educator coaching, milestone tracking & nurturing emotional resilience',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(3).jpeg',
+    tag: 'Educator Mentors',
   },
   {
-    id: 'vision-4',
-    title: 'Creative Art & Motor Growth',
-    subtitle: 'Unlocking imagination through tactile creativity & building',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(10).jpeg',
-    tag: 'Creative Discovery',
+    id: 'mentor-4',
+    title: 'Curriculum & Creative Arts Specialists',
+    subtitle: 'Unlocking imagination through tactile sensory play, expressive art & fine motor agility',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(4).jpeg',
+    tag: 'Curriculum Mentors',
   },
   {
-    id: 'vision-5',
-    title: 'Collaborative Joy & Friendships',
-    subtitle: 'Fostering empathy, communication, and emotional resilience',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Kinderbeeschools%20(13).jpeg',
-    tag: 'Social Growth',
+    id: 'mentor-5',
+    title: 'Collaborative Growth & Partner Coaches',
+    subtitle: 'Empowering preschool franchise partners with continuous training & quality governance',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(5).jpeg',
+    tag: 'Partner Coaches',
   },
 ];
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
-  const [activeVisionIndex, setActiveVisionIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [activeMentorModal, setActiveMentorModal] = useState<VisionGalleryItem | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   const handleNavigate = (tab: string) => {
@@ -251,13 +258,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A] to-amber-500 rounded-3xl blur-xl opacity-20"></div>
-          <div className="relative rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-white">
+        <div className="relative group">
+          <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A]/25 to-amber-500/20 rounded-[28px] blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
+          <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-stone-100">
             <img
-              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/About%20us/About%20Us.jpeg"
-              alt="Kinderbee About Us - Early Childhood Education & Teacher Training"
-              className="w-full h-auto object-cover block"
+              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/franchise%20%20(2).jpeg"
+              alt="Kinderbee Story and Purpose - Preschool Franchise Campus"
+              className="w-full h-full object-cover object-[55%_40%] transition-transform duration-700 group-hover:scale-105"
+              referrerPolicy="no-referrer"
             />
           </div>
         </div>
@@ -731,99 +739,80 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
               </div>
             </div>
 
-            {/* Right Column: 5 16:9 Image Placeholders & Vision Showcase (5 columns on lg) */}
-            <div className="lg:col-span-5 flex flex-col space-y-4">
-              
-              {/* Primary 16:9 Featured Image Showcase */}
-              <div className="relative w-full aspect-video rounded-3xl overflow-hidden border-2 border-stone-700/80 shadow-2xl bg-stone-950 group">
-                <img
-                  src={VISION_16_9_IMAGES[activeVisionIndex].url}
-                  alt={VISION_16_9_IMAGES[activeVisionIndex].title}
-                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
+            {/* Right Column: 3 Images in a Column, Smooth Scroll Bottom to Top Slowly */}
+            <div className="lg:col-span-5 flex flex-col justify-center">
+              <div
+                className="relative w-full h-[520px] sm:h-[560px] rounded-3xl overflow-hidden border border-stone-800/90 bg-stone-950/70 shadow-2xl group select-none"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {/* Top & Bottom Gradient Masks for seamless infinity blend */}
+                <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-stone-900 via-stone-900/70 to-transparent z-10 pointer-events-none" />
+                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-stone-950 via-stone-950/70 to-transparent z-10 pointer-events-none" />
 
-                {/* Top Overlay Badges */}
-                <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none z-10">
-                  <span className="bg-stone-900/80 backdrop-blur-md text-[#FFD400] text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1 shadow-sm">
-                    <Sparkles className="w-3 h-3 text-[#FFD400]" />
-                    <span>16:9 HD Vision</span>
-                  </span>
-                  <span className="bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/15">
-                    Photo {activeVisionIndex + 1} of 5
-                  </span>
-                </div>
+                {/* Continuous Smooth Bottom-to-Top Scrolling Track */}
+                <motion.div
+                  className="flex flex-col gap-3.5 p-3.5"
+                  animate={
+                    isHovered
+                      ? false
+                      : {
+                          y: ['0%', '-50%'],
+                        }
+                  }
+                  transition={{
+                    duration: 30,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                >
+                  {[...ABOUT_MENTORS_IMAGES, ...ABOUT_MENTORS_IMAGES].map((img, idx) => (
+                    <div
+                      key={`mentor-column-${img.id}-${idx}`}
+                      onClick={() => setActiveMentorModal(img)}
+                      className="relative w-full h-[155px] sm:h-[165px] rounded-2xl overflow-hidden border border-stone-800/80 shadow-md group/card cursor-pointer hover:border-[#FFD400]/70 transition-all duration-300 shrink-0"
+                    >
+                      <img
+                        src={img.url}
+                        alt={img.title}
+                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
 
-                {/* Bottom Caption Overlay */}
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/70 to-transparent flex flex-col justify-end z-10 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-pink-300 bg-pink-950/60 px-2 py-0.5 rounded-md border border-pink-500/30">
-                      {VISION_16_9_IMAGES[activeVisionIndex].tag}
-                    </span>
-                    
-                    {/* Prev / Next Controls */}
-                    <div className="flex items-center gap-1 pointer-events-auto">
+              {/* Lightbox Modal for Full View */}
+              {activeMentorModal && (
+                <div
+                  className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+                  onClick={() => setActiveMentorModal(null)}
+                >
+                  <div
+                    className="relative max-w-4xl w-full bg-stone-950 rounded-3xl overflow-hidden border border-stone-800 shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="relative aspect-video w-full">
+                      <img
+                        src={activeMentorModal.url}
+                        alt={activeMentorModal.title}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
                       <button
-                        onClick={() => setActiveVisionIndex((prev) => (prev === 0 ? VISION_16_9_IMAGES.length - 1 : prev - 1))}
-                        className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white backdrop-blur-xs transition cursor-pointer"
-                        title="Previous Image"
-                        aria-label="Previous Image"
+                        type="button"
+                        onClick={() => setActiveMentorModal(null)}
+                        className="absolute top-4 right-4 p-2 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition cursor-pointer"
+                        title="Close preview"
+                        aria-label="Close preview"
                       >
-                        <ChevronLeft className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setActiveVisionIndex((prev) => (prev === VISION_16_9_IMAGES.length - 1 ? 0 : prev + 1))}
-                        className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white backdrop-blur-xs transition cursor-pointer"
-                        title="Next Image"
-                        aria-label="Next Image"
-                      >
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <X className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
-
-                  <h3 className="font-bold text-white text-sm sm:text-base leading-snug">
-                    {VISION_16_9_IMAGES[activeVisionIndex].title}
-                  </h3>
-                  <p className="text-stone-300 text-xs line-clamp-1">
-                    {VISION_16_9_IMAGES[activeVisionIndex].subtitle}
-                  </p>
                 </div>
-              </div>
-
-              {/* 5 Thumbnails Grid in 16:9 Ratio */}
-              <div className="grid grid-cols-5 gap-2 pt-1">
-                {VISION_16_9_IMAGES.map((img, idx) => (
-                  <button
-                    key={img.id}
-                    onClick={() => setActiveVisionIndex(idx)}
-                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer group/thumb bg-stone-900 ${
-                      activeVisionIndex === idx
-                        ? 'border-[#FFD400] shadow-lg shadow-amber-500/20 scale-105 ring-2 ring-[#FFD400]/40'
-                        : 'border-stone-700/70 hover:border-white/50 opacity-70 hover:opacity-100'
-                    }`}
-                    title={img.title}
-                    aria-label={`View ${img.title}`}
-                  >
-                    <img
-                      src={img.url}
-                      alt={img.title}
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover/thumb:bg-transparent transition-colors"></div>
-                    <div className="absolute bottom-1 right-1 bg-black/80 text-[8px] text-white px-1 py-0.5 rounded font-mono font-bold leading-none">
-                      {idx + 1}
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Sub-label */}
-              <p className="text-stone-400 text-xs text-center flex items-center justify-center gap-1.5 font-medium">
-                <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-                <span>5 Dedicated 16:9 Vision &amp; Campus Environments</span>
-              </p>
+              )}
             </div>
           </div>
         </div>

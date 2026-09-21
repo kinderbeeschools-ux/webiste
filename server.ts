@@ -5,6 +5,12 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
+import { 
+  sendApplicantConfirmationEmail, 
+  sendAdminLeadAlertEmail, 
+  isSmtpConfigured,
+  getEmailTransporter 
+} from "./server/emailService";
 
 // Initialize express app
 const app = express();
@@ -508,6 +514,37 @@ app.post("/api/enquiries", async (req, res) => {
     console.error("Supabase sync execution error:", sbErr);
   }
 
+  // Trigger automated email dispatch asynchronously (Applicant confirmation + Admin lead alert)
+  const emailPayload = {
+    enquiryId: newEnquiry.id,
+    type: newEnquiry.type,
+    name: fields.name,
+    email: fields.email,
+    phone: fields.phone,
+    program: fields.partnershipModel || fields.courseOfInterest || type,
+    city: fields.city,
+    state: fields.state,
+    budget: fields.budget,
+    message: fields.message,
+    aiSummary: newEnquiry.aiSummary,
+  };
+
+  Promise.allSettled([
+    sendApplicantConfirmationEmail(emailPayload),
+    sendAdminLeadAlertEmail(emailPayload),
+  ]).then((outcomes) => {
+    outcomes.forEach((outcome, idx) => {
+      const target = idx === 0 ? "Applicant Confirmation" : "Admin Lead Alert";
+      if (outcome.status === "fulfilled") {
+        console.log(`[Email] ${target} result:`, outcome.value);
+      } else {
+        console.error(`[Email] ${target} failed:`, outcome.reason);
+      }
+    });
+  }).catch((err) => {
+    console.error("[Email] Global dispatch error:", err);
+  });
+
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
 });
 
@@ -520,6 +557,51 @@ const requireAdmin = (req: express.Request, res: express.Response, next: express
     res.status(403).json({ error: "Access denied. Admin authorization required." });
   }
 };
+
+// GET Email Service Status & Configuration
+app.get("/api/email/status", (req, res) => {
+  const configured = isSmtpConfigured();
+  const user = process.env.SMTP_USER || process.env.GMAIL_USER || null;
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || user || "kinderbeeschools@gmail.com";
+  res.json({
+    configured,
+    senderEmail: user ? `${user.substring(0, 3)}***@${user.split("@")[1] || "gmail.com"}` : null,
+    adminRecipient: adminEmail,
+    provider: process.env.SMTP_HOST || (user?.includes("@gmail.com") ? "Google Workspace / Gmail" : "Custom SMTP"),
+  });
+});
+
+// POST Send Test Email (for Admin verification)
+app.post("/api/email/test", requireAdmin, async (req, res) => {
+  const { toEmail } = req.body;
+  const targetEmail = toEmail || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || "kinderbeeschools@gmail.com";
+  
+  const testPayload = {
+    enquiryId: `test-${Date.now()}`,
+    type: "Test Verification",
+    name: "KIPS Admin Tester",
+    email: targetEmail,
+    phone: "+91 81223 44040",
+    program: "Automated Email Verification Test",
+    city: "Bengaluru",
+    state: "Karnataka",
+    message: "This is a test notification confirming that the automated email dispatch service is active and functioning properly.",
+    aiSummary: "🌟 Test Lead: System verification successful. Email pipeline operating normally.",
+  };
+
+  try {
+    const applicantResult = await sendApplicantConfirmationEmail(testPayload);
+    const adminResult = await sendAdminLeadAlertEmail(testPayload);
+    res.json({
+      success: true,
+      applicantEmailResult: applicantResult,
+      adminEmailResult: adminResult,
+      targetEmail,
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // GET all enquiries for Admin
 app.get("/api/enquiries", requireAdmin, (req, res) => {
