@@ -18,36 +18,50 @@ interface EnquiryEmailData {
 let transporter: Transporter | null = null;
 
 export function isSmtpConfigured(): boolean {
-  const user = process.env.SMTP_USER || process.env.GMAIL_USER;
-  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const user = (process.env.SMTP_USER || process.env.GMAIL_USER || "").trim();
+  const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || "").replace(/\s+/g, "");
   return Boolean(user && pass);
 }
 
 export function getEmailTransporter(): Transporter | null {
   if (transporter) return transporter;
 
-  const user = process.env.SMTP_USER || process.env.GMAIL_USER;
-  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const user = (process.env.SMTP_USER || process.env.GMAIL_USER || "").trim();
+  // Strip spaces from 16-character Google App Passwords (e.g., 'abcd efgh ijkl mnop' -> 'abcdefghijklmnop')
+  const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || "").replace(/\s+/g, "");
 
   if (!user || !pass) {
     return null;
   }
 
-  const host = process.env.SMTP_HOST || (user.includes("@gmail.com") ? "smtp.gmail.com" : undefined);
-  const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465;
-  const secure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === "true" : port === 465;
+  const isGmail = user.includes("@gmail.com") || user.includes("kinderbee");
 
   try {
-    transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure,
-      auth: {
-        user,
-        pass,
-      },
-    });
-    console.log(`[EmailService] Nodemailer SMTP transporter initialized for ${user} (${host}:${port})`);
+    if (isGmail && !process.env.SMTP_HOST) {
+      transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user,
+          pass,
+        },
+      });
+      console.log(`[EmailService] Nodemailer Gmail service transporter initialized for ${user}`);
+    } else {
+      const host = process.env.SMTP_HOST || "smtp.gmail.com";
+      const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465;
+      const secure = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === "true" : port === 465;
+
+      transporter = nodemailer.createTransport({
+        host,
+        port,
+        secure,
+        auth: {
+          user,
+          pass,
+        },
+      });
+      console.log(`[EmailService] Nodemailer SMTP transporter initialized for ${user} (${host}:${port})`);
+    }
     return transporter;
   } catch (err) {
     console.error("[EmailService] Failed to create nodemailer transporter:", err);
@@ -303,7 +317,7 @@ export async function sendAdminLeadAlertEmail(data: EnquiryEmailData): Promise<{
     const info = await mailer.sendMail({
       from: fromAddress,
       to: adminEmail,
-      subject: `🚨 New Lead: ${data.name} (${programTitle})`,
+      subject: `🔥 New Lead Alert: ${data.name} - ${programTitle}`,
       html: htmlContent,
     });
     console.log(`[EmailService] Admin alert email sent successfully to ${adminEmail}. MessageId: ${info.messageId}`);

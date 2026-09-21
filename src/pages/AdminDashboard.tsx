@@ -212,6 +212,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [emailTesting, setEmailTesting] = useState(false);
   const [emailTestStatus, setEmailTestStatus] = useState<string | null>(null);
+  const [emailServiceStatus, setEmailServiceStatus] = useState<{
+    configured: boolean;
+    senderEmail: string | null;
+    adminRecipient: string;
+    provider: string;
+  } | null>(null);
+  const [showEmailConfigGuide, setShowEmailConfigGuide] = useState(false);
   
   // Initial 13 authentic posts matching WordPress screenshot #1
   const initialDefaultBlogs: BlogPost[] = [
@@ -608,12 +615,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const fetchData = async () => {
     try {
-      const [enqRes, blogRes, faqRes, analyticsRes, settingsRes] = await Promise.all([
+      const [enqRes, blogRes, faqRes, analyticsRes, settingsRes, emailRes] = await Promise.all([
         fetch('/api/enquiries', { headers }),
         fetch('/api/blogs'),
         fetch('/api/faqs'),
         fetch('/api/analytics', { headers }),
-        fetch('/api/settings')
+        fetch('/api/settings'),
+        fetch('/api/email/status')
       ]);
 
       if (enqRes.ok) setEnquiries(await enqRes.json());
@@ -623,6 +631,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (settingsRes.ok) {
         const s = await settingsRes.json();
         setSettingsForm(prev => ({ ...prev, ...s }));
+      }
+      if (emailRes.ok) {
+        setEmailServiceStatus(await emailRes.json());
       }
     } catch (err) {
       console.error('Error fetching admin data:', err);
@@ -674,7 +685,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       });
       const data = await res.json();
       if (data.success) {
-        setEmailTestStatus('✓ Test email dispatched to kinderbeeschools@gmail.com');
+        const adminMsgId = data.adminEmailResult?.messageId;
+        const isSimulated = data.adminEmailResult?.reason?.includes("Simulated") || !emailServiceStatus?.configured;
+        if (adminMsgId) {
+          setEmailTestStatus(`✓ Live test lead alert delivered via Gmail to kinderbeeschools@gmail.com! (Message ID: ${adminMsgId})`);
+        } else if (isSimulated) {
+          setEmailTestStatus('ℹ️ Simulated test dispatch logged to server console. To deliver directly to your real Gmail inbox, set SMTP_USER and SMTP_PASS in Settings.');
+        } else {
+          setEmailTestStatus('✓ Test lead email processed successfully.');
+        }
+        // Refresh email status
+        fetch('/api/email/status')
+          .then(r => r.ok ? r.json() : null)
+          .then(st => { if (st) setEmailServiceStatus(st); })
+          .catch(() => {});
       } else {
         setEmailTestStatus(`Notice: ${data.error || 'Check server configuration'}`);
       }
@@ -2469,35 +2493,81 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {activeTab === 'enquiries' && (
             <div className="space-y-4">
               {/* Automated Email Dispatch Status Banner */}
-              <div className="bg-white border border-stone-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-display font-bold text-stone-900 text-sm">Automated Email Dispatch System</h4>
-                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Active</span>
+              <div className="bg-white border border-stone-200 rounded-xl p-4 sm:p-5 shadow-xs">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3.5">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${emailServiceStatus?.configured ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
+                      <Mail className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-stone-500 mt-0.5">
-                      Submissions automatically trigger an inquiry confirmation to the applicant and an instant new-lead alert to <strong className="text-stone-800">kinderbeeschools@gmail.com</strong>.
-                    </p>
-                    {emailTestStatus && (
-                      <div className="text-xs font-semibold text-[#e1007a] mt-1.5 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>{emailTestStatus}</span>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4 className="font-display font-bold text-stone-900 text-sm">Automated Email Dispatch System</h4>
+                        {emailServiceStatus?.configured ? (
+                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                            Live Dispatch Active
+                          </span>
+                        ) : (
+                          <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                            Safe Simulation Mode
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setShowEmailConfigGuide(!showEmailConfigGuide)}
+                          className="text-[11px] font-semibold text-[#E1007A] hover:underline cursor-pointer flex items-center gap-1 ml-1"
+                        >
+                          <span>{showEmailConfigGuide ? 'Hide Setup Guide' : 'Connect Gmail Guide'}</span>
+                          <ChevronDown className={`w-3 h-3 transition-transform ${showEmailConfigGuide ? 'rotate-180' : ''}`} />
+                        </button>
                       </div>
-                    )}
+                      <p className="text-xs text-stone-500 mt-1">
+                        Submissions automatically trigger an inquiry confirmation to the applicant and an instant new-lead alert to <strong className="text-stone-800">kinderbeeschools@gmail.com</strong>.
+                      </p>
+                      {emailTestStatus && (
+                        <div className="text-xs font-semibold text-[#e1007a] mt-2 flex items-start sm:items-center gap-1.5 bg-stone-50 border border-stone-200 p-2 rounded-lg">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5 sm:mt-0" />
+                          <span>{emailTestStatus}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                    <button
+                      onClick={handleSendTestEmail}
+                      disabled={emailTesting}
+                      className="bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition shrink-0 cursor-pointer disabled:opacity-50 flex items-center gap-2 shadow-xs"
+                    >
+                      <Send className={`w-3.5 h-3.5 text-[#FFD400] ${emailTesting ? 'animate-bounce' : ''}`} />
+                      <span>{emailTesting ? 'Sending Test...' : 'Send Test Lead Email'}</span>
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={handleSendTestEmail}
-                  disabled={emailTesting}
-                  className="bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shrink-0 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
-                >
-                  <Send className="w-3.5 h-3.5 text-[#FFD400]" />
-                  <span>{emailTesting ? 'Sending...' : 'Send Test Lead Email'}</span>
-                </button>
+
+                {/* Collapsible Setup Guide */}
+                {showEmailConfigGuide && (
+                  <div className="mt-4 pt-4 border-t border-stone-200 text-xs text-stone-700 bg-stone-50/70 p-3.5 rounded-lg">
+                    <div className="font-bold text-stone-900 mb-2 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
+                      <span>How to Connect Your Live Gmail Account (<code className="text-[#E1007A] bg-pink-50 px-1 py-0.5 rounded">kinderbeeschools@gmail.com</code>):</span>
+                    </div>
+                    <ol className="list-decimal list-inside space-y-1.5 text-stone-600 leading-relaxed">
+                      <li>Go to your <strong>Google Account Security Settings</strong> for <code className="text-stone-800">kinderbeeschools@gmail.com</code> and ensure <strong>2-Step Verification</strong> is ON.</li>
+                      <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer" className="text-[#E1007A] underline font-semibold">myaccount.google.com/apppasswords</a>.</li>
+                      <li>Create a new app password named <strong>"KIPS Website"</strong>. Google will generate a 16-character password (e.g., <code>abcd efgh ijkl mnop</code>).</li>
+                      <li>In your AI Studio <strong>Settings &rarr; Environment Variables</strong>, set:
+                        <div className="mt-1 font-mono text-[11px] bg-stone-900 text-stone-100 p-2 rounded select-all">
+                          SMTP_USER=kinderbeeschools@gmail.com<br />
+                          SMTP_PASS=your_16_character_app_password
+                        </div>
+                      </li>
+                    </ol>
+                    <p className="mt-2 text-[11px] text-stone-500 italic">
+                      Note: While in simulation mode, enquiries and leads are securely saved and logged in your CRM database so no leads are ever lost.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="bg-white border border-[#c3c4c7] shadow-xs rounded-sm overflow-x-auto">

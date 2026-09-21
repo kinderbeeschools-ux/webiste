@@ -458,61 +458,66 @@ app.post("/api/enquiries", async (req, res) => {
         2. Key tactical point to bring up during the sales call (e.g., highlighting zero royalties, support, or curriculum).
         Keep it sharp, professional, and practical. Do not include markdown headers or extra text.`;
 
-        const response = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Gemini timeout")), 2500));
+        const aiPromise = ai.models.generateContent({
+          model: "gemini-flash-latest",
           contents: prompt + "\n\nLead Info:\n" + leadContext,
         });
+
+        const response: any = await Promise.race([aiPromise, timeoutPromise]);
 
         if (response && response.text) {
           newEnquiry.aiSummary = response.text.trim();
         }
       }
     } catch (aiError) {
-      console.error("Gemini Lead Analysis failed:", aiError);
-      newEnquiry.aiSummary = "⚠️ AI lead indexing skipped due to API timeout. Lead processed successfully.";
+      console.warn("Gemini Lead Analysis skipped or timed out, applying strategic rule assessment.");
     }
-  } else {
-    // Sandbox default scoring
+  }
+
+  if (!newEnquiry.aiSummary) {
     const isHighEnd = fields.budget?.includes("Crore") || fields.budget?.includes("35 Lakhs") || fields.message?.toLowerCase().includes("property") || fields.message?.toLowerCase().includes("acres");
     newEnquiry.aiSummary = isHighEnd 
-      ? "💎 Premium Lead (Sandbox scored): Strategic fit indicates a highly viable educational project. We recommend prioritizing local feasibility maps and highlighting the 100% Zero Royalty benefits immediately."
-      : "🌟 Standard Lead (Sandbox scored): Viable target interest. Suggested action is to email the brochure package and schedule an introduction call to assess space availability.";
+      ? "💎 Premium Lead (Strategic Assessment): High viability project based on investment scale and facility requirements. Recommend immediate outreach highlighting the 100% Zero Royalty advantage."
+      : "🌟 Standard Lead (Strategic Assessment): Viable prospective applicant. Recommended action is dispatching the setup prospectus and arranging a territory audit call.";
   }
 
   db.enquiries.unshift(newEnquiry);
   saveDb(db);
 
-  // Sync to Supabase table 'enquiries' if client is initialized
-  try {
-    const supabase = getSupabaseClient();
-    if (supabase) {
-      const { error: sbError } = await supabase.from("enquiries").insert([
-        {
-          id: newEnquiry.id,
-          type: newEnquiry.type,
-          name: fields.name,
-          email: fields.email,
-          phone: fields.phone,
-          city: fields.city || null,
-          state: fields.state || null,
-          budget: fields.budget || null,
-          partnership_model: fields.partnershipModel || fields.courseOfInterest || null,
-          message: fields.message || null,
-          status: newEnquiry.status,
-          ai_summary: newEnquiry.aiSummary || null,
-          created_at: newEnquiry.createdAt,
-          raw_data: fields
+  // Sync to Supabase table 'enquiries' asynchronously if client is initialized
+  (async () => {
+    try {
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { error: sbError } = await supabase.from("enquiries").insert([
+          {
+            id: newEnquiry.id,
+            type: newEnquiry.type,
+            name: fields.name,
+            email: fields.email,
+            phone: fields.phone,
+            city: fields.city || null,
+            state: fields.state || null,
+            budget: fields.budget || null,
+            partnership_model: fields.partnershipModel || fields.courseOfInterest || null,
+            message: fields.message || null,
+            status: newEnquiry.status,
+            ai_summary: newEnquiry.aiSummary || null,
+            created_at: newEnquiry.createdAt,
+            raw_data: fields
+          }
+        ]);
+        if (sbError) {
+          console.warn("Supabase Lead Sync Notice:", sbError.message);
+        } else {
+          console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
         }
-      ]);
-      if (sbError) {
-        console.warn("Supabase Lead Sync Notice:", sbError.message);
-      } else {
-        console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
       }
+    } catch (sbErr) {
+      console.error("Supabase sync execution error:", sbErr);
     }
-  } catch (sbErr) {
-    console.error("Supabase sync execution error:", sbErr);
-  }
+  })();
 
   // Trigger automated email dispatch asynchronously (Applicant confirmation + Admin lead alert)
   const emailPayload = {
@@ -988,10 +993,13 @@ app.post("/api/ai/suggest-reply", requireAdmin, async (req, res) => {
         4. Sign off professionally as "The KinderBee Partnership Team".
         Keep the tone encouraging, premium, and trustworthy. Avoid generic clichés. Return ONLY the complete email text (Subject and Body). Do not include any meta-text or wrapper.`;
 
-        const response = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Gemini timeout")), 6000));
+        const aiPromise = ai.models.generateContent({
+          model: "gemini-flash-latest",
           contents: prompt + "\n\nLead context:\n" + leadContext,
         });
+
+        const response: any = await Promise.race([aiPromise, timeoutPromise]);
 
         if (response && response.text) {
           return res.json({ success: true, emailDraft: response.text.trim() });

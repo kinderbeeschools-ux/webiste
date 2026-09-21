@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, ArrowRight, ChevronLeft, ChevronRight, BookOpen, GraduationCap, 
-  FileText, Award, Star, Globe, Eye, X, Clock, Calendar, Tag, Phone, Mail, Copy, Check, Flame, CreditCard
+  FileText, Award, Star, Globe, Eye, X, Clock, Calendar, Tag, Phone, Mail, Copy, Check, CreditCard
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
@@ -214,17 +214,6 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           
           {/* Program 1 */}
           <div className="bg-white rounded-3xl border-2 border-[#E1007A]/40 shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 relative">
-            {/* Top Ribbon */}
-            <div className="bg-gradient-to-r from-[#A3001D] to-[#E1007A] text-white px-5 py-2 flex items-center justify-between text-xs font-bold tracking-wide">
-              <span className="flex items-center gap-1.5">
-                <Flame className="w-4 h-4 fill-amber-300 text-amber-300" />
-                TEACHERS' DAY MEGA OFFER • 90% OFF
-              </span>
-              <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold">
-                ₹4,999 Only
-              </span>
-            </div>
-
             <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50 relative">
               <SmartImage 
                 src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20&%20Education.jpeg" 

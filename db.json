@@ -1,6 +1,57 @@
 {
   "enquiries": [
     {
+      "id": "enq-1790014933586-5wf3z",
+      "type": "Preschool Setup",
+      "fields": {
+        "name": "Priya Nair",
+        "email": "priya.nair@example.com",
+        "phone": "+91 9988776655",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "budget": "₹15 - 25 Lakhs",
+        "message": "Interested in opening a KIPS Preschool."
+      },
+      "status": "pending",
+      "notes": "",
+      "createdAt": "2026-09-21T18:22:13.586Z",
+      "aiSummary": "🌟 Standard Lead (Strategic Assessment): Viable prospective applicant. Recommended action is dispatching the setup prospectus and arranging a territory audit call."
+    },
+    {
+      "id": "enq-1790014893634-8g0wu",
+      "type": "School Partnership",
+      "fields": {
+        "name": "Ramesh Sharma",
+        "email": "ramesh.sharma@example.com",
+        "phone": "+91 9876543210",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "budget": "₹20 - 35 Lakhs",
+        "message": "Looking to setup a preschool in Whitefield with Zero Royalty."
+      },
+      "status": "pending",
+      "notes": "",
+      "createdAt": "2026-09-21T18:21:33.634Z",
+      "aiSummary": "⚠️ AI lead indexing skipped due to API timeout. Lead processed successfully."
+    },
+    {
+      "id": "enq-1790014852536-tumdj",
+      "type": "School Partnership",
+      "fields": {
+        "name": "Test Lead User",
+        "email": "testlead@example.com",
+        "phone": "+91 9876543210",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "budget": "₹20 - 35 Lakhs",
+        "message": "Looking to setup a preschool in Whitefield."
+      },
+      "status": "pending",
+      "notes": "",
+      "createdAt": "2026-09-21T18:20:52.536Z",
+      "aiSummary": "🌟 This is a High-quality lead with a strong budget of ₹20–35 Lakhs targeting a high-demand residential and IT hub in Whitefield, Bengaluru. During the call, emphasize KIPS's Zero Royalty model and end-to-end setup support to demonstrate how they can maximize ROI without recurring franchise fees."
+    },
+    {
       "id": "enq-1",
       "type": "franchise",
       "fields": {
