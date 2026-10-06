@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
@@ -13,13 +14,16 @@ import {
 
 // Initialize express app
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "4mb" })); // room for base64 image uploads (Vercel caps bodies at 4.5MB)
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const DB_FILE = path.join(process.cwd(), "db.json");
 
-// Default Admin Password (can be changed in settings)
-let ADMIN_PASSWORD = "admin";
+// Admin password comes from the ADMIN_PASSWORD env var (set in Vercel). The token is derived from it,
+// so changing the password in Vercel logs everyone out.
+const sha256 = (s: string) => crypto.createHash("sha256").update(s).digest();
+const adminToken = () => process.env.ADMIN_PASSWORD ? sha256(`kips-admin:${process.env.ADMIN_PASSWORD}`).toString("hex") : null;
+const safeEqual = (a: string, b: string) => crypto.timingSafeEqual(sha256(a), sha256(b));
 
 // Lazy-initialize Supabase Client
 let supabaseClient: SupabaseClient | null = null;
@@ -408,8 +412,11 @@ app.get("/api/health", (req, res) => {
 // Authenticate Admin
 app.post("/api/auth/login", (req, res) => {
   const { password } = req.body;
-  if (password === ADMIN_PASSWORD) {
-    res.json({ success: true, token: "admin-secret-token-kips-2026" });
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) {
+    res.status(503).json({ success: false, error: "Admin login is not set up. Add ADMIN_PASSWORD in Vercel environment variables." });
+  } else if (typeof password === "string" && safeEqual(password, expected)) {
+    res.json({ success: true, token: adminToken() });
   } else {
     res.status(401).json({ success: false, error: "Invalid administrator password" });
   }
@@ -557,8 +564,8 @@ app.post("/api/enquiries", async (req, res) => {
 
 // Admin Check: Auth Middleware
 const requireAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader === "Bearer admin-secret-token-kips-2026") {
+  const token = adminToken();
+  if (token && safeEqual(req.headers.authorization || "", `Bearer ${token}`)) {
     next();
   } else {
     res.status(403).json({ error: "Access denied. Admin authorization required." });
@@ -739,193 +746,165 @@ app.post("/api/payments", async (req, res) => {
   });
 });
 
-// GET all payments (Admin)
-app.get("/api/payments", requireAdmin, (req, res) => {
-  const db = loadDb();
-  res.json(db.payments || []);
-});
+// Content (blogs, faqs, settings, pages) lives in Supabase table `site_data` (key text primary key, value jsonb)
+// so admin edits persist on Vercel; db.json is only the seed/fallback when Supabase isn't configured.
+type ContentKey = "blogs" | "faqs" | "settings" | "pages";
 
-// UPDATE payment verification status (Admin)
-app.put("/api/payments/:id", requireAdmin, (req, res) => {
+async function getContent<T = any>(key: ContentKey): Promise<T> {
+  const fallback = (loadDb() as any)[key];
+  const supabase = getSupabaseClient();
+  if (!supabase) return fallback;
+  const { data, error } = await supabase.from("site_data").select("value").eq("key", key).maybeSingle();
+  if (error) {
+    console.warn(`site_data read (${key}):`, error.message);
+    return fallback;
+  }
+  return data ? data.value : fallback;
+}
+
+async function setContent(key: ContentKey, value: any): Promise<void> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    const db: any = loadDb();
+    db[key] = value;
+    saveDb(db);
+    return;
+  }
+  const { error } = await supabase.from("site_data").upsert({ key, value, updated_at: new Date().toISOString() });
+  if (error) throw new Error(`Could not save ${key}: ${error.message}`);
+}
+
+// Wraps async admin handlers so a Supabase failure returns a readable error instead of hanging
+const handle = (fn: (req: express.Request, res: express.Response) => Promise<any>) =>
+  (req: express.Request, res: express.Response) => fn(req, res).catch((err: any) => res.status(500).json({ error: err.message }));
+
+// PAYMENTS (admin)
+app.get("/api/payments", requireAdmin, handle(async (req, res) => {
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.json(loadDb().payments || []);
+  const { data, error } = await supabase.from("payments").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(`Supabase payments: ${error.message}`);
+  res.json((data || []).map((r: any) => ({
+    id: r.id,
+    applicantName: r.applicant_name,
+    admissionNumber: r.admission_number || "",
+    programme: r.programme,
+    amount: r.amount,
+    upiRefNumber: r.upi_ref,
+    payerPhone: r.payer_phone,
+    payerEmail: r.payer_email || "",
+    notes: r.notes || "",
+    status: r.status,
+    createdAt: r.created_at,
+  })));
+}));
+
+app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
   const { id } = req.params;
   const { status, notes } = req.body;
-  const db = loadDb();
-  const idx = db.payments.findIndex(p => p.id === id);
-  if (idx !== -1) {
-    if (status) db.payments[idx].status = status;
-    if (notes !== undefined) db.payments[idx].notes = notes;
-    saveDb(db);
-    res.json({ success: true, payment: db.payments[idx] });
-  } else {
-    res.status(404).json({ error: "Payment record not found." });
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const patch: any = {};
+    if (status) patch.status = status;
+    if (notes !== undefined) patch.notes = notes;
+    const { data, error } = await supabase.from("payments").update(patch).eq("id", id).select();
+    if (error) throw new Error(error.message);
+    if (!data?.length) return res.status(404).json({ error: "Payment record not found." });
+    return res.json({ success: true });
   }
-});
-
-
-// GET all public blogs
-app.get("/api/blogs", (req, res) => {
   const db = loadDb();
-  res.json(db.blogs);
-});
-
-// Record / Increment Blog View Count (Public)
-app.post("/api/blogs/:id/view", (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  const idx = db.blogs.findIndex(b => b.id === id);
-  if (idx !== -1) {
-    db.blogs[idx].views = (db.blogs[idx].views || 0) + 1;
-    saveDb(db);
-    res.json({ success: true, views: db.blogs[idx].views });
-  } else {
-    res.status(404).json({ error: "Blog post not found" });
-  }
-});
-
-// BLOG CRUD
-app.post("/api/blogs", requireAdmin, (req, res) => {
-  const db = loadDb();
-  const newBlog: BlogPost = {
-    id: `blog-${Date.now()}`,
-    ...req.body,
-    views: req.body.views !== undefined ? Number(req.body.views) : 0,
-    date: new Date().toISOString().split("T")[0]
-  };
-  db.blogs.unshift(newBlog);
-  saveDb(db);
-  res.json({ success: true, blog: newBlog });
-});
-
-app.put("/api/blogs/:id", requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  const idx = db.blogs.findIndex(b => b.id === id);
-  if (idx !== -1) {
-    db.blogs[idx] = { 
-      ...db.blogs[idx], 
-      ...req.body,
-      views: req.body.views !== undefined ? Number(req.body.views) : (db.blogs[idx].views || 0)
-    };
-    saveDb(db);
-    res.json({ success: true, blog: db.blogs[idx] });
-  } else {
-    res.status(404).json({ error: "Blog not found" });
-  }
-});
-
-app.delete("/api/blogs/:id", requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  db.blogs = db.blogs.filter(b => b.id !== id);
+  const p = db.payments.find(p => p.id === id);
+  if (!p) return res.status(404).json({ error: "Payment record not found." });
+  if (status) p.status = status;
+  if (notes !== undefined) p.notes = notes;
   saveDb(db);
   res.json({ success: true });
-});
+}));
 
-// GET all public FAQs
-app.get("/api/faqs", (req, res) => {
-  const db = loadDb();
-  res.json(db.faqs);
-});
+// Generic list CRUD for blogs and faqs
+function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, existing?: any) => any) {
+  app.get(`/api/${key}`, handle(async (req, res) => res.json(await getContent(key) || [])));
 
-// FAQ CRUD
-app.post("/api/faqs", requireAdmin, (req, res) => {
-  const db = loadDb();
-  const newFaq: FAQItem = {
-    id: `faq-${Date.now()}`,
-    ...req.body
-  };
-  db.faqs.push(newFaq);
-  saveDb(db);
-  res.json({ success: true, faq: newFaq });
-});
+  app.post(`/api/${key}`, requireAdmin, handle(async (req, res) => {
+    const list = await getContent<any[]>(key) || [];
+    const item = prepare({ ...req.body, id: `${prefix}-${Date.now()}` });
+    await setContent(key, key === "blogs" ? [item, ...list] : [...list, item]);
+    res.json({ success: true, item });
+  }));
 
-app.put("/api/faqs/:id", requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  const idx = db.faqs.findIndex(f => f.id === id);
-  if (idx !== -1) {
-    db.faqs[idx] = { ...db.faqs[idx], ...req.body };
-    saveDb(db);
-    res.json({ success: true, faq: db.faqs[idx] });
-  } else {
-    res.status(404).json({ error: "FAQ item not found" });
-  }
-});
+  app.put(`/api/${key}/:id`, requireAdmin, handle(async (req, res) => {
+    const list = await getContent<any[]>(key) || [];
+    const idx = list.findIndex(i => i.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: "Not found" });
+    list[idx] = prepare({ ...list[idx], ...req.body, id: req.params.id }, list[idx]);
+    await setContent(key, list);
+    res.json({ success: true, item: list[idx] });
+  }));
 
-app.delete("/api/faqs/:id", requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  db.faqs = db.faqs.filter(f => f.id !== id);
-  saveDb(db);
-  res.json({ success: true });
-});
+  app.delete(`/api/${key}/:id`, requireAdmin, handle(async (req, res) => {
+    const list = await getContent<any[]>(key) || [];
+    await setContent(key, list.filter(i => i.id !== req.params.id));
+    res.json({ success: true });
+  }));
+}
 
-// GET System Settings
-app.get("/api/settings", (req, res) => {
-  const db = loadDb();
-  res.json(db.settings);
-});
+listRoutes("blogs", "blog", (b, existing) => ({
+  ...b,
+  views: Number(b.views ?? existing?.views ?? 0),
+  date: b.date || new Date().toISOString().split("T")[0],
+}));
+listRoutes("faqs", "faq", f => f);
 
-// POST / PUT System Settings
-app.post("/api/settings", requireAdmin, (req, res) => {
-  const db = loadDb();
-  db.settings = { ...db.settings, ...req.body };
-  saveDb(db);
-  res.json({ success: true, settings: db.settings });
-});
+// Blog view counter (public)
+// ponytail: read-modify-write of the whole blogs list; two views at the same instant can lose one count
+app.post("/api/blogs/:id/view", handle(async (req, res) => {
+  const blogs = await getContent<BlogPost[]>("blogs") || [];
+  const blog = blogs.find(b => b.id === req.params.id);
+  if (!blog) return res.status(404).json({ error: "Blog post not found" });
+  blog.views = (blog.views || 0) + 1;
+  await setContent("blogs", blogs).catch(() => {});
+  res.json({ success: true, views: blog.views });
+}));
 
-app.put("/api/settings", requireAdmin, (req, res) => {
-  const db = loadDb();
-  db.settings = { ...db.settings, ...req.body };
-  saveDb(db);
-  res.json({ success: true, settings: db.settings });
-});
+// SETTINGS
+app.get("/api/settings", handle(async (req, res) => res.json(await getContent("settings"))));
 
-// GET All Pages Configurations
-app.get("/api/pages", (req, res) => {
-  const db = loadDb();
-  res.json(db.pages || []);
+const saveSettings = handle(async (req, res) => {
+  const settings = { ...(await getContent("settings")), ...req.body };
+  await setContent("settings", settings);
+  res.json({ success: true, settings });
 });
+app.post("/api/settings", requireAdmin, saveSettings);
+app.put("/api/settings", requireAdmin, saveSettings);
 
-// GET Single Page Configuration
-app.get("/api/pages/:id", (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  const page = (db.pages || []).find(p => p.id === id);
-  if (page) {
-    res.json(page);
-  } else {
-    res.status(404).json({ error: "Page configuration not found" });
-  }
-});
+// PAGES
+app.get("/api/pages", handle(async (req, res) => res.json(await getContent("pages") || [])));
 
-// PUT Update Page Configuration (Admin required)
-app.put("/api/pages/:id", requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const db = loadDb();
-  if (!db.pages) db.pages = [];
-  const idx = db.pages.findIndex(p => p.id === id);
-  if (idx !== -1) {
-    db.pages[idx] = { ...db.pages[idx], ...req.body };
-    saveDb(db);
-    res.json({ success: true, page: db.pages[idx] });
-  } else {
-    const newPage = { id, ...req.body };
-    db.pages.push(newPage);
-    saveDb(db);
-    res.json({ success: true, page: newPage });
-  }
-});
+app.get("/api/pages/:id", handle(async (req, res) => {
+  const page = (await getContent<any[]>("pages") || []).find(p => p.id === req.params.id);
+  page ? res.json(page) : res.status(404).json({ error: "Page configuration not found" });
+}));
 
-// Change Admin Password
-app.put("/api/settings/password", requireAdmin, (req, res) => {
-  const { newPassword } = req.body;
-  if (!newPassword || newPassword.trim().length < 4) {
-    return res.status(400).json({ error: "Password must be at least 4 characters long." });
-  }
-  ADMIN_PASSWORD = newPassword;
-  res.json({ success: true });
-});
+app.put("/api/pages/:id", requireAdmin, handle(async (req, res) => {
+  const pages = await getContent<any[]>("pages") || [];
+  const idx = pages.findIndex(p => p.id === req.params.id);
+  const page = { ...(idx === -1 ? { id: req.params.id } : pages[idx]), ...req.body };
+  if (idx === -1) pages.push(page); else pages[idx] = page;
+  await setContent("pages", pages);
+  res.json({ success: true, page });
+}));
+
+// IMAGE UPLOAD (admin) -> Supabase Storage bucket "Files", returns the public URL
+app.post("/api/upload", requireAdmin, handle(async (req, res) => {
+  const { name, contentType, dataBase64 } = req.body;
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  if (!name || !dataBase64 || !/^image\//.test(contentType || "")) return res.status(400).json({ error: "Send an image file." });
+  const path = `blog-uploads/${Date.now()}-${String(name).replace(/[^a-zA-Z0-9._-]/g, "-")}`;
+  const { error } = await supabase.storage.from("Files").upload(path, Buffer.from(dataBase64, "base64"), { contentType });
+  if (error) throw new Error(error.message);
+  res.json({ success: true, url: supabase.storage.from("Files").getPublicUrl(path).data.publicUrl });
+}));
 
 // GET dashboard metrics / analytics
 app.get("/api/analytics", requireAdmin, async (req, res) => {

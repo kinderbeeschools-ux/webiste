@@ -18,7 +18,7 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
 import { PaymentPage } from './pages/PaymentPage';
-import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminPanel } from './pages/AdminPanel';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 import { DEFAULT_BLOGS } from './data/defaultBlogs';
@@ -111,7 +111,7 @@ export function App() {
       })
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
-          setBlogs(data);
+          setBlogs(data.filter((b: BlogPost) => !b.status || b.status === 'Published'));
           const params = new URLSearchParams(window.location.search);
           const blogIdParam = params.get('blogId');
           if (blogIdParam) {
@@ -169,10 +169,10 @@ export function App() {
     setCurrentTab('home');
   };
 
-  // If user is on Admin Tab and authenticated, display dedicated WordPress-style Admin Dashboard
+  // If user is on Admin Tab and authenticated, show the admin panel
   if (currentTab === 'admin' && adminToken) {
     return (
-      <AdminDashboard
+      <AdminPanel
         adminToken={adminToken}
         onLogout={handleLogoutAdmin}
         onVisitSite={() => setCurrentTab('home')}
@@ -279,12 +279,12 @@ export function App() {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-bold">Admin Authentication Required</h3>
-            <p className="text-sm text-stone-600">Please sign in with your administrator credentials to access the WordPress Admin control panel.</p>
+            <p className="text-sm text-stone-600">Please sign in with the admin password to manage enquiries, payments, blogs and settings.</p>
             <button
               onClick={() => setAdminLoginOpen(true)}
               className="bg-[#E1007A] hover:bg-[#c00068] text-white px-6 py-3 rounded-xl text-sm font-semibold transition cursor-pointer"
             >
-              Sign In to WordPress Admin
+              Sign In to Admin
             </button>
           </div>
         )}

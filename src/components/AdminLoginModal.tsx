@@ -79,11 +79,10 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
                 autoFocus
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Default password is 'admin'"
+                placeholder="Admin password"
                 className="w-full bg-stone-50 border border-stone-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
               />
             </div>
-            <p className="text-[11px] text-stone-400 mt-1">Default password: <code className="bg-stone-100 px-1 py-0.5 rounded text-stone-700 font-mono">admin</code> (can be updated in admin settings)</p>
           </div>
 
           <button
