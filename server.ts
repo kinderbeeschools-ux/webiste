@@ -610,16 +610,46 @@ app.post("/api/email/test", requireAdmin, async (req, res) => {
   }
 });
 
+// Supabase is the source of truth for enquiries when configured (db.json can't persist on Vercel)
+async function getEnquiries(): Promise<Enquiry[]> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return loadDb().enquiries;
+  const { data, error } = await supabase.from("enquiries").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(`Supabase enquiries: ${error.message}`);
+  return (data || []).map((r: any) => ({
+    id: r.id,
+    type: r.type,
+    fields: r.raw_data || { name: r.name, email: r.email, phone: r.phone, city: r.city, state: r.state, budget: r.budget, message: r.message },
+    status: r.status || "pending",
+    notes: r.notes || "",
+    aiSummary: r.ai_summary || undefined,
+    createdAt: r.created_at,
+  }));
+}
+
 // GET all enquiries for Admin
-app.get("/api/enquiries", requireAdmin, (req, res) => {
-  const db = loadDb();
-  res.json(db.enquiries);
+app.get("/api/enquiries", requireAdmin, async (req, res) => {
+  try {
+    res.json(await getEnquiries());
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // UPDATE enquiry status/notes
-app.put("/api/enquiries/:id", requireAdmin, (req, res) => {
+app.put("/api/enquiries/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
   const { status, notes } = req.body;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const patch: any = {};
+    if (status) patch.status = status;
+    if (notes !== undefined) patch.notes = notes;
+    const { data, error } = await supabase.from("enquiries").update(patch).eq("id", id).select();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data?.length) return res.status(404).json({ error: "Enquiry record not found" });
+    return res.json({ success: true, enquiry: data[0] });
+  }
   const db = loadDb();
   
   const idx = db.enquiries.findIndex(e => e.id === id);
@@ -634,8 +664,14 @@ app.put("/api/enquiries/:id", requireAdmin, (req, res) => {
 });
 
 // DELETE an enquiry
-app.delete("/api/enquiries/:id", requireAdmin, (req, res) => {
+app.delete("/api/enquiries/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { error } = await supabase.from("enquiries").delete().eq("id", id);
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json({ success: true });
+  }
   const db = loadDb();
   const filtered = db.enquiries.filter(e => e.id !== id);
   db.enquiries = filtered;
@@ -892,9 +928,13 @@ app.put("/api/settings/password", requireAdmin, (req, res) => {
 });
 
 // GET dashboard metrics / analytics
-app.get("/api/analytics", requireAdmin, (req, res) => {
-  const db = loadDb();
-  const enquiries = db.enquiries;
+app.get("/api/analytics", requireAdmin, async (req, res) => {
+  let enquiries: Enquiry[];
+  try {
+    enquiries = await getEnquiries();
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
 
   const totalLeads = enquiries.length;
   const pendingLeads = enquiries.filter(e => e.status === "pending").length;
@@ -951,7 +991,7 @@ app.get("/api/analytics", requireAdmin, (req, res) => {
     reviewedLeads,
     contactedLeads,
     closedLeads,
-    totalBlogs: db.blogs.length,
+    totalBlogs: loadDb().blogs.length,
     estimatedRevenuePotential: `₹${totalPotentialLakhs} Lakhs`,
     leadsByType
   });
