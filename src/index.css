@@ -65,3 +65,121 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* =====================================================================
+   Home page: creative image effects & staggered entrances
+   ===================================================================== */
+
+/* Children of a .stagger container rise in one after another once the container gets .is-in */
+@keyframes kbRise {
+  from { opacity: 0; transform: translateY(36px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+.stagger:not(.is-in) > * { opacity: 0; }
+.stagger.is-in > * { animation: kbRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.stagger.is-in > *:nth-child(2) { animation-delay: 0.12s; }
+.stagger.is-in > *:nth-child(3) { animation-delay: 0.24s; }
+.stagger.is-in > *:nth-child(4) { animation-delay: 0.36s; }
+.stagger.is-in > *:nth-child(5) { animation-delay: 0.48s; }
+.stagger.is-in > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Image frame: slow zoom + tilt, brand-colour wash and a light sweep on hover.
+   Hover target is the nearest .group (the card) or the frame itself. */
+.kb-frame { position: relative; overflow: hidden; isolation: isolate; }
+.kb-frame img {
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+  will-change: transform;
+}
+.kb-frame::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(135deg, rgba(225, 0, 122, 0.35), rgba(255, 212, 0, 0.25));
+  mix-blend-mode: soft-light;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.kb-frame::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: -75%; width: 50%; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+}
+.group:hover .kb-frame img, .kb-frame:hover img { transform: scale(1.09) rotate(0.8deg); filter: saturate(1.15) contrast(1.03); }
+.group:hover .kb-frame::before, .kb-frame:hover::before { opacity: 1; }
+.group:hover .kb-frame::after, .kb-frame:hover::after { left: 130%; transition: left 0.9s ease; }
+
+/* Badges inside a frame lift slightly on hover */
+.kb-frame > div { z-index: 3; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.group:hover .kb-frame > div:not(.kb-caption) { transform: translateY(-2px) scale(1.05); }
+
+/* Caption that slides up on hover (campus tiles) */
+.kb-caption > div { transform: translateY(8px); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.group:hover .kb-caption > div { transform: none; }
+
+/* Hero video drifts in slowly for a cinematic feel */
+@keyframes kbKenBurns {
+  from { transform: scale(1.02); }
+  to   { transform: scale(1.1) translate(-1%, -1%); }
+}
+.kb-kenburns { animation: kbKenBurns 22s ease-in-out infinite alternate; }
+
+/* Stacked-photo frame: brand-colour layers behind an image that fan out on hover */
+.kb-stack { position: relative; isolation: isolate; }
+.kb-stack::before, .kb-stack::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 1rem; z-index: -1;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kb-stack::before { background: #E1007A; transform: rotate(-4deg) translate(-10px, 8px); }
+.kb-stack::after  { background: #FFD400; transform: rotate(3deg) translate(10px, 10px); }
+.kb-stack:hover::before { transform: rotate(-7deg) translate(-18px, 12px); }
+.kb-stack:hover::after  { transform: rotate(6deg) translate(18px, 14px); }
+
+@keyframes kbFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.kb-float { animation: kbFloat 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger:not(.is-in) > * { opacity: 1; }
+  .stagger.is-in > *, .kb-kenburns, .kb-float { animation: none; }
+  .kb-frame img, .kb-frame::after, .kb-stack::before, .kb-stack::after, .kb-caption > div { transition: none; }
+}
+
+/* Gentle idle motion for decorative doodles */
+@keyframes kbWiggle { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@keyframes kbSpinSlow { to { transform: rotate(360deg); } }
+@keyframes kbFly {
+  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+  50%      { transform: translate(-14px, -12px) rotate(4deg); }
+}
+.kb-wiggle { animation: kbWiggle 3.5s ease-in-out infinite; }
+.kb-spin-slow { animation: kbSpinSlow 18s linear infinite; }
+.kb-fly { animation: kbFly 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .kb-wiggle, .kb-spin-slow, .kb-fly { animation: none; }
+}
+
+/* Founder section: shimmering gradient headline, drifting glows, pulsing journey stops */
+@keyframes kbShimmer { to { background-position: 200% center; } }
+.kb-shimmer {
+  background: linear-gradient(90deg, #FFD400, #fde68a, #f9a8d4, #FFD400) 0 center / 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: kbShimmer 6s linear infinite;
+}
+@keyframes kbDrift {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-30px, 24px); }
+}
+.kb-drift { animation: kbDrift 12s ease-in-out infinite; }
+@keyframes kbPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 212, 0, 0.45); }
+  70%  { box-shadow: 0 0 0 12px rgba(255, 212, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 212, 0, 0); }
+}
+.kb-pulse { animation: kbPulse 2.4s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .kb-shimmer, .kb-drift, .kb-pulse { animation: none; }
+}

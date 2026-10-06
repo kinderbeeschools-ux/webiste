@@ -58,11 +58,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'fwa', label: 'Teacher Training', fullLabel: 'NTT Teacher Training' },
     { 
       id: 'investors', 
-      label: 'Partner with us',
+      label: 'Partner With Us',
       dropdown: [
-        { id: 'partnerships-cbse', label: 'CBSE & IB School Setup', desc: 'End-to-end K-12 school establishment' },
-        { id: 'partnerships-degree', label: 'Degree College Setup', desc: 'Higher education institution consultancy' },
-        { id: 'programs', label: 'Programs & Solutions Overview', desc: 'All institutional academic pathways' }
+        { id: 'partnerships-cbse', label: 'CBSE School', desc: 'End-to-end K-12 school establishment' },
+        { id: 'partnerships-degree', label: 'Degree College', desc: 'Higher education institution consultancy' },
+        // ponytail: no Joint Ventures page yet, links to the Partner With Us page until one exists
+        { id: 'investors', label: 'Joint Ventures' },
+        { id: 'programs', label: 'Programs & Solutions', desc: 'All institutional academic pathways' }
       ]
     },
     { id: 'blogs', label: 'Blog' },

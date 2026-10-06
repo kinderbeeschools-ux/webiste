@@ -3,6 +3,8 @@ import { Sparkles, CheckCircle2, ArrowRight, Building2, GraduationCap, School, B
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
+import { FranchiseShowcase } from '../components/FranchiseShowcase';
+import { FranchiseDetails } from '../components/FranchiseDetails';
 
 export type FranchiseType = 'preschool' | 'cbse' | 'ib' | 'degree';
 
@@ -189,63 +191,10 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
             </div>
           </section>
 
-          {/* What You Receive As a KIPS Partner */}
-          <section className="max-w-5xl mx-auto px-4 sm:px-8">
-            <div className="bg-white p-8 sm:p-10 rounded-3xl shadow-xs border border-stone-200 space-y-6">
-              <h2 className="text-2xl font-display font-extrabold text-[#E1007A]">What You Receive As a KIPS Preschool Partner:</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Official Brand License</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Custom Local Curriculum</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Staff Recruitment Guides</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Comprehensive Training</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">School Design Blueprint</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">SEO-Optimized Micro-Websites</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Admissions Playbooks</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">School Management ERP</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Continuous Quality Audits</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Franchise Operations Manual</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Monthly Marketing Campaigns</span></div>
-                <div className="flex items-center gap-3 bg-stone-50 px-4 py-3 rounded-xl border border-stone-100"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span className="text-sm font-semibold text-stone-700">Mentorship Advisory Support</span></div>
-              </div>
-            </div>
-          </section>
+          {/* Illustrated partner ecosystem showcase */}
+          <FranchiseShowcase />
 
-          {/* Core Preschool Pedagogy & Financial Specs */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-3xl border border-stone-200 space-y-6">
-              <h3 className="text-2xl font-display font-bold text-[#1C1917]">Preschool Curriculum & Learning Pillars</h3>
-              <ul className="space-y-3 text-stone-700 font-medium text-sm">
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> Play-Based & Experiential Learning</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> NEP 2020 Early Childhood Care & Education</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> Finnish-Inspired Child-Centric Pedagogy</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> STEM & Activity-Based Exploration</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> Social & Emotional Intelligence Skills</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> Fine & Gross Motor Development</li>
-                <li className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-[#E1007A]"></span> Phonics & Early Literacy Modules</li>
-              </ul>
-            </div>
-
-            <div className="bg-stone-900 text-white p-8 rounded-3xl shadow-xl space-y-6">
-              <h3 className="text-2xl font-display font-bold text-white">Investment & Space Specifications</h3>
-              <div className="space-y-4">
-                <div className="bg-stone-800 p-4 rounded-xl border border-stone-700">
-                  <div className="text-xs uppercase tracking-widest text-pink-400 font-bold">Estimated Capital Investment</div>
-                  <div className="text-2xl font-extrabold text-white mt-1">₹15 Lakhs – ₹30 Lakhs</div>
-                  <div className="text-xs text-stone-400 mt-1">Covers interior setup, safety flooring, furniture, activity kits, and marketing launch.</div>
-                </div>
-                <div className="bg-stone-800 p-4 rounded-xl border border-stone-700">
-                  <div className="text-xs uppercase tracking-widest text-emerald-400 font-bold">Royalty Fee Structure</div>
-                  <div className="text-xl font-bold text-emerald-300 mt-1">₹0 / Month (100% Zero Royalty)</div>
-                  <div className="text-xs text-stone-400 mt-1">Keep 100% of your tuition revenues and profits forever.</div>
-                </div>
-                <div className="bg-stone-800 p-4 rounded-xl border border-stone-700">
-                  <div className="text-xs uppercase tracking-widest text-amber-400 font-bold">Space / Built-up Area</div>
-                  <div className="text-lg font-bold text-white mt-1">1,500 – 3,500 Sq. Ft.</div>
-                  <div className="text-xs text-stone-400 mt-1">Ground floor residential villa or commercial property with outdoor play space.</div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
         </div>
       )}
 

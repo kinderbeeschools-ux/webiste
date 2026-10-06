@@ -5,7 +5,9 @@ import {
   ChevronRight, Camera, Maximize2, ChevronUp, ChevronDown, ArrowUp, ArrowDown, Sliders, 
   RotateCcw, Eye, Layers
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, MotionConfig } from 'motion/react';
+import { Reveal, EASE, useStagger } from '../components/Motion';
+import { Bee, Rainbow, Star, Squiggle, Cloud, Heart, Dots } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
@@ -170,13 +172,15 @@ const ABOUT_MENTORS_IMAGES: VisionGalleryItem[] = [
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(4).jpeg',
     tag: 'Curriculum Mentors',
   },
-  {
-    id: 'mentor-5',
-    title: 'Collaborative Growth & Partner Coaches',
-    subtitle: 'Empowering preschool franchise partners with continuous training & quality governance',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(5).jpeg',
-    tag: 'Partner Coaches',
-  },
+];
+
+// Children of a staggered motion container rise in with this
+const FADE_UP = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } } };
+
+const FOUNDER_PILLARS = [
+  { title: 'Child-Led Play', node: 'bg-[#E1007A] text-white', text: <>Cultivating <strong className="text-white font-semibold">creativity and self-confidence</strong> naturally.</> },
+  { title: 'Educator Growth', node: 'bg-[#FFD400] text-stone-900', text: <><strong className="text-white font-semibold">Comprehensive NTT certification</strong> &amp; practical mastery.</> },
+  { title: 'Global Standards', node: 'bg-gradient-to-br from-pink-400 to-[#FFD400] text-stone-900', text: <>World-renowned <strong className="text-white font-semibold">Nordic early learning philosophy</strong>.</> },
 ];
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
@@ -220,8 +224,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       document.body.style.overflow = '';
     };
   }, [selectedPhotoIndex]);
+  const [diffRef, diffCls] = useStagger();
+  const [testiRef, testiCls] = useStagger();
+
   return (
-    <div className="space-y-20 pb-20">
+    <MotionConfig reducedMotion="user">
+    <div className="space-y-20 pb-20 overflow-x-clip">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
         title="About Us & Finnish Educational Heritage"
@@ -232,14 +240,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       
       
       {/* Story & Philosophy */}
-      <section id="story" className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
+      <section id="story" className="relative max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <motion.div className="relative space-y-6" initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, ease: EASE }}>
+          <Star className="hidden sm:block absolute -top-6 right-6 w-9 kb-spin-slow" />
           <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
             Our Story and Purpose
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
             Nurturing Young Minds. Shaping Bright Futures.
           </h2>
+          <Squiggle className="w-28 h-5 -mt-3" />
           <p className="text-stone-600 text-base leading-relaxed">
             Kinderbee was founded with a simple yet meaningful purpose: to create joyful early-learning environments where every child feels safe, valued and inspired to explore. Our child-centred approach combines play-based learning, thoughtful guidance and modern pedagogical perspectives to support each child’s holistic development.
           </p>
@@ -247,32 +257,38 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             With a commitment to early childhood education, Kinderbee creates <strong className="text-stone-900 font-bold">nurturing, engaging and future-ready learning environments</strong> where children can learn, explore and grow. Our approach combines <strong className="text-stone-900 font-bold">play-based learning</strong>, <strong className="text-stone-900 font-bold">child-centred teaching</strong>, <strong className="text-stone-900 font-bold">Nordic-inspired education</strong>, and <strong className="text-stone-900 font-bold">practices aligned with the principles of NEP 2020</strong> to give every child a strong foundation for <strong className="text-stone-900 font-bold">lifelong learning</strong>.
           </p>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-1">
+            <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-1 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-pink-200">
               <div className="text-2xl font-display font-black text-[#E1007A]">0%</div>
               <div className="text-xs text-stone-600 font-semibold uppercase tracking-wider">ROYALTY FEES</div>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-1">
+            <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-1 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-pink-200">
               <div className="text-2xl font-display font-black text-amber-500">30+</div>
               <div className="text-xs text-stone-600 font-semibold uppercase tracking-wider">YEARS OF LEGACY</div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="relative group">
+        <motion.div className="relative group" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, delay: 0.2, ease: EASE }}>
+          <Rainbow className="absolute -top-9 -left-6 w-24 sm:w-28 z-20 kb-float" />
+          <Bee className="absolute -top-14 -right-2 w-28 sm:w-32 z-20 kb-fly" />
+          <Dots className="absolute -bottom-6 -right-5 w-20 z-0 opacity-70" />
           <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A]/25 to-amber-500/20 rounded-[28px] blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
-          <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-stone-100">
+          <div className="kb-frame relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-stone-100">
             <img
               src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/franchise%20%20(2).jpeg"
               alt="Kinderbee Story and Purpose - Preschool Franchise Campus"
-              className="w-full h-full object-cover object-[55%_40%] transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover object-[55%_40%]"
               referrerPolicy="no-referrer"
             />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* What Makes Kinderbee Different */}
-      <section className="bg-stone-50 py-20 px-4 sm:px-8 border-y border-stone-200">
+      <section className="relative overflow-hidden bg-stone-50 py-20 px-4 sm:px-8 border-y border-stone-200">
+        <Cloud className="hidden sm:block absolute top-8 left-6 w-24 kb-float" />
+        <Heart className="hidden sm:block absolute bottom-10 right-10 w-10 kb-wiggle" />
+        <Star color="#E1007A" className="hidden md:block absolute top-16 right-1/4 w-6 kb-spin-slow" />
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">
@@ -280,30 +296,30 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+          <div ref={diffRef} className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${diffCls}`}>
+            <div className="group bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+              <CheckCircle2 className="w-6 h-6 text-[#E1007A] shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
               <div>
                 <h4 className="font-bold text-stone-900 mb-1">Play-Based Learning</h4>
                 <p className="text-stone-600 text-sm">Engaging activities that develop <strong className="text-stone-800 font-semibold">creativity, curiosity and confidence</strong>.</p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="group bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+              <CheckCircle2 className="w-6 h-6 text-[#E1007A] shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
               <div>
                 <h4 className="font-bold text-stone-900 mb-1">Nordic-Inspired Curriculum</h4>
                 <p className="text-stone-600 text-sm"><strong className="text-stone-800 font-semibold">Modern early learning practices</strong> focused on <strong className="text-stone-800 font-semibold">holistic child development</strong>.</p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="group bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+              <CheckCircle2 className="w-6 h-6 text-[#E1007A] shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
               <div>
                 <h4 className="font-bold text-stone-900 mb-1">Expert Teacher Training</h4>
                 <p className="text-stone-600 text-sm"><strong className="text-stone-800 font-semibold">Professional preschool teacher training</strong> that empowers educators with effective teaching methodologies.</p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="group bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex items-start gap-4 transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+              <CheckCircle2 className="w-6 h-6 text-[#E1007A] shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
               <div>
                 <h4 className="font-bold text-stone-900 mb-1">Holistic Development</h4>
                 <p className="text-stone-600 text-sm">Supporting children's <strong className="text-stone-800 font-semibold">cognitive, social, emotional, physical and language development</strong>.</p>
@@ -312,13 +328,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </div>
           
           <div className="mt-8 flex flex-wrap justify-center items-center gap-4 sm:gap-8 font-bold text-stone-700 text-sm">
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Aligned with NEP 2020</strong></span>
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Nordic-Inspired Learning</strong></span>
-            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-emerald-600" /> <strong className="text-stone-900 font-bold">Child-Centred Education</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-[#E1007A]" /> <strong className="text-stone-900 font-bold">Aligned with NEP 2020</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-[#E1007A]" /> <strong className="text-stone-900 font-bold">Nordic-Inspired Learning</strong></span>
+            <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-[#E1007A]" /> <strong className="text-stone-900 font-bold">Child-Centred Education</strong></span>
           </div>
         </div>
       </section>
 
+      <Reveal>
       {/* 3 Core Services Section (Franchise, NTT Training, CBSE / IB School Setup) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-6">
         <div className="text-center mb-10">
@@ -514,11 +531,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </div>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       {/* Life at Kinderbee - Gallery Section (Matching Reference Design) */}
       <section id="life-at-kinderbee" className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+        <div className="relative text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+          <Star className="hidden sm:block absolute -top-2 left-2 w-9 kb-spin-slow" />
+          <Heart className="hidden sm:block absolute top-12 right-0 w-9 kb-wiggle" />
           <div className="inline-flex items-center gap-2 bg-[#FFF0F7] border border-pink-200/80 text-[#E1007A] text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
             <span>MORE THAN JUST A PRESCHOOL</span>
@@ -543,16 +564,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                 <div
                   key={photo.id}
                   onClick={() => setSelectedPhotoIndex(globalIndex)}
-                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                  className={`kb-frame group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
                 >
                   <img
                     src={photo.url}
                     alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    className="w-full h-full object-cover block"
                     loading="lazy"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                  <div className="kb-caption absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
                     <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <Camera className="w-3 h-3" />
                       {photo.category}
@@ -577,16 +598,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                 <div
                   key={photo.id}
                   onClick={() => setSelectedPhotoIndex(globalIndex)}
-                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                  className={`kb-frame group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
                 >
                   <img
                     src={photo.url}
                     alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    className="w-full h-full object-cover block"
                     loading="lazy"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                  <div className="kb-caption absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
                     <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <Camera className="w-3 h-3" />
                       {photo.category}
@@ -611,16 +632,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                 <div
                   key={photo.id}
                   onClick={() => setSelectedPhotoIndex(globalIndex)}
-                  className={`group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
+                  className={`kb-frame group relative ${photo.aspect} rounded-2xl sm:rounded-[1.75rem] overflow-hidden bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer border border-stone-200/70 hover:-translate-y-1`}
                 >
                   <img
                     src={photo.url}
                     alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out block"
+                    className="w-full h-full object-cover block"
                     loading="lazy"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
+                  <div className="kb-caption absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 text-white">
                     <span className="text-[11px] font-bold text-[#FFD400] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <Camera className="w-3 h-3" />
                       {photo.category}
@@ -645,67 +666,90 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </p>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       {/* Founder Video & Vision Section (9:16 Ratio with Autoplay & Unmute Sound Controls) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-10">
         <div className="bg-gradient-to-br from-stone-900 via-[#1C1917] to-stone-950 rounded-3xl p-6 sm:p-10 lg:p-12 text-white shadow-2xl relative overflow-hidden border border-stone-800">
           {/* Subtle decorative glow accents */}
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#E1007A]/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#E1007A]/15 rounded-full blur-3xl pointer-events-none kb-drift" />
+          <div className="absolute bottom-0 left-10 w-80 h-80 bg-[#FFD400]/10 rounded-full blur-3xl pointer-events-none kb-drift [animation-delay:-6s]" />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (7 columns on lg) */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-[#FFD400] text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full border border-white/15">
-                <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
+            <motion.div className="lg:col-span-7 space-y-6" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={{ show: { transition: { staggerChildren: 0.12 } } }}>
+              <motion.div variants={FADE_UP} className="relative inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-[#FFD400] text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full border border-white/15">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFD400] kb-wiggle" />
                 <span>FOUNDER'S VISION & PURPOSE</span>
-              </div>
+                <Star className="absolute -top-4 -right-6 w-6 kb-spin-slow" />
+              </motion.div>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-display font-extrabold tracking-tight leading-[1.18] text-white">
+              <motion.h2 variants={FADE_UP} className="text-3xl sm:text-4xl lg:text-[42px] font-display font-extrabold tracking-tight leading-[1.18] text-white">
                 Nurturing Potential. <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-amber-200 to-pink-300">
+                <span className="kb-shimmer">
                   Inspiring a Lifetime of Learning.
                 </span>
-              </h2>
+              </motion.h2>
 
-              <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
+              <motion.p variants={FADE_UP} className="text-stone-300 text-sm sm:text-base leading-relaxed">
                 At <strong className="text-white font-bold">Kinderbee Preschool</strong>, we believe early childhood is the <strong className="text-[#FFD400] font-bold">most transformative developmental window</strong> in a human life. True education is not about rote drills or rigid classrooms—it is about creating an environment of <strong className="text-white font-bold">emotional safety, creative discovery, and joyful play</strong>.
-              </p>
+              </motion.p>
 
-              <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
+              <motion.p variants={FADE_UP} className="text-stone-300 text-sm sm:text-base leading-relaxed">
                 In close collaboration with <strong className="text-white font-bold">Finnishway Academy</strong> and fully aligned with the <strong className="text-white font-bold">NEP 2020 & NCF-FS frameworks</strong>, our mission empowers not only young children, but also the <strong className="text-[#FFD400] font-bold">aspiring educators and visionary preschool entrepreneurs</strong> who build the schools of tomorrow.
-              </p>
+              </motion.p>
 
-              {/* Core Pillars */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
-                  <div className="w-8 h-8 rounded-lg bg-[#E1007A]/20 flex items-center justify-center text-[#FFD400] mb-2 font-bold">
-                    01
+              {/* Core Pillars as a journey: stops pop in one by one, joined by a line that draws itself */}
+              <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-3 pt-2">
+                {FOUNDER_PILLARS.map((p, i) => (
+                  <div key={p.title} className="relative flex sm:flex-col gap-3">
+                    {i < FOUNDER_PILLARS.length - 1 && (
+                      <>
+                        <motion.span
+                          aria-hidden="true"
+                          className="hidden sm:block absolute top-5 left-11 h-0.5 w-[calc(100%-2.75rem+0.75rem)] origin-left bg-gradient-to-r from-[#E1007A] to-[#FFD400]"
+                          initial={{ scaleX: 0 }}
+                          whileInView={{ scaleX: 1 }}
+                          viewport={{ once: true, amount: 0.8 }}
+                          transition={{ duration: 0.7, delay: 0.35 + i * 0.45, ease: EASE }}
+                        />
+                        <motion.span
+                          aria-hidden="true"
+                          className="sm:hidden absolute left-5 top-11 w-0.5 h-[calc(100%-2.75rem+1rem)] origin-top bg-gradient-to-b from-[#E1007A] to-[#FFD400]"
+                          initial={{ scaleY: 0 }}
+                          whileInView={{ scaleY: 1 }}
+                          viewport={{ once: true, amount: 0.8 }}
+                          transition={{ duration: 0.7, delay: 0.35 + i * 0.45, ease: EASE }}
+                        />
+                      </>
+                    )}
+                    <motion.div
+                      className={`kb-pulse relative z-10 shrink-0 w-10 h-10 rounded-full ${p.node} flex items-center justify-center text-sm font-extrabold shadow-lg`}
+                      initial={{ scale: 0, rotate: -90 }}
+                      whileInView={{ scale: 1, rotate: 0 }}
+                      viewport={{ once: true, amount: 0.8 }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 18, delay: i * 0.45 }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </motion.div>
+                    <motion.div
+                      className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm transition-[background-color,border-color,translate] duration-300 hover:bg-white/10 hover:border-[#FFD400]/40 hover:-translate-y-1"
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.6 }}
+                      transition={{ duration: 0.6, delay: 0.15 + i * 0.45, ease: EASE }}
+                    >
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wide">{p.title}</h4>
+                      <p className="text-[11px] text-stone-300 mt-1 leading-snug">{p.text}</p>
+                    </motion.div>
                   </div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wide">Child-Led Play</h4>
-                  <p className="text-[11px] text-stone-300 mt-1 leading-snug">Cultivating <strong className="text-white font-semibold">creativity and self-confidence</strong> naturally.</p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
-                  <div className="w-8 h-8 rounded-lg bg-[#3E7445]/30 flex items-center justify-center text-emerald-300 mb-2 font-bold">
-                    02
-                  </div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wide">Educator Growth</h4>
-                  <p className="text-[11px] text-stone-300 mt-1 leading-snug"><strong className="text-white font-semibold">Comprehensive NTT certification</strong> & practical mastery.</p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-300 mb-2 font-bold">
-                    03
-                  </div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wide">Global Standards</h4>
-                  <p className="text-[11px] text-stone-300 mt-1 leading-snug">World-renowned <strong className="text-white font-semibold">Nordic early learning philosophy</strong>.</p>
-                </div>
+                ))}
               </div>
 
               {/* Founder Quote Card */}
-              <div className="bg-gradient-to-r from-white/10 to-white/5 border-l-4 border-[#FFD400] rounded-r-2xl p-4 sm:p-5 relative">
-                <Quote className="w-8 h-8 text-[#FFD400]/30 absolute top-3 right-3 pointer-events-none" />
+              <motion.div variants={{ hidden: { opacity: 0, x: -30 }, show: { opacity: 1, x: 0, transition: { duration: 0.8, ease: EASE } } }} className="bg-gradient-to-r from-white/10 to-white/5 border-l-4 border-[#FFD400] rounded-r-2xl p-4 sm:p-5 relative">
+                <Quote className="w-8 h-8 text-[#FFD400]/30 absolute top-3 right-3 pointer-events-none kb-float" />
                 <p className="text-stone-200 text-xs sm:text-sm italic leading-relaxed">
                   "When we protect a child's natural love for curiosity, we do not merely prepare them for primary school—we prepare them to thrive in an ever-changing world."
                 </p>
@@ -718,16 +762,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                     <div className="text-[11px] text-[#FFD400] font-medium">Kinderbee Group of Schools</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex flex-wrap items-center gap-4">
+              <motion.div variants={FADE_UP} className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   onClick={() => onOpenConsultation && onOpenConsultation('franchise')}
-                  className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-pink-900/40 hover:scale-[1.02] transition duration-300 text-sm flex items-center gap-2 cursor-pointer"
+                  className="bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-pink-900/40 hover:scale-[1.02] transition duration-300 text-sm flex items-center gap-2 cursor-pointer group"
                 >
                   <span>Connect With Leadership</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
                   onClick={() => handleNavigate('fwa')}
@@ -736,11 +780,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                   <GraduationCap className="w-4 h-4 text-[#FFD400]" />
                   <span>Explore NTT Programs</span>
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Column: 3 Images in a Column, Smooth Scroll Bottom to Top Slowly */}
-            <div className="lg:col-span-5 flex flex-col justify-center">
+            <motion.div className="relative lg:col-span-5 flex flex-col justify-center" initial={{ opacity: 0, x: 40, rotate: 2 }} whileInView={{ opacity: 1, x: 0, rotate: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1, ease: EASE }}>
+              <Bee className="absolute -top-6 -left-4 w-24 z-20 kb-fly" />
               <div
                 className="relative w-full h-[520px] sm:h-[560px] rounded-3xl overflow-hidden border border-stone-800/90 bg-stone-950/70 shadow-2xl group select-none"
                 onMouseEnter={() => setIsHovered(true)}
@@ -770,12 +815,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                     <div
                       key={`mentor-column-${img.id}-${idx}`}
                       onClick={() => setActiveMentorModal(img)}
-                      className="relative w-full h-[155px] sm:h-[165px] rounded-2xl overflow-hidden border border-stone-800/80 shadow-md group/card cursor-pointer hover:border-[#FFD400]/70 transition-all duration-300 shrink-0"
+                      className="kb-frame relative w-full h-[155px] sm:h-[165px] rounded-2xl overflow-hidden border border-stone-800/80 shadow-md group/card cursor-pointer hover:border-[#FFD400]/70 transition-all duration-300 shrink-0"
                     >
                       <img
                         src={img.url}
                         alt={img.title}
-                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"
                       />
                     </div>
@@ -813,11 +858,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       {/* Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-10">
         <div className="text-center mb-12">
@@ -827,10 +874,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">
             Testimonials
           </h2>
+          <Squiggle className="w-24 h-5 mx-auto mt-2" />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative">
+        <div ref={testiRef} className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${testiCls}`}>
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
             <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
             <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
               I always wanted to start a preschool, but I didn't know where to begin. Kinderbee gave me more than a franchise model—it gave me a <strong className="text-stone-900 font-bold not-italic">roadmap</strong>, a <strong className="text-stone-900 font-bold not-italic">support system</strong> and the <strong className="text-stone-900 font-bold not-italic">confidence</strong> to build something meaningful for children.
@@ -838,7 +886,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             <div className="font-bold text-[#1C1917]">— Meera Krishnan</div>
           </div>
           
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative">
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
             <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
             <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
               Kinderbee helped us understand that a preschool is not just a building—it is a child's <strong className="text-stone-900 font-bold not-italic">first learning world</strong>. Their approach helped us create a space where children can <strong className="text-stone-900 font-bold not-italic">explore, learn and grow happily</strong>.
@@ -847,7 +895,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             <div className="text-xs text-stone-500 font-semibold">Kinderbee Franchise Partner | Madurai</div>
           </div>
           
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative">
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
             <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
             <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
               The <strong className="text-stone-900 font-bold not-italic">NTT program</strong> helped me understand that teaching young children is not simply about lessons—it is about <strong className="text-stone-900 font-bold not-italic">patience, creativity and understanding every child</strong>. I now feel ready to step into a classroom with <strong className="text-stone-900 font-bold not-italic">confidence</strong>.
@@ -856,7 +904,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             <div className="text-xs text-stone-500 font-semibold">NTT Graduate | Madurai</div>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative">
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
             <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
             <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
               The program taught me that <strong className="text-stone-900 font-bold not-italic">every child learns differently</strong>. The training helped me become <strong className="text-stone-900 font-bold not-italic">more patient, creative and intentional</strong> in the way I approach teaching.
@@ -866,10 +914,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </div>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       {/* CTA */}
       <section className="max-w-5xl mx-auto px-4 sm:px-8 text-center bg-gradient-to-br from-stone-900 to-stone-950 text-white p-12 sm:p-16 rounded-3xl shadow-2xl relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E1007A_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <Bee className="hidden sm:block absolute top-6 right-8 w-28 kb-fly" />
+        <Star className="absolute bottom-8 left-8 w-8 kb-spin-slow" />
+        <Star color="#E1007A" className="absolute top-10 left-16 w-5 kb-wiggle" />
         <div className="relative z-10 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold">Ready to Join the Kinderbee Network?</h2>
           <p className="text-stone-300 text-base max-w-xl mx-auto">
@@ -883,6 +936,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           </button>
         </div>
       </section>
+      </Reveal>
 
       {/* Fullscreen Lightbox Modal */}
       {selectedPhotoIndex !== null && (
@@ -960,5 +1014,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
       )}
 
     </div>
+    </MotionConfig>
   );
 };
