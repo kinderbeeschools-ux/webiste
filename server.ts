@@ -1,16 +1,15 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
-import { 
-  sendApplicantConfirmationEmail, 
-  sendAdminLeadAlertEmail, 
+import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
+import {
+  sendApplicantConfirmationEmail,
+  sendAdminLeadAlertEmail,
   isSmtpConfigured,
-  getEmailTransporter 
-} from "./server/emailService";
+  getEmailTransporter
+} from "./server/emailService.js";
 
 // Initialize express app
 const app = express();
@@ -486,7 +485,7 @@ app.post("/api/enquiries", async (req, res) => {
   saveDb(db);
 
   // Sync to Supabase table 'enquiries' asynchronously if client is initialized
-  (async () => {
+  const syncPromise = (async () => {
     try {
       const supabase = getSupabaseClient();
       if (supabase) {
@@ -534,7 +533,7 @@ app.post("/api/enquiries", async (req, res) => {
     aiSummary: newEnquiry.aiSummary,
   };
 
-  Promise.allSettled([
+  const emailPromise = Promise.allSettled([
     sendApplicantConfirmationEmail(emailPayload),
     sendAdminLeadAlertEmail(emailPayload),
   ]).then((outcomes) => {
@@ -549,6 +548,9 @@ app.post("/api/enquiries", async (req, res) => {
   }).catch((err) => {
     console.error("[Email] Global dispatch error:", err);
   });
+
+  // Vercel freezes the function once the response is sent, so finish the sync + emails first
+  await Promise.all([syncPromise, emailPromise]);
 
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
 });
@@ -1041,6 +1043,7 @@ ${db.settings.phone} | ${db.settings.email}`;
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     // Development Mode
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa"
@@ -1065,4 +1068,7 @@ async function startServer() {
   });
 }
 
-startServer();
+// On Vercel, api/index.ts serves this app as a function; static files come from dist via vercel.json
+if (!process.env.VERCEL) startServer();
+
+export default app;
