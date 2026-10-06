@@ -75,6 +75,22 @@ export const Heart: React.FC<DoodleProps> = ({ className }) => (
   </svg>
 );
 
+export const Blocks: React.FC<DoodleProps> = ({ className }) => (
+  <svg viewBox="0 0 120 90" {...svgProps(className)}>
+    {[
+      { x: 4, y: 46, f: PINK, l: 'A' },
+      { x: 44, y: 46, f: YELLOW, l: 'B' },
+      { x: 24, y: 6, f: '#7DD3FC', l: 'C' },
+    ].map(b => (
+      <g key={b.l}>
+        <rect x={b.x} y={b.y} width="38" height="38" rx="6" fill={b.f} stroke={INK} strokeWidth="2.5" />
+        <text x={b.x + 19} y={b.y + 27} textAnchor="middle" fontSize="22" fontWeight="900" fill={b.l === 'B' ? INK : '#fff'} stroke={INK} strokeWidth="0.8">{b.l}</text>
+      </g>
+    ))}
+    <path d="M88 80 l 8 -22 l 8 22 z" fill="#86EFAC" stroke={INK} strokeWidth="2.5" strokeLinejoin="round" />
+  </svg>
+);
+
 export const Dots: React.FC<DoodleProps & { color?: string }> = ({ className, color = PINK }) => (
   <svg viewBox="0 0 60 60" {...svgProps(className)}>
     {[0, 1, 2, 3].flatMap(r => [0, 1, 2, 3].map(c => <circle key={`${r}-${c}`} cx={8 + c * 15} cy={8 + r * 15} r="2.6" fill={color} />))}

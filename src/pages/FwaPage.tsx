@@ -6,6 +6,9 @@ import {
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
+import { MotionConfig } from 'motion/react';
+import { Reveal, useStagger } from '../components/Motion';
+import { TrainingHero } from '../components/TrainingHero';
 
 interface FwaPageProps {
   onOpenConsultation: (type?: string) => void;
@@ -16,22 +19,22 @@ interface FwaPageProps {
 const programSliders = [
   {
     title: "Advanced Diploma in Early Childhood Care & Education",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20and%20Education.jpeg",
+    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20and%20Education.png",
     subtitle: "Advanced Pedagogy & Practical Training"
   },
   {
     title: "Certificate in Nordic inspired Preschool Teaching",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.jpeg",
+    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.png",
     subtitle: "Child-Centred Global Teaching Methods"
   },
   {
     title: "Diploma in Play school Teacher Training",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Diploma%20in%20Play%20school%20Teacher%20Training.jpeg",
+    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Diploma%20in%20Play%20school%20Teacher%20Training.png",
     subtitle: "Play-Based Classroom Activity Planning"
   },
   {
     title: "Foundational Stage Curriculum Design",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Foundational%20Stage%20Curriculum%20Design.jpeg",
+    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Foundational%20Stage%20Curriculum%20Design.png",
     subtitle: "NEP 2020 & NCF-FS Aligned Curriculum"
   }
 ];
@@ -83,8 +86,12 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
     setTouchStart(null);
   };
 
+  const [programsRef, programsCls] = useStagger(0.1);
+  const scrollToSlider = () => document.getElementById('program-slider')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   return (
-    <div className="space-y-20 pb-20 bg-[#FAF9F6]">
+    <MotionConfig reducedMotion="user">
+    <div className="space-y-20 pb-20 bg-[#FAF9F6] overflow-x-clip">
       <SEOHead 
         title="Academics & Programs"
         description="Explore Kinderbee's Advanced Diplomas, Teacher Training programs, and Foundational Curriculum certifications."
@@ -92,8 +99,14 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
         settings={settings}
       />
       
-      {/* Hero Section: Smooth Horizontal Left Slider */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-10 sm:py-16 px-4 sm:px-8 border-b border-pink-950/40">
+      {/* Illustrated hero */}
+      <div>
+        <TrainingHero onExplore={scrollToSlider} onEnquire={() => onOpenConsultation('fwa_course')} />
+      </div>
+
+      {/* Programme slider (follows the hero) */}
+      <Reveal>
+      <section id="program-slider" className="scroll-mt-24 relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-10 sm:py-16 px-4 sm:px-8 border-b border-pink-950/40">
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
@@ -102,17 +115,17 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10 space-y-6">
-          {/* Header Title Bar */}
+          {/* Slider heading */}
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-              <span>TEACHER TRAINING & PEDAGOGY CERTIFICATIONS</span>
+              <span>Admissions open · 2026–27</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
-              Early Childhood & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#E1007A]">Teacher Training Programs</span>
-            </h1>
+            <h2 className="text-2xl sm:text-4xl font-display font-extrabold tracking-tight text-white leading-tight">
+              Explore our <span className="kb-shimmer">programmes</span>
+            </h2>
             <p className="text-sm sm:text-base text-pink-100/75 max-w-2xl mx-auto">
-              Empowering future preschool educators with world-class curriculum frameworks and recognized credentials.
+              Swipe through the courses, or tap a slide to enquire.
             </p>
           </div>
 
@@ -132,14 +145,14 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               {programSliders.map((slide, idx) => (
                 <div 
                   key={idx} 
-                  className="w-full flex-shrink-0 relative aspect-[1200/628] bg-stone-950 flex items-center justify-center cursor-pointer"
+                  className="w-full flex-shrink-0 relative aspect-[1704/923] bg-stone-950 flex items-center justify-center cursor-pointer"
                   onClick={() => onOpenConsultation('fwa_course')}
                   title={`Click to inquire about ${slide.title}`}
                 >
                   <img 
                     src={slide.image} 
                     alt={slide.title}
-                    className="w-full h-full object-cover sm:object-contain block"
+                    className="w-full h-full object-cover block"
                     loading={idx === 0 ? "eager" : "lazy"}
                   />
                 </div>
@@ -201,8 +214,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* Programs Grid */}
+      <Reveal>
       <section id="programs" className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="text-center mb-10">
           <span className="text-xs font-bold tracking-widest text-[#E1007A] uppercase bg-pink-50 px-4 py-1.5 rounded-full inline-block mb-3">Professional Pedagogical Excellence</span>
@@ -210,13 +225,13 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           <p className="text-stone-500 mt-2 max-w-2xl mx-auto text-sm sm:text-base">Upgrade your skills with our highly specialized nursery teacher training, early childhood, and foundational stage curriculum design courses.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div ref={programsRef} className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${programsCls}`}>
           
           {/* Program 1 */}
-          <div className="bg-white rounded-3xl border-2 border-[#E1007A]/40 shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 relative">
-            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50 relative">
+          <div className="group bg-white rounded-3xl border-2 border-[#E1007A]/40 shadow-md overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-[box-shadow,translate] duration-300 relative">
+            <div className="kb-frame w-full overflow-hidden border-b border-stone-100 bg-stone-50 relative">
               <SmartImage 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20&%20Education.jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20%26%20Education.png" 
                 altContext={{ page: 'academics', section: 'Our Programs', type: 'advanced-diploma' }}
                 className="w-full h-auto block"
               />
@@ -230,23 +245,6 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   <div>
                     <span className="text-xs font-bold text-[#E1007A] uppercase tracking-wider block mb-1">Advanced Credential • Limited Period</span>
                     <h3 className="text-xl sm:text-2xl font-display font-extrabold text-[#1C1917] leading-tight">Advanced Diploma in Early Childhood Care &amp; Education</h3>
-                  </div>
-                </div>
-
-                {/* Offer Metrics Bar */}
-                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 mb-4 grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-stone-500 font-medium block">Duration &amp; Hours:</span>
-                    <strong className="text-stone-900 font-bold text-sm">3 Months | 120 Hours</strong>
-                    <span className="text-[10px] text-stone-600 block mt-0.5">(Calculated: ~10 hrs/week)</span>
-                  </div>
-                  <div>
-                    <span className="text-stone-500 font-medium block">Special Fee:</span>
-                    <div className="flex items-baseline gap-1.5">
-                      <strong className="text-[#A3001D] font-extrabold text-base">₹4,999</strong>
-                      <span className="line-through text-stone-400 text-xs">₹49,990</span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-emerald-700 block mt-0.5">Offer valid until 5 Oct 2026</span>
                   </div>
                 </div>
 
@@ -313,10 +311,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
           
           {/* Program 2 */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50">
+          <div className="group bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 hover:border-pink-200 transition-[box-shadow,translate,border-color] duration-300">
+            <div className="kb-frame w-full overflow-hidden border-b border-stone-100 bg-stone-50">
               <SmartImage 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Diploma%20in%20Play%20school%20Teacher%20Training.jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Diploma%20in%20Play%20school%20Teacher%20Training.png" 
                 altContext={{ page: 'academics', section: 'Our Programs', type: 'diploma-play-school' }}
                 className="w-full h-auto block"
               />
@@ -381,10 +379,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
           
           {/* Program 3 */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50">
+          <div className="group bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 hover:border-pink-200 transition-[box-shadow,translate,border-color] duration-300">
+            <div className="kb-frame w-full overflow-hidden border-b border-stone-100 bg-stone-50">
               <SmartImage 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.png" 
                 altContext={{ page: 'academics', section: 'Our Programs', type: 'nordic-inspired' }}
                 className="w-full h-auto block"
               />
@@ -449,10 +447,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
           
           {/* Program 4 */}
-          <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-            <div className="w-full overflow-hidden border-b border-stone-100 bg-stone-50">
+          <div className="group bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 hover:border-pink-200 transition-[box-shadow,translate,border-color] duration-300">
+            <div className="kb-frame w-full overflow-hidden border-b border-stone-100 bg-stone-50">
               <SmartImage 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Foundational%20Stage%20Curriculum%20Design.jpeg" 
+                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/Foundational%20Stage%20Curriculum%20Design.png" 
                 altContext={{ page: 'academics', section: 'Our Programs', type: 'foundational-design' }}
                 className="w-full h-auto block"
               />
@@ -518,7 +516,9 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       {/* Certificate Showcase Section (Matching Reference Design) */}
       <section className="bg-[#FAF8F5] py-16 sm:py-20 px-4 sm:px-8 border-t border-stone-200/80">
         <div className="max-w-6xl mx-auto space-y-12">
@@ -646,6 +646,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* High-Resolution Certificate Sample Lightbox Modal */}
       {isCertModalOpen && (
@@ -700,6 +701,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
         </div>
       )}
 
+      <Reveal>
       {/* CTA Section */}
       <section className="bg-stone-50 py-16 px-4 sm:px-8 border-y border-stone-200">
         <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -719,7 +721,9 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
         </div>
       </section>
+      </Reveal>
 
     </div>
+    </MotionConfig>
   );
 };
