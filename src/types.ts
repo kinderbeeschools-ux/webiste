@@ -189,7 +189,6 @@ export interface Opportunity {
   partnershipOptions: OpportunityRow[];
   images: { url: string; caption: string }[];
   mapUrl?: string;
-  contactName?: string;
   contactPhone?: string;
   documents?: string;
   eligibility?: string;

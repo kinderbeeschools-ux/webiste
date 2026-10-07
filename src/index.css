@@ -192,3 +192,11 @@
 }
 .kb-morph { animation: kbMorph 12s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .kb-morph { animation: none; } }
+
+/* Joint Ventures: editorial grade so raw site photos feel consistent */
+.jv-photo { filter: saturate(0.88) contrast(1.06) brightness(0.98); }
+.jv-tint {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: linear-gradient(160deg, rgba(7, 61, 55, 0.32), rgba(180, 135, 53, 0.18));
+  mix-blend-mode: soft-light;
+}

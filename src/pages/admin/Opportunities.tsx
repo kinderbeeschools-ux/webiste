@@ -10,7 +10,7 @@ const EMPTY: Opportunity = {
   id: '', title: '', location: '', category: 'Land / Development', status: 'Open for partnership', featured: false, published: false, order: 0,
   headline: '', summary: '', area: '', investmentRequirement: '', partnershipModel: '', potential: '', timeline: '',
   overview: [], details: [], detailsNote: '', terms: [], termsNote: '', development: [], partnershipOptions: [], images: [],
-  mapUrl: '', contactName: '', contactPhone: '', documents: '', eligibility: '', disclaimer: '',
+  mapUrl: '', contactPhone: '', documents: '', eligibility: '', disclaimer: '',
 };
 
 const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
@@ -280,7 +280,6 @@ const Editor: React.FC<{ initial: Opportunity; api: TabProps['api']; onCancel: (
       <Section title="Location, contact & documents">
         <div className="grid gap-4 sm:grid-cols-2">
           {text('mapUrl', 'Google Maps link', { placeholder: 'https://maps.app.goo.gl/…' })}
-          {text('contactName', 'Enquiry contact name')}
           {text('contactPhone', 'Contact WhatsApp number')}
           {text('eligibility', 'Investor eligibility', { area: true })}
           {text('documents', 'Available documentation', { area: true })}

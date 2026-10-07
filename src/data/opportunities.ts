@@ -75,7 +75,6 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
       { url: '/opportunities/whitefield-9.jpg', caption: 'Internal side passage and vegetation' },
     ],
     mapUrl: 'https://maps.app.goo.gl/brPJFJjkKUtgESdN6',
-    contactName: 'V. P. Sagi Nathan',
     contactPhone: '8122344040',
     documents: 'Khata, tax receipts, title and KIADB allotment records are reported by the landowner and remain subject to document review.',
     eligibility: 'Developers, corporate occupiers and investment partners.',

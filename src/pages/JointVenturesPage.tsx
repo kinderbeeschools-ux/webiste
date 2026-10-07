@@ -61,12 +61,21 @@ const Eyebrow: React.FC<{ children: React.ReactNode; light?: boolean }> = ({ chi
   </div>
 );
 
+// A site photo with the page's editorial colour grade
+const Photo: React.FC<{ src: string; alt?: string; className?: string; eager?: boolean }> = ({ src, alt = '', className = '', eager }) => (
+  <>
+    <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} className={`jv-photo h-full w-full object-cover ${className}`} />
+    <span aria-hidden="true" className="jv-tint" />
+  </>
+);
+
 const fadeUp = { hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } } };
 
 // ============================================================================
 export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> = ({ settings }) => {
   const [opps, setOpps] = useState<Opportunity[]>(SEED_OPPORTUNITIES.filter(o => o.published));
   const [openId, setOpenId] = useState<string | null>(null);
+  const [startPhoto, setStartPhoto] = useState(0);
   const [formOpportunity, setFormOpportunity] = useState('');
   const [formMode, setFormMode] = useState<'invest' | 'submit'>('invest');
 
@@ -84,7 +93,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
     window.addEventListener('hashchange', sync);
     return () => window.removeEventListener('hashchange', sync);
   }, []);
-  const openOpp = (id: string) => { window.location.hash = `opportunity/${encodeURIComponent(id)}`; };
+  const openOpp = (id: string, photo = 0) => { setStartPhoto(photo); window.location.hash = `opportunity/${encodeURIComponent(id)}`; };
   const closeOpp = () => {
     history.replaceState(null, '', window.location.pathname + window.location.search);
     setOpenId(null);
@@ -107,6 +116,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
 
         <Hero featured={featured} count={opps.length} onExplore={() => scrollToId('opportunities')} onInvest={() => enquire('invest')} />
         {featured && <Featured opp={featured} onView={() => openOpp(featured.id)} onEnquire={() => enquire('invest', featured.title)} />}
+        {featured && featured.images.length > 2 && <FilmStrip opp={featured} onOpen={i => openOpp(featured.id, i)} />}
         <WhyKips />
         <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
         <HowItWorks />
@@ -114,7 +124,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
         <InvestorForm opps={opps} mode={formMode} setMode={setFormMode} opportunity={formOpportunity} setOpportunity={setFormOpportunity} />
 
         <AnimatePresence>
-          {open && <OpportunityDetail key={open.id} opp={open} onClose={closeOpp} onEnquire={() => enquire('invest', open.title)} />}
+          {open && <OpportunityDetail key={open.id} opp={open} startPhoto={startPhoto} onClose={closeOpp} onEnquire={() => enquire('invest', open.title)} />}
         </AnimatePresence>
       </div>
     </MotionConfig>
@@ -130,11 +140,26 @@ const Hero: React.FC<{ featured?: Opportunity; count: number; onExplore: () => v
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
   const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
   const area = firstNumber(featured?.area);
-  const img = featured?.images?.[0]?.url || '/arcadia/arcadia_hero.jpg';
+  const slides = (featured?.images?.length ? featured.images : [{ url: '/arcadia/arcadia_hero.jpg', caption: '' }]).slice(0, 5);
+  const reduce = useReducedMotion();
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    if (reduce || slides.length < 2) return;
+    const t = setInterval(() => setSlide(i => (i + 1) % slides.length), 5500);
+    return () => clearInterval(t);
+  }, [reduce, slides.length]);
 
   return (
     <section ref={ref} className="relative flex min-h-[92vh] items-end overflow-hidden text-white">
-      <motion.img src={img} alt="" aria-hidden="true" style={{ y, scale }} className="absolute inset-0 h-full w-full object-cover will-change-transform" />
+      <motion.div aria-hidden="true" style={{ y, scale }} className="absolute inset-0 will-change-transform">
+        <AnimatePresence>
+          <motion.div key={slides[slide].url} className="absolute inset-0"
+            initial={{ opacity: 0, scale: 1.12 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+            transition={{ opacity: { duration: 1.6 }, scale: { duration: 7, ease: 'linear' } }}>
+            <Photo src={slides[slide].url} eager />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,61,55,.96)_0%,rgba(7,61,55,.82)_42%,rgba(7,61,55,.35)_75%,rgba(7,61,55,.55)_100%)]" />
       <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:56px_56px]" />
       <div aria-hidden="true" className="absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-[#B48735]/25 blur-3xl kb-drift" />
@@ -149,6 +174,23 @@ const Hero: React.FC<{ featured?: Opportunity; count: number; onExplore: () => v
           </span>
           <span><span className="block text-[10px] uppercase tracking-[0.25em] text-[#e2c478]">Featured location</span><span className="text-sm font-semibold">{featured.location}</span></span>
         </motion.div>
+      )}
+
+      {slides.length > 1 && (
+        <div className="absolute bottom-5 right-5 z-10 hidden max-w-xs text-right md:block">
+          <AnimatePresence mode="wait">
+            <motion.div key={slide} className="mb-2 text-xs text-white/75" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+              {slides[slide].caption}
+            </motion.div>
+          </AnimatePresence>
+          <div className="flex justify-end gap-1.5">
+            {slides.map((s, i) => (
+              <button key={s.url} onClick={() => setSlide(i)} aria-label={`Show photo ${i + 1}`} className="relative h-1 w-8 overflow-hidden rounded-full bg-white/25">
+                {i === slide && <motion.span key={slide} className="absolute inset-y-0 left-0 bg-[#e2c478]" initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: reduce ? 0 : 5.5, ease: 'linear' }} />}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="relative mx-auto w-full max-w-[1180px] px-5 pb-12 pt-36 sm:pb-16">
@@ -209,31 +251,81 @@ const Fact: React.FC<{ icon: React.ElementType; label: string; value?: string }>
   </motion.div>
 );
 
+const TiltCard: React.FC<{ className?: string; style?: any; children: React.ReactNode }> = ({ className = '', style, children }) => {
+  const reduce = useReducedMotion();
+  const [t, setT] = useState({ x: 0, y: 0 });
+  return (
+    <motion.div className={className} style={{ ...style, perspective: 900 }}
+      onMouseMove={e => {
+        if (reduce) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        setT({ x: ((e.clientY - r.top) / r.height - 0.5) * -8, y: ((e.clientX - r.left) / r.width - 0.5) * 8 });
+      }}
+      onMouseLeave={() => setT({ x: 0, y: 0 })}>
+      <motion.div className="h-full w-full" animate={{ rotateX: t.x, rotateY: t.y }} transition={{ type: 'spring', stiffness: 150, damping: 15 }}>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const FeaturedCollage: React.FC<{ imgs: Opportunity['images']; status: string; onView: () => void }> = ({ imgs, status, onView }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const yMain = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [30, -30]);
+  const ySide = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [90, -90]);
+  const yRound = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-40, 60]);
+  return (
+    <div ref={ref} className="relative h-[440px] sm:h-[580px]">
+      {/* Gold offset frame */}
+      <motion.div aria-hidden="true" className="absolute inset-0 right-[14%] top-6 left-6 rounded-[30px] border-2" style={{ borderColor: `${GOLD}99`, y: yMain }}
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.8, duration: 1 }} />
+      <TiltCard className="absolute inset-0 bottom-[8%] right-[14%]" style={{ y: yMain }}>
+        <motion.div className="kb-frame group relative h-full w-full overflow-hidden rounded-[28px] shadow-2xl shadow-[#073D37]/30"
+          initial={{ clipPath: 'inset(0 100% 0 0 round 28px)' }} whileInView={{ clipPath: 'inset(0 0% 0 0 round 28px)' }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.3, ease: EASE }}>
+          <Photo src={imgs[0].url} alt={imgs[0].caption} eager />
+        </motion.div>
+      </TiltCard>
+      {imgs[1] && (
+        <TiltCard className="absolute -bottom-4 right-0 z-10 h-[42%] w-[48%]" style={{ y: ySide }}>
+          <motion.div className="kb-frame group relative h-full w-full overflow-hidden rounded-2xl border-[6px] border-[#FBF9F4] shadow-2xl"
+            initial={{ clipPath: 'circle(0% at 70% 70%)', rotate: 3 }} whileInView={{ clipPath: 'circle(120% at 70% 70%)', rotate: 2 }} viewport={{ once: true }} transition={{ delay: 0.45, duration: 1.2, ease: EASE }}>
+            <Photo src={imgs[1].url} alt={imgs[1].caption} />
+          </motion.div>
+        </TiltCard>
+      )}
+      {imgs[2] && (
+        <motion.div className="absolute -top-6 right-[2%] z-10 hidden h-32 w-32 overflow-hidden rounded-full border-[6px] border-[#FBF9F4] shadow-xl sm:block" style={{ y: yRound }}
+          initial={{ opacity: 0, scale: 0.6, filter: 'blur(10px)' }} whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} viewport={{ once: true }} transition={{ delay: 0.7, duration: 1, ease: EASE }}>
+          <Photo src={imgs[2].url} alt={imgs[2].caption} />
+        </motion.div>
+      )}
+      {/* Floating caption tags */}
+      <motion.div className="absolute left-5 top-5 z-20 rounded-full bg-[#073D37]/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur"
+        initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.9 }}>
+        {status}
+      </motion.div>
+      {imgs[1]?.caption && (
+        <motion.div className="kb-float absolute bottom-[44%] right-[30%] z-20 hidden max-w-[14rem] rounded-xl border border-white/60 bg-white/85 px-3 py-2 text-[11px] font-semibold text-[#073D37] shadow-lg backdrop-blur md:block"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 1.3 }}>
+          <span className="mr-1.5 inline-block h-1.5 w-1.5 rotate-45 bg-[#B48735] align-middle" />{imgs[1].caption}
+        </motion.div>
+      )}
+      <button onClick={onView} className="group absolute bottom-[12%] left-5 z-20 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#073D37] shadow-lg backdrop-blur transition hover:bg-white">
+        <Maximize2 className="h-3.5 w-3.5 transition-transform group-hover:scale-110" /> {imgs.length} site photographs
+      </button>
+    </div>
+  );
+};
+
 const Featured: React.FC<{ opp: Opportunity; onView: () => void; onEnquire: () => void }> = ({ opp, onView, onEnquire }) => {
   const imgs = opp.images.length ? opp.images : [{ url: '/arcadia/arcadia_hero.jpg', caption: '' }];
   return (
     <section id="featured" className="px-5 py-20 sm:py-28">
       <div className="mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
-        {/* Editorial image composition */}
-        <div className="relative h-[420px] sm:h-[560px]">
-          <motion.div className="kb-frame group absolute inset-0 right-[12%] overflow-hidden rounded-[28px] shadow-2xl shadow-[#073D37]/25"
-            initial={{ clipPath: 'inset(0 100% 0 0 round 28px)' }} whileInView={{ clipPath: 'inset(0 0% 0 0 round 28px)' }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.3, ease: EASE }}>
-            <img src={imgs[0].url} alt={imgs[0].caption} className="h-full w-full object-cover" />
-          </motion.div>
-          {imgs[1] && (
-            <motion.div className="kb-frame absolute -bottom-6 right-0 h-[42%] w-[46%] overflow-hidden rounded-2xl border-[6px] border-[#FBF9F4] shadow-xl"
-              initial={{ opacity: 0, y: 40, rotate: 3 }} whileInView={{ opacity: 1, y: 0, rotate: 2 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 1, ease: EASE }}>
-              <img src={imgs[1].url} alt={imgs[1].caption} loading="lazy" className="h-full w-full object-cover" />
-            </motion.div>
-          )}
-          <motion.div className="absolute left-5 top-5 rounded-full bg-[#073D37]/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur"
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.9 }}>
-            {opp.status}
-          </motion.div>
-          <button onClick={onView} className="absolute bottom-6 left-5 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#073D37] shadow-lg backdrop-blur transition hover:bg-white">
-            <Maximize2 className="h-3.5 w-3.5" /> {imgs.length} site photographs
-          </button>
-        </div>
+        {/* Editorial image composition: three layered photos with parallax and tilt */}
+        <FeaturedCollage imgs={imgs} status={opp.status} onView={onView} />
 
         {/* Investment information */}
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={{ show: { transition: { staggerChildren: 0.07 } } }}>
@@ -256,6 +348,82 @@ const Featured: React.FC<{ opp: Opportunity; onView: () => void; onEnquire: () =
             <button onClick={onEnquire} className="rounded-md border px-6 py-3.5 font-bold transition hover:bg-white" style={{ borderColor: GOLD }}>Submit Investor Enquiry</button>
           </motion.div>
         </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ============================================================================
+// SITE WALKTHROUGH: pinned horizontal film strip on desktop, swipe strip on phones
+// ============================================================================
+const FilmStrip: React.FC<{ opp: Opportunity; onOpen: (i: number) => void }> = ({ opp, onOpen }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const [desktop, setDesktop] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches);
+  const [distance, setDistance] = useState(0);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const on = () => setDesktop(mq.matches);
+    mq.addEventListener('change', on);
+    const measure = () => track.current && setDistance(Math.max(0, track.current.scrollWidth - window.innerWidth + 80));
+    measure();
+    window.addEventListener('resize', measure);
+    return () => { mq.removeEventListener('change', on); window.removeEventListener('resize', measure); };
+  }, [opp.images.length, desktop]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
+  const pinned = desktop && !reduce;
+
+  const cards = opp.images.map((im, i) => (
+    <motion.button key={im.url + i} type="button" onClick={() => onOpen(i)}
+      className={`group relative shrink-0 snap-center overflow-hidden text-left shadow-[0_30px_60px_-25px_rgba(0,0,0,.6)] ${
+        i % 3 === 1 ? 'h-[300px] w-[78vw] rounded-[40px_12px_40px_12px] sm:w-[420px] lg:mt-24 lg:h-[380px] lg:w-[460px]'
+        : i % 3 === 2 ? 'h-[300px] w-[78vw] rounded-full sm:w-[300px] lg:h-[320px] lg:w-[320px] lg:mt-10'
+        : 'h-[300px] w-[78vw] rounded-[24px] sm:w-[360px] lg:h-[460px] lg:w-[380px]'}`}
+      whileHover={{ y: -8 }} transition={{ duration: 0.4, ease: EASE }}>
+      <Photo src={im.url} alt={im.caption} className="transition-transform duration-[1.4s] ease-out group-hover:scale-110" />
+      <div aria-hidden="true" className="absolute inset-0 z-[2] bg-gradient-to-t from-[#062e2a]/90 via-[#062e2a]/10 to-transparent" />
+      <div className={`absolute inset-x-0 bottom-0 z-[3] p-5 ${i % 3 === 2 ? 'text-center' : ''}`}>
+        <div style={serif} className="text-3xl text-[#e2c478]">{String(i + 1).padStart(2, '0')}</div>
+        <div className="mt-1 text-sm font-semibold leading-snug text-white">{im.caption}</div>
+      </div>
+      <span className="absolute right-4 top-4 z-[3] flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur transition group-hover:opacity-100"><Maximize2 className="h-4 w-4" /></span>
+    </motion.button>
+  ));
+
+  const header = (
+    <div className="mx-auto mb-10 flex max-w-[1180px] flex-wrap items-end justify-between gap-4 px-5">
+      <div>
+        <Eyebrow light>Site walkthrough</Eyebrow>
+        <h2 style={serif} className="text-4xl leading-[1.05] text-white sm:text-5xl">{opp.title}</h2>
+        <p className="mt-2 flex items-center gap-2 text-[#d8e3df]"><MapPin className="h-4 w-4 text-[#e2c478]" />{opp.location}</p>
+      </div>
+      <p className="max-w-sm text-sm text-white/60">{opp.images.length} landowner-supplied photographs. Select any photo to view it full size.</p>
+    </div>
+  );
+
+  if (!pinned) {
+    return (
+      <section className="overflow-hidden py-20" style={{ background: GREEN }}>
+        {header}
+        <motion.div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4" initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.9, ease: EASE }}>{cards}</motion.div>
+      </section>
+    );
+  }
+  return (
+    <section ref={ref} className="relative" style={{ background: GREEN, height: `calc(100vh + ${distance}px)` }}>
+      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-16">
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:44px_44px]" />
+        <div className="relative">{header}</div>
+        <motion.div ref={track} style={{ x }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 1 }} className="relative flex items-start gap-8 pl-[max(1.25rem,calc((100vw-1180px)/2+1.25rem))] pr-20 will-change-transform">
+          {cards}
+        </motion.div>
+        <div className="relative mx-auto mt-10 w-full max-w-[1180px] px-5">
+          <div className="h-px w-full bg-white/15">
+            <motion.div className="h-px origin-left bg-[#e2c478]" style={{ scaleX: scrollYProgress }} />
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -305,6 +473,32 @@ const WhyKips: React.FC = () => (
 // ============================================================================
 // 4. OPPORTUNITIES OPEN FOR PARTNERSHIP
 // ============================================================================
+// Card image that cycles through the listing's photos while hovered
+const CardPhotos: React.FC<{ images: Opportunity['images']; title: string }> = ({ images, title }) => {
+  const [i, setI] = useState(0);
+  const [hover, setHover] = useState(false);
+  useEffect(() => {
+    if (!hover || images.length < 2) return;
+    const t = setInterval(() => setI(x => (x + 1) % images.length), 1100);
+    return () => clearInterval(t);
+  }, [hover, images.length]);
+  const list = images.length ? images : [{ url: '/arcadia/arcadia_hero.jpg', caption: title }];
+  return (
+    <div className="absolute inset-0" onMouseEnter={() => setHover(true)} onMouseLeave={() => { setHover(false); setI(0); }}>
+      <AnimatePresence initial={false}>
+        <motion.div key={list[i].url} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+          <Photo src={list[i].url} alt={list[i].caption || title} />
+        </motion.div>
+      </AnimatePresence>
+      {list.length > 1 && (
+        <div className="absolute bottom-3 right-4 z-[3] flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          {list.slice(0, 9).map((_, j) => <span key={j} className={`h-1 rounded-full transition-all ${j === i ? 'w-4 bg-[#e2c478]' : 'w-1.5 bg-white/60'}`} />)}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const OpportunityGrid: React.FC<{ opps: Opportunity[]; onOpen: (id: string) => void; onSubmit: () => void }> = ({ opps, onOpen, onSubmit }) => (
   <section id="opportunities" className="scroll-mt-20 px-5 py-20 sm:py-28">
     <div className="mx-auto max-w-[1180px]">
@@ -321,8 +515,8 @@ const OpportunityGrid: React.FC<{ opps: Opportunity[]; onOpen: (id: string) => v
             className="group overflow-hidden rounded-[22px] border border-[#e4dac8] bg-white text-left shadow-[0_10px_30px_-20px_rgba(7,61,55,.35)] transition-shadow hover:shadow-[0_30px_60px_-25px_rgba(7,61,55,.45)]"
             initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ delay: i * 0.1, duration: 0.8, ease: EASE }}
             whileHover={{ y: -8 }}>
-            <div className="kb-frame relative h-60 overflow-hidden">
-              <img src={o.images[0]?.url || '/arcadia/arcadia_hero.jpg'} alt={o.images[0]?.caption || o.title} loading="lazy" className="h-full w-full object-cover" />
+            <div className="relative h-60 overflow-hidden">
+              <CardPhotos images={o.images} title={o.title} />
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#073D37]/70 to-transparent" />
               <span className="absolute left-4 top-4 rounded-full bg-[#073D37]/85 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">Investment opportunity</span>
               <span style={serif} className="absolute bottom-3 left-4 text-4xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
@@ -566,8 +760,8 @@ const DetailBlock: React.FC<{ title: string; icon: React.ElementType; children: 
   </motion.section>
 );
 
-const OpportunityDetail: React.FC<{ opp: Opportunity; onClose: () => void; onEnquire: () => void }> = ({ opp, onClose, onEnquire }) => {
-  const [idx, setIdx] = useState(0);
+const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClose: () => void; onEnquire: () => void }> = ({ opp, startPhoto = 0, onClose, onEnquire }) => {
+  const [idx, setIdx] = useState(Math.min(startPhoto, Math.max(0, opp.images.length - 1)));
   const [lightbox, setLightbox] = useState(false);
   const imgs = opp.images;
   const go = (d: number) => setIdx(i => (i + d + imgs.length) % imgs.length);
@@ -643,6 +837,20 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; onClose: () => void; onEnq
               {opp.overview.map(p => <p key={p.slice(0, 40)} className="text-[16px] leading-relaxed text-[#374744]">{p}</p>)}
             </DetailBlock>
           )}
+          {imgs.length > 2 && (
+            <DetailBlock title="All photographs" icon={Maximize2}>
+              <div className="grid auto-rows-[150px] grid-cols-2 gap-3 sm:auto-rows-[190px] sm:grid-cols-4">
+                {imgs.map((im, i) => (
+                  <motion.button key={im.url + i} type="button" onClick={() => { setIdx(i); setLightbox(true); }}
+                    className={`kb-frame group relative overflow-hidden rounded-2xl ${i === 0 ? 'col-span-2 row-span-2' : i === 3 ? 'sm:col-span-2' : ''}`}
+                    initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: (i % 4) * 0.08, duration: 0.6, ease: EASE }}>
+                    <Photo src={im.url} alt={im.caption} />
+                    <span className="absolute inset-x-0 bottom-0 z-[3] translate-y-full bg-gradient-to-t from-[#062e2a]/90 to-transparent p-3 text-left text-xs font-semibold text-white transition-transform duration-300 group-hover:translate-y-0">{im.caption}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </DetailBlock>
+          )}
           {opp.details.length > 0 && (
             <DetailBlock title="Land & property details" icon={Ruler}>
               <RowsTable rows={opp.details} />
@@ -686,7 +894,7 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; onClose: () => void; onEnq
             </button>
             {wa && (
               <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/30 px-5 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10">
-                <MessageCircle className="h-4 w-4" /> Prefer WhatsApp{opp.contactName ? `? ${opp.contactName}` : ''}
+                <MessageCircle className="h-4 w-4" /> Prefer WhatsApp?
               </a>
             )}
           </div>
