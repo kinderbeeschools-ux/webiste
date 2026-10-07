@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Landmark, Building2, Compass, Award, Search, ClipboardCheck, Layers, PenTool, Network, Rocket, MapPin, ShieldCheck } from 'lucide-react';
 import { EASE } from './Motion';
+import { ArcadiaVision } from './ArcadiaVision';
 
 // Degree College page: KIPS–ARCADIA Global Education Investment Initiative.
 // Copy and legal text come verbatim from the client's developer package (KIPS_ARCADIA_Webpage_Developer).
@@ -54,8 +55,6 @@ const PATHWAYS = [
   { icon: Compass, title: 'Build-to-suit campuses', text: 'Develop phased teaching, research, technology and student infrastructure around a defined academic and investment plan.' },
   { icon: Award, title: 'Create an education legacy', text: 'Support named schools, centres, laboratories, scholarships, innovation hubs and other purpose-led educational initiatives.' },
 ];
-
-const PROGRAMMES = ['Business & Management', 'Economics', 'Accounting & Finance', 'Entrepreneurship & Innovation', 'Software Engineering', 'Data Science', 'Artificial Intelligence', 'Cybersecurity', 'Game Design & Interactive Tech', 'Biomedical Sciences'];
 
 const LEGACY = [
   { title: 'Named Academic Schools', text: 'The [Family Name] School of Artificial Intelligence, Business, Finance or another approved discipline.' },
@@ -178,42 +177,8 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void }> = ({ onReques
       </div>
     </section>
 
-    {/* ================= VISION ================= */}
-    <section id="arcadia-vision" className="scroll-mt-24 bg-[#F7F3EA] px-5 py-20 sm:py-24">
-      <div className="mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-2">
-        <motion.div {...inView} variants={stagger(0.1)}>
-          <motion.div variants={up}><Eyebrow>ARCADIA – Global University</Eyebrow></motion.div>
-          <motion.h2 variants={up} style={serif} className="text-4xl leading-[1.05] sm:text-[3.5rem]">A future-focused academic vision for India's next generation.</motion.h2>
-          <motion.p variants={up} className="mt-5 text-lg text-[#53605e]">
-            ARCADIA is envisioned as KIPS's flagship higher-education initiative: multidisciplinary, technology-enabled and connected to the skills, industries and enterprises shaping the future.
-          </motion.p>
-          <motion.div className="mt-7 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2" variants={stagger(0.05)}>
-            {PROGRAMMES.map(p => (
-              <motion.div key={p} variants={up}
-                className="flex items-center gap-2.5 rounded-md border border-[#e4dac6] bg-white px-4 py-3 text-sm transition hover:-translate-y-0.5 hover:border-[#B48735] hover:shadow-md">
-                <span className="h-1.5 w-1.5 shrink-0 rotate-45" style={{ background: GOLD }} />{p}
-              </motion.div>
-            ))}
-          </motion.div>
-          <motion.p variants={up} className="mt-5 text-xs text-[#7a817f]">
-            Proposed disciplines are indicative. Final programmes, nomenclature and delivery remain subject to applicable UGC, State and professional-regulator requirements.
-          </motion.p>
-        </motion.div>
-
-        <motion.div className="grid h-[400px] grid-cols-2 grid-rows-2 gap-2.5 sm:h-[520px]" {...inView} variants={stagger(0.15)}>
-          {[
-            ['facility_campus.jpg', 'ARCADIA campus concept', 'row-span-2'],
-            ['facility_auditorium.jpg', 'ARCADIA lecture facility concept', ''],
-            ['facility_boardroom.jpg', 'ARCADIA academic meeting space concept', ''],
-          ].map(([src, alt, span]) => (
-            <motion.div key={src} variants={{ hidden: { opacity: 0, scale: 0.94 }, show: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: EASE } } }}
-              className={`kb-frame group overflow-hidden rounded-lg ${span}`}>
-              <img src={`${IMG}/${src}`} alt={alt} className="h-full w-full object-cover" loading="lazy" />
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
+    {/* ================= VISION: immersive ARCADIA experience ================= */}
+    <ArcadiaVision />
 
     {/* ================= LEGACY ================= */}
     <section id="arcadia-legacy" className="relative overflow-hidden px-5 py-20 text-white sm:py-24" style={{ background: GREEN }}>
