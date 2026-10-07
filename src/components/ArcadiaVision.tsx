@@ -326,44 +326,98 @@ const Constellation: React.FC<{ sticky: boolean }> = ({ sticky }) => {
 };
 
 // ---------------------------------------------------------------------------
-// 3b. Mobile: the same ecosystem as a vertical interactive stack
-// ---------------------------------------------------------------------------
+// 3b. Mobile: the ecosystem as an editorial, image-led swipe carousel
+const CAT_TITLE: Record<Category, string> = { BUSINESS: 'Business', INNOVATION: 'Innovation', SCIENCE: 'Science', DATA: 'Data', TECHNOLOGY: 'Technology' };
+
 const MobileEcosystem: React.FC = () => {
-  const [open, setOpen] = useState<Category>('BUSINESS');
+  const track = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const onScroll = () => {
+    const el = track.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    if (!card) return;
+    const step = card.offsetWidth + 14;
+    setActive(Math.max(0, Math.min(CATEGORIES.length - 1, Math.round(el.scrollLeft / step))));
+  };
+  const goTo = (i: number) => {
+    const el = track.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2, behavior: 'smooth' });
+  };
+
   return (
-    <div className="relative px-5 py-14">
-      <div className="mb-8 text-center">
-        <div style={serif} className="text-4xl tracking-[0.12em] text-white">ARCADIA</div>
-        <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[#e2c478]">Global University</div>
-      </div>
-      <ol className="relative space-y-3 border-l border-[#e2c478]/30 pl-6">
-        {CATEGORIES.map((c, ci) => {
-          const on = open === c;
+    <div className="relative pb-6 pt-12">
+      {/* Wordmark between gold hairlines */}
+      <motion.div className="mb-9 flex items-center justify-center gap-4 px-5" initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }}>
+        <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[#e2c478]/70" />
+        <div className="text-center">
+          <div style={serif} className="text-[2.6rem] leading-none tracking-[0.14em] text-white">ARCADIA</div>
+          <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#e2c478]">Global University</div>
+        </div>
+        <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[#e2c478]/70" />
+      </motion.div>
+
+      {/* Swipe track */}
+      <div ref={track} onScroll={onScroll}
+        className="no-scrollbar flex snap-x snap-mandatory gap-[14px] overflow-x-auto px-[9vw] pb-2"
+        style={{ scrollPaddingInline: '9vw' }}>
+        {CATEGORIES.map((c, i) => {
+          const on = active === i;
+          const list = PROGRAMMES.filter(p => p.cat === c);
           return (
-            <motion.li key={c} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ delay: ci * 0.08, duration: 0.6, ease: EASE }}>
-              <button type="button" onClick={() => setOpen(c)} className="relative w-full text-left">
-                <span className={`absolute -left-[31px] top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border-2 transition-colors ${on ? 'border-[#e2c478] bg-[#e2c478]' : 'border-[#e2c478]/60 bg-[#073D37]'}`} />
-                <span className={`flex items-center justify-between rounded-2xl border px-4 py-3 transition-colors ${on ? 'border-[#e2c478]/60 bg-white/[0.07]' : 'border-white/10'}`}>
-                  <span className={`text-[11px] font-extrabold uppercase tracking-[0.3em] ${on ? 'text-[#e2c478]' : 'text-white/60'}`}>{c}</span>
-                  <span className="text-xs text-white/40">{PROGRAMMES.filter(p => p.cat === c).length}</span>
-                </span>
-              </button>
-              <motion.div initial={false} animate={{ height: on ? 'auto' : 0, opacity: on ? 1 : 0 }} transition={{ duration: 0.45, ease: EASE }} className="overflow-hidden">
-                <div className="relative mt-3 overflow-hidden rounded-2xl">
-                  <img src={CAT_IMAGE[c]} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-30" />
-                  <div className="relative space-y-2 bg-gradient-to-r from-[#073D37] via-[#073D37]/80 to-transparent p-4">
-                    {PROGRAMMES.filter(p => p.cat === c).map(p => (
-                      <div key={p.name} className="flex items-center gap-2.5 text-[15px] font-semibold text-white">
-                        <span className="h-1.5 w-1.5 rotate-45 bg-[#e2c478]" />{p.name}
-                      </div>
-                    ))}
-                  </div>
+            <motion.article key={c}
+              className="relative h-[460px] w-[82vw] max-w-[360px] shrink-0 snap-center overflow-hidden rounded-[26px] border border-[#e2c478]/25 shadow-[0_30px_60px_-25px_rgba(0,0,0,.6)]"
+              animate={{ scale: on ? 1 : 0.93, opacity: on ? 1 : 0.55 }} transition={{ duration: 0.45, ease: EASE }}
+              initial={false}>
+              <img src={CAT_IMAGE[c]} alt="" aria-hidden="true" loading="lazy"
+                className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[2.2s] ease-out ${on ? 'scale-110' : 'scale-100'}`} />
+              <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,46,42,.25)_0%,rgba(6,46,42,.55)_40%,rgba(6,46,42,.96)_72%,#062e2a_100%)]" />
+              <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgba(226,196,120,.25),transparent_55%)]" />
+
+              <div className="relative flex h-full flex-col justify-between p-6">
+                <div className="flex items-start justify-between">
+                  <span style={serif} className="text-sm italic text-[#e2c478]">{String(i + 1).padStart(2, '0')} <span className="text-white/40">/ {String(CATEGORIES.length).padStart(2, '0')}</span></span>
+                  <span className="rounded-full border border-white/25 bg-black/20 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.3em] text-white/80 backdrop-blur">
+                    {list.length} {list.length > 1 ? 'Programmes' : 'Programme'}
+                  </span>
                 </div>
-              </motion.div>
-            </motion.li>
+
+                <div>
+                  <h3 style={serif} className="text-[2.6rem] leading-none text-white">{CAT_TITLE[c]}</h3>
+                  <motion.span aria-hidden="true" className="mt-4 block h-px origin-left bg-gradient-to-r from-[#e2c478] to-transparent"
+                    animate={{ scaleX: on ? 1 : 0.2 }} transition={{ duration: 0.8, ease: EASE }} />
+                  <ul className="mt-2">
+                    {list.map((p, j) => (
+                      <motion.li key={p.name} style={serif}
+                        className="flex items-center justify-between border-b border-white/10 py-3 text-[17px] text-white last:border-0"
+                        animate={{ opacity: on ? 1 : 0.4, x: on ? 0 : -8 }} transition={{ duration: 0.5, delay: on ? 0.15 + j * 0.08 : 0 }}>
+                        {p.name}
+                        <span className="ml-3 h-1.5 w-1.5 shrink-0 rotate-45 bg-[#e2c478]" />
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.article>
           );
         })}
-      </ol>
+      </div>
+
+      {/* Gold progress + discipline jump links */}
+      <div className="mt-6 px-[9vw]">
+        <div className="relative h-px w-full bg-white/15">
+          <motion.span className="absolute inset-y-0 left-0 bg-[#e2c478]" animate={{ width: `${((active + 1) / CATEGORIES.length) * 100}%` }} transition={{ duration: 0.5, ease: EASE }} />
+        </div>
+        <div className="mt-4 flex justify-between">
+          {CATEGORIES.map((c, i) => (
+            <button key={c} type="button" onClick={() => goTo(i)}
+              className={`text-[9px] font-bold uppercase tracking-[0.18em] transition-colors ${active === i ? 'text-[#e2c478]' : 'text-white/40'}`}>
+              {CAT_TITLE[c]}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -398,7 +452,7 @@ export const ArcadiaVision: React.FC = () => {
         }}>
         <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: glow }} />
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:44px_44px]" />
-        <div className="relative mx-auto max-w-[1180px] px-5 pt-16 text-center sm:pt-20">
+        <div className="relative mx-auto hidden max-w-[1180px] px-5 pt-16 text-center sm:pt-20 md:block">
           <div className="text-[11px] font-extrabold uppercase tracking-[0.3em] text-[#e2c478]">ARCADIA – Global University</div>
         </div>
         <div className="relative">
