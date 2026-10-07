@@ -72,16 +72,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-xs">
+      <header className="sticky top-0 z-40 px-2 sm:px-3 lg:px-4 pt-2 sm:pt-3">
         {/* Main Navbar Container: Full responsive max-w with flexible item scaling */}
-        <div className="max-w-[1440px] w-full mx-auto px-3 sm:px-4 lg:px-4 xl:px-8 h-20 flex items-center justify-between gap-1.5 sm:gap-3 xl:gap-4 min-w-0">
+        <div className="max-w-[1440px] w-full mx-auto px-2.5 sm:px-3 xl:px-4 h-18 sm:h-20 rounded-2xl bg-white/95 backdrop-blur-md border border-stone-200/80 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.18)] flex items-center justify-between gap-1.5 sm:gap-3 xl:gap-4 min-w-0">
           
           {/* Brand Logo - Aligned left and vertically centered */}
           <div 
             onClick={() => { setCurrentTab('home'); setMobileMenuOpen(false); }}
             className="cursor-pointer flex items-center gap-2 group shrink-0"
           >
-            <div className="h-10 sm:h-11 lg:h-11 xl:h-13 w-auto flex items-center group-hover:scale-102 transition duration-300">
+            <div className="h-12 sm:h-13 xl:h-15 w-auto flex items-center px-2.5 sm:px-3 rounded-xl border border-stone-200/90 bg-white group-hover:scale-102 transition duration-300">
               <img 
                 src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
                 alt={settings?.logoText || "Kinderbee Logo"} 
@@ -105,10 +105,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div key={link.id} className="relative group inline-flex items-center h-9 xl:h-10 shrink-0">
                     <button
                       onClick={() => setCurrentTab(link.id)}
-                      className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center gap-1 xl:gap-1.5 rounded-xl text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer ${
+                      className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center gap-1 xl:gap-1.5 relative text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-colors duration-150 whitespace-nowrap cursor-pointer after:absolute after:left-2 after:right-2 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#E1007A] after:transition-transform after:duration-200 after:origin-left ${
                         isActive
-                          ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
-                          : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
+                          ? 'text-[#E1007A] after:scale-x-100'
+                          : 'text-stone-600 hover:text-[#E1007A] after:scale-x-0 hover:after:scale-x-100'
                       }`}
                       aria-expanded="false"
                       aria-haspopup="true"
@@ -160,12 +160,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => setCurrentTab(link.id)}
-                  className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center rounded-xl text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-all duration-150 whitespace-nowrap cursor-pointer shrink-0 ${
+                  className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center relative text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-colors duration-150 whitespace-nowrap cursor-pointer after:absolute after:left-2 after:right-2 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#E1007A] after:transition-transform after:duration-200 after:origin-left shrink-0 ${
                     isActive
-                      ? 'bg-[#E1007A]/10 text-[#E1007A] font-bold'
-                      : link.id === 'payments'
-                      ? 'text-stone-800 hover:text-[#E1007A] hover:bg-amber-50/80 font-bold'
-                      : 'text-stone-700 hover:text-[#E1007A] hover:bg-stone-100/80'
+                      ? 'text-[#E1007A] after:scale-x-100'
+                      : 'text-stone-600 hover:text-[#E1007A] after:scale-x-0 hover:after:scale-x-100'
                   }`}
                 >
                   {link.id === 'payments' ? (
@@ -185,7 +183,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
             <button
               onClick={onOpenConsultation}
-              className="h-9 xl:h-10 px-3 xl:px-4 2xl:px-5 inline-flex items-center justify-center gap-1.5 xl:gap-2 rounded-xl bg-gradient-to-r from-[#E1007A] to-pink-600 hover:from-[#c8006d] hover:to-pink-700 text-white font-bold text-xs xl:text-sm shadow-sm hover:shadow-md transition duration-200 cursor-pointer whitespace-nowrap"
+              className="h-9 xl:h-10 px-3 xl:px-4 2xl:px-5 inline-flex items-center justify-center gap-1.5 xl:gap-2 rounded-xl bg-[#E1007A] hover:bg-[#c8006d] text-white font-bold text-xs xl:text-sm shadow-sm hover:shadow-md transition duration-200 cursor-pointer whitespace-nowrap"
             >
               <span>Speak to an Advisor</span>
               <ArrowRight className="w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0" />
