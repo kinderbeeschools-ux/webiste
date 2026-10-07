@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw } from 'lucide-react';
+import { Users, Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw } from 'lucide-react';
 import type { Enquiry, PaymentRecord, BlogPost, FAQItem, SystemSettings } from '../types';
+import { input, btn, btnPrimary, btnGhost, card, fmtDate, csvCell, phoneKey, STAGES, stageOf, STATUS_COLORS, useList, Toolbar, Field, type Api, type TabProps } from './admin/ui';
+import { CrmTab } from './admin/Crm';
 
 interface AdminPanelProps {
   adminToken: string;
@@ -10,9 +12,10 @@ interface AdminPanelProps {
   onUpdateSettings: (s: SystemSettings) => void;
 }
 
-type Tab = 'enquiries' | 'payments' | 'blogs' | 'faqs' | 'settings';
+type Tab = 'crm' | 'enquiries' | 'payments' | 'blogs' | 'faqs' | 'settings';
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
+  { id: 'crm', label: 'CRM', icon: Users },
   { id: 'enquiries', label: 'Enquiries', icon: Inbox },
   { id: 'payments', label: 'Payments', icon: CreditCard },
   { id: 'blogs', label: 'Blogs', icon: FileText },
@@ -20,16 +23,8 @@ const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
 
-const input = 'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-[#E1007A] focus:outline-none focus:ring-2 focus:ring-[#E1007A]/20';
-const btn = 'inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition disabled:opacity-50';
-const btnPrimary = `${btn} bg-[#E1007A] text-white hover:bg-[#c4006a]`;
-const btnGhost = `${btn} border border-stone-300 text-stone-700 hover:bg-stone-100`;
-const card = 'rounded-2xl border border-stone-200 bg-white p-4 sm:p-5';
-
-const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '');
-
 export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, onVisitSite, settings, onUpdateSettings }) => {
-  const [tab, setTab] = useState<Tab>('enquiries');
+  const [tab, setTab] = useState<Tab>('crm');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
@@ -83,10 +78,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-4 px-4 py-6">
+      <main className={`mx-auto space-y-4 px-4 py-6 ${tab === 'crm' ? 'max-w-7xl' : 'max-w-6xl'}`}>
         {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
         {notice && <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{notice}</div>}
 
+        {tab === 'crm' && <CrmTab api={api} flash={flash} />}
         {tab === 'enquiries' && <EnquiriesTab api={api} flash={flash} />}
         {tab === 'payments' && <PaymentsTab api={api} flash={flash} />}
         {tab === 'blogs' && <BlogsTab api={api} flash={flash} adminToken={adminToken} />}
@@ -97,45 +93,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
   );
 };
 
-type Api = (url: string, options?: RequestInit) => Promise<any>;
-interface TabProps { api: Api; flash: (msg: string) => void }
-
-// Loads a list from the API and reloads on demand
-function useList<T>(api: Api, url: string) {
-  const [items, setItems] = useState<T[]>([]);
-  const [loading, setLoading] = useState(true);
-  const reload = () => {
-    setLoading(true);
-    api(url).then(d => setItems(Array.isArray(d) ? d : [])).catch(() => {}).finally(() => setLoading(false));
-  };
-  useEffect(reload, [url]);
-  return { items, setItems, loading, reload };
-}
-
-const Toolbar: React.FC<{ title: string; count: number; onReload: () => void; children?: React.ReactNode }> = ({ title, count, onReload, children }) => (
-  <div className="flex flex-wrap items-center justify-between gap-3">
-    <h1 className="font-display text-2xl font-bold">{title} <span className="text-base font-medium text-stone-400">({count})</span></h1>
-    <div className="flex flex-wrap gap-2">
-      {children}
-      <button onClick={onReload} className={btnGhost}><RefreshCw className="h-4 w-4" /> Refresh</button>
-    </div>
-  </div>
-);
-
 // ---------------- ENQUIRIES ----------------
-const ENQUIRY_STATUSES = ['pending', 'reviewed', 'contacted', 'closed'] as const;
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-amber-100 text-amber-800',
-  reviewed: 'bg-blue-100 text-blue-800',
-  contacted: 'bg-purple-100 text-purple-800',
-  closed: 'bg-green-100 text-green-800',
-  pending_verification: 'bg-amber-100 text-amber-800',
-  verified: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-};
-
-const csvCell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-
 const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
   const { items, setItems, loading, reload } = useList<Enquiry>(api, '/api/enquiries');
   const [query, setQuery] = useState('');
@@ -182,7 +140,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
         <input className={input} placeholder="Search name, email, phone, city…" value={query} onChange={e => setQuery(e.target.value)} />
         <select className={`${input} sm:w-48`} value={status} onChange={e => setStatus(e.target.value)}>
           <option value="all">All statuses</option>
-          {ENQUIRY_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          {STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
         </select>
       </div>
 
@@ -197,7 +155,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
                 </div>
                 <div className="flex items-center gap-2 text-xs">
                   <span className="rounded-full bg-stone-100 px-2 py-1 text-stone-600">{e.type}</span>
-                  <span className={`rounded-full px-2 py-1 font-semibold ${STATUS_COLORS[e.status] || ''}`}>{e.status}</span>
+                  <span className={`rounded-full px-2 py-1 font-semibold ${STATUS_COLORS[e.status] || ''}`}>{stageOf(e.status).label}</span>
                   <span className="text-stone-400">{fmtDate(e.createdAt)}</span>
                 </div>
               </button>
@@ -215,7 +173,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
                   {e.aiSummary && <p className="rounded-lg bg-[#FFD400]/15 p-3 text-sm text-stone-700">{e.aiSummary}</p>}
                   <div className="grid gap-2 sm:grid-cols-[12rem_1fr]">
                     <select className={input} value={e.status} onChange={ev => update(e.id, { status: ev.target.value as Enquiry['status'] })}>
-                      {ENQUIRY_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                      {STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                     </select>
                     <textarea
                       className={input}
@@ -242,35 +200,138 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
 };
 
 // ---------------- PAYMENTS ----------------
+type PayFilter = PaymentRecord['status'] | 'all';
+const PAY_FILTERS: { id: PayFilter; label: string }[] = [
+  { id: 'pending_verification', label: 'Pending' },
+  { id: 'verified', label: 'Verified' },
+  { id: 'rejected', label: 'Rejected' },
+  { id: 'all', label: 'All' },
+];
+
 const PaymentsTab: React.FC<TabProps> = ({ api, flash }) => {
   const { items, setItems, loading, reload } = useList<PaymentRecord>(api, '/api/payments');
+  // Enquiries are loaded too so each payment can be matched to its lead (CRM groundwork)
+  const { items: leads } = useList<Enquiry>(api, '/api/enquiries');
+  const [filter, setFilter] = useState<PayFilter>('pending_verification');
+  const [query, setQuery] = useState('');
 
-  const setStatus = async (id: string, status: PaymentRecord['status']) => {
-    await api(`/api/payments/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    setItems(list => list.map(p => (p.id === id ? { ...p, status } : p)));
-    flash('Payment updated');
+  const leadFor = useMemo(() => {
+    const byPhone = new Map<string, Enquiry>();
+    const byEmail = new Map<string, Enquiry>();
+    leads.forEach(l => {
+      if (l.fields?.phone) byPhone.set(phoneKey(l.fields.phone), l);
+      if (l.fields?.email) byEmail.set(String(l.fields.email).toLowerCase(), l);
+    });
+    return (p: PaymentRecord) => byPhone.get(phoneKey(p.payerPhone)) || byEmail.get(String(p.payerEmail || '').toLowerCase());
+  }, [leads]);
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: items.length };
+    items.forEach(p => { c[p.status] = (c[p.status] || 0) + 1; });
+    return c;
+  }, [items]);
+
+  const shown = useMemo(() => {
+    const q = query.toLowerCase();
+    return items.filter(p =>
+      (filter === 'all' || p.status === filter) &&
+      (!q || [p.applicantName, p.payerPhone, p.payerEmail, p.upiRefNumber, p.programme].some(v => String(v || '').toLowerCase().includes(q)))
+    );
+  }, [items, filter, query]);
+
+  const setStatus = async (p: PaymentRecord, status: PaymentRecord['status']) => {
+    if (status === 'rejected' && !confirm(`Reject payment ${p.upiRefNumber} from ${p.applicantName}?`)) return;
+    await api(`/api/payments/${p.id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    setItems(list => list.map(x => (x.id === p.id ? { ...x, status, verifiedAt: status === 'pending_verification' ? '' : new Date().toISOString() } : x)));
+    flash(status === 'verified' ? 'Payment verified' : status === 'rejected' ? 'Payment rejected' : 'Moved back to pending');
+  };
+
+  const exportCsv = () => {
+    const head = ['Submitted', 'Payment date', 'Name', 'Mobile', 'Email', 'Programme', 'Amount', 'UTR', 'Status', 'Verified at', 'Matched lead'];
+    const rows = shown.map(p => [fmtDate(p.createdAt), p.paymentDate, p.applicantName, p.payerPhone, p.payerEmail, p.programme, p.amount, p.upiRefNumber, p.status, fmtDate(p.verifiedAt), leadFor(p)?.fields?.name || '']);
+    const csv = [head, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `kinderbee-payments-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
   };
 
   return (
     <section className="space-y-4">
-      <Toolbar title="Payments" count={items.length} onReload={reload} />
-      {loading ? <p className="text-sm text-stone-500">Loading…</p> : !items.length ? <p className="text-sm text-stone-500">No payments yet.</p> : (
+      <Toolbar title="Payments" count={shown.length} onReload={reload}>
+        <button onClick={exportCsv} className={btnGhost} disabled={!shown.length}><Download className="h-4 w-4" /> CSV</button>
+      </Toolbar>
+
+      <div className="flex flex-wrap gap-2">
+        {PAY_FILTERS.map(f => (
+          <button
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${filter === f.id ? 'bg-[#E1007A] text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'}`}
+          >
+            {f.label} <span className="opacity-70">({counts[f.id] || 0})</span>
+          </button>
+        ))}
+      </div>
+      <input className={input} placeholder="Search name, mobile, email, UTR, programme…" value={query} onChange={e => setQuery(e.target.value)} />
+
+      <p className="text-xs text-stone-500">
+        Check each UTR against the bank / UPI statement for the same amount before marking it verified.
+      </p>
+
+      {loading ? <p className="text-sm text-stone-500">Loading…</p> : !shown.length ? <p className="text-sm text-stone-500">No payments here.</p> : (
         <div className="space-y-2">
-          {items.map(p => (
-            <div key={p.id} className={`${card} grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center`}>
-              <div className="space-y-1 text-sm">
-                <div className="text-base font-semibold">{p.applicantName} <span className="font-normal text-stone-500">· ₹{p.amount}</span></div>
-                <div className="text-stone-600">{p.programme}</div>
-                <div className="text-stone-500">UPI ref <span className="font-mono text-stone-800">{p.upiRefNumber}</span> · {p.payerPhone}{p.payerEmail ? ` · ${p.payerEmail}` : ''}</div>
-                <div className="text-xs text-stone-400">{fmtDate(p.createdAt)}{p.admissionNumber ? ` · Admission #${p.admissionNumber}` : ''}</div>
+          {shown.map(p => {
+            const lead = leadFor(p);
+            return (
+              <div key={p.id} className={`${card} space-y-3`}>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <div className="text-base font-semibold">{p.applicantName} <span className="font-normal text-stone-500">· ₹{Number(p.amount).toLocaleString('en-IN')}</span></div>
+                    <div className="text-sm text-stone-600">{p.programme}</div>
+                  </div>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_COLORS[p.status] || ''}`}>
+                    {p.status === 'pending_verification' ? 'pending' : p.status}
+                  </span>
+                </div>
+
+                <dl className="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                  <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">UTR</dt><dd className="font-mono text-stone-900 select-all">{p.upiRefNumber}</dd></div>
+                  <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">Paid on</dt><dd>{p.paymentDate || '—'}</dd></div>
+                  <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">Submitted</dt><dd>{fmtDate(p.createdAt)}</dd></div>
+                  <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">Mobile</dt><dd><a className="text-[#E1007A]" href={`tel:${p.payerPhone}`}>{p.payerPhone}</a></dd></div>
+                  <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">Email</dt><dd className="break-all">{p.payerEmail || '—'}</dd></div>
+                  {p.admissionNumber && <div><dt className="text-[11px] uppercase tracking-wide text-stone-400">Admission no.</dt><dd>{p.admissionNumber}</dd></div>}
+                </dl>
+
+                {p.notes && <p className="rounded-lg bg-stone-50 px-3 py-2 text-xs text-stone-600">Payer note: {p.notes}</p>}
+
+                <div className="text-xs">
+                  {lead ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 font-semibold text-sky-700">
+                      Lead: {lead.fields?.name} · {lead.type} · {lead.status}
+                    </span>
+                  ) : (
+                    <span className="inline-flex rounded-full bg-stone-100 px-2.5 py-1 font-semibold text-stone-500">No matching enquiry</span>
+                  )}
+                  {p.verifiedAt && p.status !== 'pending_verification' && <span className="ml-2 text-stone-400">{p.status === 'verified' ? 'Verified' : 'Rejected'} {fmtDate(p.verifiedAt)}</span>}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {p.status !== 'verified' && (
+                    <button className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`} onClick={() => setStatus(p, 'verified')}>Verify</button>
+                  )}
+                  {p.status !== 'rejected' && (
+                    <button className={`${btnGhost} text-red-600`} onClick={() => setStatus(p, 'rejected')}>Reject</button>
+                  )}
+                  {p.status !== 'pending_verification' && (
+                    <button className={btnGhost} onClick={() => setStatus(p, 'pending_verification')}>Back to pending</button>
+                  )}
+                  <a className={`${btnGhost} ml-auto`} href={`https://wa.me/91${phoneKey(p.payerPhone)}`} target="_blank" rel="noreferrer">WhatsApp</a>
+                </div>
               </div>
-              <select className={`${input} sm:w-52 font-semibold ${STATUS_COLORS[p.status] || ''}`} value={p.status} onChange={e => setStatus(p.id, e.target.value as PaymentRecord['status'])}>
-                <option value="pending_verification">Pending verification</option>
-                <option value="verified">Verified</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
@@ -388,13 +449,6 @@ const BlogsTab: React.FC<TabProps & { adminToken: string }> = ({ api, flash }) =
     </section>
   );
 };
-
-const Field: React.FC<{ label: string; full?: boolean; children: React.ReactNode }> = ({ label, full, children }) => (
-  <label className={`block space-y-1 ${full ? 'sm:col-span-2' : ''}`}>
-    <span className="text-xs font-bold uppercase tracking-wide text-stone-500">{label}</span>
-    {children}
-  </label>
-);
 
 // ---------------- FAQS ----------------
 const FaqsTab: React.FC<TabProps> = ({ api, flash }) => {

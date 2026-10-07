@@ -50,6 +50,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState('');
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
+  const [formErrors, setFormErrors] = useState<string[]>([]);
 
   // Status & UI State
   const [copiedUPI, setCopiedUPI] = useState(false);
@@ -63,7 +64,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
   // Available fee preset programs
   const programmeOptions = [
-    { label: 'Teacher Training: Advanced Diploma in ECCE (Offer ₹4,999)', value: 'Advanced Diploma in Early Childhood Care & Education (ECCE)', defaultAmount: '4999' },
+    { label: 'Teacher Training: Advanced Diploma in ECCE', value: 'Advanced Diploma in Early Childhood Care & Education (ECCE)', defaultAmount: '4999' },
     { label: 'Preschool Admission: Playgroup (1.5 - 2.5 yrs)', value: 'Preschool Admission: Playgroup', defaultAmount: '15000' },
     { label: 'Preschool Admission: Nursery (2.5 - 3.5 yrs)', value: 'Preschool Admission: Nursery', defaultAmount: '18000' },
     { label: 'Preschool Admission: LKG (3.5 - 4.5 yrs)', value: 'Preschool Admission: LKG', defaultAmount: '20000' },
@@ -121,14 +122,17 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
   const handlePaymentSubmission = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreedToPolicy) {
-      alert('Please review and confirm acceptance of the Cancellation and No-Refund Policy.');
-      return;
-    }
-    if (!upiRefNumber || upiRefNumber.trim().length < 6) {
-      alert('Please enter a valid 12-digit UPI Transaction ID / UTR number.');
-      return;
-    }
+    const phoneDigits = payerPhone.replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
+    const errors: string[] = [];
+    if (applicantName.trim().length < 2) errors.push('Enter the applicant / learner name.');
+    if (!/^[6-9]\d{9}$/.test(phoneDigits)) errors.push('Enter a valid 10-digit mobile number.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payerEmail.trim())) errors.push('Enter a valid email address.');
+    if (!(Number(effectiveAmount) > 0)) errors.push('Enter the amount you paid.');
+    if (!/^\d{12}$/.test(upiRefNumber)) errors.push('Enter the 12-digit UPI transaction ID (UTR).');
+    if (!paymentDate) errors.push('Select the payment date.');
+    if (!agreedToPolicy) errors.push('Accept the Cancellation and No-Refund Policy.');
+    setFormErrors(errors);
+    if (errors.length) return;
 
     setIsSubmitting(true);
     try {
@@ -152,11 +156,11 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
       if (data.success && data.paymentRecord) {
         setSubmittedPayment(data.paymentRecord);
       } else {
-        alert(data.error || 'Failed to record payment reference. Please contact support.');
+        setFormErrors([data.error || 'Failed to record payment reference. Please contact support.']);
       }
     } catch (err) {
       console.error(err);
-      alert('Network error while recording payment submission.');
+      setFormErrors(['Network error while recording your payment. Please try again or call 81223 44040.']);
     } finally {
       setIsSubmitting(false);
     }
@@ -546,47 +550,18 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
                   <div className="sm:col-span-2 space-y-2">
                     <label className="block text-xs font-semibold text-stone-700">
-                      Payable Amount (₹) <span className="text-rose-500">*</span>
+                      Amount Paid (₹) <span className="text-rose-500">*</span>
                     </label>
                     
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {['4999', '6000', '15000', '18000', '25000', '50000'].map((preset) => (
-                        <button
-                          key={preset}
-                          type="button"
-                          onClick={() => { setAmount(preset); setCustomAmount(''); }}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                            amount === preset && !customAmount
-                              ? 'bg-[#E1007A] text-white'
-                              : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-                          }`}
-                        >
-                          ₹{Number(preset).toLocaleString('en-IN')}
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => { setCustomAmount(amount); }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                          customAmount ? 'bg-[#E1007A] text-white' : 'bg-stone-100 text-stone-700'
-                        }`}
-                      >
-                        Custom Amount
-                      </button>
-                    </div>
-
                     <div className="relative">
                       <IndianRupee className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
                       <input
                         type="number"
                         min="1"
                         required
-                        value={customAmount || amount}
-                        onChange={(e) => {
-                          setCustomAmount(e.target.value);
-                          setAmount(e.target.value);
-                        }}
-                        placeholder="Enter payable amount in INR"
+                        value={amount}
+                        onChange={(e) => { setAmount(e.target.value); setCustomAmount(''); }}
+                        placeholder="Exact amount you paid, in INR"
                         className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-stone-300 text-sm font-semibold focus:ring-2 focus:ring-[#E1007A] focus:border-transparent outline-none"
                       />
                     </div>
@@ -620,8 +595,10 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                         type="text"
                         required
                         value={upiRefNumber}
-                        onChange={(e) => setUpiRefNumber(e.target.value.trim())}
-                        placeholder="e.g. 425689123456 (from your Google Pay/PhonePe/Paytm screen)"
+                        inputMode="numeric"
+                        maxLength={12}
+                        onChange={(e) => setUpiRefNumber(e.target.value.replace(/\D/g, '').slice(0, 12))}
+                        placeholder="12 digits, e.g. 425689123456"
                         className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm font-mono font-semibold focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white"
                       />
                       <span className="text-[11px] text-stone-500 mt-1 block">
@@ -649,12 +626,13 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
                       <div>
                         <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Payer Email Address (For Receipt)
+                          Email Address <span className="text-rose-500">*</span>
                         </label>
                         <div className="relative">
                           <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
                           <input
                             type="email"
+                            required
                             value={payerEmail}
                             onChange={(e) => setPayerEmail(e.target.value)}
                             placeholder="parent@gmail.com"
@@ -667,10 +645,12 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                       <div>
                         <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Date of Payment
+                          Date of Payment <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="date"
+                          required
+                          max={new Date().toISOString().split('T')[0]}
                           value={paymentDate}
                           onChange={(e) => setPaymentDate(e.target.value)}
                           className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:ring-2 focus:ring-[#E1007A] focus:border-transparent outline-none bg-white"
@@ -679,7 +659,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
                       <div>
                         <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Additional Remarks / Payment Note
+                          Note (optional)
                         </label>
                         <input
                           type="text"
@@ -728,6 +708,12 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                       </span>
                     </label>
                   </div>
+
+                  {formErrors.length > 0 && (
+                    <div role="alert" className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl px-4 py-3 text-xs space-y-1">
+                      {formErrors.map(e => <div key={e}>• {e}</div>)}
+                    </div>
+                  )}
 
                   {/* Submit Button */}
                   <button

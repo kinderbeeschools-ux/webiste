@@ -17,7 +17,11 @@ export interface Enquiry {
   id: string;
   type: string;
   fields: EnquiryFields;
-  status: 'pending' | 'reviewed' | 'contacted' | 'closed';
+  status: LeadStage;
+  nextFollowUp?: string;
+  followUpType?: string;
+  lostReason?: string;
+  touchCount?: number;
   notes: string;
   aiSummary?: string;
   createdAt: string;
@@ -117,8 +121,43 @@ export interface PaymentRecord {
   payerPhone: string;
   payerEmail: string;
   paymentDate?: string;
+  verifiedAt?: string;
   notes?: string;
   status: 'pending_verification' | 'verified' | 'rejected';
   createdAt: string;
 }
 
+
+// CRM pipeline stage of an enquiry (stored in its `status`)
+export type LeadStage = 'new' | 'contacted' | 'interested' | 'counselling' | 'visit' | 'application' | 'admission' | 'lost';
+
+export interface LeadActivity {
+  id: number;
+  leadKey: string;
+  enquiryId?: string;
+  type: 'created' | 'stage' | 'follow_up' | 'note' | 'call' | 'whatsapp' | 'email' | 'payment';
+  detail: string;
+  createdAt: string;
+}
+
+// Enrolled child, created when a lead is admitted (id like KB-2026-00001)
+export interface Student {
+  id: string;
+  childName: string;
+  dob?: string;
+  gender?: string;
+  className?: string;
+  branch?: string;
+  academicYear?: string;
+  admissionDate?: string;
+  parentName: string;
+  parentRelation?: string;
+  parentPhone: string;
+  parentEmail?: string;
+  address?: string;
+  emergencyContact?: string;
+  medicalInfo?: string;
+  previousSchool?: string;
+  enquiryId?: string;
+  createdAt: string;
+}

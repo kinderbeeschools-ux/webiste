@@ -255,7 +255,7 @@ const seedEnquiries: Enquiry[] = [
       partnershipModel: "Preschool Franchise",
       message: "I own a 3,000 sq ft property in an upscale residential area of Pune. Interested in starting a premium Finnish-inspired preschool. Please call me."
     },
-    status: "pending",
+    status: "new",
     notes: "Property verified. Ready for initial call on Friday.",
     aiSummary: "🌟 High Interest Lead: Entrepreneur owns a prime 3,000 sq ft property in Pune with a budget matching the ₹15L-₹35L requirement. Strongly recommended to highlight the Zero Royalty benefit during the call to secure the contract.",
     createdAt: "2026-08-05T14:30:00Z"
@@ -274,7 +274,7 @@ const seedEnquiries: Enquiry[] = [
       budget: "₹1.5 Crores - ₹2 Crores",
       message: "Our trust wants to establish a new CBSE K-12 school in Nagpur. We need end-to-end guidance from land approvals to curriculum."
     },
-    status: "reviewed",
+    status: "contacted",
     notes: "Emailed corporate presentation. Scheduled presentation with Director on Monday.",
     aiSummary: "💎 Elite Lead: Large budget educational trust exploring CBSE setup. Needs comprehensive operational and compliance support. Excellent candidate for KIPS multi-year project consulting.",
     createdAt: "2026-08-04T09:15:00Z"
@@ -428,13 +428,19 @@ app.post("/api/enquiries", async (req, res) => {
   if (!type || !fields || !fields.name || !fields.email || !fields.phone) {
     return res.status(400).json({ error: "Missing required contact fields" });
   }
+  // Every lead keeps where it came from
+  const attribution = attributionFrom(req.headers.cookie);
+  fields.source = fields.source || sourceLabel(attribution);
+  ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "referrer", "landing"].forEach(k => {
+    if (attribution[k] && !fields[k]) fields[k] = String(attribution[k]).slice(0, 200);
+  });
 
   const db = loadDb();
   const newEnquiry: Enquiry = {
     id: `enq-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
     type,
     fields,
-    status: "pending",
+    status: "new",
     notes: "",
     createdAt: new Date().toISOString()
   };
@@ -518,6 +524,7 @@ app.post("/api/enquiries", async (req, res) => {
           console.warn("Supabase Lead Sync Notice:", sbError.message);
         } else {
           console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
+          await logActivity({ leadKey: leadKeyOf(fields.phone, fields.email), enquiryId: newEnquiry.id, type: "created", detail: `Enquiry received: ${newEnquiry.type}` });
         }
       }
     } catch (sbErr) {
@@ -572,6 +579,10 @@ const requireAdmin = (req: express.Request, res: express.Response, next: express
   }
 };
 
+// Wraps async admin handlers so a Supabase failure returns a readable error instead of hanging
+const handle = (fn: (req: express.Request, res: express.Response) => Promise<any>) =>
+  (req: express.Request, res: express.Response) => fn(req, res).catch((err: any) => res.status(500).json({ error: err.message }));
+
 // GET Email Service Status & Configuration
 app.get("/api/email/status", (req, res) => {
   const configured = isSmtpConfigured();
@@ -618,17 +629,52 @@ app.post("/api/email/test", requireAdmin, async (req, res) => {
 });
 
 // Supabase is the source of truth for enquiries when configured (db.json can't persist on Vercel)
+// ---------- CRM ----------
+// Older enquiries used pending / reviewed / closed; map them onto the pipeline stages
+const LEGACY_STAGE: Record<string, string> = { pending: "new", reviewed: "contacted", closed: "lost", enrolled: "admission", alumni: "admission" };
+const STAGE_LABEL: Record<string, string> = { new: "New", contacted: "Contacted", interested: "Interested", counselling: "Counselling", visit: "Centre visit", application: "Application", admission: "Admission", lost: "Lost" };
+
+// Lead source from the kb_attr cookie set by the website (UTM tags / referrer)
+function attributionFrom(cookieHeader?: string): Record<string, string> {
+  const raw = (cookieHeader || "").split(/;\s*/).find(c => c.startsWith("kb_attr="));
+  if (!raw) return {};
+  try { return JSON.parse(decodeURIComponent(raw.slice("kb_attr=".length))) || {}; } catch { return {}; }
+}
+function sourceLabel(a: Record<string, string>): string {
+  const hint = `${a.utm_source || ""} ${a.referrer || ""}`.toLowerCase();
+  if (/instagram|\big\b/.test(hint)) return "Instagram";
+  if (/facebook|\bfb\b|meta/.test(hint)) return "Facebook";
+  if (/google|gads/.test(hint)) return "Google";
+  if (/whatsapp|wa\.me|\bwa\b/.test(hint)) return "WhatsApp";
+  return "Website";
+}
+const normaliseStage = (s?: string): any => LEGACY_STAGE[s || ""] || s || "new";
+// Contact key shared by enquiries and payments: last 10 digits of the mobile, else the email
+const leadKeyOf = (phone?: string, email?: string) => String(phone || "").replace(/\D/g, "").slice(-10) || String(email || "").toLowerCase();
+
+// Best-effort activity log; a failed log never blocks the action that caused it
+async function logActivity(entry: { leadKey: string; enquiryId?: string; type: string; detail: string }) {
+  const supabase = getSupabaseClient();
+  if (!supabase || !entry.leadKey) return;
+  const { error } = await supabase.from("lead_activity").insert([{ lead_key: entry.leadKey, enquiry_id: entry.enquiryId || null, type: entry.type, detail: entry.detail }]);
+  if (error) console.warn("Activity log failed:", error.message);
+}
+
 async function getEnquiries(): Promise<Enquiry[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return loadDb().enquiries;
+  if (!supabase) return loadDb().enquiries.map(e => ({ ...e, status: normaliseStage(e.status) }));
   const { data, error } = await supabase.from("enquiries").select("*").order("created_at", { ascending: false });
   if (error) throw new Error(`Supabase enquiries: ${error.message}`);
   return (data || []).map((r: any) => ({
     id: r.id,
     type: r.type,
     fields: r.raw_data || { name: r.name, email: r.email, phone: r.phone, city: r.city, state: r.state, budget: r.budget, message: r.message },
-    status: r.status || "pending",
+    status: normaliseStage(r.status),
     notes: r.notes || "",
+    nextFollowUp: r.next_follow_up || "",
+    followUpType: r.follow_up_type || "",
+    lostReason: r.lost_reason || "",
+    touchCount: r.touch_count || 0,
     aiSummary: r.ai_summary || undefined,
     createdAt: r.created_at,
   }));
@@ -646,29 +692,178 @@ app.get("/api/enquiries", requireAdmin, async (req, res) => {
 // UPDATE enquiry status/notes
 app.put("/api/enquiries/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
-  const { status, notes } = req.body;
+  const { status, notes, nextFollowUp, followUpType, lostReason, fields } = req.body;
+  if (status === "lost" && !lostReason) return res.status(400).json({ error: "Choose a reason for marking this lead as lost." });
   const supabase = getSupabaseClient();
   if (supabase) {
+    const { data: rows, error: readErr } = await supabase.from("enquiries").select("id, status, phone, email, next_follow_up, raw_data").eq("id", id).limit(1);
+    if (readErr) return res.status(500).json({ error: readErr.message });
+    const current = rows?.[0];
+    if (!current) return res.status(404).json({ error: "Enquiry record not found" });
+
     const patch: any = {};
     if (status) patch.status = status;
     if (notes !== undefined) patch.notes = notes;
+    if (nextFollowUp !== undefined) patch.next_follow_up = nextFollowUp || null;
+    if (followUpType !== undefined) patch.follow_up_type = followUpType || null;
+    if (status) patch.lost_reason = status === "lost" ? lostReason : null;
+    if (fields && typeof fields === "object") {
+      // Edited lead details: merge into the stored form data and keep the searchable columns in sync
+      const merged = { ...(current.raw_data || {}), ...fields };
+      patch.raw_data = merged;
+      if (fields.name !== undefined) patch.name = fields.name;
+      if (fields.phone !== undefined) patch.phone = fields.phone;
+      if (fields.email !== undefined) patch.email = fields.email;
+      if (fields.city !== undefined) patch.city = fields.city;
+    }
     const { data, error } = await supabase.from("enquiries").update(patch).eq("id", id).select();
     if (error) return res.status(500).json({ error: error.message });
-    if (!data?.length) return res.status(404).json({ error: "Enquiry record not found" });
-    return res.json({ success: true, enquiry: data[0] });
+
+    const leadKey = leadKeyOf(current.phone, current.email);
+    const from = normaliseStage(current.status);
+    if (status && status !== from) {
+      await logActivity({ leadKey, enquiryId: id, type: "stage", detail: `Stage: ${STAGE_LABEL[from] || from} → ${STAGE_LABEL[status] || status}${status === "lost" ? ` (${lostReason})` : ""}` });
+    }
+    if (nextFollowUp !== undefined && (nextFollowUp || null) !== (current.next_follow_up || null)) {
+      await logActivity({ leadKey, enquiryId: id, type: "follow_up", detail: nextFollowUp ? `${followUpType || "Follow-up"} scheduled for ${nextFollowUp}` : "Follow-up cleared" });
+    }
+    if (fields && typeof fields === "object") {
+      await logActivity({ leadKey, enquiryId: id, type: "note", detail: "Lead details updated" });
+    }
+    return res.json({ success: true, enquiry: data?.[0] });
   }
   const db = loadDb();
-  
-  const idx = db.enquiries.findIndex(e => e.id === id);
-  if (idx !== -1) {
-    if (status) db.enquiries[idx].status = status;
-    if (notes !== undefined) db.enquiries[idx].notes = notes;
-    saveDb(db);
-    res.json({ success: true, enquiry: db.enquiries[idx] });
-  } else {
-    res.status(404).json({ error: "Enquiry record not found" });
-  }
+  const e = db.enquiries.find(x => x.id === id);
+  if (!e) return res.status(404).json({ error: "Enquiry record not found" });
+  if (status) { e.status = status; e.lostReason = status === "lost" ? lostReason : ""; }
+  if (notes !== undefined) e.notes = notes;
+  if (nextFollowUp !== undefined) e.nextFollowUp = nextFollowUp;
+  if (followUpType !== undefined) e.followUpType = followUpType;
+  if (fields && typeof fields === "object") e.fields = { ...e.fields, ...fields };
+  saveDb(db);
+  res.json({ success: true, enquiry: e });
 });
+
+// Activity timeline for one contact (?key=<mobile or email>), newest first
+app.get("/api/crm/activity", requireAdmin, async (req, res) => {
+  const supabase = getSupabaseClient();
+  const key = String(req.query.key || "");
+  if (!supabase || !key) return res.json([]);
+  const { data, error } = await supabase.from("lead_activity").select("*").eq("lead_key", key).order("created_at", { ascending: false }).limit(200);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json((data || []).map((r: any) => ({ id: r.id, leadKey: r.lead_key, enquiryId: r.enquiry_id || undefined, type: r.type, detail: r.detail, createdAt: r.created_at })));
+});
+
+// Manual activity from the admin panel: calls, WhatsApp, email, notes
+app.post("/api/crm/activity", requireAdmin, async (req, res) => {
+  const { leadKey, enquiryId, type, detail } = req.body || {};
+  if (!leadKey || !["call", "whatsapp", "email", "note"].includes(type) || !String(detail || "").trim()) {
+    return res.status(400).json({ error: "leadKey, a valid type and detail are required" });
+  }
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  const { error } = await supabase.from("lead_activity").insert([{ lead_key: String(leadKey), enquiry_id: enquiryId || null, type, detail: String(detail).trim().slice(0, 1000) }]);
+  if (error) return res.status(500).json({ error: error.message });
+  if (enquiryId && type !== "note") {
+    // ponytail: read-then-write counter; two simultaneous clicks can count once
+    const { data } = await supabase.from("enquiries").select("touch_count").eq("id", enquiryId).limit(1);
+    await supabase.from("enquiries").update({ touch_count: (data?.[0]?.touch_count || 0) + 1 }).eq("id", enquiryId);
+  }
+  res.json({ success: true });
+});
+
+// Lead added by staff (walk-in, phone call, WhatsApp, referral...)
+app.post("/api/crm/leads", requireAdmin, async (req, res) => {
+  const b = req.body || {};
+  const fields = (b.fields && typeof b.fields === "object") ? b.fields : {};
+  const name = String(fields.name || "").trim();
+  const phone = String(fields.phone || "").trim();
+  if (name.length < 2 || String(phone).replace(/\D/g, "").length < 10) {
+    return res.status(400).json({ error: "Parent name and a 10-digit phone number are required." });
+  }
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  const id = `enq-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const type = String(b.type || fields.program || "Manual lead");
+  const createdAt = new Date().toISOString();
+  const { error } = await supabase.from("enquiries").insert([{
+    id, type, name, email: fields.email || null, phone, city: fields.city || null, state: fields.state || null,
+    budget: fields.budget || null, partnership_model: fields.program || null, message: fields.message || null,
+    status: "new", created_at: createdAt, raw_data: { ...fields, name, phone, source: fields.source || "Walk-in" },
+    next_follow_up: b.nextFollowUp || null, follow_up_type: b.followUpType || null,
+  }]);
+  if (error) return res.status(500).json({ error: error.message });
+  await logActivity({ leadKey: leadKeyOf(phone, fields.email), enquiryId: id, type: "created", detail: `Lead added by staff (${fields.source || "Walk-in"})` });
+  res.json({ success: true, id });
+});
+
+// ---------- Students ----------
+const studentFromRow = (r: any) => ({
+  id: r.id, childName: r.child_name, dob: r.dob || "", gender: r.gender || "", className: r.class_name || "", branch: r.branch || "",
+  academicYear: r.academic_year || "", admissionDate: r.admission_date || "", parentName: r.parent_name, parentRelation: r.parent_relation || "",
+  parentPhone: r.parent_phone, parentEmail: r.parent_email || "", address: r.address || "", emergencyContact: r.emergency_contact || "",
+  medicalInfo: r.medical_info || "", previousSchool: r.previous_school || "", enquiryId: r.enquiry_id || "", createdAt: r.created_at,
+});
+const STUDENT_COLS: Record<string, string> = {
+  childName: "child_name", dob: "dob", gender: "gender", className: "class_name", branch: "branch", academicYear: "academic_year",
+  admissionDate: "admission_date", parentName: "parent_name", parentRelation: "parent_relation", parentPhone: "parent_phone",
+  parentEmail: "parent_email", address: "address", emergencyContact: "emergency_contact", medicalInfo: "medical_info", previousSchool: "previous_school",
+};
+const studentPatch = (body: any) => {
+  const out: any = {};
+  Object.entries(STUDENT_COLS).forEach(([k, col]) => { if (body[k] !== undefined) out[col] = body[k] === "" ? null : String(body[k]).slice(0, 500); });
+  return out;
+};
+
+app.get("/api/crm/students", requireAdmin, handle(async (req, res) => {
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.json([]);
+  const { data, error } = await supabase.from("students").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(`Supabase students: ${error.message}`);
+  res.json((data || []).map(studentFromRow));
+}));
+
+// Admit a child: generates the next KB-<year>-<number> ID and moves the lead to Admission
+app.post("/api/crm/students", requireAdmin, handle(async (req, res) => {
+  const b = req.body || {};
+  if (!String(b.childName || "").trim() || !String(b.parentName || "").trim() || String(b.parentPhone || "").replace(/\D/g, "").length < 10) {
+    return res.status(400).json({ error: "Child name, parent name and a 10-digit parent phone are required." });
+  }
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  const year = new Date().getFullYear();
+  const row: any = { ...studentPatch(b), enquiry_id: b.enquiryId || null, admission_date: b.admissionDate || new Date().toISOString().slice(0, 10) };
+  let created: any = null;
+  // ponytail: next ID = count for the year + 1, retried on clash; use a DB sequence if many staff admit at once
+  for (let attempt = 0; attempt < 5 && !created; attempt++) {
+    const { count } = await supabase.from("students").select("id", { count: "exact", head: true }).like("id", `KB-${year}-%`);
+    const id = `KB-${year}-${String((count || 0) + 1 + attempt).padStart(5, "0")}`;
+    const { data, error } = await supabase.from("students").insert([{ id, ...row }]).select();
+    if (!error) created = data?.[0];
+    else if (!/duplicate|unique/i.test(error.message)) throw new Error(error.message);
+  }
+  if (!created) throw new Error("Could not generate a student ID, please try again.");
+
+  const leadKey = leadKeyOf(b.parentPhone, b.parentEmail);
+  await logActivity({ leadKey, enquiryId: b.enquiryId, type: "stage", detail: `Student admitted: ${created.child_name} (${created.id})` });
+  if (b.enquiryId) {
+    const { data: e } = await supabase.from("enquiries").select("status").eq("id", b.enquiryId).limit(1);
+    if (e?.[0] && normaliseStage(e[0].status) !== "admission") {
+      await supabase.from("enquiries").update({ status: "admission", lost_reason: null }).eq("id", b.enquiryId);
+      await logActivity({ leadKey, enquiryId: b.enquiryId, type: "stage", detail: `Stage: ${STAGE_LABEL[normaliseStage(e[0].status)]} → Admission` });
+    }
+  }
+  res.json({ success: true, student: studentFromRow(created) });
+}));
+
+app.put("/api/crm/students/:id", requireAdmin, handle(async (req, res) => {
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  const { data, error } = await supabase.from("students").update(studentPatch(req.body || {})).eq("id", req.params.id).select();
+  if (error) throw new Error(error.message);
+  if (!data?.length) return res.status(404).json({ error: "Student not found" });
+  res.json({ success: true, student: studentFromRow(data[0]) });
+}));
 
 // DELETE an enquiry
 app.delete("/api/enquiries/:id", requireAdmin, async (req, res) => {
@@ -691,53 +886,97 @@ app.delete("/api/enquiries/:id", requireAdmin, async (req, res) => {
 // ==========================================
 
 // Submit payment transaction confirmation
+// Payment confirmation rules (also enforced in the payment form)
+const UTR_RE = /^\d{12}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Indian mobile: keep the last 10 digits after removing +91 / 0 prefixes
+const normalisePhone = (p: string) => String(p || "").replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
+
 app.post("/api/payments", async (req, res) => {
-  const { applicantName, admissionNumber, programme, amount, upiRefNumber, payerPhone, payerEmail, notes, paymentDate } = req.body;
-  if (!applicantName || !programme || !amount || !upiRefNumber || !payerPhone) {
-    return res.status(400).json({ error: "Please fill in all mandatory payment confirmation fields (Name, Programme, Amount, UPI Ref, and Contact Number)." });
+  const b = req.body || {};
+  const applicantName = String(b.applicantName || "").trim();
+  const programme = String(b.programme || "").trim();
+  const amount = Number(b.amount);
+  const upiRefNumber = String(b.upiRefNumber || "").replace(/\s/g, "");
+  const payerPhone = normalisePhone(b.payerPhone);
+  const payerEmail = String(b.payerEmail || "").trim().toLowerCase();
+  const paymentDate = String(b.paymentDate || "").trim();
+  const admissionNumber = String(b.admissionNumber || "").trim();
+  const notes = String(b.notes || "").trim().slice(0, 500);
+
+  const problems: string[] = [];
+  if (applicantName.length < 2) problems.push("full name");
+  if (!/^[6-9]\d{9}$/.test(payerPhone)) problems.push("a valid 10-digit mobile number");
+  if (!EMAIL_RE.test(payerEmail)) problems.push("a valid email address");
+  if (!programme) problems.push("programme");
+  if (!Number.isFinite(amount) || amount <= 0) problems.push("amount paid");
+  if (!UTR_RE.test(upiRefNumber)) problems.push("the 12-digit UPI transaction ID (UTR)");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate)) problems.push("payment date");
+  if (problems.length) {
+    return res.status(400).json({ error: `Please provide ${problems.join(", ")}.` });
   }
 
-  const db = loadDb();
   const newPayment: PaymentRecord = {
     id: `PAY-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
     applicantName,
-    admissionNumber: admissionNumber || "",
+    admissionNumber,
     programme,
-    amount,
+    amount: String(amount),
     upiRefNumber,
     payerPhone,
-    payerEmail: payerEmail || "",
-    paymentDate: paymentDate || new Date().toISOString().split("T")[0],
-    notes: notes || "",
+    payerEmail,
+    paymentDate,
+    notes,
     status: "pending_verification",
     createdAt: new Date().toISOString()
   };
 
-  db.payments.unshift(newPayment);
-  saveDb(db);
-
-  // Sync to Supabase if available
-  try {
-    const supabase = getSupabaseClient();
-    if (supabase) {
-      await supabase.from("payments").insert([
-        {
-          id: newPayment.id,
-          applicant_name: applicantName,
-          admission_number: admissionNumber || null,
-          programme,
-          amount: String(amount),
-          upi_ref: upiRefNumber,
-          payer_phone: payerPhone,
-          payer_email: payerEmail || null,
-          status: newPayment.status,
-          created_at: newPayment.createdAt
-        }
-      ]);
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data: dup, error: dupErr } = await supabase.from("payments").select("id").eq("upi_ref", upiRefNumber).limit(1);
+    if (dupErr) {
+      console.error("Payment duplicate check failed:", dupErr.message);
+      return res.status(500).json({ error: "We could not record your payment right now. Please call 81223 44040 with your UTR number." });
     }
-  } catch (err) {
-    console.warn("Supabase payment sync notice:", err);
+    if (dup && dup.length) {
+      return res.status(409).json({ error: "This UTR number has already been submitted. If this is a mistake, please call 81223 44040." });
+    }
+    const row: any = {
+      id: newPayment.id,
+      applicant_name: applicantName,
+      admission_number: admissionNumber || null,
+      programme,
+      amount: String(amount),
+      upi_ref: upiRefNumber,
+      payer_phone: payerPhone,
+      payer_email: payerEmail,
+      payment_date: paymentDate,
+      notes: notes || null,
+      status: newPayment.status,
+      created_at: newPayment.createdAt
+    };
+    let { error } = await supabase.from("payments").insert([row]);
+    if (error && /payment_date|notes|column|schema cache/i.test(error.message)) {
+      // ponytail: tolerates a database where supabase-setup.sql hasn't added payment_date/notes yet; drop once it has
+      console.warn("Payment insert without new columns:", error.message);
+      const { payment_date, notes: _n, ...basic } = row;
+      ({ error } = await supabase.from("payments").insert([basic]));
+    }
+    if (error) {
+      // Never tell the payer it worked unless it was saved
+      console.error("Payment insert failed:", error.message);
+      return res.status(500).json({ error: "We could not record your payment right now. Please call 81223 44040 with your UTR number." });
+    }
+  } else {
+    const db = loadDb();
+    if (db.payments.some(p => p.upiRefNumber === upiRefNumber)) {
+      return res.status(409).json({ error: "This UTR number has already been submitted." });
+    }
+    db.payments.unshift(newPayment);
+    saveDb(db);
   }
+
+  await logActivity({ leadKey: payerPhone, type: "payment", detail: `Payment submitted: ₹${amount} for ${programme} (UTR ${upiRefNumber})` });
 
   res.json({
     success: true,
@@ -774,10 +1013,6 @@ async function setContent(key: ContentKey, value: any): Promise<void> {
   if (error) throw new Error(`Could not save ${key}: ${error.message}`);
 }
 
-// Wraps async admin handlers so a Supabase failure returns a readable error instead of hanging
-const handle = (fn: (req: express.Request, res: express.Response) => Promise<any>) =>
-  (req: express.Request, res: express.Response) => fn(req, res).catch((err: any) => res.status(500).json({ error: err.message }));
-
 // PAYMENTS (admin)
 app.get("/api/payments", requireAdmin, handle(async (req, res) => {
   const supabase = getSupabaseClient();
@@ -794,6 +1029,8 @@ app.get("/api/payments", requireAdmin, handle(async (req, res) => {
     payerPhone: r.payer_phone,
     payerEmail: r.payer_email || "",
     notes: r.notes || "",
+    paymentDate: r.payment_date || "",
+    verifiedAt: r.verified_at || "",
     status: r.status,
     createdAt: r.created_at,
   })));
@@ -805,11 +1042,32 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
   const supabase = getSupabaseClient();
   if (supabase) {
     const patch: any = {};
-    if (status) patch.status = status;
+    if (status) {
+      patch.status = status;
+      patch.verified_at = status === "pending_verification" ? null : new Date().toISOString();
+    }
     if (notes !== undefined) patch.notes = notes;
     const { data, error } = await supabase.from("payments").update(patch).eq("id", id).select();
     if (error) throw new Error(error.message);
     if (!data?.length) return res.status(404).json({ error: "Payment record not found." });
+
+    if (status) {
+      const p = data[0];
+      const leadKey = leadKeyOf(p.payer_phone, p.payer_email);
+      const label = status === "verified" ? "verified" : status === "rejected" ? "rejected" : "moved back to pending";
+      await logActivity({ leadKey, type: "payment", detail: `Payment of ₹${p.amount} ${label} (UTR ${p.upi_ref})` });
+      if (status === "verified") {
+        // ponytail: scans all enquiries to match the phone in JS (stored phone formats vary); add a normalised phone column if this grows large
+        const { data: leads } = await supabase.from("enquiries").select("id, status, phone, email");
+        for (const l of leads || []) {
+          const stage = normaliseStage(l.status);
+          if (leadKeyOf(l.phone, l.email) === leadKey && stage !== "admission") {
+            await supabase.from("enquiries").update({ status: "admission", lost_reason: null }).eq("id", l.id);
+            await logActivity({ leadKey, enquiryId: l.id, type: "stage", detail: `Stage: ${STAGE_LABEL[stage] || stage} → Admission (payment verified)` });
+          }
+        }
+      }
+    }
     return res.json({ success: true });
   }
   const db = loadDb();
@@ -905,76 +1163,6 @@ app.post("/api/upload", requireAdmin, handle(async (req, res) => {
   if (error) throw new Error(error.message);
   res.json({ success: true, url: supabase.storage.from("Files").getPublicUrl(path).data.publicUrl });
 }));
-
-// GET dashboard metrics / analytics
-app.get("/api/analytics", requireAdmin, async (req, res) => {
-  let enquiries: Enquiry[];
-  try {
-    enquiries = await getEnquiries();
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
-  }
-
-  const totalLeads = enquiries.length;
-  const pendingLeads = enquiries.filter(e => e.status === "pending").length;
-  const reviewedLeads = enquiries.filter(e => e.status === "reviewed").length;
-  const contactedLeads = enquiries.filter(e => e.status === "contacted").length;
-  const closedLeads = enquiries.filter(e => e.status === "closed").length;
-
-  // Calculate potential commercial pipeline
-  let totalPotentialLakhs = 0;
-  enquiries.forEach(e => {
-    const budgetStr = e.fields.budget || "";
-    if (budgetStr.includes("1.5 Crores") || budgetStr.includes("2 Crores")) {
-      totalPotentialLakhs += 175;
-    } else if (budgetStr.includes("₹15 Lakhs") || budgetStr.includes("35 Lakhs")) {
-      totalPotentialLakhs += 25;
-    } else if (budgetStr.includes("Lakhs")) {
-      const match = budgetStr.match(/(\d+)/);
-      if (match) totalPotentialLakhs += parseInt(match[1]);
-    } else {
-      totalPotentialLakhs += 10; // baseline estimation for general leads
-    }
-  });
-
-  const typesMap: Record<string, number> = {
-    "Preschool Franchise": 0,
-    "School Setup & CBSE/IB": 0,
-    "Teacher Certification": 0,
-    "Investors": 0,
-    "General / Contact": 0
-  };
-
-  enquiries.forEach(e => {
-    if (e.type === "franchise" || e.fields.partnershipModel?.includes("Preschool")) {
-      typesMap["Preschool Franchise"]++;
-    } else if (e.type === "investor" || e.fields.partnershipModel?.includes("School Setup") || e.fields.investmentInterest?.includes("CBSE")) {
-      typesMap["Investors"]++;
-    } else if (e.type === "fwa_course" || e.fields.courseOfInterest) {
-      typesMap["Teacher Certification"]++;
-    } else if (e.fields.partnershipModel?.includes("CBSE") || e.fields.partnershipModel?.includes("IB")) {
-      typesMap["School Setup & CBSE/IB"]++;
-    } else {
-      typesMap["General / Contact"]++;
-    }
-  });
-
-  const leadsByType = Object.keys(typesMap).map(name => ({
-    name,
-    value: typesMap[name]
-  }));
-
-  res.json({
-    totalLeads,
-    pendingLeads,
-    reviewedLeads,
-    contactedLeads,
-    closedLeads,
-    totalBlogs: loadDb().blogs.length,
-    estimatedRevenuePotential: `₹${totalPotentialLakhs} Lakhs`,
-    leadsByType
-  });
-});
 
 // Draft Professional AI Email response using Gemini
 app.post("/api/ai/suggest-reply", requireAdmin, async (req, res) => {
