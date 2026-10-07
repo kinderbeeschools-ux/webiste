@@ -18,6 +18,7 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
 import { PaymentPage } from './pages/PaymentPage';
+import { JointVenturesPage } from './pages/JointVenturesPage';
 import { AdminPanel } from './pages/AdminPanel';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
@@ -38,6 +39,11 @@ export function App() {
 
     if (hash === '#payments' || hash === '#/payments' || pathname === '/payments') {
       return 'payments';
+    }
+
+    // Shared opportunity links (#opportunity/<id>) open the Joint Ventures page
+    if (hash.startsWith('#opportunity/') || pathname === '/joint-ventures') {
+      return 'joint-ventures';
     }
 
     // Default to last active tab if logged in as admin
@@ -239,6 +245,7 @@ export function App() {
             setCurrentTab={setCurrentTab} 
           />
         )}
+        {currentTab === 'joint-ventures' && <JointVenturesPage settings={settings} />}
         {currentTab === 'investors' && (
           <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} setCurrentTab={setCurrentTab} />
         )}

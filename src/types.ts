@@ -161,3 +161,37 @@ export interface Student {
   enquiryId?: string;
   createdAt: string;
 }
+
+// Investment / joint-venture opportunity listed on the Joint Ventures page (managed in the admin panel)
+export interface OpportunityRow { label: string; value: string }
+export interface Opportunity {
+  id: string;
+  title: string;
+  location: string;
+  category: string;          // e.g. "Land / Development"
+  status: string;            // e.g. "Open for partnership"
+  featured: boolean;
+  published: boolean;
+  order: number;
+  headline: string;          // main statement on the detail view
+  summary: string;           // short text for cards
+  area?: string;
+  investmentRequirement?: string;
+  partnershipModel?: string;
+  potential?: string;
+  timeline?: string;
+  overview: string[];        // paragraphs
+  details: OpportunityRow[];
+  detailsNote?: string;
+  terms: OpportunityRow[];
+  termsNote?: string;
+  development: string[];     // paragraphs
+  partnershipOptions: OpportunityRow[];
+  images: { url: string; caption: string }[];
+  mapUrl?: string;
+  contactName?: string;
+  contactPhone?: string;
+  documents?: string;
+  eligibility?: string;
+  disclaimer?: string;
+}

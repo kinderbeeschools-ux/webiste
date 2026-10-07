@@ -4,7 +4,8 @@ import fs from "fs";
 import crypto from "crypto";
 import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord } from "./src/types";
+import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
+import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import {
   sendApplicantConfirmationEmail,
   sendAdminLeadAlertEmail,
@@ -987,10 +988,10 @@ app.post("/api/payments", async (req, res) => {
 
 // Content (blogs, faqs, settings, pages) lives in Supabase table `site_data` (key text primary key, value jsonb)
 // so admin edits persist on Vercel; db.json is only the seed/fallback when Supabase isn't configured.
-type ContentKey = "blogs" | "faqs" | "settings" | "pages";
+type ContentKey = "blogs" | "faqs" | "settings" | "pages" | "opportunities";
 
 async function getContent<T = any>(key: ContentKey): Promise<T> {
-  const fallback = (loadDb() as any)[key];
+  const fallback = (loadDb() as any)[key] ?? (key === "opportunities" ? SEED_OPPORTUNITIES : undefined);
   const supabase = getSupabaseClient();
   if (!supabase) return fallback;
   const { data, error } = await supabase.from("site_data").select("value").eq("key", key).maybeSingle();
@@ -1152,13 +1153,49 @@ app.put("/api/pages/:id", requireAdmin, handle(async (req, res) => {
   res.json({ success: true, page });
 }));
 
+// OPPORTUNITIES: public sees published listings; admins see all
+const isAdminRequest = (req: express.Request) => {
+  const token = adminToken();
+  return !!token && safeEqual(req.headers.authorization || "", `Bearer ${token}`);
+};
+const byOrder = (a: Opportunity, b: Opportunity) => (a.order || 0) - (b.order || 0);
+
+app.get("/api/opportunities", handle(async (req, res) => {
+  const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
+  res.json((isAdminRequest(req) ? list : list.filter(o => o.published)).sort(byOrder));
+}));
+
+app.post("/api/opportunities", requireAdmin, handle(async (req, res) => {
+  const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
+  if (!String(req.body?.title || "").trim()) return res.status(400).json({ error: "Title is required." });
+  const item: Opportunity = { ...req.body, id: `opp-${Date.now()}`, order: Number(req.body.order) || list.length + 1 };
+  await setContent("opportunities", [...list, item]);
+  res.json({ success: true, item });
+}));
+
+app.put("/api/opportunities/:id", requireAdmin, handle(async (req, res) => {
+  const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
+  const idx = list.findIndex(o => o.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: "Opportunity not found" });
+  list[idx] = { ...list[idx], ...req.body, id: req.params.id };
+  await setContent("opportunities", list);
+  res.json({ success: true, item: list[idx] });
+}));
+
+app.delete("/api/opportunities/:id", requireAdmin, handle(async (req, res) => {
+  const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
+  await setContent("opportunities", list.filter(o => o.id !== req.params.id));
+  res.json({ success: true });
+}));
+
 // IMAGE UPLOAD (admin) -> Supabase Storage bucket "Files", returns the public URL
 app.post("/api/upload", requireAdmin, handle(async (req, res) => {
   const { name, contentType, dataBase64 } = req.body;
   const supabase = getSupabaseClient();
   if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
   if (!name || !dataBase64 || !/^image\//.test(contentType || "")) return res.status(400).json({ error: "Send an image file." });
-  const path = `blog-uploads/${Date.now()}-${String(name).replace(/[^a-zA-Z0-9._-]/g, "-")}`;
+  const folder = req.body.folder === "opportunities" ? "opportunities" : "blog-uploads";
+  const path = `${folder}/${Date.now()}-${String(name).replace(/[^a-zA-Z0-9._-]/g, "-")}`;
   const { error } = await supabase.storage.from("Files").upload(path, Buffer.from(dataBase64, "base64"), { contentType });
   if (error) throw new Error(error.message);
   res.json({ success: true, url: supabase.storage.from("Files").getPublicUrl(path).data.publicUrl });

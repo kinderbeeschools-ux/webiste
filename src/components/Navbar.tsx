@@ -62,8 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       dropdown: [
         { id: 'partnerships-cbse', label: 'CBSE School', desc: 'End-to-end K-12 school establishment' },
         { id: 'partnerships-degree', label: 'Degree College', desc: 'Higher education institution consultancy' },
-        // ponytail: no Joint Ventures page yet, links to the Partner With Us page until one exists
-        { id: 'investors', label: 'Joint Ventures' },
+        { id: 'joint-ventures', label: 'Joint Ventures', desc: 'Investment opportunities & partnerships' },
         { id: 'programs', label: 'Programs & Solutions', desc: 'All institutional academic pathways' }
       ]
     },

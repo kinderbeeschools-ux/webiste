@@ -11,6 +11,7 @@ interface SEOHeadProps {
   ogType?: 'website' | 'article';
   blogPost?: BlogPost;
   settings?: SystemSettings | null;
+  noIndex?: boolean; // keep a page out of search results
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
@@ -21,7 +22,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   ogImage,
   ogType = 'website',
   blogPost,
-  settings
+  settings,
+  noIndex = false
 }) => {
   const brandName = settings?.logoText || 'Kinderbee';
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kinderbee.in';
@@ -111,7 +113,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="title" content={finalTitle} />
       <meta name="description" content={finalDescription} />
       <meta name="keywords" content={finalKeywords} />
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
       <link rel="canonical" href={finalCanonical} />
 
       {/* Open Graph / Facebook / LinkedIn */}
