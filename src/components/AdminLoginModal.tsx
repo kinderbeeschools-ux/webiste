@@ -9,6 +9,8 @@ interface AdminLoginModalProps {
 
 export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClose, onLoginSuccess }) => {
   const [password, setPassword] = useState('');
+  const [staff, setStaff] = useState(false); // false = CEO password, true = staff / partner account
+  const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -20,10 +22,10 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
     setError('');
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(staff ? '/api/auth/user-login' : '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify(staff ? { username, password } : { password })
       });
       const data = await res.json();
       if (data.success && data.token) {
@@ -31,7 +33,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
         setPassword('');
         onClose();
       } else {
-        setError(data.error || 'Invalid administrator password.');
+        setError(data.error || (staff ? 'Incorrect username or password.' : 'Invalid administrator password.'));
       }
     } catch (err) {
       console.error(err);
@@ -68,15 +70,27 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
           </div>
         )}
 
+        <div className="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-stone-100 p-1 text-sm font-semibold" role="tablist" aria-label="Sign-in type">
+          <button type="button" role="tab" aria-selected={!staff} onClick={() => { setStaff(false); setError(''); }} className={`rounded-lg py-2 transition ${!staff ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500'}`}>CEO</button>
+          <button type="button" role="tab" aria-selected={staff} onClick={() => { setStaff(true); setError(''); }} className={`rounded-lg py-2 transition ${staff ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500'}`}>Staff / Partner</button>
+        </div>
+
         <form onSubmit={handleLogin} className="space-y-4">
+          {staff && (
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Username</label>
+              <input required autoFocus autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]" />
+            </div>
+          )}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Administrator Password</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">{staff ? 'Password' : 'Administrator Password'}</label>
             <div className="relative">
               <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
               <input
                 type="password"
                 required
-                autoFocus
+                autoFocus={!staff}
+                autoComplete={staff ? 'current-password' : 'off'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Admin password"

@@ -11,6 +11,7 @@ import { Reveal, useStagger } from '../components/Motion';
 import { TrainingHero } from '../components/TrainingHero';
 import { AiCurriculum } from '../components/AiCurriculum';
 import { ConsultationOffer } from '../components/ConsultationBooking';
+import { WomenEmpowerment } from '../components/premium/WomenEmpowerment';
 
 interface FwaPageProps {
   onOpenConsultation: (type?: string) => void;
@@ -551,6 +552,9 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
       </Reveal>
 
       <Reveal>
+      {/* Women-focused career section: who it is for, where it leads, programmes and FAQ */}
+      <WomenEmpowerment onOpenConsultation={onOpenConsultation} onNavigateToPayment={onNavigateToPayment} settings={settings} />
+
       {/* Certificate Showcase Section (Matching Reference Design) */}
       <section className="bg-[#FAF8F5] py-16 sm:py-20 px-4 sm:px-8 border-t border-stone-200/80">
         <div className="max-w-6xl mx-auto space-y-12">

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Users, CalendarCheck, Building2, Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw } from 'lucide-react';
+import { Users, Building2, Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw, LayoutDashboard, ShieldCheck, CalendarCheck, Image as ImageIcon, Landmark, ScrollText, ClipboardList, KeyRound } from 'lucide-react';
 import type { Enquiry, PaymentRecord, BlogPost, FAQItem, SystemSettings } from '../types';
 import { input, btn, btnPrimary, btnGhost, card, fmtDate, csvCell, phoneKey, STAGES, stageOf, STATUS_COLORS, useList, Toolbar, Field, type Api, type TabProps } from './admin/ui';
 import { CrmTab } from './admin/Crm';
@@ -8,6 +8,15 @@ import { ConsultationsTab } from './admin/Consultations';
 import { enquiryCategory, categoryInfo } from '../data/enquiry';
 
 const enquiryLabel = (e: Enquiry) => categoryInfo(enquiryCategory(e.type, e.fields));
+import { OverviewTab } from './admin/portal/Overview';
+import { TeamTab } from './admin/portal/Team';
+import { StaffTab } from './admin/portal/Staff';
+import { PhotosTab } from './admin/portal/Photos';
+import { FranchiseTab } from './admin/portal/Franchise';
+import { AuditTab } from './admin/portal/Audit';
+import { LeadDeskTab } from './admin/portal/LeadDesk';
+import { AccountModal } from './admin/portal/Account';
+import { ROLE_STYLE, type Me, type Perm } from './admin/portal/common';
 
 interface AdminPanelProps {
   adminToken: string;
@@ -17,21 +26,31 @@ interface AdminPanelProps {
   onUpdateSettings: (s: SystemSettings) => void;
 }
 
-type Tab = 'crm' | 'enquiries' | 'consultations' | 'payments' | 'opportunities' | 'blogs' | 'faqs' | 'settings';
+type Tab = 'overview' | 'crm' | 'leaddesk' | 'enquiries' | 'consultations' | 'payments' | 'staff' | 'photos' | 'franchise' | 'opportunities' | 'blogs' | 'faqs' | 'settings' | 'team' | 'audit';
 
-const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: 'crm', label: 'CRM', icon: Users },
-  { id: 'enquiries', label: 'Enquiries', icon: Inbox },
-  { id: 'consultations', label: 'Consultations', icon: CalendarCheck },
-  { id: 'payments', label: 'Payments', icon: CreditCard },
-  { id: 'opportunities', label: 'Opportunities', icon: Building2 },
-  { id: 'blogs', label: 'Blogs', icon: FileText },
-  { id: 'faqs', label: 'FAQs', icon: HelpCircle },
-  { id: 'settings', label: 'Settings', icon: SettingsIcon },
+// `need`: the tab is shown (and its data served) only to roles holding at least one of these permissions
+const TABS: { id: Tab; label: string; icon: React.ElementType; need: Perm[] }[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, need: ['reports'] },
+  { id: 'crm', label: 'CRM', icon: Users, need: ['leads'] },
+  { id: 'leaddesk', label: 'Lead desk', icon: ClipboardList, need: ['leads', 'leads_branch'] },
+  { id: 'enquiries', label: 'Enquiries', icon: Inbox, need: ['leads'] },
+  { id: 'consultations', label: 'Consultations', icon: CalendarCheck, need: ['leads'] },
+  { id: 'payments', label: 'Payments', icon: CreditCard, need: ['payments'] },
+  { id: 'staff', label: 'Staff & payroll', icon: CalendarCheck, need: ['attendance', 'salary'] },
+  { id: 'photos', label: 'Event photos', icon: ImageIcon, need: ['gallery'] },
+  { id: 'franchise', label: 'Branch payments', icon: Landmark, need: ['finance'] },
+  { id: 'opportunities', label: 'Opportunities', icon: Building2, need: ['opportunities'] },
+  { id: 'blogs', label: 'Blogs', icon: FileText, need: ['website'] },
+  { id: 'faqs', label: 'FAQs', icon: HelpCircle, need: ['website'] },
+  { id: 'settings', label: 'Settings', icon: SettingsIcon, need: ['website'] },
+  { id: 'team', label: 'Team & access', icon: ShieldCheck, need: ['users'] },
+  { id: 'audit', label: 'Activity log', icon: ScrollText, need: ['audit'] },
 ];
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, onVisitSite, settings, onUpdateSettings }) => {
   const [tab, setTab] = useState<Tab>('crm');
+  const [me, setMe] = useState<Me | null>(null);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
@@ -60,20 +79,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
     setTimeout(() => setNotice(''), 2500);
   };
 
+  // Who is signed in decides which tabs exist. The server enforces the same rules on every request.
+  useEffect(() => {
+    api('/api/auth/me').then((m: Me) => {
+      setMe(m);
+      const first = TABS.find(t => t.need.some(p => m.perms.includes(p)));
+      if (first) setTab(first.id);
+    }).catch(() => {});
+  }, [adminToken]);
+  const tabs = me ? TABS.filter(t => t.need.some(p => me.perms.includes(p))) : [];
+
+  if (!me) return <div className="flex min-h-screen items-center justify-center bg-stone-50 text-sm text-stone-500">{error || 'Opening your workspace…'}</div>;
+
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
       <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-          <div className="font-display text-lg font-bold">
-            Kinderbee <span className="text-[#E1007A]">Admin</span>
+          <div className="flex items-center gap-3">
+            <div className="font-display text-lg font-bold">
+              Kinderbee <span className="text-[#E1007A]">{me.role === 'ceo' ? 'Command Centre' : 'Workspace'}</span>
+            </div>
+            <span className={`hidden rounded-full px-2.5 py-1 text-[11px] font-bold sm:inline ${ROLE_STYLE[me.role]}`}>{me.roleLabel}</span>
           </div>
           <div className="flex gap-2">
+            {!me.legacy && <button onClick={() => setAccountOpen(true)} className={btnGhost} aria-label="Account and password"><KeyRound className="h-4 w-4" /> <span className="hidden sm:inline">{me.name.split(' ')[0]}</span></button>}
             <button onClick={onVisitSite} className={btnGhost}><ExternalLink className="h-4 w-4" /> <span className="hidden sm:inline">View site</span></button>
             <button onClick={onLogout} className={btnGhost}><LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log out</span></button>
           </div>
         </div>
         <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4">
-          {TABS.map(t => (
+          {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
@@ -89,6 +124,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
         {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
         {notice && <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{notice}</div>}
 
+        {tab === 'overview' && <OverviewTab api={api} flash={flash} me={me} go={t => setTab(t as Tab)} />}
+        {tab === 'leaddesk' && <LeadDeskTab api={api} flash={flash} me={me} />}
+        {tab === 'staff' && <StaffTab api={api} flash={flash} me={me} />}
+        {tab === 'photos' && <PhotosTab api={api} flash={flash} me={me} />}
+        {tab === 'franchise' && <FranchiseTab api={api} flash={flash} me={me} />}
+        {tab === 'team' && <TeamTab api={api} flash={flash} />}
+        {tab === 'audit' && <AuditTab api={api} flash={flash} />}
         {tab === 'crm' && <CrmTab api={api} flash={flash} />}
         {tab === 'enquiries' && <EnquiriesTab api={api} flash={flash} />}
         {tab === 'consultations' && <ConsultationsTab api={api} flash={flash} />}
@@ -98,6 +140,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
         {tab === 'faqs' && <FaqsTab api={api} flash={flash} />}
         {tab === 'settings' && <SettingsTab api={api} flash={flash} settings={settings} onUpdateSettings={onUpdateSettings} />}
       </main>
+      {accountOpen && <AccountModal api={api} onClose={() => setAccountOpen(false)} onNewToken={t => { localStorage.setItem('kips_admin_token', t); window.location.reload(); }} />}
     </div>
   );
 };

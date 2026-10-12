@@ -15,6 +15,7 @@ import {
   isSmtpConfigured,
   getEmailTransporter
 } from "./server/emailService.js";
+import { createPortal } from "./server/portal.js";
 
 // Initialize express app
 const app = express();
@@ -579,15 +580,14 @@ app.post("/api/enquiries", async (req, res) => {
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
 });
 
-// Admin Check: Auth Middleware
-const requireAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const token = adminToken();
-  if (token && safeEqual(req.headers.authorization || "", `Bearer ${token}`)) {
-    next();
-  } else {
-    res.status(403).json({ error: "Access denied. Admin authorization required." });
-  }
-};
+// Access control. The original ADMIN_PASSWORD login stays valid and acts as the CEO / Super Admin account;
+// staff, teacher admins, sales and franchise partners sign in with accounts the CEO creates (server/portal.ts).
+const portal = createPortal({
+  getContent, setContent, getEnquiries, listPayments,
+  legacyToken: adminToken, safeEqual,
+});
+const guard = portal.guard;
+portal.mount(app);
 
 // Wraps async admin handlers so a Supabase failure returns a readable error instead of hanging
 const handle = (fn: (req: express.Request, res: express.Response) => Promise<any>) =>
@@ -607,7 +607,7 @@ app.get("/api/email/status", (req, res) => {
 });
 
 // POST Send Test Email (for Admin verification)
-app.post("/api/email/test", requireAdmin, async (req, res) => {
+app.post("/api/email/test", guard("users"), async (req, res) => {
   const { toEmail } = req.body;
   const targetEmail = toEmail || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || "kinderbeeschools@gmail.com";
   
@@ -691,16 +691,19 @@ async function getEnquiries(): Promise<Enquiry[]> {
 }
 
 // GET all enquiries for Admin
-app.get("/api/enquiries", requireAdmin, async (req, res) => {
+app.get("/api/enquiries", guard("leads", "leads_branch"), async (req, res) => {
   try {
-    res.json(await getEnquiries());
+    const ctx = res.locals.auth;
+    const all = await getEnquiries();
+    // Branch-level users (no full lead access) only see leads the head office tagged to their branch
+    res.json(ctx.perms.includes("leads") ? all : all.filter((e: any) => ctx.scope && ctx.scope.includes(e.fields?.branchId)));
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // UPDATE enquiry status/notes
-app.put("/api/enquiries/:id", requireAdmin, async (req, res) => {
+app.put("/api/enquiries/:id", guard("leads"), async (req, res) => {
   const { id } = req.params;
   const { status, notes, nextFollowUp, followUpType, lostReason, fields } = req.body;
   if (status === "lost" && !lostReason) return res.status(400).json({ error: "Choose a reason for marking this lead as lost." });
@@ -755,7 +758,7 @@ app.put("/api/enquiries/:id", requireAdmin, async (req, res) => {
 });
 
 // Activity timeline for one contact (?key=<mobile or email>), newest first
-app.get("/api/crm/activity", requireAdmin, async (req, res) => {
+app.get("/api/crm/activity", guard("leads"), async (req, res) => {
   const supabase = getSupabaseClient();
   const key = String(req.query.key || "");
   if (!supabase || !key) return res.json([]);
@@ -765,7 +768,7 @@ app.get("/api/crm/activity", requireAdmin, async (req, res) => {
 });
 
 // Manual activity from the admin panel: calls, WhatsApp, email, notes
-app.post("/api/crm/activity", requireAdmin, async (req, res) => {
+app.post("/api/crm/activity", guard("leads"), async (req, res) => {
   const { leadKey, enquiryId, type, detail } = req.body || {};
   if (!leadKey || !["call", "whatsapp", "email", "note"].includes(type) || !String(detail || "").trim()) {
     return res.status(400).json({ error: "leadKey, a valid type and detail are required" });
@@ -783,7 +786,7 @@ app.post("/api/crm/activity", requireAdmin, async (req, res) => {
 });
 
 // Lead added by staff (walk-in, phone call, WhatsApp, referral...)
-app.post("/api/crm/leads", requireAdmin, async (req, res) => {
+app.post("/api/crm/leads", guard("leads"), async (req, res) => {
   const b = req.body || {};
   const fields = (b.fields && typeof b.fields === "object") ? b.fields : {};
   const name = String(fields.name || "").trim();
@@ -827,7 +830,7 @@ const studentPatch = (body: any) => {
   return out;
 };
 
-app.get("/api/crm/students", requireAdmin, handle(async (req, res) => {
+app.get("/api/crm/students", guard("leads"), handle(async (req, res) => {
   const supabase = getSupabaseClient();
   if (!supabase) return res.json([]);
   const { data, error } = await supabase.from("students").select("*").order("created_at", { ascending: false });
@@ -836,7 +839,7 @@ app.get("/api/crm/students", requireAdmin, handle(async (req, res) => {
 }));
 
 // Admit a child: generates the next KB-<year>-<number> ID and moves the lead to Admission
-app.post("/api/crm/students", requireAdmin, handle(async (req, res) => {
+app.post("/api/crm/students", guard("leads"), handle(async (req, res) => {
   const b = req.body || {};
   if (!String(b.childName || "").trim() || !String(b.parentName || "").trim() || String(b.parentPhone || "").replace(/\D/g, "").length < 10) {
     return res.status(400).json({ error: "Child name, parent name and a 10-digit parent phone are required." });
@@ -868,7 +871,7 @@ app.post("/api/crm/students", requireAdmin, handle(async (req, res) => {
   res.json({ success: true, student: studentFromRow(created) });
 }));
 
-app.put("/api/crm/students/:id", requireAdmin, handle(async (req, res) => {
+app.put("/api/crm/students/:id", guard("leads"), handle(async (req, res) => {
   const supabase = getSupabaseClient();
   if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
   const { data, error } = await supabase.from("students").update(studentPatch(req.body || {})).eq("id", req.params.id).select();
@@ -878,7 +881,7 @@ app.put("/api/crm/students/:id", requireAdmin, handle(async (req, res) => {
 }));
 
 // DELETE an enquiry
-app.delete("/api/enquiries/:id", requireAdmin, async (req, res) => {
+app.delete("/api/enquiries/:id", guard("leads_delete"), async (req, res) => {
   const { id } = req.params;
   const supabase = getSupabaseClient();
   if (supabase) {
@@ -1196,9 +1199,9 @@ app.post("/api/consultations/:ref/payment", async (req, res) => {
 });
 
 // Admin: list and update bookings
-app.get("/api/consultations", requireAdmin, handle(async (req, res) => res.json(await findConsultations())));
+app.get("/api/consultations", guard("leads"), handle(async (req, res) => res.json(await findConsultations())));
 
-app.put("/api/consultations/:ref", requireAdmin, handle(async (req, res) => {
+app.put("/api/consultations/:ref", guard("leads"), handle(async (req, res) => {
   const [c] = await findConsultations({ ref: req.params.ref });
   if (!c) return res.status(404).json({ error: "Booking not found." });
   const { status, scheduledAt, adminNotes } = req.body || {};
@@ -1224,7 +1227,7 @@ app.put("/api/consultations/:ref", requireAdmin, handle(async (req, res) => {
 
 // Content (blogs, faqs, settings, pages) lives in Supabase table `site_data` (key text primary key, value jsonb)
 // so admin edits persist on Vercel; db.json is only the seed/fallback when Supabase isn't configured.
-type ContentKey = "blogs" | "faqs" | "settings" | "pages" | "opportunities" | "access";
+type ContentKey = string; // blogs, faqs, settings, pages, opportunities, access + the management-platform collections (users, staff, attendance...)
 
 async function getContent<T = any>(key: ContentKey): Promise<T> {
   const fallback = (loadDb() as any)[key] ?? (key === "opportunities" ? SEED_OPPORTUNITIES : undefined);
@@ -1267,8 +1270,8 @@ async function sendCourseAccess(p: { email?: string; name: string; programme: st
   return r.success ? `Access email sent to ${p.email}.` : `Access email not sent: ${r.reason}.`;
 }
 
-app.get("/api/course-access", requireAdmin, handle(async (req, res) => res.json(await getAccessMessages())));
-app.put("/api/course-access", requireAdmin, handle(async (req, res) => {
+app.get("/api/course-access", guard("payments"), handle(async (req, res) => res.json(await getAccessMessages())));
+app.put("/api/course-access", guard("payments"), handle(async (req, res) => {
   const body = req.body && typeof req.body === "object" ? req.body : {};
   const clean = Object.fromEntries(Object.entries(body).filter(([k, v]) => typeof v === "string" && k.length < 200).map(([k, v]) => [k, (v as string).slice(0, 4000)]));
   await setContent("access", clean);
@@ -1276,12 +1279,12 @@ app.put("/api/course-access", requireAdmin, handle(async (req, res) => {
 }));
 
 // PAYMENTS (admin)
-app.get("/api/payments", requireAdmin, handle(async (req, res) => {
+async function listPayments(): Promise<PaymentRecord[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return res.json(loadDb().payments || []);
+  if (!supabase) return loadDb().payments || [];
   const { data, error } = await supabase.from("payments").select("*").order("created_at", { ascending: false });
   if (error) throw new Error(`Supabase payments: ${error.message}`);
-  res.json((data || []).map((r: any) => ({
+  return (data || []).map((r: any) => ({
     id: r.id,
     applicantName: r.applicant_name,
     admissionNumber: r.admission_number || "",
@@ -1295,10 +1298,12 @@ app.get("/api/payments", requireAdmin, handle(async (req, res) => {
     verifiedAt: r.verified_at || "",
     status: r.status,
     createdAt: r.created_at,
-  })));
-}));
+  }));
+}
 
-app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
+app.get("/api/payments", guard("payments"), handle(async (req, res) => res.json(await listPayments())));
+
+app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
   const { id } = req.params;
   const { status, notes } = req.body;
   const supabase = getSupabaseClient();
@@ -1357,14 +1362,14 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
 function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, existing?: any) => any) {
   app.get(`/api/${key}`, handle(async (req, res) => res.json(await getContent(key) || [])));
 
-  app.post(`/api/${key}`, requireAdmin, handle(async (req, res) => {
+  app.post(`/api/${key}`, guard("website"), handle(async (req, res) => {
     const list = await getContent<any[]>(key) || [];
     const item = prepare({ ...req.body, id: `${prefix}-${Date.now()}` });
     await setContent(key, key === "blogs" ? [item, ...list] : [...list, item]);
     res.json({ success: true, item });
   }));
 
-  app.put(`/api/${key}/:id`, requireAdmin, handle(async (req, res) => {
+  app.put(`/api/${key}/:id`, guard("website"), handle(async (req, res) => {
     const list = await getContent<any[]>(key) || [];
     const idx = list.findIndex(i => i.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: "Not found" });
@@ -1373,7 +1378,7 @@ function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, 
     res.json({ success: true, item: list[idx] });
   }));
 
-  app.delete(`/api/${key}/:id`, requireAdmin, handle(async (req, res) => {
+  app.delete(`/api/${key}/:id`, guard("website"), handle(async (req, res) => {
     const list = await getContent<any[]>(key) || [];
     await setContent(key, list.filter(i => i.id !== req.params.id));
     res.json({ success: true });
@@ -1406,8 +1411,8 @@ const saveSettings = handle(async (req, res) => {
   await setContent("settings", settings);
   res.json({ success: true, settings });
 });
-app.post("/api/settings", requireAdmin, saveSettings);
-app.put("/api/settings", requireAdmin, saveSettings);
+app.post("/api/settings", guard("website"), saveSettings);
+app.put("/api/settings", guard("website"), saveSettings);
 
 // PAGES
 app.get("/api/pages", handle(async (req, res) => res.json(await getContent("pages") || [])));
@@ -1417,7 +1422,7 @@ app.get("/api/pages/:id", handle(async (req, res) => {
   page ? res.json(page) : res.status(404).json({ error: "Page configuration not found" });
 }));
 
-app.put("/api/pages/:id", requireAdmin, handle(async (req, res) => {
+app.put("/api/pages/:id", guard("website"), handle(async (req, res) => {
   const pages = await getContent<any[]>("pages") || [];
   const idx = pages.findIndex(p => p.id === req.params.id);
   const page = { ...(idx === -1 ? { id: req.params.id } : pages[idx]), ...req.body };
@@ -1427,18 +1432,18 @@ app.put("/api/pages/:id", requireAdmin, handle(async (req, res) => {
 }));
 
 // OPPORTUNITIES: public sees published listings; admins see all
-const isAdminRequest = (req: express.Request) => {
-  const token = adminToken();
-  return !!token && safeEqual(req.headers.authorization || "", `Bearer ${token}`);
+const isAdminRequest = async (req: express.Request) => {
+  const ctx = await portal.authenticate(req);
+  return !!ctx && ctx.perms.includes("opportunities");
 };
 const byOrder = (a: Opportunity, b: Opportunity) => (a.order || 0) - (b.order || 0);
 
 app.get("/api/opportunities", handle(async (req, res) => {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
-  res.json((isAdminRequest(req) ? list : list.filter(o => o.published)).sort(byOrder));
+  res.json(((await isAdminRequest(req)) ? list : list.filter(o => o.published)).sort(byOrder));
 }));
 
-app.post("/api/opportunities", requireAdmin, handle(async (req, res) => {
+app.post("/api/opportunities", guard("opportunities"), handle(async (req, res) => {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
   if (!String(req.body?.title || "").trim()) return res.status(400).json({ error: "Title is required." });
   const item: Opportunity = { ...req.body, id: `opp-${Date.now()}`, order: Number(req.body.order) || list.length + 1 };
@@ -1446,7 +1451,7 @@ app.post("/api/opportunities", requireAdmin, handle(async (req, res) => {
   res.json({ success: true, item });
 }));
 
-app.put("/api/opportunities/:id", requireAdmin, handle(async (req, res) => {
+app.put("/api/opportunities/:id", guard("opportunities"), handle(async (req, res) => {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
   const idx = list.findIndex(o => o.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: "Opportunity not found" });
@@ -1455,19 +1460,19 @@ app.put("/api/opportunities/:id", requireAdmin, handle(async (req, res) => {
   res.json({ success: true, item: list[idx] });
 }));
 
-app.delete("/api/opportunities/:id", requireAdmin, handle(async (req, res) => {
+app.delete("/api/opportunities/:id", guard("opportunities"), handle(async (req, res) => {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
   await setContent("opportunities", list.filter(o => o.id !== req.params.id));
   res.json({ success: true });
 }));
 
 // IMAGE UPLOAD (admin) -> Supabase Storage bucket "Files", returns the public URL
-app.post("/api/upload", requireAdmin, handle(async (req, res) => {
+app.post("/api/upload", guard("website", "gallery", "opportunities"), handle(async (req, res) => {
   const { name, contentType, dataBase64 } = req.body;
   const supabase = getSupabaseClient();
   if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
   if (!name || !dataBase64 || !/^image\//.test(contentType || "")) return res.status(400).json({ error: "Send an image file." });
-  const folder = req.body.folder === "opportunities" ? "opportunities" : "blog-uploads";
+  const folder = req.body.folder === "opportunities" ? "opportunities" : req.body.folder === "gallery" ? "gallery" : "blog-uploads";
   const path = `${folder}/${Date.now()}-${String(name).replace(/[^a-zA-Z0-9._-]/g, "-")}`;
   const { error } = await supabase.storage.from("Files").upload(path, Buffer.from(dataBase64, "base64"), { contentType });
   if (error) throw new Error(error.message);
@@ -1475,7 +1480,7 @@ app.post("/api/upload", requireAdmin, handle(async (req, res) => {
 }));
 
 // Draft Professional AI Email response using Gemini
-app.post("/api/ai/suggest-reply", requireAdmin, async (req, res) => {
+app.post("/api/ai/suggest-reply", guard("leads"), async (req, res) => {
   const { enquiryId } = req.body;
   if (!enquiryId) {
     return res.status(400).json({ error: "Missing enquiryId" });

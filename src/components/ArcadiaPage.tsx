@@ -95,7 +95,7 @@ const PROCESS = [
 
 const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-export const ArcadiaPage: React.FC<{ onRequestBrief: () => void }> = ({ onRequestBrief }) => (
+export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.ReactNode }> = ({ onRequestBrief, extra }) => (
   <div className="overflow-x-clip bg-[#FBF9F4] text-[#0D2D2B] animate-fadeIn">
     {/* ================= HERO ================= */}
     <section className="relative grid grid-cols-1 border-b border-[#e5dccb] lg:grid-cols-[1.02fr_1.25fr] lg:min-h-[650px]">
@@ -278,6 +278,8 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void }> = ({ onReques
         </div>
       </div>
     </section>
+
+    {extra}
 
     {/* ================= CTA ================= */}
     <section id="arcadia-contact" className="px-5 pb-20">
