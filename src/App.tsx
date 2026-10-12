@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ConsultationBooking } from './components/ConsultationBooking';
+import { CoursePayment, openCoursePayment } from './components/CoursePayment';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { StickyContactWidget } from './components/StickyContactWidget';
 import { HomePage } from './pages/HomePage';
@@ -158,10 +159,8 @@ export function App() {
     programme = 'Advanced Diploma in Early Childhood Care & Education (ECCE)',
     amount = '4999'
   ) => {
-    setPaymentProgramme(programme);
-    setPaymentAmount(amount);
-    setCurrentTab('payments');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Course fees use the simple popup (details, pay, done); the Payments page stays for other fees
+    openCoursePayment(programme, amount);
   };
 
   const handleLoginSuccess = (token: string) => {
@@ -322,6 +321,7 @@ export function App() {
       />
 
       <ConsultationBooking settings={settings} />
+      <CoursePayment settings={settings} />
 
       <AdminLoginModal
         isOpen={adminLoginOpen}

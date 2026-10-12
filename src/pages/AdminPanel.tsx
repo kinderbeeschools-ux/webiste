@@ -217,8 +217,47 @@ const PAY_FILTERS: { id: PayFilter; label: string }[] = [
   { id: 'all', label: 'All' },
 ];
 
+// Courses sold through the website's "Proceed to Payment" buttons (names must match FwaPage)
+const ACCESS_COURSES = [
+  'Advanced Diploma in Early Childhood Care & Education (ECCE)',
+  'Diploma in Play school Teacher Training',
+  'Certificate in Nordic inspired Preschool Teaching',
+  'Foundational Stage Curriculum Design',
+];
+
+// Message emailed automatically when a course payment is verified (class link, login, WhatsApp group…)
+const CourseAccessEditor: React.FC<TabProps> = ({ api, flash }) => {
+  const [msgs, setMsgs] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { api('/api/course-access').then(m => setMsgs(m || {})).catch(() => {}); }, []);
+  const save = async () => {
+    setBusy(true);
+    try { await api('/api/course-access', { method: 'PUT', body: JSON.stringify(msgs) }); flash('Access messages saved'); } finally { setBusy(false); }
+  };
+  const missing = ACCESS_COURSES.filter(c => !msgs[c] && !msgs.default).length;
+  return (
+    <details className={card} open={missing > 0 || undefined}>
+      <summary className="cursor-pointer select-none font-semibold">
+        Course access emails {missing > 0 ? <span className="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{missing} course(s) not set</span> : <span className="ml-1 text-xs font-normal text-stone-500">sent automatically when you verify a payment</span>}
+      </summary>
+      <div className="mt-3 space-y-3">
+        <p className="text-xs text-stone-500">When you click <strong>Verify</strong>, the student is emailed a payment confirmation plus the message below for their course: a class link, login details, WhatsApp group link or joining instructions. Links become clickable. Only admins can see these.</p>
+        {[...ACCESS_COURSES, 'default'].map(c => (
+          <Field key={c} label={c === 'default' ? 'Default (any other course)' : c}>
+            <textarea className={input} rows={2} value={msgs[c] || ''} onChange={e => setMsgs(m => ({ ...m, [c]: e.target.value }))}
+              placeholder={c === 'default' ? 'Used when a course has no message of its own' : 'e.g. Join your batch WhatsApp group: https://chat.whatsapp.com/… Classes start every Monday 7 PM.'} />
+          </Field>
+        ))}
+        <button onClick={save} disabled={busy} className={btnPrimary}>{busy ? 'Saving…' : 'Save access messages'}</button>
+      </div>
+    </details>
+  );
+};
+
 const PaymentsTab: React.FC<TabProps> = ({ api, flash }) => {
   const { items, setItems, loading, reload } = useList<PaymentRecord>(api, '/api/payments');
+  // What happened to the access email after each verification, shown on the payment card
+  const [accessNote, setAccessNote] = useState<Record<string, string>>({});
   // Enquiries are loaded too so each payment can be matched to its lead (CRM groundwork)
   const { items: leads } = useList<Enquiry>(api, '/api/enquiries');
   const [filter, setFilter] = useState<PayFilter>('pending_verification');
@@ -250,7 +289,8 @@ const PaymentsTab: React.FC<TabProps> = ({ api, flash }) => {
 
   const setStatus = async (p: PaymentRecord, status: PaymentRecord['status']) => {
     if (status === 'rejected' && !confirm(`Reject payment ${p.upiRefNumber} from ${p.applicantName}?`)) return;
-    await api(`/api/payments/${p.id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    const r = await api(`/api/payments/${p.id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    if (r.access) setAccessNote(n => ({ ...n, [p.id]: r.access }));
     setItems(list => list.map(x => (x.id === p.id ? { ...x, status, verifiedAt: status === 'pending_verification' ? '' : new Date().toISOString() } : x)));
     flash(status === 'verified' ? 'Payment verified' : status === 'rejected' ? 'Payment rejected' : 'Moved back to pending');
   };
@@ -284,8 +324,10 @@ const PaymentsTab: React.FC<TabProps> = ({ api, flash }) => {
       </div>
       <input className={input} placeholder="Search name, mobile, email, UTR, programme…" value={query} onChange={e => setQuery(e.target.value)} />
 
+      <CourseAccessEditor api={api} flash={flash} />
+
       <p className="text-xs text-stone-500">
-        Check each UTR against the bank / UPI statement for the same amount before marking it verified.
+        Check each UTR against the bank / UPI statement for the same amount before marking it verified. Verifying a course payment emails the student their access automatically.
       </p>
 
       {loading ? <p className="text-sm text-stone-500">Loading…</p> : !shown.length ? <p className="text-sm text-stone-500">No payments here.</p> : (
@@ -325,6 +367,10 @@ const PaymentsTab: React.FC<TabProps> = ({ api, flash }) => {
                   )}
                   {p.verifiedAt && p.status !== 'pending_verification' && <span className="ml-2 text-stone-400">{p.status === 'verified' ? 'Verified' : 'Rejected'} {fmtDate(p.verifiedAt)}</span>}
                 </div>
+
+                {accessNote[p.id] && (
+                  <p className={`rounded-lg px-3 py-2 text-xs font-semibold ${/^Access email sent/.test(accessNote[p.id]) ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{accessNote[p.id]}</p>
+                )}
 
                 <div className="flex flex-wrap gap-2">
                   {p.status !== 'verified' && (

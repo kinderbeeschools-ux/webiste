@@ -11,6 +11,7 @@ import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSU
 import {
   sendApplicantConfirmationEmail,
   sendAdminLeadAlertEmail,
+  sendAccessEmail,
   isSmtpConfigured,
   getEmailTransporter
 } from "./server/emailService.js";
@@ -1223,7 +1224,7 @@ app.put("/api/consultations/:ref", requireAdmin, handle(async (req, res) => {
 
 // Content (blogs, faqs, settings, pages) lives in Supabase table `site_data` (key text primary key, value jsonb)
 // so admin edits persist on Vercel; db.json is only the seed/fallback when Supabase isn't configured.
-type ContentKey = "blogs" | "faqs" | "settings" | "pages" | "opportunities";
+type ContentKey = "blogs" | "faqs" | "settings" | "pages" | "opportunities" | "access";
 
 async function getContent<T = any>(key: ContentKey): Promise<T> {
   const fallback = (loadDb() as any)[key] ?? (key === "opportunities" ? SEED_OPPORTUNITIES : undefined);
@@ -1248,6 +1249,31 @@ async function setContent(key: ContentKey, value: any): Promise<void> {
   const { error } = await supabase.from("site_data").upsert({ key, value, updated_at: new Date().toISOString() });
   if (error) throw new Error(`Could not save ${key}: ${error.message}`);
 }
+
+// Course access details emailed when a course payment is verified. Stored as site_data "access":
+// { [programme]: message, default: message }. Admin-only: these can hold private class links.
+async function getAccessMessages(): Promise<Record<string, string>> {
+  return (await getContent<Record<string, string>>("access")) || {};
+}
+
+// Returns a short note for the admin about what happened
+async function sendCourseAccess(p: { email?: string; name: string; programme: string; amount: string; utr: string }): Promise<string> {
+  if (!p.email) return "No email on this payment, so no access email was sent.";
+  const messages = await getAccessMessages();
+  const access = messages[p.programme] || messages.default;
+  if (!access) return "No access message is set for this course, so no email was sent.";
+  const r = await sendAccessEmail({ to: p.email, name: p.name, programme: p.programme, amount: String(p.amount), utr: p.utr, access });
+  if (r.success) await logActivity({ leadKey: leadKeyOf("", p.email), type: "payment", detail: `Access email sent for ${p.programme}` });
+  return r.success ? `Access email sent to ${p.email}.` : `Access email not sent: ${r.reason}.`;
+}
+
+app.get("/api/course-access", requireAdmin, handle(async (req, res) => res.json(await getAccessMessages())));
+app.put("/api/course-access", requireAdmin, handle(async (req, res) => {
+  const body = req.body && typeof req.body === "object" ? req.body : {};
+  const clean = Object.fromEntries(Object.entries(body).filter(([k, v]) => typeof v === "string" && k.length < 200).map(([k, v]) => [k, (v as string).slice(0, 4000)]));
+  await setContent("access", clean);
+  res.json({ success: true });
+}));
 
 // PAYMENTS (admin)
 app.get("/api/payments", requireAdmin, handle(async (req, res) => {
@@ -1289,6 +1315,10 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
     const consultRef = String(data[0].admission_number || "");
     const isConsultation = consultRef.startsWith("KBC-");
     if (status && isConsultation) await syncConsultationPayment(consultRef, id, status);
+    const p0 = data[0];
+    const access = status === "verified" && !isConsultation
+      ? await sendCourseAccess({ email: p0.payer_email, name: p0.applicant_name, programme: p0.programme, amount: p0.amount, utr: p0.upi_ref })
+      : undefined;
 
     if (status) {
       const p = data[0];
@@ -1307,7 +1337,7 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
         }
       }
     }
-    return res.json({ success: true });
+    return res.json({ success: true, access });
   }
   const db = loadDb();
   const p = db.payments.find(p => p.id === id);
@@ -1315,8 +1345,12 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
   if (status) p.status = status;
   if (notes !== undefined) p.notes = notes;
   saveDb(db);
-  if (status && String(p.admissionNumber || "").startsWith("KBC-")) await syncConsultationPayment(p.admissionNumber!, id, status);
-  res.json({ success: true });
+  const isConsult = String(p.admissionNumber || "").startsWith("KBC-");
+  if (status && isConsult) await syncConsultationPayment(p.admissionNumber!, id, status);
+  const access = status === "verified" && !isConsult
+    ? await sendCourseAccess({ email: p.payerEmail, name: p.applicantName, programme: p.programme, amount: String(p.amount), utr: p.upiRefNumber })
+    : undefined;
+  res.json({ success: true, access });
 }));
 
 // Generic list CRUD for blogs and faqs

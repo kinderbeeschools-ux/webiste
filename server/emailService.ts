@@ -327,3 +327,47 @@ export async function sendAdminLeadAlertEmail(data: EnquiryEmailData): Promise<{
     return { success: false, reason: err.message };
   }
 }
+
+const escapeHtml = (v: string) => v.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
+
+/**
+ * Sent automatically when the admin verifies a course payment: confirms the payment and gives the
+ * access details the admin set in Admin → Payments → Course access.
+ */
+export async function sendAccessEmail(d: { to: string; name: string; programme: string; amount: string; utr: string; access: string }): Promise<{ success: boolean; reason?: string }> {
+  const mailer = getEmailTransporter();
+  if (!mailer) return { success: false, reason: "email (SMTP) is not configured" };
+  const from = process.env.SMTP_FROM || `"Kinderbee" <${process.env.SMTP_USER || "kinderbeeschools@gmail.com"}>`;
+  // Escape everything, then turn line breaks and links in the access message into HTML
+  const accessHtml = escapeHtml(d.access)
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:#E1007A;font-weight:700;">$1</a>')
+    .replace(/\n/g, "<br>");
+  const html = `<!DOCTYPE html><html><body style="margin:0;background:#faf9f6;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1c1917;line-height:1.55;">
+  <div style="max-width:560px;margin:24px auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e7e5e4;">
+    <div style="background:linear-gradient(135deg,#E1007A,#be123c);padding:22px 24px;color:#fff;">
+      <div style="font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.9;">Payment verified ✓</div>
+      <h1 style="margin:6px 0 0;font-size:20px;">Welcome, ${escapeHtml(d.name.split(" ")[0])}!</h1>
+    </div>
+    <div style="padding:24px;">
+      <p style="margin:0 0 14px;">We have verified your payment of <strong>₹${escapeHtml(d.amount)}</strong> for <strong>${escapeHtml(d.programme)}</strong> (UTR ${escapeHtml(d.utr)}).</p>
+      <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;padding:16px;margin:0 0 16px;">
+        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#E1007A;margin-bottom:6px;">Your access</div>
+        <div>${accessHtml}</div>
+      </div>
+      <p style="margin:0;font-size:13px;color:#57534e;">Questions? Reply to this email or WhatsApp us on +91 81223 44040.</p>
+    </div>
+  </div></body></html>`;
+  try {
+    await mailer.sendMail({
+      from,
+      to: d.to,
+      subject: `Payment verified: your access to ${d.programme}`,
+      html,
+      text: `Hi ${d.name},\n\nWe have verified your payment of Rs.${d.amount} for ${d.programme} (UTR ${d.utr}).\n\nYour access:\n${d.access}\n\nQuestions? WhatsApp +91 81223 44040.`,
+    });
+    return { success: true };
+  } catch (err: any) {
+    console.error("[EmailService] Access email failed:", err);
+    return { success: false, reason: err?.message || "send failed" };
+  }
+}
