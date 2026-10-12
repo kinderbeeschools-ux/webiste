@@ -3,9 +3,11 @@ import { motion } from 'motion/react';
 import {
   Wallet, BadgePercent, Building2, GraduationCap, Users, Megaphone, ShieldCheck, Scale,
   Phone, MessageCircle, Download, ArrowRight, Sparkles, BadgeCheck,
+  PhoneCall, MapPin, FileSignature, PencilRuler, Rocket, MonitorCheck, Award,
 } from 'lucide-react';
 import { SystemSettings } from '../../types';
 import { Accordion, Eyebrow, Palette, ReadinessCheck, SERIF, inView, rise, stagger } from './kit';
+import { FloorPlanVisual, KeepAllVisual, PhotoStrip, RangeVisual, VisualTimeline } from './visuals';
 
 // New section for the Preschool Franchise page: written from the point of view of a serious buyer.
 // Every figure below is already published elsewhere on the page; nothing here promises a return.
@@ -57,14 +59,22 @@ const QUESTIONS = [
 ];
 
 const JOURNEY = [
-  { t: 'Enquiry & discovery call', d: 'Share your city, budget and plans. We explain the model and answer every question.' },
-  { t: 'Location & space review', d: 'Check your property against the ground-floor, 1,500 – 3,500 sq. ft. guideline with outdoor play space.' },
-  { t: 'Partnership agreement', d: 'Terms are set out in a written agreement. Read it closely and take independent advice.' },
-  { t: 'Design & set-up', d: 'School design blueprint, interiors, safety flooring, furniture and activity kits.' },
-  { t: 'Team & training', d: 'Staff recruitment guides and training for your teachers and staff before launch.' },
-  { t: 'Launch & admissions', d: 'Micro-website, admissions playbook and your first marketing campaign.' },
-  { t: 'Run it on the ERP', d: 'Attendance, fees and records managed in one place.' },
-  { t: 'Audits & mentorship', d: 'Regular quality reviews and an advisor alongside you as you grow.' },
+  { icon: PhoneCall, t: 'Enquiry & discovery call', d: 'Share your city, budget and plans. We explain the model and answer every question.' },
+  { icon: MapPin, t: 'Location & space review', d: 'Check your property against the ground-floor, 1,500 – 3,500 sq. ft. guideline with outdoor play space.' },
+  { icon: FileSignature, t: 'Partnership agreement', d: 'Terms are set out in a written agreement. Read it closely and take independent advice.' },
+  { icon: PencilRuler, t: 'Design & set-up', d: 'School design blueprint, interiors, safety flooring, furniture and activity kits.' },
+  { icon: Users, t: 'Team & training', d: 'Staff recruitment guides and training for your teachers and staff before launch.' },
+  { icon: Rocket, t: 'Launch & admissions', d: 'Micro-website, admissions playbook and your first marketing campaign.' },
+  { icon: MonitorCheck, t: 'Run it on the ERP', d: 'Attendance, fees and records managed in one place.' },
+  { icon: Award, t: 'Audits & mentorship', d: 'Regular quality reviews and an advisor alongside you as you grow.' },
+];
+
+// Kinderbee's own photographs (the spaces shown on the home page)
+const SPACES = [
+  { src: '/visuals/nordic-classroom.webp', alt: 'Nordic-style Kinderbee classroom', caption: 'Nordic classroom' },
+  { src: '/visuals/discovery-lab.webp', alt: 'Children exploring in a Kinderbee discovery lab', caption: 'Discovery lab' },
+  { src: '/visuals/reading-nook.webp', alt: 'Cosy Kinderbee reading nook', caption: 'Reading nook' },
+  { src: '/visuals/art-studio.webp', alt: 'Kinderbee sensory art studio', caption: 'Sensory art studio' },
 ];
 
 const READINESS = [
@@ -120,6 +130,16 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
           </motion.p>
         </motion.div>
 
+        {/* ---------- The three big questions, drawn ---------- */}
+        <div className="relative mt-12 grid gap-4 md:grid-cols-3">
+          <RangeVisual accent={P.accent} ink="#fff" muted={P.muted} card={P.card} line={P.line} min="₹15L" max="₹30L"
+            title="Estimated capital investment" caption="Interiors, safety flooring, furniture, activity kits and your launch marketing." />
+          <KeepAllVisual accent={P.accent} ink="#fff" muted={P.muted} card={P.card} line={P.line}
+            title="Zero royalty" caption="₹0 per month. You keep 100% of your tuition revenue, as set out in your agreement." />
+          <FloorPlanVisual accent={P.accent} ink="#fff" muted={P.muted} card={P.card} line={P.line} area="1,500 – 3,500 sq ft"
+            title="The space you need" caption="Ground-floor villa or commercial property with outdoor play. Illustrative layout." />
+        </div>
+
         {/* ---------- Eight questions ---------- */}
         <motion.div className="relative mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.07)} {...inView}>
           {QUESTIONS.map(({ icon: Icon, q, a, tag }) => (
@@ -141,6 +161,15 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
           ))}
         </motion.div>
 
+        {/* ---------- What you are building ---------- */}
+        <div className="relative mt-20">
+          <motion.div className="mx-auto mb-8 max-w-2xl text-center" variants={stagger(0.1)} {...inView}>
+            <motion.div variants={rise}><Eyebrow color={P.accent} center>Inside a Kinderbee preschool</Eyebrow></motion.div>
+            <motion.h2 variants={rise} style={SERIF} className="text-3xl leading-tight text-white sm:text-[2.6rem]">Spaces parents remember.</motion.h2>
+          </motion.div>
+          <PhotoStrip items={SPACES} />
+        </div>
+
         {/* ---------- Journey ---------- */}
         <div className="relative mt-20">
           <motion.div className="mx-auto max-w-2xl text-center" variants={stagger(0.1)} {...inView}>
@@ -149,18 +178,9 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
             <motion.p variants={rise} className="mt-3 text-sm sm:text-base" style={{ color: P.muted }}>Eight clear steps, so you always know what comes next.</motion.p>
           </motion.div>
 
-          <motion.ol className="relative mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.08)} {...inView}>
-            {JOURNEY.map((s, i) => (
-              <motion.li key={s.t} variants={rise} className="relative overflow-hidden rounded-2xl border p-5" style={{ background: P.card, borderColor: P.line }}>
-                <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${P.accent}, transparent)` }} />
-                <span style={SERIF} className="block text-5xl italic leading-none" >
-                  <span style={{ color: P.accent, opacity: 0.9 }}>{String(i + 1).padStart(2, '0')}</span>
-                </span>
-                <h3 className="mt-3 text-[15px] font-bold text-white">{s.t}</h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: P.muted }}>{s.d}</p>
-              </motion.li>
-            ))}
-          </motion.ol>
+          <div className="relative mt-10">
+            <VisualTimeline steps={JOURNEY} accent={P.accent} ink="#fff" muted={P.muted} line={P.line} card="rgba(255,255,255,0.06)" dark />
+          </div>
         </div>
 
         {/* ---------- Readiness check ---------- */}
@@ -209,14 +229,18 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
 
         {/* ---------- Closing CTA ---------- */}
         <motion.div
-          className="relative mt-20 overflow-hidden rounded-[1.75rem] p-7 text-center sm:p-12"
+          className="relative mt-20 overflow-hidden rounded-[1.75rem] p-5 text-center sm:p-10 lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:text-left"
           style={{ background: `linear-gradient(135deg, ${P.accent}, #D9A53A)` }}
           variants={rise} {...inView}
         >
           <Sparkles aria-hidden="true" className="kb-spin-slow absolute right-6 top-6 h-8 w-8 text-[#17050F]/25" />
-          <h2 style={SERIF} className="mx-auto max-w-2xl text-3xl leading-tight text-[#17050F] sm:text-4xl">Ready to see if Kinderbee is right for you?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-[#3b2410] sm:text-base">Talk to the team, ask the hard questions, and take the brochure home. No pressure, just clarity.</p>
-          <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <div className="mb-7 overflow-hidden rounded-2xl shadow-2xl ring-4 ring-white/40 lg:mb-0">
+            <img src="/visuals/kips-partner-school.webp" alt="Children playing outside a Kinderbee partner preschool" loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover transition-transform duration-[1.4s] hover:scale-105" />
+          </div>
+          <div>
+          <h2 style={SERIF} className="mx-auto max-w-2xl text-3xl leading-tight text-[#17050F] sm:text-4xl lg:mx-0">Ready to see if Kinderbee is right for you?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-[#3b2410] sm:text-base lg:mx-0">Talk to the team, ask the hard questions, and take the brochure home. No pressure, just clarity.</p>
+          <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:justify-start">
             <button onClick={onOpenConsultation} className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#17050F] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-xl">
               Book Free Consultation <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
@@ -234,6 +258,7 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
           <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#17050F] underline-offset-4 hover:underline">
             <Phone className="h-4 w-4" /> {phone}
           </a>
+          </div>
         </motion.div>
       </div>
     </section>

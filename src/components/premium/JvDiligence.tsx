@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Hammer, Building, Handshake, ArrowRight, ShieldCheck, FileSignature, Ban } from 'lucide-react';
 import { Accordion, Eyebrow, Palette, SERIF, inView, rise, stagger } from './kit';
+import { ChecklistVisual, PhotoMosaic } from './visuals';
 
 // New section for the Joint Ventures page. The partner types and cautions restate what the listings
 // already say (eligibility, partnership options and the preliminary, non-binding disclaimer).
@@ -70,8 +71,19 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
         </motion.p>
       </motion.div>
 
+      <PhotoMosaic
+        className="mt-12"
+        accent={GREEN}
+        main={{ src: '/opportunities/whitefield-7.jpg', alt: 'Streetscape and elevated metro beside the Whitefield site' }}
+        side={[
+          { src: '/opportunities/whitefield-2.jpg', alt: 'Open land on the Whitefield site' },
+          { src: '/opportunities/whitefield-6.jpg', alt: 'Existing structure on the Whitefield site' },
+        ]}
+        chips={[{ icon: ShieldCheck, label: 'Preliminary and non-binding' }, { icon: FileSignature, label: 'Verify before you commit' }]}
+      />
+
       {/* Which partner are you */}
-      <motion.div className="mt-14 grid gap-5 md:grid-cols-3" variants={stagger(0.1)} {...inView}>
+      <motion.div className="mt-10 grid gap-5 md:grid-cols-3" variants={stagger(0.1)} {...inView}>
         {PARTNERS.map(({ icon: Icon, t, d }) => (
           <motion.article key={t} variants={rise} className="group relative flex flex-col overflow-hidden rounded-xl border bg-white p-7 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl" style={{ borderColor: P.line }}>
             <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1" style={{ background: `linear-gradient(90deg, ${GREEN}, ${P.accent})` }} />
@@ -94,6 +106,7 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
           <p className="mt-3 text-sm leading-relaxed" style={{ color: P.muted }}>
             We encourage every partner to confirm these independently with their own legal, technical and financial advisors.
           </p>
+          <div className="mt-8 hidden lg:block"><ChecklistVisual count={6} accent={P.accent} ink={GREEN} label="Six-point verification checklist" /></div>
         </motion.div>
         <motion.ol className="space-y-3" variants={stagger(0.08)} {...inView}>
           {VERIFY.map(([t, d], i) => (

@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { MapPinned, Wallet, FileCheck2, UserCheck, Laptop, Megaphone, ShieldAlert, ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
 import { SystemSettings } from '../../types';
 import { Accordion, Eyebrow, Palette, ReadinessCheck, SERIF, inView, rise, stagger } from './kit';
+import { OrbitVisual } from './visuals';
 
 // New section for the CBSE & IB School Setup page: how a promoter should weigh the decision.
 // Outlay ranges, approvals and services are the ones already published on the page.
@@ -77,7 +78,19 @@ export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: S
           </motion.p>
         </motion.div>
 
-        <motion.div className="relative mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" variants={stagger(0.08)} {...inView}>
+        {/* The six pillars around your campus, and what planning looks like */}
+        <div className="relative mt-12 grid items-center gap-8 md:grid-cols-2">
+          <OrbitVisual center={{ src: '/visuals/kips-campus.webp', alt: '' }} items={PILLARS.map(({ icon, t }) => ({ icon, t }))} accent={P.accent} ink="#fff" />
+          <motion.figure variants={rise} {...inView} className="group relative overflow-hidden rounded-[1.75rem] border shadow-2xl" style={{ borderColor: P.line }}>
+            <img src="/visuals/cbse-planning.webp" alt="KIPS school planning: affiliation guidance, infrastructure design, teacher training and admissions support" loading="lazy" decoding="async" className="aspect-[4/3.4] w-full object-cover transition-transform duration-[1.4s] group-hover:scale-105" />
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-5 pt-16 sm:p-6 sm:pt-20">
+              <span className="text-[11px] font-extrabold uppercase tracking-[0.2em]" style={{ color: P.accent }}>End-to-end support</span>
+              <span className="mt-1 block text-lg font-bold text-white sm:text-xl">Planning, design, affiliation guidance, teachers and admissions, together.</span>
+            </figcaption>
+          </motion.figure>
+        </div>
+
+        <motion.div className="relative mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" variants={stagger(0.08)} {...inView}>
           {PILLARS.map(({ icon: Icon, t, d }, i) => (
             <motion.article key={t} variants={rise}
               className="group relative overflow-hidden rounded-2xl border p-6 backdrop-blur-sm transition duration-300 hover:-translate-y-1.5 hover:border-[#C9A24A]/60 hover:bg-white/[0.08]"

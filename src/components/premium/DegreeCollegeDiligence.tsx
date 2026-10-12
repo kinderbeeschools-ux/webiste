@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Users, Landmark, ScrollText, MapPin, Globe2, BookOpenCheck, Layers, FileSearch, CheckCircle2, Scale, ArrowRight } from 'lucide-react';
 import { Accordion, Eyebrow, Palette, SERIF, inView, rise, stagger } from './kit';
+import { PhotoMosaic } from './visuals';
 
 // New section for the Degree College (KIPS–ARCADIA) page. Every point restates a caution that the
 // page's existing legal text already makes; nothing here promises approval, structure or return.
@@ -71,7 +72,18 @@ export const DegreeCollegeDiligence: React.FC<{ onRequestBrief: () => void }> = 
         </motion.p>
       </motion.div>
 
-      <motion.div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.07)} {...inView}>
+      <PhotoMosaic
+        className="mt-12"
+        accent={GREEN}
+        main={{ src: '/arcadia/facility_campus.jpg', alt: 'Concept view of the KIPS–ARCADIA higher-education campus' }}
+        side={[
+          { src: '/arcadia/facility_auditorium.jpg', alt: 'Concept view of a campus auditorium' },
+          { src: '/arcadia/facility_boardroom.jpg', alt: 'Concept view of a campus boardroom' },
+        ]}
+        chips={[{ icon: FileSearch, label: 'Eight checks before capital' }, { icon: Scale, label: 'Your own advisors, always' }]}
+      />
+
+      <motion.div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.07)} {...inView}>
         {CHECKS.map(({ icon: Icon, t, d }, i) => (
           <motion.article key={t} variants={rise} className="group relative overflow-hidden rounded-xl border bg-white p-6 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl" style={{ borderColor: P.line }}>
             <span aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100" style={{ background: P.accent }} />

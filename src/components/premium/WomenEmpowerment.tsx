@@ -7,6 +7,7 @@ import {
 import { SystemSettings } from '../../types';
 import { EASE } from '../Motion';
 import { Accordion, Eyebrow, Palette, SERIF, inView, rise, stagger } from './kit';
+import { CertificateVisual, FlightPath, PhotoMosaic } from './visuals';
 
 // New section for the NTT / Teacher Training page, written to welcome women who want to build a
 // career in early childhood education. Fees, hours and eligibility are the ones already on the page.
@@ -136,15 +137,28 @@ export const WomenEmpowerment: React.FC<{
             <motion.div variants={rise}><Eyebrow color={P.accent} center>Who it is for</Eyebrow></motion.div>
             <motion.h2 variants={rise} style={SERIF} className="text-3xl leading-tight sm:text-[2.6rem]"><span style={{ color: P.ink }}>Wherever you are, there is a place for you here.</span></motion.h2>
           </motion.div>
-          <motion.div className="mt-10 grid gap-4 md:grid-cols-3" variants={stagger(0.1)} {...inView}>
+          <div className="mt-10 grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <PhotoMosaic
+            accent={P.accent}
+            main={{ src: '/visuals/teacher-ecce.webp', alt: 'A Kinderbee teacher guiding young children through a play-based activity' }}
+            side={[
+              { src: '/visuals/teacher-playschool.webp', alt: 'Teacher and preschoolers building with blocks' },
+              { src: '/visuals/reading-nook.webp', alt: 'Kinderbee reading nook' },
+            ]}
+            chips={[{ icon: Award, label: 'Certificate on completion' }, { icon: BookOpen, label: '120 hours · 12 weeks' }]}
+          />
+          <motion.div className="grid gap-4" variants={stagger(0.1)} {...inView}>
             {WHO.map(({ icon: Icon, t, d }) => (
-              <motion.div key={t} variants={rise} className="group rounded-2xl border p-6 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl" style={{ background: P.card, borderColor: P.line }}>
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" style={{ background: 'linear-gradient(135deg,#E1007A,#B80065)' }}><Icon className="h-5 w-5" /></span>
-                <h3 className="mt-4 text-lg font-bold" style={{ color: P.ink }}>{t}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed" style={{ color: P.muted }}>{d}</p>
+              <motion.div key={t} variants={rise} className="group flex gap-4 rounded-2xl border p-5 transition duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ background: P.card, borderColor: P.line }}>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" style={{ background: 'linear-gradient(135deg,#E1007A,#B80065)' }}><Icon className="h-5 w-5" /></span>
+                <div>
+                  <h3 className="text-lg font-bold" style={{ color: P.ink }}>{t}</h3>
+                  <p className="mt-1 text-sm leading-relaxed" style={{ color: P.muted }}>{d}</p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
+          </div>
         </div>
 
         {/* ---------- Where it can lead ---------- */}
@@ -153,7 +167,8 @@ export const WomenEmpowerment: React.FC<{
             <motion.div variants={rise}><Eyebrow color={P.accent} center>Where it can lead</Eyebrow></motion.div>
             <motion.h2 variants={rise} style={SERIF} className="text-3xl leading-tight sm:text-[2.6rem]"><span style={{ color: P.ink }}>One course. Many ways to grow.</span></motion.h2>
           </motion.div>
-          <motion.div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.08)} {...inView}>
+          <div className="mt-10"><FlightPath color={P.accent} /></div>
+          <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" variants={stagger(0.08)} {...inView}>
             {PATHS.map(({ icon: Icon, t, d, action }) => (
               <motion.div key={t} variants={rise} className="flex flex-col rounded-2xl border p-5" style={{ background: P.card, borderColor: P.line }}>
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ background: `${GOLD}26`, color: '#8A6A1E' }}><Icon className="h-5 w-5" /></span>
@@ -176,7 +191,8 @@ export const WomenEmpowerment: React.FC<{
             <motion.div variants={rise}><Eyebrow color={P.accent} center>Choose your programme</Eyebrow></motion.div>
             <motion.h2 variants={rise} style={SERIF} className="text-3xl leading-tight sm:text-[2.6rem]"><span style={{ color: P.ink }}>Four programmes, one clear starting point.</span></motion.h2>
           </motion.div>
-          <motion.ul className="mt-10 space-y-3" variants={stagger(0.08)} {...inView}>
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1.35fr_0.65fr]">
+          <motion.ul className="space-y-3" variants={stagger(0.08)} {...inView}>
             {COMPARE.map(c => (
               <motion.li key={c.name} variants={rise}
                 className="flex flex-col gap-3 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
@@ -194,6 +210,8 @@ export const WomenEmpowerment: React.FC<{
               </motion.li>
             ))}
           </motion.ul>
+          <CertificateVisual src="/visuals/certificate.webp" label="Sample certificate of course completion" accent={P.accent} />
+          </div>
         </div>
 
         {/* ---------- FAQ ---------- */}
