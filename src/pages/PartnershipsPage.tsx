@@ -8,6 +8,9 @@ import { FranchiseDetails } from '../components/FranchiseDetails';
 import { SchoolSetup } from '../components/SchoolSetup';
 import { ArcadiaPage } from '../components/ArcadiaPage';
 import { ConsultationOffer, openConsultationBooking } from '../components/ConsultationBooking';
+import { FranchiseBuyerGuide } from '../components/premium/FranchiseBuyerGuide';
+import { SchoolPromoterGuide } from '../components/premium/SchoolPromoterGuide';
+import { DegreeCollegeDiligence } from '../components/premium/DegreeCollegeDiligence';
 
 export type FranchiseType = 'preschool' | 'cbse' | 'ib' | 'degree';
 
@@ -212,14 +215,29 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
           <FranchiseShowcase />
 
           <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
+
+          {/* Buyer's guide: questions, journey, readiness check and FAQ */}
+          <FranchiseBuyerGuide onOpenConsultation={() => onOpenConsultation('preschool')} settings={settings} />
         </div>
       )}
 
       {/* PAGE 2: CBSE & IB SCHOOL SETUP (COMBINED) */}
-      {resolvedTab === 'cbse' && <SchoolSetup onConsult={() => onOpenConsultation('cbse')} />}
+      {resolvedTab === 'cbse' && (
+        <>
+          <SchoolSetup onConsult={() => onOpenConsultation('cbse')} />
+          <div className="mt-16">
+            <SchoolPromoterGuide onConsult={() => onOpenConsultation('cbse')} settings={settings} />
+          </div>
+        </>
+      )}
 
       {/* PAGE 3: DEGREE COLLEGE SETUP */}
-      {resolvedTab === 'degree' && <ArcadiaPage onRequestBrief={() => onOpenConsultation('degree')} />}
+      {resolvedTab === 'degree' && (
+        <ArcadiaPage
+          onRequestBrief={() => onOpenConsultation('degree')}
+          extra={<DegreeCollegeDiligence onRequestBrief={() => onOpenConsultation('degree')} />}
+        />
+      )}
     </div>
   );
 };

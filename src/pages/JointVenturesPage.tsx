@@ -9,6 +9,7 @@ import type { Opportunity, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
 import { EASE } from '../components/Motion';
 import { SEED_OPPORTUNITIES } from '../data/opportunities';
+import { JvDiligence } from '../components/premium/JvDiligence';
 
 // Joint Ventures: premium investment-opportunity platform. Listings are managed in Admin → Opportunities.
 const GREEN = '#073D37';
@@ -120,6 +121,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
         <WhyKips />
         <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
         <HowItWorks />
+        <JvDiligence onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorCta onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorForm opps={opps} mode={formMode} setMode={setFormMode} opportunity={formOpportunity} setOpportunity={setFormOpportunity} />
 
