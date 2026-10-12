@@ -7,6 +7,7 @@ import { FranchiseShowcase } from '../components/FranchiseShowcase';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { SchoolSetup } from '../components/SchoolSetup';
 import { ArcadiaPage } from '../components/ArcadiaPage';
+import { ConsultationOffer, openConsultationBooking } from '../components/ConsultationBooking';
 
 export type FranchiseType = 'preschool' | 'cbse' | 'ib' | 'degree';
 
@@ -59,19 +60,17 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
       {resolvedTab === 'preschool' && (
         <div className="space-y-16 animate-fadeIn">
           {/* Hero Banner matching Reference Design */}
-          <section className="relative overflow-hidden bg-[#FFF6F9] border-b border-pink-100/80 min-h-[580px] lg:min-h-[640px] flex items-center">
+          <section className="relative overflow-hidden bg-[#FFF6F9] border-b border-pink-100/80 lg:min-h-[640px] flex items-center">
             {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
-            <div className="absolute top-0 right-0 bottom-0 w-full md:w-[55%] lg:w-[60%] xl:w-[62%] pointer-events-none overflow-hidden select-none">
+            <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-[56%] xl:w-[58%] pointer-events-none overflow-hidden select-none">
               <img 
-                src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/Franchaise%20Banner.jfif"
-                alt="KinderBee Preschool Franchise Banner"
-                className="w-full h-full object-cover object-right"
-                referrerPolicy="no-referrer"
+                src="/franchise/preschool-hero.webp"
+                alt="Kinderbee Preschool campus with children playing outside"
+                className="w-full h-full object-cover object-[50%_45%]"
+                fetchPriority="high"
               />
               {/* Smooth gradient feather on the left edge only, keeping the entire building 100% visible */}
               <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 lg:w-44 bg-gradient-to-r from-[#FFF6F9] to-transparent pointer-events-none"></div>
-              {/* Soft mobile contrast adjustment (hidden on md and desktop) */}
-              <div className="absolute inset-0 bg-[#FFF6F9]/50 md:hidden pointer-events-none"></div>
             </div>
 
             {/* Soft decorative botanical leaves watermark at top-left corner */}
@@ -85,8 +84,13 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
             </div>
 
             {/* Foreground Content */}
-            <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 py-12 lg:py-16 relative z-10">
-              <div className="max-w-xl xl:max-w-2xl space-y-5 sm:space-y-6">
+            <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 pt-5 pb-10 sm:pt-8 lg:py-16 relative z-10">
+              <div className="max-w-2xl lg:max-w-xl xl:max-w-2xl space-y-5 sm:space-y-6">
+                {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
+                <div className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
+                  <img src="/franchise/preschool-hero.webp" alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
+                </div>
+
                 {/* Pill Badge */}
                 <div className="inline-flex items-center gap-2 bg-pink-50/95 border border-pink-200/90 text-[#E1007A] text-[11px] sm:text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-2xs">
                   <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
@@ -137,10 +141,10 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                 </div>
 
                 {/* Buttons */}
-                <div className="pt-2 flex flex-wrap items-center gap-3.5">
+                <div className="pt-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-3.5">
                   <button
                     onClick={() => onOpenConsultation('preschool')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 sm:px-7 py-3.5 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center gap-2 cursor-pointer"
+                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 sm:px-7 py-3.5 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Book Free Consultation</span>
                     <span aria-hidden="true">&rarr;</span>
@@ -150,19 +154,26 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     download="Kinderbee_Franchise_Brochure.pdf"
-                    className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 hover:border-stone-400 font-bold px-5 sm:px-6 py-3.5 rounded-xl shadow-xs transition text-sm flex items-center gap-2 cursor-pointer"
+                    className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 hover:border-stone-400 font-bold px-5 sm:px-6 py-3.5 rounded-xl shadow-xs transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Download Franchise PDF</span>
                     <span aria-hidden="true">&rarr;</span>
                   </a>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => openConsultationBooking('Preschool Partnership / Franchise')}
+                  className="text-sm font-semibold text-stone-600 hover:text-[#E1007A] underline decoration-pink-300 underline-offset-4 transition cursor-pointer"
+                >
+                  Prefer a detailed one-to-one session? Book a 1:1 consultation for ₹99
+                </button>
 
                 {/* Bottom Feature Pill Strip */}
                 <div className="pt-2">
-                  <div className="inline-flex flex-wrap sm:flex-nowrap items-center bg-white/95 backdrop-blur-xs border border-pink-100/90 rounded-2xl p-2.5 sm:p-3 shadow-xs gap-3 sm:gap-4 max-w-xl">
-                    <div className="flex items-center gap-2.5 px-2">
+                  <div className="grid grid-cols-3 sm:inline-flex sm:flex-nowrap items-center bg-white/95 backdrop-blur-xs border border-pink-100/90 rounded-2xl p-2.5 sm:p-3 shadow-xs gap-1 sm:gap-4 max-w-xl w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
                       <ShieldCheck className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
-                      <div className="text-left">
+                      <div className="sm:text-left">
                         <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">NEP 2020</div>
                         <div className="text-[11px] text-stone-500 font-medium">Aligned</div>
                       </div>
@@ -170,9 +181,9 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
 
                     <div className="hidden sm:block w-px h-7 bg-stone-200"></div>
 
-                    <div className="flex items-center gap-2.5 px-2">
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
                       <BookOpen className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
-                      <div className="text-left">
+                      <div className="sm:text-left">
                         <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">Child-Centric</div>
                         <div className="text-[11px] text-stone-500 font-medium">Education</div>
                       </div>
@@ -180,9 +191,9 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
 
                     <div className="hidden sm:block w-px h-7 bg-stone-200"></div>
 
-                    <div className="flex items-center gap-2.5 px-2">
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
                       <Globe className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
-                      <div className="text-left">
+                      <div className="sm:text-left">
                         <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">Global Standards</div>
                         <div className="text-[11px] text-stone-500 font-medium">Local Relevance</div>
                       </div>
@@ -192,6 +203,10 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
               </div>
             </div>
           </section>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
+            <ConsultationOffer category="Preschool Partnership / Franchise" />
+          </div>
 
           {/* Illustrated partner ecosystem showcase */}
           <FranchiseShowcase />
