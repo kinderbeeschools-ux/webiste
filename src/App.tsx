@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ConsultationBooking } from './components/ConsultationBooking';
 import { CoursePayment, openCoursePayment } from './components/CoursePayment';
+import { useAutoReveal } from './components/AutoReveal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { StickyContactWidget } from './components/StickyContactWidget';
 import { HomePage } from './pages/HomePage';
@@ -175,8 +176,11 @@ export function App() {
     setCurrentTab('home');
   };
 
+  const inAdmin = currentTab === 'admin' && !!adminToken;
+  useAutoReveal(`${currentTab}|${selectedBlog?.id || ''}|${blogs.length}`, !inAdmin);
+
   // If user is on Admin Tab and authenticated, show the admin panel
-  if (currentTab === 'admin' && adminToken) {
+  if (inAdmin) {
     return (
       <AdminPanel
         adminToken={adminToken}
@@ -201,7 +205,10 @@ export function App() {
         onOpenConsultation={() => handleOpenConsultation('franchise')}
       />
 
-      <main className="flex-1">
+      {/* Thin brand-colour bar showing how far down the page you are */}
+      <div className="kb-progress" aria-hidden="true" />
+
+      <main key={currentTab} className="flex-1 kb-page">
         {currentTab === 'home' && (
           <HomePage
             setCurrentTab={setCurrentTab}

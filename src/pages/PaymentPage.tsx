@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { UPI_ID, UPI_NAME } from '../data/consultation';
+import { HeroDecor } from '../components/Doodles';
 import { PaymentRecord } from '../types';
 
 interface PaymentPageProps {
@@ -176,7 +177,8 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* Header Breadcrumb & Status */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200/80 pb-6">
+        <div className="relative isolate overflow-hidden rounded-3xl bg-white/60 px-5 py-6 sm:px-8 flex flex-wrap items-center justify-between gap-4 border border-stone-200/80">
+          <HeroDecor minimal className="-z-10" />
           <div>
             <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-emerald-200/60 mb-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />

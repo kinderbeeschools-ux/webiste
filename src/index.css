@@ -219,3 +219,48 @@
                   radial-gradient(circle 16px at calc(100% - var(--stub)) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
   }
 }
+
+/* =====================================================================
+   Site-wide motion & polish (AutoReveal.ts, App.tsx)
+   ===================================================================== */
+/* Scroll reveal: hidden only after the script marks an element (.kb-r), shown when it enters view (.kb-in).
+   fill-mode backwards: once finished, the element's own hover transforms work as before. */
+@keyframes kbReveal { from { opacity: 0; transform: translateY(22px); } }
+@keyframes kbRevealMedia { from { opacity: 0; transform: scale(1.05); clip-path: inset(0 0 14% 0); } }
+.kb-r:not(.kb-in) { opacity: 0; }
+.kb-r.kb-in { animation: kbReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--kb-d, 0ms) backwards; }
+:is(img, video).kb-r.kb-in { animation-name: kbRevealMedia; animation-duration: 1.1s; }
+
+/* Gentle fade when switching pages (opacity only, so fixed / sticky children are unaffected) */
+@keyframes kbPageIn { from { opacity: 0; } }
+.kb-page { animation: kbPageIn 0.45s ease-out; }
+
+/* Reading progress bar (browsers with scroll-driven animations; others simply don't show it) */
+.kb-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; pointer-events: none;
+  background: linear-gradient(90deg, #E1007A, #FF7A00, #FFD400);
+  transform-origin: 0 50%; transform: scaleX(0);
+}
+@keyframes kbProgress { to { transform: scaleX(1); } }
+@supports (animation-timeline: scroll()) {
+  .kb-progress { animation: kbProgress linear both; animation-timeline: scroll(root); }
+}
+
+/* Visible keyboard focus everywhere (mouse clicks don't show it) */
+:where(a, button, summary, [role=tab], [tabindex]):focus-visible {
+  outline: 2px solid #E1007A; outline-offset: 3px; border-radius: 0.75rem;
+}
+
+/* Arrows in buttons and links nudge forward on hover */
+:is(a, button) svg:is(.lucide-arrow-right, .lucide-chevron-right) { transition: translate 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+:is(a, button):hover svg:is(.lucide-arrow-right, .lucide-chevron-right) { translate: 3px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-page, .kb-r.kb-in { animation: none; }
+  .kb-r:not(.kb-in) { opacity: 1; }
+}
+
+/* Twinkling stars in HeroDecor */
+@keyframes kbTwinkle { 0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); } 50% { opacity: 0.35; transform: scale(0.75) rotate(20deg); } }
+.kb-twinkle { animation: kbTwinkle 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .kb-twinkle { animation: none; } }

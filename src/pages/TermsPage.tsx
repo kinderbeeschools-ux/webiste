@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { FileText, Mail, Phone, MapPin, ArrowLeft, Calendar, Clock, AlertCircle } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
+import { HeroDecor } from '../components/Doodles';
 import { SystemSettings } from '../types';
 
 interface TermsPageProps {
@@ -38,7 +39,8 @@ export const TermsPage: React.FC<TermsPageProps> = ({ setCurrentTab, settings })
         </div>
 
         {/* Header Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-sm mb-8 space-y-4">
+        <div className="relative isolate overflow-hidden bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-sm mb-8 space-y-4">
+          <HeroDecor minimal className="-z-10" />
           <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-100 text-[#E1007A] text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full">
             <FileText className="w-4 h-4 text-[#E1007A]" />
             <span>Official Terms</span>

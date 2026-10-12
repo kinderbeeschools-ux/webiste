@@ -21,6 +21,7 @@ import {
   Target
 } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
+import { HeroDecor } from '../components/Doodles';
 import { SystemSettings } from '../types';
 
 interface ProgramsOverviewPageProps {
@@ -554,7 +555,8 @@ export const ProgramsOverviewPage: React.FC<ProgramsOverviewPageProps> = ({
       />
 
       {/* Hero Header Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#220214] via-[#14010C] to-[#1F0214] text-white py-16 sm:py-20 px-4 sm:px-8 border-b border-pink-950/40">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#220214] via-[#14010C] to-[#1F0214] text-white py-16 sm:py-20 px-4 sm:px-8 border-b border-pink-950/40 isolate">
+        <HeroDecor tone="dark" className="-z-10" />
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,0,122,0.3),transparent_65%)]"></div>

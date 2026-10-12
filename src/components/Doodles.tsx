@@ -96,3 +96,26 @@ export const Dots: React.FC<DoodleProps & { color?: string }> = ({ className, co
     {[0, 1, 2, 3].flatMap(r => [0, 1, 2, 3].map(c => <circle key={`${r}-${c}`} cx={8 + c * 15} cy={8 + r * 15} r="2.6" fill={color} />))}
   </svg>
 );
+
+// Decorative backdrop for page headers: soft brand glows, a flying bee, twinkling stars and a drifting
+// cloud. Place inside a `relative overflow-hidden` header; it sits behind the content and keeps the
+// centre clear. Animations stop for visitors who prefer reduced motion (index.css).
+// `minimal`: glows + a corner bee only, for compact text-heavy headers.
+export const HeroDecor: React.FC<{ tone?: 'light' | 'dark'; minimal?: boolean; className?: string }> = ({ tone = 'light', minimal = false, className = '' }) => {
+  const dark = tone === 'dark';
+  return (
+    <div aria-hidden="true" className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
+      <div className={`kb-drift absolute -left-24 -top-24 h-72 w-72 rounded-full blur-3xl ${dark ? 'bg-[#E1007A]/25' : 'bg-pink-200/50'}`} />
+      <div className={`kb-drift absolute -right-20 -bottom-28 h-80 w-80 rounded-full blur-3xl [animation-delay:-6s] ${dark ? 'bg-[#FF7A00]/15' : 'bg-amber-200/45'}`} />
+      <div className={`absolute inset-0 [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)] ${dark ? 'opacity-[0.08] [background-image:radial-gradient(white_1px,transparent_1px)]' : 'opacity-[0.35] [background-image:radial-gradient(#f9a8d4_1px,transparent_1px)]'}`} />
+      <Bee className={`kb-fly absolute right-[6%] top-6 opacity-90 ${minimal ? 'w-12 sm:w-16' : 'w-16 sm:w-24'}`} />
+      {!minimal && (<>
+      <Star className="kb-twinkle absolute left-[7%] top-[22%] w-5 sm:w-7" />
+      <Star className="kb-twinkle absolute right-[18%] bottom-[16%] w-4 sm:w-5 [animation-delay:-1.4s]" color={dark ? '#ffffff' : '#E1007A'} />
+      <Star className="kb-twinkle hidden sm:block absolute left-[22%] bottom-[12%] w-4 [animation-delay:-2.2s]" />
+      <Cloud className={`kb-float hidden md:block absolute left-[4%] bottom-[18%] w-24 ${dark ? 'opacity-20' : 'opacity-70'}`} />
+      <Squiggle className="hidden lg:block absolute right-[8%] top-[62%] w-28 opacity-60" color={dark ? '#FFD400' : '#E1007A'} />
+      </>)}
+    </div>
+  );
+};

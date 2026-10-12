@@ -1,6 +1,7 @@
 import React from 'react';
 import { School, GraduationCap, ArrowRight, Sparkles, CheckCircle2, ShieldCheck, TrendingUp, Building2 } from 'lucide-react';
 import { SystemSettings } from '../types';
+import { HeroDecor } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
 
 interface InvestorsPageProps {
@@ -28,7 +29,8 @@ export const InvestorsPage: React.FC<InvestorsPageProps> = ({ onOpenConsultation
       />
 
       {/* Hero Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 text-center space-y-4">
+      <section className="relative isolate overflow-hidden max-w-7xl mx-auto px-4 sm:px-8 py-10 text-center space-y-4">
+        <HeroDecor className="-z-10" />
         <div className="inline-flex items-center gap-2 bg-pink-100/70 border border-pink-200 text-[#E1007A] text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
           <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
           <span>INSTITUTIONAL PARTNERSHIP ECOSYSTEM</span>

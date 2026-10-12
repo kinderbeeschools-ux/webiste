@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Phone, Mail, MapPin, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SystemSettings } from '../types';
+import { HeroDecor } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
 
 interface ContactPageProps {
@@ -65,7 +66,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
       />
       
       {/* Header Banner with Kinderbee Brand Colors */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-14 sm:py-16 px-4 sm:px-8 text-center border-b border-pink-950/40">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#200213] via-[#12010B] to-[#1F0214] text-white py-14 sm:py-16 px-4 sm:px-8 text-center border-b border-pink-950/40 isolate">
+        <HeroDecor tone="dark" className="-z-10" />
         {/* Glow & Atmospheric Brand Overlays */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(#E1007A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15"></div>
