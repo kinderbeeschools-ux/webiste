@@ -200,3 +200,22 @@
   background: linear-gradient(160deg, rgba(7, 61, 55, 0.32), rgba(180, 135, 53, 0.18));
   mix-blend-mode: soft-light;
 }
+
+/* ₹99 consultation ticket: see-through notches where the stub is torn off.
+   --stub must match the stub's height (phones) / width (md+) in ConsultationOffer. */
+.kb-ticket {
+  --stub: 210px;
+  -webkit-mask: radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 97%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 97%, #000) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 97%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 97%, #000) right / 51% 100% no-repeat;
+}
+@media (min-width: 768px) {
+  .kb-ticket {
+    --stub: 300px;
+    -webkit-mask: radial-gradient(circle 16px at calc(100% - var(--stub)) 0, #0000 97%, #000) top / 100% 51% no-repeat,
+                  radial-gradient(circle 16px at calc(100% - var(--stub)) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
+            mask: radial-gradient(circle 16px at calc(100% - var(--stub)) 0, #0000 97%, #000) top / 100% 51% no-repeat,
+                  radial-gradient(circle 16px at calc(100% - var(--stub)) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
+  }
+}

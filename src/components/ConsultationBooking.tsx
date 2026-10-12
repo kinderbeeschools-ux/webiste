@@ -385,27 +385,99 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
   );
 };
 
-// Offer card shown on pages; the category pre-selects the form
-export const ConsultationOffer: React.FC<{ category?: string; className?: string }> = ({ category, className = '' }) => (
-  <div className={`relative overflow-hidden rounded-3xl border border-pink-100 bg-gradient-to-br from-pink-50 via-white to-amber-50 p-6 sm:p-8 shadow-sm ${className}`}>
-    <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#FFD400]/20 blur-2xl" />
-    <div className="relative flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
-      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#E1007A] text-white shadow-lg shadow-pink-900/20">
-        <CalendarCheck className="h-7 w-7" />
-      </span>
-      <div className="flex-1 space-y-1.5">
-        <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">Book a 1:1 Consultation</h3>
-        <p className="text-sm text-stone-600 leading-relaxed max-w-2xl">
-          Discuss your requirement directly with the Kinderbee team: admissions, starting a preschool, teacher training or anything else. Pick a date and time that suits you.
-        </p>
-      </div>
-      <div className="flex flex-col items-start md:items-end gap-2.5 shrink-0">
-        <div className="font-display text-4xl font-extrabold text-[#E1007A] leading-none">₹{CONSULT_FEE}</div>
-        <button type="button" onClick={() => openConsultationBooking(category)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#E1007A] hover:bg-[#c8006d] px-6 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg transition cursor-pointer">
-          Book Consultation for ₹{CONSULT_FEE} <ArrowRight className="h-4 w-4" />
-        </button>
+// Offer card shown on pages, styled as a booking ticket; the category pre-selects the form
+const OFFER_POINTS = ['One-to-one with the Kinderbee team', 'A date and time that suits you', 'Clear next steps for your plan'];
+
+// Next five weekdays, for the decorative date picker on the ticket
+const nextWeekdays = () => {
+  const days: Date[] = [];
+  for (let d = new Date(); days.length < 5; ) {
+    d = new Date(d.getTime() + 864e5);
+    if (d.getDay() !== 0) days.push(d);
+  }
+  return days;
+};
+
+export const ConsultationOffer: React.FC<{ category?: string; className?: string }> = ({ category, className = '' }) => {
+  const [days] = useState(nextWeekdays);
+  const [active, setActive] = useState(1);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const t = setInterval(() => setActive(i => (i + 1) % 5), 1800);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className={`group drop-shadow-[0_18px_30px_rgba(120,0,64,0.22)] transition-transform duration-500 hover:-translate-y-1 ${className}`}>
+      <div className="kb-ticket relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#E1007A] via-[#c4006b] to-[#6d0a45] text-white flex flex-col md:flex-row">
+        {/* Decorative glow, dots and a flying bee */}
+        <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[#FF7A00]/30 blur-3xl kb-drift" />
+        <div className="pointer-events-none absolute right-1/3 -bottom-24 h-64 w-64 rounded-full bg-[#FFD400]/20 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:18px_18px]" />
+        <svg aria-hidden="true" viewBox="0 0 64 48" className="kb-fly pointer-events-none absolute right-6 top-5 md:right-[330px] md:top-6 h-9 w-12 opacity-90">
+          <path d="M6 30 C 14 18, 24 40, 34 26" stroke="#FFD400" strokeWidth="1.5" strokeDasharray="3 4" fill="none" />
+          <ellipse cx="46" cy="18" rx="7" ry="5" fill="white" fillOpacity=".75" />
+          <ellipse cx="44" cy="28" rx="10" ry="8" fill="#FFD400" />
+          <path d="M41 21v14M46 21v14" stroke="#1c1917" strokeWidth="2.4" />
+          <circle cx="52" cy="26" r="1.4" fill="#1c1917" />
+        </svg>
+
+        {/* Main part */}
+        <div className="relative flex-1 p-6 sm:p-8 space-y-5">
+          <div className="space-y-2.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FFD400] px-3 py-1 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-stone-900">
+              <CalendarCheck className="h-3.5 w-3.5" /> 1:1 Consultation
+            </span>
+            <h3 className="font-display text-[1.65rem] sm:text-3xl font-extrabold leading-tight tracking-tight">
+              Talk to us, <span className="text-[#FFD400]">one-to-one.</span>
+            </h3>
+            <p className="text-sm text-pink-50/90 leading-relaxed max-w-xl">
+              Discuss your requirement directly with the Kinderbee team: admissions, starting a preschool, teacher training or anything else.
+            </p>
+          </div>
+
+          <ul className="grid gap-2 sm:grid-cols-3">
+            {OFFER_POINTS.map(p => (
+              <li key={p} className="flex items-center gap-2 text-xs font-semibold text-white">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/20"><Check className="h-3 w-3" /></span>
+                {p}
+              </li>
+            ))}
+          </ul>
+
+          {/* Decorative date picker that hints at the booking step */}
+          <div aria-hidden="true" className="rounded-2xl bg-white/10 border border-white/15 p-3 backdrop-blur-sm">
+            <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+              {days.map((d, i) => (
+                <div key={i} className={`rounded-xl py-2 text-center transition-all duration-500 ${i === active ? 'bg-white text-[#E1007A] shadow-lg scale-105' : 'bg-white/5 text-pink-50/80'}`}>
+                  <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">{d.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
+                  <div className="font-display text-base sm:text-lg font-extrabold leading-none mt-0.5">{d.getDate()}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {['10:00 AM', '12:00 PM', '3:00 PM', '5:00 PM'].map((s, i) => (
+                <span key={s} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors duration-500 ${i === active % 4 ? 'bg-[#FFD400] text-stone-900' : 'bg-white/10 text-pink-50/80'}`}>{s}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Stub: perforated edge, price and CTA (height matches the notch position in .kb-ticket) */}
+        <div className="relative h-[210px] md:h-auto md:w-[300px] shrink-0 flex flex-col items-center justify-center gap-3 px-6 text-center border-t-2 md:border-t-0 md:border-l-2 border-dashed border-white/35 bg-black/10">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-pink-100/80">Consultation fee</span>
+          <div className="relative">
+            <span className="font-display text-6xl font-extrabold leading-none text-[#FFD400] drop-shadow-sm">₹{CONSULT_FEE}</span>
+            <span className="absolute -right-9 -top-2 rotate-12 rounded-md bg-white px-1.5 py-0.5 text-[9px] font-extrabold uppercase text-[#E1007A] shadow">only</span>
+          </div>
+          <button type="button" onClick={() => openConsultationBooking(category)}
+            className="relative overflow-hidden inline-flex w-full max-w-[250px] items-center justify-center gap-2 rounded-xl bg-white px-5 py-3.5 text-sm font-extrabold text-[#E1007A] shadow-lg transition hover:bg-pink-50 active:scale-[0.98] cursor-pointer">
+            <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-pink-200/70 to-transparent transition-[left] duration-700 group-hover:left-[120%]" />
+            Book Consultation for ₹{CONSULT_FEE} <ArrowRight className="h-4 w-4" />
+          </button>
+          <span className="text-[10px] text-pink-100/80">Pay by UPI · Google Pay, PhonePe, Paytm</span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
