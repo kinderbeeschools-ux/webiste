@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Users, Building2, Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw } from 'lucide-react';
+import { Users, CalendarCheck, Building2, Inbox, CreditCard, FileText, HelpCircle, Settings as SettingsIcon, LogOut, ExternalLink, Trash2, Plus, Download, Upload, RefreshCw } from 'lucide-react';
 import type { Enquiry, PaymentRecord, BlogPost, FAQItem, SystemSettings } from '../types';
 import { input, btn, btnPrimary, btnGhost, card, fmtDate, csvCell, phoneKey, STAGES, stageOf, STATUS_COLORS, useList, Toolbar, Field, type Api, type TabProps } from './admin/ui';
 import { CrmTab } from './admin/Crm';
 import { OpportunitiesTab } from './admin/Opportunities';
+import { ConsultationsTab } from './admin/Consultations';
 
 interface AdminPanelProps {
   adminToken: string;
@@ -13,11 +14,12 @@ interface AdminPanelProps {
   onUpdateSettings: (s: SystemSettings) => void;
 }
 
-type Tab = 'crm' | 'enquiries' | 'payments' | 'opportunities' | 'blogs' | 'faqs' | 'settings';
+type Tab = 'crm' | 'enquiries' | 'consultations' | 'payments' | 'opportunities' | 'blogs' | 'faqs' | 'settings';
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: 'crm', label: 'CRM', icon: Users },
   { id: 'enquiries', label: 'Enquiries', icon: Inbox },
+  { id: 'consultations', label: 'Consultations', icon: CalendarCheck },
   { id: 'payments', label: 'Payments', icon: CreditCard },
   { id: 'opportunities', label: 'Opportunities', icon: Building2 },
   { id: 'blogs', label: 'Blogs', icon: FileText },
@@ -86,6 +88,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ adminToken, onLogout, on
 
         {tab === 'crm' && <CrmTab api={api} flash={flash} />}
         {tab === 'enquiries' && <EnquiriesTab api={api} flash={flash} />}
+        {tab === 'consultations' && <ConsultationsTab api={api} flash={flash} />}
         {tab === 'payments' && <PaymentsTab api={api} flash={flash} />}
         {tab === 'opportunities' && <OpportunitiesTab api={api} flash={flash} />}
         {tab === 'blogs' && <BlogsTab api={api} flash={flash} adminToken={adminToken} />}

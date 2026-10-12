@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
+import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, type Consultation, type ConsultStatus } from "./src/data/consultation.js";
 import {
   sendApplicantConfirmationEmail,
   sendAdminLeadAlertEmail,
@@ -893,6 +894,57 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Indian mobile: keep the last 10 digits after removing +91 / 0 prefixes
 const normalisePhone = (p: string) => String(p || "").replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
 
+const newPaymentId = () => `PAY-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+const MOBILE_RE = /^[6-9]\d{9}$/;
+
+// Saves a submitted payment. Returns why it couldn't (HTTP status + message for the payer), or null once saved.
+async function savePayment(p: PaymentRecord): Promise<{ status: number; error: string } | null> {
+  const callUs = "We could not record your payment right now. Please call 81223 44040 with your UTR number.";
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    const db = loadDb();
+    if (db.payments.some(x => x.upiRefNumber === p.upiRefNumber)) return { status: 409, error: "This UTR number has already been submitted." };
+    db.payments.unshift(p);
+    saveDb(db);
+    return null;
+  }
+  const { data: dup, error: dupErr } = await supabase.from("payments").select("id").eq("upi_ref", p.upiRefNumber).limit(1);
+  if (dupErr) {
+    console.error("Payment duplicate check failed:", dupErr.message);
+    return { status: 500, error: callUs };
+  }
+  if (dup && dup.length) return { status: 409, error: "This UTR number has already been submitted. If this is a mistake, please call 81223 44040." };
+  const row: any = {
+    id: p.id,
+    applicant_name: p.applicantName,
+    admission_number: p.admissionNumber || null,
+    programme: p.programme,
+    amount: p.amount,
+    upi_ref: p.upiRefNumber,
+    payer_phone: p.payerPhone,
+    payer_email: p.payerEmail || null,
+    payment_date: p.paymentDate,
+    notes: p.notes || null,
+    status: p.status,
+    created_at: p.createdAt
+  };
+  let { error } = await supabase.from("payments").insert([row]);
+  if (error && /payment_date|notes|column|schema cache/i.test(error.message)) {
+    // ponytail: tolerates a database where supabase-setup.sql hasn't added payment_date/notes yet; drop once it has
+    console.warn("Payment insert without new columns:", error.message);
+    const { payment_date, notes: _n, ...basic } = row;
+    ({ error } = await supabase.from("payments").insert([basic]));
+  }
+  if (error) {
+    // Unique index on upi_ref: the same UTR submitted twice at once
+    if (error.code === "23505") return { status: 409, error: "This UTR number has already been submitted." };
+    // Never tell the payer it worked unless it was saved
+    console.error("Payment insert failed:", error.message);
+    return { status: 500, error: callUs };
+  }
+  return null;
+}
+
 app.post("/api/payments", async (req, res) => {
   const b = req.body || {};
   const applicantName = String(b.applicantName || "").trim();
@@ -907,7 +959,7 @@ app.post("/api/payments", async (req, res) => {
 
   const problems: string[] = [];
   if (applicantName.length < 2) problems.push("full name");
-  if (!/^[6-9]\d{9}$/.test(payerPhone)) problems.push("a valid 10-digit mobile number");
+  if (!MOBILE_RE.test(payerPhone)) problems.push("a valid 10-digit mobile number");
   if (!EMAIL_RE.test(payerEmail)) problems.push("a valid email address");
   if (!programme) problems.push("programme");
   if (!Number.isFinite(amount) || amount <= 0) problems.push("amount paid");
@@ -918,7 +970,7 @@ app.post("/api/payments", async (req, res) => {
   }
 
   const newPayment: PaymentRecord = {
-    id: `PAY-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+    id: newPaymentId(),
     applicantName,
     admissionNumber,
     programme,
@@ -932,50 +984,8 @@ app.post("/api/payments", async (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  const supabase = getSupabaseClient();
-  if (supabase) {
-    const { data: dup, error: dupErr } = await supabase.from("payments").select("id").eq("upi_ref", upiRefNumber).limit(1);
-    if (dupErr) {
-      console.error("Payment duplicate check failed:", dupErr.message);
-      return res.status(500).json({ error: "We could not record your payment right now. Please call 81223 44040 with your UTR number." });
-    }
-    if (dup && dup.length) {
-      return res.status(409).json({ error: "This UTR number has already been submitted. If this is a mistake, please call 81223 44040." });
-    }
-    const row: any = {
-      id: newPayment.id,
-      applicant_name: applicantName,
-      admission_number: admissionNumber || null,
-      programme,
-      amount: String(amount),
-      upi_ref: upiRefNumber,
-      payer_phone: payerPhone,
-      payer_email: payerEmail,
-      payment_date: paymentDate,
-      notes: notes || null,
-      status: newPayment.status,
-      created_at: newPayment.createdAt
-    };
-    let { error } = await supabase.from("payments").insert([row]);
-    if (error && /payment_date|notes|column|schema cache/i.test(error.message)) {
-      // ponytail: tolerates a database where supabase-setup.sql hasn't added payment_date/notes yet; drop once it has
-      console.warn("Payment insert without new columns:", error.message);
-      const { payment_date, notes: _n, ...basic } = row;
-      ({ error } = await supabase.from("payments").insert([basic]));
-    }
-    if (error) {
-      // Never tell the payer it worked unless it was saved
-      console.error("Payment insert failed:", error.message);
-      return res.status(500).json({ error: "We could not record your payment right now. Please call 81223 44040 with your UTR number." });
-    }
-  } else {
-    const db = loadDb();
-    if (db.payments.some(p => p.upiRefNumber === upiRefNumber)) {
-      return res.status(409).json({ error: "This UTR number has already been submitted." });
-    }
-    db.payments.unshift(newPayment);
-    saveDb(db);
-  }
+  const failed = await savePayment(newPayment);
+  if (failed) return res.status(failed.status).json({ error: failed.error });
 
   await logActivity({ leadKey: payerPhone, type: "payment", detail: `Payment submitted: ₹${amount} for ${programme} (UTR ${upiRefNumber})` });
 
@@ -985,6 +995,222 @@ app.post("/api/payments", async (req, res) => {
     message: "Payment transaction reference received and recorded for verification."
   });
 });
+
+// ==========================================
+// ₹99 ONE-TO-ONE CONSULTATIONS
+// ==========================================
+// Supabase table `consultations` (supabase-setup.sql); db.json `consultations` when Supabase isn't configured.
+// Flow: pending_payment -> (customer submits UTR) verification_pending -> (admin verifies the payment) paid / payment_failed
+//       -> (admin) scheduled -> completed. The admin can cancel at any time.
+const CONSULT_COLS: Record<string, string> = {
+  ref: "ref", name: "name", phone: "phone", whatsapp: "whatsapp", email: "email", category: "category",
+  preferredDate: "preferred_date", timeSlot: "time_slot", requirement: "requirement", amount: "amount", status: "status",
+  upiRef: "upi_ref", paymentId: "payment_id", scheduledAt: "scheduled_at", adminNotes: "admin_notes", createdAt: "created_at",
+};
+const consultFromRow = (r: any) => Object.fromEntries(Object.entries(CONSULT_COLS).map(([k, col]) => [k, r[col] ?? ""])) as unknown as Consultation;
+const consultToRow = (c: Partial<Consultation>) =>
+  Object.fromEntries(Object.entries(c).filter(([k]) => CONSULT_COLS[k]).map(([k, v]) => [CONSULT_COLS[k], v === "" ? null : v]));
+// What the customer may see about their own booking
+const publicConsult = ({ adminNotes, paymentId, ...c }: Consultation) => c;
+const CONSULT_UNAVAILABLE = "Consultation booking is temporarily unavailable. Please call or WhatsApp 81223 44040.";
+
+async function findConsultations(match: { ref?: string; phone?: string } = {}): Promise<Consultation[]> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    const all: Consultation[] = (loadDb() as any).consultations || [];
+    return all.filter(c => (!match.ref || c.ref === match.ref) && (!match.phone || c.phone === match.phone));
+  }
+  let q = supabase.from("consultations").select("*").order("created_at", { ascending: false });
+  if (match.ref) q = q.eq("ref", match.ref);
+  if (match.phone) q = q.eq("phone", match.phone);
+  const { data, error } = await q;
+  if (error) throw new Error(`Consultations: ${error.message}`);
+  return (data || []).map(consultFromRow);
+}
+
+async function saveConsultation(c: Partial<Consultation> & { ref: string }, isNew = false): Promise<void> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    const db: any = loadDb();
+    db.consultations = db.consultations || [];
+    const i = db.consultations.findIndex((x: Consultation) => x.ref === c.ref);
+    if (isNew && i >= 0) throw Object.assign(new Error("Duplicate booking reference"), { code: "23505" });
+    if (!isNew && i < 0) throw new Error("Booking not found");
+    if (isNew) db.consultations.unshift(c);
+    else Object.assign(db.consultations[i], c);
+    saveDb(db);
+    return;
+  }
+  const row = { ...consultToRow(c), updated_at: new Date().toISOString() };
+  const { error } = isNew
+    ? await supabase.from("consultations").insert([row])
+    : await supabase.from("consultations").update(row).eq("ref", c.ref);
+  if (error) throw Object.assign(new Error(`Consultations: ${error.message}`), { code: error.code });
+}
+
+// KBC- + 6 characters without look-alikes (0/O, 1/I/L)
+const newConsultRef = () => "KBC-" + Array.from({ length: 6 }, () => "ABCDEFGHJKMNPQRSTUVWXYZ23456789"[crypto.randomInt(31)]).join("");
+const istToday = () => new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+const addDays = (day: string, n: number) => new Date(Date.parse(day + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+const isRealDate = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !isNaN(Date.parse(d + "T00:00:00Z")) && new Date(d + "T00:00:00Z").toISOString().slice(0, 10) === d;
+// Plain single-line text: no control characters, collapsed whitespace, length-capped
+const cleanText = (v: unknown, max: number) => String(v ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
+const escHtml = (v: string) => v.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
+
+// Payment verification in the Payments tab is the only way a booking becomes Paid or Payment Failed
+async function syncConsultationPayment(ref: string, paymentId: string, paymentStatus: string) {
+  const [c] = await findConsultations({ ref });
+  // Ignore an older payment for the same booking, and never undo scheduled / completed / cancelled
+  if (!c || (c.paymentId && c.paymentId !== paymentId)) return;
+  if (!["pending_payment", "verification_pending", "paid", "payment_failed"].includes(c.status)) return;
+  const next: ConsultStatus = paymentStatus === "verified" ? "paid" : paymentStatus === "rejected" ? "payment_failed" : "verification_pending";
+  await saveConsultation({ ref, status: next });
+  await logActivity({ leadKey: c.phone, type: "consultation", detail: `Consultation ${ref}: ${CONSULT_STATUS[next].label}` });
+}
+
+// Customer: create a booking (Pending Payment)
+app.post("/api/consultations", async (req, res) => {
+  const b = req.body || {};
+  const c = {
+    name: cleanText(b.name, 80),
+    phone: normalisePhone(b.phone),
+    whatsapp: normalisePhone(b.whatsapp),
+    email: cleanText(b.email, 120).toLowerCase(),
+    category: cleanText(b.category, 60),
+    preferredDate: cleanText(b.preferredDate, 10),
+    timeSlot: cleanText(b.timeSlot, 40),
+    requirement: cleanText(b.requirement, 1000),
+  };
+  const today = istToday();
+  const problems: string[] = [];
+  if (c.name.length < 2) problems.push("your full name");
+  if (!MOBILE_RE.test(c.phone)) problems.push("a valid 10-digit mobile number");
+  if (c.whatsapp && !MOBILE_RE.test(c.whatsapp)) problems.push("a valid 10-digit WhatsApp number");
+  if (c.email && !EMAIL_RE.test(c.email)) problems.push("a valid email address");
+  if (!(CONSULT_CATEGORIES as readonly string[]).includes(c.category)) problems.push("a consultation category");
+  if (!isRealDate(c.preferredDate) || c.preferredDate < today || c.preferredDate > addDays(today, CONSULT_MAX_DAYS)) problems.push(`a date within the next ${CONSULT_MAX_DAYS} days`);
+  if (!(CONSULT_SLOTS as readonly string[]).includes(c.timeSlot)) problems.push("a time slot");
+  if (c.requirement.length < 10) problems.push("a short description of your requirement (at least 10 characters)");
+  if (problems.length) return res.status(400).json({ error: `Please provide ${problems.join(", ")}.` });
+  if (c.whatsapp === c.phone) c.whatsapp = "";
+
+  try {
+    // A double submit or a retry returns the booking already waiting for payment instead of creating another
+    const existing = (await findConsultations({ phone: c.phone })).find(x =>
+      x.status === "pending_payment" && x.category === c.category && x.preferredDate === c.preferredDate && x.timeSlot === c.timeSlot);
+    if (existing) return res.json({ booking: publicConsult(existing), existing: true });
+
+    let booking: Consultation | null = null;
+    for (let i = 0; !booking && i < 3; i++) {
+      const candidate: Consultation = { ...c, ref: newConsultRef(), amount: CONSULT_FEE, status: "pending_payment", adminNotes: "", createdAt: new Date().toISOString() };
+      try {
+        await saveConsultation(candidate, true);
+        booking = candidate;
+      } catch (e: any) {
+        if (e.code !== "23505") throw e;
+      }
+    }
+    if (!booking) throw new Error("No free booking reference");
+
+    await logActivity({ leadKey: c.phone, type: "consultation", detail: `Booked ₹${CONSULT_FEE} consultation ${booking.ref} (${c.category}) for ${c.preferredDate}, ${c.timeSlot}` });
+    try {
+      await sendAdminLeadAlertEmail({
+        enquiryId: booking.ref,
+        type: `₹${CONSULT_FEE} 1:1 Consultation Booking`,
+        name: escHtml(c.name),
+        email: escHtml(c.email || "Not provided"),
+        phone: c.phone,
+        program: escHtml(c.category),
+        message: escHtml(`Booking ${booking.ref} · Preferred ${c.preferredDate}, ${c.timeSlot}${c.whatsapp ? ` · WhatsApp ${c.whatsapp}` : ""} · Status: Pending Payment · ${c.requirement}`),
+      });
+    } catch (e: any) {
+      console.warn("Consultation alert email failed:", e.message);
+    }
+    res.status(201).json({ booking: publicConsult(booking) });
+  } catch (e: any) {
+    console.error("Consultation booking failed:", e.message);
+    res.status(500).json({ error: CONSULT_UNAVAILABLE });
+  }
+});
+
+// Customer: check status (reference + the mobile number used to book)
+app.get("/api/consultations/:ref", async (req, res) => {
+  const phone = normalisePhone(String(req.query.phone || ""));
+  try {
+    const [c] = await findConsultations({ ref: String(req.params.ref).trim().toUpperCase() });
+    if (!c || !phone || c.phone !== phone) return res.status(404).json({ error: "No booking found for this reference and mobile number." });
+    res.json({ booking: publicConsult(c) });
+  } catch (e: any) {
+    console.error("Consultation lookup failed:", e.message);
+    res.status(500).json({ error: CONSULT_UNAVAILABLE });
+  }
+});
+
+// Customer: submit the UPI transaction ID. Moves the booking to Payment Verification Pending, never to Paid.
+app.post("/api/consultations/:ref/payment", async (req, res) => {
+  const phone = normalisePhone(req.body?.phone);
+  const utr = String(req.body?.utr || "").replace(/\s/g, "");
+  try {
+    const [c] = await findConsultations({ ref: String(req.params.ref).trim().toUpperCase() });
+    if (!c || !phone || c.phone !== phone) return res.status(404).json({ error: "No booking found for this reference and mobile number." });
+    if (c.status !== "pending_payment" && c.status !== "payment_failed") {
+      return res.status(409).json({ error: "Payment for this booking has already been submitted.", booking: publicConsult(c) });
+    }
+    if (!UTR_RE.test(utr)) return res.status(400).json({ error: "Please enter the 12-digit UPI transaction ID (UTR) from your payment app." });
+
+    const payment: PaymentRecord = {
+      id: newPaymentId(),
+      applicantName: c.name,
+      admissionNumber: c.ref,
+      programme: `1:1 Consultation – ${c.category}`,
+      amount: String(c.amount || CONSULT_FEE),
+      upiRefNumber: utr,
+      payerPhone: c.phone,
+      payerEmail: c.email || "",
+      paymentDate: istToday(),
+      notes: `Consultation booking ${c.ref} · ${c.preferredDate}, ${c.timeSlot}`,
+      status: "pending_verification",
+      createdAt: new Date().toISOString(),
+    };
+    const failed = await savePayment(payment);
+    if (failed) return res.status(failed.status).json({ error: failed.error });
+
+    const patch = { ref: c.ref, status: "verification_pending" as ConsultStatus, upiRef: utr, paymentId: payment.id };
+    await saveConsultation(patch);
+    await logActivity({ leadKey: c.phone, type: "payment", detail: `Consultation ${c.ref}: ₹${payment.amount} submitted for verification (UTR ${utr})` });
+    res.json({ booking: publicConsult({ ...c, ...patch }) });
+  } catch (e: any) {
+    console.error("Consultation payment failed:", e.message);
+    res.status(500).json({ error: CONSULT_UNAVAILABLE });
+  }
+});
+
+// Admin: list and update bookings
+app.get("/api/consultations", requireAdmin, handle(async (req, res) => res.json(await findConsultations())));
+
+app.put("/api/consultations/:ref", requireAdmin, handle(async (req, res) => {
+  const [c] = await findConsultations({ ref: req.params.ref });
+  if (!c) return res.status(404).json({ error: "Booking not found." });
+  const { status, scheduledAt, adminNotes } = req.body || {};
+  const patch: Partial<Consultation> & { ref: string } = { ref: c.ref };
+  if (status !== undefined && status !== c.status) {
+    if (!["scheduled", "completed", "cancelled"].includes(status)) {
+      return res.status(400).json({ error: "Paid / Payment Failed are set by verifying or rejecting the payment." });
+    }
+    if (status !== "cancelled" && !["paid", "scheduled", "completed"].includes(c.status)) {
+      return res.status(400).json({ error: "Verify the payment before scheduling or completing this consultation." });
+    }
+    patch.status = status;
+  }
+  if (scheduledAt !== undefined) {
+    if (scheduledAt && isNaN(Date.parse(scheduledAt))) return res.status(400).json({ error: "Invalid consultation time." });
+    patch.scheduledAt = scheduledAt ? new Date(scheduledAt).toISOString() : (null as any);
+  }
+  if (adminNotes !== undefined) patch.adminNotes = String(adminNotes).slice(0, 2000);
+  await saveConsultation(patch);
+  if (patch.status) await logActivity({ leadKey: c.phone, type: "consultation", detail: `Consultation ${c.ref}: ${CONSULT_STATUS[patch.status].label}` });
+  res.json({ success: true });
+}));
 
 // Content (blogs, faqs, settings, pages) lives in Supabase table `site_data` (key text primary key, value jsonb)
 // so admin edits persist on Vercel; db.json is only the seed/fallback when Supabase isn't configured.
@@ -1051,13 +1277,16 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
     const { data, error } = await supabase.from("payments").update(patch).eq("id", id).select();
     if (error) throw new Error(error.message);
     if (!data?.length) return res.status(404).json({ error: "Payment record not found." });
+    const consultRef = String(data[0].admission_number || "");
+    const isConsultation = consultRef.startsWith("KBC-");
+    if (status && isConsultation) await syncConsultationPayment(consultRef, id, status);
 
     if (status) {
       const p = data[0];
       const leadKey = leadKeyOf(p.payer_phone, p.payer_email);
       const label = status === "verified" ? "verified" : status === "rejected" ? "rejected" : "moved back to pending";
       await logActivity({ leadKey, type: "payment", detail: `Payment of ₹${p.amount} ${label} (UTR ${p.upi_ref})` });
-      if (status === "verified") {
+      if (status === "verified" && !isConsultation) {
         // ponytail: scans all enquiries to match the phone in JS (stored phone formats vary); add a normalised phone column if this grows large
         const { data: leads } = await supabase.from("enquiries").select("id, status, phone, email");
         for (const l of leads || []) {
@@ -1077,6 +1306,7 @@ app.put("/api/payments/:id", requireAdmin, handle(async (req, res) => {
   if (status) p.status = status;
   if (notes !== undefined) p.notes = notes;
   saveDb(db);
+  if (status && String(p.admissionNumber || "").startsWith("KBC-")) await syncConsultationPayment(p.admissionNumber!, id, status);
   res.json({ success: true });
 }));
 

@@ -9,6 +9,8 @@ import { SystemSettings } from '../types';
 import { MotionConfig } from 'motion/react';
 import { Reveal, useStagger } from '../components/Motion';
 import { TrainingHero } from '../components/TrainingHero';
+import { AiCurriculum } from '../components/AiCurriculum';
+import { ConsultationOffer } from '../components/ConsultationBooking';
 
 interface FwaPageProps {
   onOpenConsultation: (type?: string) => void;
@@ -275,6 +277,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                       <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">4</span>
                       <span>Practical Classroom Training</span>
                     </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded-full bg-pink-50 text-[#E1007A] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">5</span>
+                      <span>AI-Assisted Curriculum</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -355,6 +361,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                       <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">4</span>
                       <span>Practical Teaching Training</span>
                     </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">5</span>
+                      <span>AI-Assisted Curriculum</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -424,6 +434,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">4</span>
                       <span>Creative Classroom Activities</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">5</span>
+                      <span>AI-Assisted Curriculum</span>
                     </li>
                   </ul>
                 </div>
@@ -495,6 +509,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                       <span className="w-5 h-5 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">4</span>
                       <span>Child-Centred Curriculum Planning</span>
                     </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">5</span>
+                      <span>AI-Assisted Curriculum</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -526,6 +544,9 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           </div>
           
         </div>
+
+        <AiCurriculum className="mt-8" />
+        <ConsultationOffer category="Teacher Training" className="mt-6" />
       </section>
       </Reveal>
 

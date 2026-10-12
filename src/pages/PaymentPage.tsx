@@ -23,6 +23,7 @@ import {
   IndianRupee,
   RefreshCw
 } from 'lucide-react';
+import { UPI_ID, UPI_NAME } from '../data/consultation';
 import { PaymentRecord } from '../types';
 
 interface PaymentPageProps {
@@ -59,8 +60,8 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
   const [submittedPayment, setSubmittedPayment] = useState<PaymentRecord | null>(null);
   const [activeTab, setActiveTab] = useState<'pay' | 'confirm'>('pay');
 
-  const beneficiaryName = 'kinderbee international preschool';
-  const upiId = 'paytm.s1e1uzf@pty';
+  const beneficiaryName = UPI_NAME;
+  const upiId = UPI_ID;
 
   // Available fee preset programs
   const programmeOptions = [

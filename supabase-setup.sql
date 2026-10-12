@@ -104,3 +104,28 @@ create table if not exists students (
 );
 create index if not exists students_parent_phone_idx on students (parent_phone);
 alter table students enable row level security;
+
+-- ₹99 one-to-one consultations (ref like KBC-7Q4M2X).
+-- status: pending_payment, verification_pending, paid, scheduled, completed, cancelled, payment_failed
+-- Paid / payment_failed are only set when the admin verifies or rejects the linked row in payments.
+create table if not exists consultations (
+  ref text primary key,
+  name text not null,
+  phone text not null,
+  whatsapp text,
+  email text,
+  category text not null,
+  preferred_date date not null,
+  time_slot text not null,
+  requirement text not null,
+  amount integer not null default 99,
+  status text not null default 'pending_payment',
+  upi_ref text,
+  payment_id text,
+  scheduled_at timestamptz,
+  admin_notes text default '',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create index if not exists consultations_phone_idx on consultations (phone);
+alter table consultations enable row level security;

@@ -3,6 +3,7 @@ import { ShieldCheck } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
+import { ConsultationBooking } from './components/ConsultationBooking';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { StickyContactWidget } from './components/StickyContactWidget';
 import { HomePage } from './pages/HomePage';
@@ -319,6 +320,8 @@ export function App() {
         defaultType={consultationType}
         onNavigateToPayment={handleNavigateToPayment}
       />
+
+      <ConsultationBooking settings={settings} />
 
       <AdminLoginModal
         isOpen={adminLoginOpen}

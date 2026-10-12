@@ -11,6 +11,8 @@ import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { motion, MotionConfig, useInView } from 'motion/react';
 import { Reveal, EASE } from '../components/Motion';
+import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
+import { AiCurriculum } from '../components/AiCurriculum';
 
 interface HomePageProps {
   setCurrentTab: (tab: string) => void;
@@ -199,7 +201,7 @@ const FWA_COURSES = [
     subtitle: 'Advanced Pedagogy & Practical Training',
     badge: 'Advanced Credential',
     image: `${NTT_IMG}Advanced%20Diploma%20in%20Early%20Childhood%20Care%20%26%20Education.png`,
-    modules: ['Child Development & Psychology', 'Play-Based Teaching', 'Curriculum & Activity Planning', 'Practical Classroom Training'],
+    modules: ['Child Development & Psychology', 'Play-Based Teaching', 'Curriculum & Activity Planning', 'Practical Classroom Training', 'AI-Assisted Curriculum'],
     note: 'Eligible: Aspiring & Working Teachers',
   },
   {
@@ -207,7 +209,7 @@ const FWA_COURSES = [
     subtitle: 'Play-Based Classroom Activity Planning',
     badge: 'Professional Diploma',
     image: `${NTT_IMG}Diploma%20in%20Play%20school%20Teacher%20Training.png`,
-    modules: ['Child Development Basics', 'Play-Based Teaching Methods', 'Classroom Activity Planning', 'Practical Teaching Training'],
+    modules: ['Child Development Basics', 'Play-Based Teaching Methods', 'Classroom Activity Planning', 'Practical Teaching Training', 'AI-Assisted Curriculum'],
     note: 'Eligible: Preschool Educators',
   },
   {
@@ -215,7 +217,7 @@ const FWA_COURSES = [
     subtitle: 'Child-Centred Global Teaching Methods',
     badge: 'Specialized Certificate',
     image: `${NTT_IMG}Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.png`,
-    modules: ['Nordic-Inspired Teaching Methods', 'Play-Based Learning', 'Child-Centred Education', 'Creative Classroom Activities'],
+    modules: ['Nordic-Inspired Teaching Methods', 'Play-Based Learning', 'Child-Centred Education', 'Creative Classroom Activities', 'AI-Assisted Curriculum'],
     note: 'Global Standards Certification',
   },
   {
@@ -223,7 +225,7 @@ const FWA_COURSES = [
     subtitle: 'NEP 2020 & NCF-FS Aligned Curriculum',
     badge: 'Curriculum Mastery',
     image: `${NTT_IMG}Foundational%20Stage%20Curriculum%20Design.png`,
-    modules: ['NEP & NCF-FS Aligned', 'Play-Based Learning Design', 'Learning Outcomes & Activities', 'Child-Centred Curriculum Planning'],
+    modules: ['NEP & NCF-FS Aligned', 'Play-Based Learning Design', 'Learning Outcomes & Activities', 'Child-Centred Curriculum Planning', 'AI-Assisted Curriculum'],
     note: 'NEP 2020 & NCF Compliant',
   },
 ];
@@ -791,7 +793,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-                Partner With Kinderbee
+                Partner with Kinderbee
               </h2>
 
               <h3 className="text-xl font-bold text-stone-700">
@@ -834,10 +836,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
 
                 <button
-                  onClick={() => onOpenConsultation('franchise')}
+                  onClick={() => openConsultationBooking('Preschool Partnership / Franchise')}
                   className="bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold px-6 py-3.5 rounded-xl transition text-sm cursor-pointer"
                 >
-                  Book Franchise Consultation
+                  Book Franchise Consultation · ₹99
                 </button>
               </div>
             </div>
@@ -847,7 +849,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="kb-frame rounded-2xl overflow-hidden shadow-lg border border-stone-200">
                 <img 
                   src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Partner/Partner%20With%20Kinderbee.jpeg" 
-                  alt="Partner With Kinderbee - Zero-Royalty Preschool Partnership" 
+                  alt="Partner with Kinderbee - Zero-Royalty Preschool Partnership" 
                   className="w-full aspect-video object-cover"
                 />
               </div>
@@ -855,6 +857,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
         </div>
+        <ConsultationOffer className="mt-6" />
       </section>
       </Reveal>
 
@@ -947,6 +950,8 @@ export const HomePage: React.FC<HomePageProps> = ({
               </button>
             ))}
           </div>
+
+          <AiCurriculum tone="dark" className="relative z-10 mt-6" />
         </div>
       </section>
       </Reveal>
