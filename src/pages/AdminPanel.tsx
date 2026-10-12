@@ -5,6 +5,9 @@ import { input, btn, btnPrimary, btnGhost, card, fmtDate, csvCell, phoneKey, STA
 import { CrmTab } from './admin/Crm';
 import { OpportunitiesTab } from './admin/Opportunities';
 import { ConsultationsTab } from './admin/Consultations';
+import { enquiryCategory, categoryInfo } from '../data/enquiry';
+
+const enquiryLabel = (e: Enquiry) => categoryInfo(enquiryCategory(e.type, e.fields));
 
 interface AdminPanelProps {
   adminToken: string;
@@ -110,7 +113,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
     const q = query.toLowerCase();
     return items.filter(e =>
       (status === 'all' || e.status === status) &&
-      (!q || [e.fields?.name, e.fields?.email, e.fields?.phone, e.fields?.city, e.type].some(v => String(v || '').toLowerCase().includes(q)))
+      (!q || [e.fields?.name, e.fields?.email, e.fields?.phone, e.fields?.city, e.type, enquiryLabel(e).label].some(v => String(v || '').toLowerCase().includes(q)))
     );
   }, [items, query, status]);
 
@@ -129,7 +132,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
 
   const exportCsv = () => {
     const head = ['Date', 'Type', 'Name', 'Email', 'Phone', 'City', 'State', 'Budget', 'Programme', 'Message', 'Status', 'Notes'];
-    const rows = filtered.map(e => [fmtDate(e.createdAt), e.type, e.fields?.name, e.fields?.email, e.fields?.phone, e.fields?.city, e.fields?.state, e.fields?.budget, e.fields?.partnershipModel || e.fields?.courseOfInterest, e.fields?.message, e.status, e.notes]);
+    const rows = filtered.map(e => [fmtDate(e.createdAt), enquiryLabel(e).label, e.fields?.name, e.fields?.email, e.fields?.phone, e.fields?.city, e.fields?.state, e.fields?.budget, e.fields?.partnershipModel || e.fields?.courseOfInterest, e.fields?.message, e.status, e.notes]);
     const csv = [head, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -160,7 +163,7 @@ const EnquiriesTab: React.FC<TabProps> = ({ api, flash }) => {
                   <div className="text-sm text-stone-500">{e.fields?.phone} · {e.fields?.email}</div>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="rounded-full bg-stone-100 px-2 py-1 text-stone-600">{e.type}</span>
+                  <span className={`rounded-full px-2 py-1 font-semibold ${enquiryLabel(e).color}`}>{enquiryLabel(e).label}</span>
                   <span className={`rounded-full px-2 py-1 font-semibold ${STATUS_COLORS[e.status] || ''}`}>{stageOf(e.status).label}</span>
                   <span className="text-stone-400">{fmtDate(e.createdAt)}</span>
                 </div>

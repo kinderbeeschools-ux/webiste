@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
+import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, type Consultation, type ConsultStatus } from "./src/data/consultation.js";
 import {
   sendApplicantConfirmationEmail,
@@ -437,10 +438,16 @@ app.post("/api/enquiries", async (req, res) => {
     if (attribution[k] && !fields[k]) fields[k] = String(attribution[k]).slice(0, 200);
   });
 
+  // One CRM category per line of business (admission, franchise, ntt, cbse, degree…); the form it came from is kept too
+  const category = enquiryCategory(type, fields);
+  fields.formType = fields.formType || String(type).slice(0, 80);
+  fields.category = category;
+  fields.enquiryType = categoryInfo(category).label;
+
   const db = loadDb();
   const newEnquiry: Enquiry = {
     id: `enq-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-    type,
+    type: category,
     fields,
     status: "new",
     notes: "",
@@ -457,10 +464,10 @@ app.post("/api/enquiries", async (req, res) => {
         Lead Name: ${fields.name}
         Lead Email: ${fields.email}
         Lead Phone: ${fields.phone}
-        Enquiry Type: ${type}
+        Enquiry Type: ${fields.enquiryType}
         City/State: ${fields.city || "Not Provided"}, ${fields.state || "Not Provided"}
         Budget: ${fields.budget || "Not Specified"}
-        Partnership/Course: ${fields.partnershipModel || fields.courseOfInterest || "General Enquiry"}
+        Partnership/Course: ${fields.program || fields.partnershipModel || fields.courseOfInterest || "General Enquiry"}
         Message: ${fields.message || "None"}
         `;
 
@@ -514,7 +521,7 @@ app.post("/api/enquiries", async (req, res) => {
             city: fields.city || null,
             state: fields.state || null,
             budget: fields.budget || null,
-            partnership_model: fields.partnershipModel || fields.courseOfInterest || null,
+            partnership_model: fields.program || fields.partnershipModel || fields.courseOfInterest || null,
             message: fields.message || null,
             status: newEnquiry.status,
             ai_summary: newEnquiry.aiSummary || null,
@@ -537,11 +544,11 @@ app.post("/api/enquiries", async (req, res) => {
   // Trigger automated email dispatch asynchronously (Applicant confirmation + Admin lead alert)
   const emailPayload = {
     enquiryId: newEnquiry.id,
-    type: newEnquiry.type,
+    type: fields.enquiryType,
     name: fields.name,
     email: fields.email,
     phone: fields.phone,
-    program: fields.partnershipModel || fields.courseOfInterest || type,
+    program: fields.program || fields.partnershipModel || fields.courseOfInterest || fields.enquiryType,
     city: fields.city,
     state: fields.state,
     budget: fields.budget,
@@ -786,7 +793,9 @@ app.post("/api/crm/leads", requireAdmin, async (req, res) => {
   const supabase = getSupabaseClient();
   if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
   const id = `enq-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const type = String(b.type || fields.program || "Manual lead");
+  const type = enquiryCategory(String(b.type || ""), fields);
+  fields.category = type;
+  fields.enquiryType = categoryInfo(type).label;
   const createdAt = new Date().toISOString();
   const { error } = await supabase.from("enquiries").insert([{
     id, type, name, email: fields.email || null, phone, city: fields.city || null, state: fields.state || null,

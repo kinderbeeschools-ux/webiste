@@ -6,6 +6,7 @@ import {
   ArrowRightLeft, CreditCard, Sparkles, Flame, Users, Building2, Plus, Pencil, Baby, Home, TrendingUp, Clock,
 } from 'lucide-react';
 import type { Enquiry, PaymentRecord, LeadActivity, LeadStage, Student } from '../../types';
+import { ENQUIRY_CATEGORIES, enquiryCategory, categoryInfo } from '../../data/enquiry';
 import {
   input, btnPrimary, btnGhost, card, fmtDate, fmtDay, rupees, todayISO, phoneKey, STAGES, stageOf, stageIndex, isOpenStage,
   STATUS_COLORS, LOST_REASONS, LEAD_SOURCES, FOLLOW_UP_TYPES, PROGRAMMES, WHATSAPP_TEMPLATES, fillTemplate, leadScore,
@@ -58,7 +59,13 @@ const scoreOf = (c: Contact) => (c.lead ? leadScore(c.lead) : { score: 0, temp: 
 const sourceOf = (e?: Enquiry) => String(e?.fields?.source || 'Website');
 const branchOf = (e?: Enquiry) => String(e?.fields?.branch || '');
 const programOf = (e?: Enquiry) => String(e?.fields?.program || e?.fields?.courseOfInterest || e?.fields?.partnershipModel || e?.type || '');
-const isFranchise = (e: Enquiry) => /franchise|partner/i.test(`${e.type} ${programOf(e)} ${sourceOf(e)}`);
+// Line of business: Admission, Franchise, NTT, CBSE School, Degree College…
+const catOf = (e?: Enquiry) => enquiryCategory(e?.type, e?.fields);
+const isFranchise = (e: Enquiry) => catOf(e) === 'franchise';
+const CategoryChip: React.FC<{ e?: Enquiry }> = ({ e }) => {
+  const c = categoryInfo(catOf(e));
+  return <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${c.color}`}>{c.short}</span>;
+};
 
 type View = 'dashboard' | 'pipeline' | 'leads' | 'followups' | 'students' | 'parents';
 const VIEWS: [View, string, React.ElementType][] = [
@@ -381,6 +388,11 @@ const DashboardView: React.FC<{ contacts: Contact[]; enquiries: Enquiry[]; payme
         </div>
 
         <div className={`${card} space-y-3`}>
+          <h2 className="font-semibold">Enquiries by type</h2>
+          <Bars tone="from-fuchsia-500 to-pink-300" rows={tally(enquiries.map(e => categoryInfo(catOf(e)).label))} />
+        </div>
+
+        <div className={`${card} space-y-3`}>
           <h2 className="font-semibold">Lead sources</h2>
           <Bars rows={tally(enquiries.map(sourceOf))} />
         </div>
@@ -498,19 +510,34 @@ const LeadsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void }> 
   const [stage, setStage] = useState('all');
   const [temp, setTemp] = useState('all');
   const [source, setSource] = useState('all');
+  const [category, setCategory] = useState('all');
   const leads = contacts.filter(c => c.lead);
+  const catCounts = tally(leads.map(c => catOf(c.lead)));
   const sources = [...new Set(leads.map(c => sourceOf(c.lead)))].sort();
   const shown = leads
     .filter(c =>
       (stage === 'all' || c.lead!.status === stage) &&
       (temp === 'all' || (isOpenStage(c.lead!.status) && scoreOf(c).temp === temp)) &&
       (source === 'all' || sourceOf(c.lead) === source) &&
+      (category === 'all' || catOf(c.lead) === category) &&
       (!q || [c.name, c.phone, c.email, programOf(c.lead), branchOf(c.lead), c.lead!.fields?.childName].some(v => String(v || '').toLowerCase().includes(q.toLowerCase())))
     )
     .sort((a, b) => scoreOf(b).score - scoreOf(a).score);
 
   return (
     <div className="space-y-3">
+      <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1" role="tablist" aria-label="Enquiry type">
+        {[{ id: 'all', short: 'All' }, ...ENQUIRY_CATEGORIES].map(c => {
+          const n = c.id === 'all' ? leads.length : catCounts.find(x => x.label === c.id)?.value || 0;
+          if (c.id !== 'all' && !n && ['investor', 'other'].includes(c.id)) return null;
+          return (
+            <button key={c.id} role="tab" aria-selected={category === c.id} onClick={() => setCategory(c.id)}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${category === c.id ? 'bg-[#E1007A] text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'}`}>
+              {c.short} <span className="opacity-70">({n})</span>
+            </button>
+          );
+        })}
+      </div>
       <input className={input} placeholder="Search parent, child, mobile, email, programme, branch…" value={q} onChange={e => setQ(e.target.value)} />
       <div className="grid grid-cols-3 gap-2">
         <select className={input} value={stage} onChange={e => setStage(e.target.value)}>
@@ -532,6 +559,7 @@ const LeadsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void }> 
             sub={`${programOf(c.lead)}${c.lead!.fields?.childName ? ` · ${c.lead!.fields.childName}` : ''} · ${sourceOf(c.lead)}`}
             right={
               <span className="flex shrink-0 items-center gap-1.5">
+                <CategoryChip e={c.lead} />
                 <TempChip c={c} />
                 <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${stageOf(c.lead!.status).color}`}>{stageOf(c.lead!.status).label}</span>
               </span>
@@ -716,6 +744,12 @@ const LeadDetailsForm: React.FC<{ value: Record<string, string>; onChange: (v: R
           )}
         </Field>
       ))}
+      <Field label="Enquiry type">
+        <select className={input} value={value.category || ''} onChange={e => set('category', e.target.value)}>
+          <option value="">—</option>
+          {ENQUIRY_CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+        </select>
+      </Field>
       <Field label="Interested programme">
         <select className={input} value={value.program || ''} onChange={e => set('program', e.target.value)}>
           <option value="">—</option>
@@ -746,7 +780,7 @@ const NewLeadModal: React.FC<{ api: Api; onClose: () => void; onCreated: () => v
     if ((fields.name || '').trim().length < 2 || (fields.phone || '').replace(/\D/g, '').length < 10) return setErr('Parent name and a 10-digit phone number are required.');
     setBusy(true);
     try {
-      await api('/api/crm/leads', { method: 'POST', body: JSON.stringify({ fields, type: fields.program || 'Manual lead', nextFollowUp, followUpType }) });
+      await api('/api/crm/leads', { method: 'POST', body: JSON.stringify({ fields, type: fields.category || fields.program || '', nextFollowUp, followUpType }) });
       onCreated();
     } catch (e: any) { setErr(e.message); } finally { setBusy(false); }
   };
@@ -891,7 +925,7 @@ const ContactDrawer: React.FC<{
 
   const startEdit = () => {
     const f = lead?.fields || {};
-    setDetails(Object.fromEntries([...LEAD_FIELDS.map(([k]) => k), 'program', 'source', 'message'].map(k => [k, String(f[k] ?? (k === 'program' ? programOf(lead) : '') ?? '')])));
+    setDetails(Object.fromEntries([...LEAD_FIELDS.map(([k]) => k), 'category', 'program', 'source', 'message'].map(k => [k, String(f[k] ?? (k === 'program' ? programOf(lead) : k === 'category' ? catOf(lead) : '') ?? '')])));
     setEditing(true);
   };
 
