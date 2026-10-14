@@ -1,4 +1,5 @@
 import React from 'react';
+import { openBrochureDownload } from '../BrochureDownload';
 import { motion } from 'motion/react';
 import {
   Wallet, BadgePercent, Building2, GraduationCap, Users, Megaphone, ShieldCheck, Scale,
@@ -244,13 +245,10 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
             <button onClick={onOpenConsultation} className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#17050F] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-xl">
               Book Free Consultation <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
-            <a
-              href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
-              target="_blank" rel="noopener noreferrer" download="Kinderbee_Franchise_Brochure.pdf"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#17050F]/30 bg-white/40 px-6 py-3.5 text-sm font-bold text-[#17050F] transition hover:bg-white/60"
+            <button type="button" onClick={() => openBrochureDownload('Franchise buyer guide')} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#17050F]/30 bg-white/40 px-6 py-3.5 text-sm font-bold text-[#17050F] transition hover:bg-white/60"
             >
               <Download className="h-4 w-4" /> Download Franchise PDF
-            </a>
+            </button>
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#17050F]/30 bg-white/40 px-6 py-3.5 text-sm font-bold text-[#17050F] transition hover:bg-white/60">
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>

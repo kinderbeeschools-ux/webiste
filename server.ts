@@ -432,7 +432,12 @@ app.post("/api/auth/login", (req, res) => {
 // Submit Enquiry (Form Submissions)
 app.post("/api/enquiries", async (req, res) => {
   const { type, fields } = req.body;
-  if (!type || !fields || !fields.name || !fields.email || !fields.phone) {
+  // Newsletter sign-ups (blog sidebar) only collect an email; they still land in the CRM as a lead
+  if (type === "Newsletter Subscription" && fields && EMAIL_RE.test(String(fields.email || "").trim())) {
+    fields.email = String(fields.email).trim().toLowerCase();
+    fields.name = fields.name || "Newsletter subscriber";
+    fields.phone = fields.phone || "";
+  } else if (!type || !fields || !fields.name || !fields.email || !fields.phone) {
     return res.status(400).json({ error: "Missing required contact fields" });
   }
   // Every lead keeps where it came from
@@ -510,8 +515,9 @@ app.post("/api/enquiries", async (req, res) => {
   db.enquiries.unshift(newEnquiry);
   saveDb(db);
 
-  // Sync to Supabase table 'enquiries' asynchronously if client is initialized
-  const syncPromise = (async () => {
+  // Save to Supabase table 'enquiries' (the CRM's store on Vercel, where db.json can't persist).
+  // Resolves false when it could not be saved, so the visitor is told instead of the lead being lost.
+  const syncPromise = (async (): Promise<boolean> => {
     try {
       const supabase = getSupabaseClient();
       if (supabase) {
@@ -534,14 +540,16 @@ app.post("/api/enquiries", async (req, res) => {
           }
         ]);
         if (sbError) {
-          console.warn("Supabase Lead Sync Notice:", sbError.message);
-        } else {
-          console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
-          await logActivity({ leadKey: leadKeyOf(fields.phone, fields.email), enquiryId: newEnquiry.id, type: "created", detail: `Enquiry received: ${newEnquiry.type}` });
+          console.error("Enquiry NOT saved to Supabase:", newEnquiry.id, sbError.message);
+          return false;
         }
+        console.log("Lead successfully synced to Supabase database:", newEnquiry.id);
+        await logActivity({ leadKey: leadKeyOf(fields.phone, fields.email), enquiryId: newEnquiry.id, type: "created", detail: `Enquiry received: ${newEnquiry.type}` });
       }
+      return true;
     } catch (sbErr) {
       console.error("Supabase sync execution error:", sbErr);
+      return false;
     }
   })();
 
@@ -577,7 +585,11 @@ app.post("/api/enquiries", async (req, res) => {
   });
 
   // Vercel freezes the function once the response is sent, so finish the sync + emails first
-  await Promise.all([syncPromise, emailPromise]);
+  const [saved] = await Promise.all([syncPromise, emailPromise]);
+  if (!saved) {
+    // The admin alert email (above) still carries the details, but never tell the visitor it worked when the CRM didn't get it
+    return res.status(500).json({ error: "We could not save your enquiry right now. Please call or WhatsApp 81223 44040." });
+  }
 
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
 });

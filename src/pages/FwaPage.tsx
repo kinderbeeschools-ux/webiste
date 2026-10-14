@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { openBrochureDownload } from '../components/BrochureDownload';
 import { 
   Sparkles, ArrowRight, ChevronLeft, Download, ChevronRight, BookOpen, GraduationCap, 
   FileText, Award, Star, Globe, Eye, X, Clock, Calendar, Tag, Phone, Mail, Copy, Check, CreditCard
@@ -18,8 +19,6 @@ interface FwaPageProps {
   settings?: SystemSettings | null;
 }
 
-// TEMPORARY sample PDF (not a Kinderbee brochure). Replace with the real course brochure link.
-const BROCHURE_URL = 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/PDF%20Documents/MA%20Syllabus.pdf';
 
 const programSliders = [
   {
@@ -300,15 +299,11 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   >
                     {copiedCaption ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                   </button>
-                  <a
-                    href={BROCHURE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#A3001D] hover:bg-[#850017] text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                  <button type="button" onClick={() => openBrochureDownload('Teacher Training page', 'courses', 'Advanced Diploma in Early Childhood Care & Education (ECCE)')} className="bg-[#A3001D] hover:bg-[#850017] text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Brochure</span>
-                  </a>
+                  </button>
                   {onNavigateToPayment && (
                     <button
                       onClick={() => onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', String(COURSE_FEES['Advanced Diploma in Early Childhood Care & Education (ECCE)']))}
@@ -374,15 +369,11 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">Eligible: Preschool Educators</span>
                 <div className="flex flex-wrap items-center gap-2">
-                  <a
-                    href={BROCHURE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  <button type="button" onClick={() => openBrochureDownload('Teacher Training page', 'courses', 'Diploma in Play school Teacher Training')} className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Brochure</span>
-                  </a>
+                  </button>
                   {onNavigateToPayment && (
                     <button
                       onClick={() => onNavigateToPayment('Diploma in Play school Teacher Training', String(COURSE_FEES['Diploma in Play school Teacher Training']))}
@@ -448,15 +439,11 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">Global Standards Certification</span>
                 <div className="flex flex-wrap items-center gap-2">
-                  <a
-                    href={BROCHURE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  <button type="button" onClick={() => openBrochureDownload('Teacher Training page', 'courses', 'Certificate in Nordic inspired Preschool Teaching')} className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Brochure</span>
-                  </a>
+                  </button>
                   {onNavigateToPayment && (
                     <button
                       onClick={() => onNavigateToPayment('Certificate in Nordic inspired Preschool Teaching', String(COURSE_FEES['Certificate in Nordic inspired Preschool Teaching']))}
@@ -522,15 +509,11 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-stone-500 font-medium">NEP 2020 & NCF Compliant</span>
                 <div className="flex flex-wrap items-center gap-2">
-                  <a
-                    href={BROCHURE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  <button type="button" onClick={() => openBrochureDownload('Teacher Training page', 'courses', 'Foundational Stage Curriculum Design')} className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Brochure</span>
-                  </a>
+                  </button>
                   {onNavigateToPayment && (
                     <button
                       onClick={() => onNavigateToPayment('Foundational Stage Curriculum Design', String(COURSE_FEES['Foundational Stage Curriculum Design']))}

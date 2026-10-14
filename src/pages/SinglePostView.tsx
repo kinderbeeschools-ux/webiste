@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { openBrochureDownload } from '../components/BrochureDownload';
 import { 
   Calendar, 
   Clock, 
@@ -20,6 +21,7 @@ import {
   Globe
 } from 'lucide-react';
 import { BlogPost, SystemSettings } from '../types';
+import { subscribeNewsletter } from '../utils/newsletter';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { renderMarkdown } from '../utils/markdownRenderer';
@@ -289,10 +291,13 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
                 </div>
               ) : (
                 <form 
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
-                    if (newsletterEmail) setSubscribed(true);
-                  }} 
+                    if (!newsletterEmail) return;
+                    const error = await subscribeNewsletter(newsletterEmail, `Blog post: ${blog.title}`);
+                    if (error) return alert(error);
+                    setSubscribed(true);
+                  }}
                   className="space-y-2"
                 >
                   <input
@@ -324,15 +329,10 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
               <p className="text-xs text-stone-600 leading-relaxed">
                 Unlock full curriculum licensing, architectural design, and 18-month payback guidance.
               </p>
-              <a 
-                href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                download="Kinderbee_Franchise_Brochure.pdf"
-                className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+              <button type="button" onClick={() => openBrochureDownload('Blog post')} className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Download Free Prospectus PDF &rarr;
-              </a>
+              </button>
             </div>
 
           </aside>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BROCHURE_URL } from './BrochureDownload';
 import { COURSE_FEES, ECCE } from '../data/courses';
 import { X, Send, CheckCircle2, Sparkles, Building2, Baby, GraduationCap, Briefcase, CreditCard, Download, School, Landmark } from 'lucide-react';
 import { categoryInfo, type EnquiryCategory } from '../data/enquiry';
@@ -228,10 +229,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                 </button>
               ) : activeTab === 'franchise' ? (
                 <a
-                  href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
+                  href={BROCHURE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  download="Kinderbee_Franchise_Brochure.pdf"
+                  download="Kinderbee-Franchise-Brochure-2026.pdf"
                   className="w-full sm:w-auto bg-[#E1007A] hover:bg-pink-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <Download className="w-4 h-4" />

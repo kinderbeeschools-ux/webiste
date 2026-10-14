@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { openBrochureDownload } from '../components/BrochureDownload';
 import { Sparkles, CheckCircle2, ArrowRight, Building2, GraduationCap, School, BookOpen, TrendingUp, Headphones, ShieldCheck, Globe } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
@@ -155,16 +156,11 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                     <span>Book Free Consultation</span>
                     <span aria-hidden="true">&rarr;</span>
                   </button>
-                  <a
-                    href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download="Kinderbee_Franchise_Brochure.pdf"
-                    className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 hover:border-stone-400 font-bold px-5 sm:px-6 py-3.5 rounded-xl shadow-xs transition text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  <button type="button" onClick={() => openBrochureDownload('Franchise page')} className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 hover:border-stone-400 font-bold px-5 sm:px-6 py-3.5 rounded-xl shadow-xs transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Download Franchise PDF</span>
                     <span aria-hidden="true">&rarr;</span>
-                  </a>
+                  </button>
                 </div>
                 <button
                   type="button"

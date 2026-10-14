@@ -1,4 +1,5 @@
 import React from 'react';
+import { openBrochureDownload } from './BrochureDownload';
 import { motion } from 'motion/react';
 import {
   BadgeCheck, Ruler, BookMarked, BookOpen, UserSearch, GraduationCap, Globe2, Megaphone, CalendarHeart,
@@ -249,15 +250,10 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
               <span>Book Free Consultation</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
-            <a
-              href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              download="Kinderbee_Franchise_Brochure.pdf"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-semibold px-6 py-3.5 rounded-xl border border-white/20 transition"
+            <button type="button" onClick={() => openBrochureDownload('Franchise details')} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-semibold px-6 py-3.5 rounded-xl border border-white/20 transition"
             >
               Download Franchise PDF
-            </a>
+            </button>
           </div>
         </div>
       </section>

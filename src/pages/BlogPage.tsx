@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { openBrochureDownload } from '../components/BrochureDownload';
 import { 
   Sparkles, 
   Search, 
@@ -22,6 +23,7 @@ import {
   FolderOpen
 } from 'lucide-react';
 import { BlogPost, SystemSettings } from '../types';
+import { subscribeNewsletter } from '../utils/newsletter';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 
@@ -109,9 +111,11 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   const totalPages = Math.ceil(regularPosts.length / postsPerPage) || 1;
   const paginatedPosts = regularPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) return;
+    const error = await subscribeNewsletter(newsletterEmail, 'Blog page');
+    if (error) return alert(error);
     setNewsletterSubscribed(true);
     setTimeout(() => {
       setNewsletterEmail('');
@@ -679,15 +683,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               <p className="text-xs text-stone-600 leading-relaxed">
                 Discover our comprehensive setup kit, curriculum licensing, and projected 18-month ROI model.
               </p>
-              <a 
-                href="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Files/_FRANCHISE.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                download="Kinderbee_Franchise_Brochure.pdf"
-                className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+              <button type="button" onClick={() => openBrochureDownload('Blog page')} className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Download Free Prospectus PDF &rarr;
-              </a>
+              </button>
             </div>
 
           </aside>

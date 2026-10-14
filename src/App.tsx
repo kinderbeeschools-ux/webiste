@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ConsultationBooking } from './components/ConsultationBooking';
+import { BrochureDownload } from './components/BrochureDownload';
 import { CoursePayment, openCoursePayment } from './components/CoursePayment';
 import { useAutoReveal } from './components/AutoReveal';
 import { AdminLoginModal } from './components/AdminLoginModal';
@@ -336,6 +337,7 @@ export function App() {
 
       <ConsultationBooking settings={settings} />
       <CoursePayment settings={settings} />
+      <BrochureDownload />
 
       <AdminLoginModal
         isOpen={adminLoginOpen}
