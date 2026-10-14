@@ -45,10 +45,10 @@ export function App() {
       return 'payments';
     }
 
-    // Policy links from the payment and enquiry popups (opened in a new tab)
-    const policy = hash.replace(/^#\/?/, '');
-    if (['cancellation-refund', 'terms-and-conditions', 'privacy-policy'].includes(policy)) {
-      return policy;
+    // Links that open a page in a new tab: policy links in the popups, blog call-to-action buttons
+    const linked = hash.replace(/^#\/?/, '');
+    if (['cancellation-refund', 'terms-and-conditions', 'privacy-policy', 'partnerships', 'contact'].includes(linked)) {
+      return linked;
     }
 
     // Shared opportunity links (#opportunity/<id>) open the Joint Ventures page

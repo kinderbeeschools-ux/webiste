@@ -8,6 +8,7 @@ import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportu
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { COURSE_FEES } from "./src/data/courses.js";
+import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
 import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, type Consultation, type ConsultStatus } from "./src/data/consultation.js";
 import {
   sendApplicantConfirmationEmail,
@@ -1372,8 +1373,21 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
 }));
 
 // Generic list CRUD for blogs and faqs
+// Adds the Kinderbee Journal posts to the stored blog list once. "blogSeeds" remembers which were added,
+// so a post the admin later deletes is not added back.
+async function seedJournalBlogs(): Promise<any[]> {
+  const list = (await getContent<any[]>("blogs")) || [];
+  const seeded = new Set<string>((await getContent<string[]>("blogSeeds")) || []);
+  const add = JOURNAL_BLOGS.filter(b => !seeded.has(b.id) && !list.some(x => x.id === b.id));
+  if (!add.length) return list;
+  const next = [...add, ...list];
+  await setContent("blogs", next);
+  await setContent("blogSeeds", [...seeded, ...add.map(b => b.id)]);
+  return next;
+}
+
 function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, existing?: any) => any) {
-  app.get(`/api/${key}`, handle(async (req, res) => res.json(await getContent(key) || [])));
+  app.get(`/api/${key}`, handle(async (req, res) => res.json(key === "blogs" ? await seedJournalBlogs() : await getContent(key) || [])));
 
   app.post(`/api/${key}`, guard("website"), handle(async (req, res) => {
     const list = await getContent<any[]>(key) || [];
