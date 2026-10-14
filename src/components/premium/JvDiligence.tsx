@@ -102,7 +102,7 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
       <div className="mt-20 grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <motion.div variants={rise} {...inView} className="lg:sticky lg:top-28 lg:self-start">
           <Eyebrow color={P.accent}>Before you commit</Eyebrow>
-          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.4rem]"><span style={{ color: GREEN }}>Six things to verify, every time.</span></h3>
+          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.4rem]"><span style={{ color: GREEN }}>Six things to verify, every time</span></h3>
           <p className="mt-3 text-sm leading-relaxed" style={{ color: P.muted }}>
             We encourage every partner to confirm these independently with their own legal, technical and financial advisors.
           </p>
@@ -125,7 +125,7 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
       <motion.div className="mt-20 overflow-hidden rounded-2xl p-7 sm:p-12" style={{ background: `linear-gradient(135deg, ${GREEN}, #0A2F2B)` }} variants={rise} {...inView}>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow color={P.accentSoft} center>How we keep it honest</Eyebrow>
-          <h3 style={SERIF} className="text-3xl leading-tight text-white sm:text-4xl">Clear on what we are, and what we are not.</h3>
+          <h3 style={SERIF} className="text-3xl leading-tight text-white sm:text-4xl">Clear on what we are, and what we are not</h3>
         </div>
         <div className="mt-9 grid gap-5 md:grid-cols-3">
           {PLEDGES.map(({ icon: Icon, t, d }) => (
@@ -142,7 +142,7 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
       <div className="mt-20 grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <motion.div variants={rise} {...inView}>
           <Eyebrow color={P.accent}>Straight answers</Eyebrow>
-          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.3rem]"><span style={{ color: GREEN }}>What partners ask us first.</span></h3>
+          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.3rem]"><span style={{ color: GREEN }}>What partners ask us first</span></h3>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
             <button onClick={onInvest} className="group inline-flex w-fit cursor-pointer items-center gap-2 rounded-md px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-xl" style={{ background: GREEN }}>
               Investor Interest Form <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -3,6 +3,7 @@ import {
   Sparkles, ArrowRight, ChevronLeft, Download, ChevronRight, BookOpen, GraduationCap, 
   FileText, Award, Star, Globe, Eye, X, Clock, Calendar, Tag, Phone, Mail, Copy, Check, CreditCard
 } from 'lucide-react';
+import { COURSE_FEES } from '../data/courses';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
@@ -10,8 +11,6 @@ import { MotionConfig } from 'motion/react';
 import { Reveal, useStagger } from '../components/Motion';
 import { TrainingHero } from '../components/TrainingHero';
 import { AiCurriculum } from '../components/AiCurriculum';
-import { ConsultationOffer } from '../components/ConsultationBooking';
-import { WomenEmpowerment } from '../components/premium/WomenEmpowerment';
 
 interface FwaPageProps {
   onOpenConsultation: (type?: string) => void;
@@ -25,17 +24,17 @@ const BROCHURE_URL = 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object
 const programSliders = [
   {
     title: "Advanced Diploma in Early Childhood Care & Education",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Advanced%20Diploma%20in%20Early%20Childhood%20Care%20and%20Education.png",
+    image: "/images/fwa/advanced-diploma-vijayadashami-offer.jpg",
     subtitle: "Advanced Pedagogy & Practical Training"
   },
   {
     title: "Certificate in Nordic inspired Preschool Teaching",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Certificate%20in%20Nordic%20inspired%20Preschool%20Teaching.png",
+    image: "/images/fwa/certificate-vijayadashami-offer.jpg",
     subtitle: "Child-Centred Global Teaching Methods"
   },
   {
     title: "Diploma in Play school Teacher Training",
-    image: "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Sliders/Diploma%20in%20Play%20school%20Teacher%20Training.png",
+    image: "/images/fwa/play-school-diploma-vijayadashami-offer.jpg",
     subtitle: "Play-Based Classroom Activity Planning"
   },
   {
@@ -99,9 +98,9 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
     <MotionConfig reducedMotion="user">
     <div className="space-y-20 pb-20 bg-[#FAF9F6] overflow-x-clip">
       <SEOHead 
-        title="Academics & Programs"
-        description="Explore Kinderbee's Advanced Diplomas, Teacher Training programs, and Foundational Curriculum certifications."
-        keywords="preschool programs, toddler, pre-k, kindergarten, NTT teacher training, early childhood education, teacher certification"
+        title="NTT Course & ECCE Diploma | Kinderbee Teacher Training"
+        description="Join Kinderbee's Advanced Diploma in Early Childhood Care & Education (NTT) and train in Finnish playful pedagogy. Enquire about the next batch."
+        keywords="NTT course in Bengaluru, early childhood care and education diploma, nursery teacher training course, ECCE diploma, Finnish playful pedagogy"
         settings={settings}
       />
       
@@ -125,7 +124,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 bg-stone-900/80 border border-[#E1007A]/50 text-pink-200 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#FFD400]" />
-              <span>Admissions open · 2026–27</span>
+              <span>Vijayadashami Offer · 30% Off</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-display font-extrabold tracking-tight text-white leading-tight">
               Explore our <span className="kb-shimmer">programmes</span>
@@ -151,14 +150,16 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               {programSliders.map((slide, idx) => (
                 <div 
                   key={idx} 
-                  className="w-full flex-shrink-0 relative aspect-[1704/923] bg-stone-950 flex items-center justify-center cursor-pointer"
+                  className="w-full flex-shrink-0 relative aspect-[4/5] sm:aspect-[16/9] bg-stone-950 flex items-center justify-center overflow-hidden cursor-pointer"
                   onClick={() => onOpenConsultation('fwa_course')}
                   title={`Click to inquire about ${slide.title}`}
                 >
+                  {/* Posters and banners have different shapes: show the whole image over a blurred fill of itself */}
+                  <img src={slide.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60" loading={idx === 0 ? "eager" : "lazy"} />
                   <img 
                     src={slide.image} 
                     alt={slide.title}
-                    className="w-full h-full object-cover block"
+                    className="relative w-full h-full object-contain block"
                     loading={idx === 0 ? "eager" : "lazy"}
                   />
                 </div>
@@ -310,7 +311,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   </a>
                   {onNavigateToPayment && (
                     <button
-                      onClick={() => onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', '4999')}
+                      onClick={() => onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', String(COURSE_FEES['Advanced Diploma in Early Childhood Care & Education (ECCE)']))}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
                     >
                       <CreditCard className="w-3.5 h-3.5" />
@@ -384,7 +385,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   </a>
                   {onNavigateToPayment && (
                     <button
-                      onClick={() => onNavigateToPayment('Diploma in Play school Teacher Training', '12000')}
+                      onClick={() => onNavigateToPayment('Diploma in Play school Teacher Training', String(COURSE_FEES['Diploma in Play school Teacher Training']))}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
                     >
                       <CreditCard className="w-3.5 h-3.5" />
@@ -458,7 +459,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   </a>
                   {onNavigateToPayment && (
                     <button
-                      onClick={() => onNavigateToPayment('Certificate in Nordic inspired Preschool Teaching', '8500')}
+                      onClick={() => onNavigateToPayment('Certificate in Nordic inspired Preschool Teaching', String(COURSE_FEES['Certificate in Nordic inspired Preschool Teaching']))}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
                     >
                       <CreditCard className="w-3.5 h-3.5" />
@@ -532,7 +533,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
                   </a>
                   {onNavigateToPayment && (
                     <button
-                      onClick={() => onNavigateToPayment('Foundational Stage Curriculum Design', '9500')}
+                      onClick={() => onNavigateToPayment('Foundational Stage Curriculum Design', String(COURSE_FEES['Foundational Stage Curriculum Design']))}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
                     >
                       <CreditCard className="w-3.5 h-3.5" />
@@ -547,14 +548,10 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
         </div>
 
         <AiCurriculum className="mt-8" />
-        <ConsultationOffer category="Teacher Training" className="mt-6" />
       </section>
       </Reveal>
 
       <Reveal>
-      {/* Women-focused career section: who it is for, where it leads, programmes and FAQ */}
-      <WomenEmpowerment onOpenConsultation={onOpenConsultation} onNavigateToPayment={onNavigateToPayment} settings={settings} />
-
       {/* Certificate Showcase Section (Matching Reference Design) */}
       <section className="bg-[#FAF8F5] py-16 sm:py-20 px-4 sm:px-8 border-t border-stone-200/80">
         <div className="max-w-6xl mx-auto space-y-12">

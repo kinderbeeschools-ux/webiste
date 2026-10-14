@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { UPI_ID, UPI_NAME } from '../data/consultation';
+import { COURSE_FEES, ECCE } from '../data/courses';
 import { HeroDecor } from '../components/Doodles';
 import { PaymentRecord } from '../types';
 
@@ -41,15 +42,15 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
   // Payer details for QR generation & form
   const [applicantName, setApplicantName] = useState('');
   const [admissionNumber, setAdmissionNumber] = useState('');
-  const [programme, setProgramme] = useState(preselectedProgramme || 'Advanced Diploma in Early Childhood Care & Education (ECCE)');
-  const [amount, setAmount] = useState<string>(preselectedAmount ? String(preselectedAmount) : '4999');
+  const [programme, setProgramme] = useState(preselectedProgramme || ECCE);
+  const [amount, setAmount] = useState<string>(preselectedAmount ? String(preselectedAmount) : String(COURSE_FEES[ECCE]));
   const [customAmount, setCustomAmount] = useState('');
   
   // Submission Form State
   const [upiRefNumber, setUpiRefNumber] = useState('');
   const [payerPhone, setPayerPhone] = useState('');
   const [payerEmail, setPayerEmail] = useState('');
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [paymentDate, setPaymentDate] = useState(() => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); });
   const [notes, setNotes] = useState('');
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [formErrors, setFormErrors] = useState<string[]>([]);
@@ -66,7 +67,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
 
   // Available fee preset programs
   const programmeOptions = [
-    { label: 'Teacher Training: Advanced Diploma in ECCE', value: 'Advanced Diploma in Early Childhood Care & Education (ECCE)', defaultAmount: '4999' },
+    ...Object.entries(COURSE_FEES).map(([value, fee]) => ({ label: 'Teacher Training: ' + value, value, defaultAmount: String(fee) })),
     { label: 'Preschool Admission: Playgroup (1.5 - 2.5 yrs)', value: 'Preschool Admission: Playgroup', defaultAmount: '15000' },
     { label: 'Preschool Admission: Nursery (2.5 - 3.5 yrs)', value: 'Preschool Admission: Nursery', defaultAmount: '18000' },
     { label: 'Preschool Admission: LKG (3.5 - 4.5 yrs)', value: 'Preschool Admission: LKG', defaultAmount: '20000' },

@@ -33,7 +33,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   if (blogPost) {
     finalTitle = `${blogPost.title} | ${brandName} Research & Pedagogy Blog`;
   } else if (title) {
-    finalTitle = `${title} | ${brandName} - Zero Royalty Preschool Franchise & School Setup`;
+    // Titles that already name the brand are used as written (keyword-map titles, <= 60 chars)
+    finalTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
   } else if (settings?.metaTitle) {
     finalTitle = settings.metaTitle;
   } else {
@@ -96,12 +97,12 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     "description": finalDescription,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": settings?.officeAddress || "KIPS Corporate Tower",
+      "streetAddress": settings?.officeAddress || "No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016",
       "addressCountry": "IN"
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": settings?.phone || "+91 98765 43210",
+      "telephone": settings?.phone || "+91 81223 44040",
       "contactType": "Customer Support & Franchise Enquiries"
     }
   };

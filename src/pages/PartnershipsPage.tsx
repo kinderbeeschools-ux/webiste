@@ -51,12 +51,16 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
     <div className="space-y-12 pb-20 bg-[#FAF9F6]">
       <SEOHead 
         title={
-          resolvedTab === 'preschool' ? "Zero Royalty Preschool Franchise" :
+          resolvedTab === 'preschool' ? "Best Preschool Franchise in India – No Royalty | Kinderbee" :
           resolvedTab === 'cbse' ? "CBSE & IB School Setup & Consultancy" :
           "Degree College Setup & Consultancy"
         }
-        description="Explore Kinderbee's tailored franchisee partnership models: Preschool Franchises, CBSE & IB World School Setup, and Degree College Consultancy."
-        keywords="preschool franchise india, zero royalty play school, CBSE school setup, IB school setup, degree college setup, CBSE and IB consultancy"
+        description={resolvedTab === 'preschool'
+          ? "Start India's best preschool franchise with NO royalty. Finnish curriculum, lesson plans, teacher training and full setup support. Enquire today."
+          : "Explore Kinderbee's tailored franchisee partnership models: Preschool Franchises, CBSE & IB World School Setup, and Degree College Consultancy."}
+        keywords={resolvedTab === 'preschool'
+          ? "best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise"
+          : "preschool franchise india, zero royalty play school, CBSE school setup, IB school setup, degree college setup, CBSE and IB consultancy"}
         settings={settings}
       />
 
@@ -102,13 +106,12 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                 
                 {/* Main Headline */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
-                  Build a Thriving <br className="hidden sm:inline" />
-                  <span className="text-[#E1007A]">Preschool Franchise</span>
+                  India’s Best <span className="text-[#E1007A]">Preschool Franchise</span> with Zero Royalty
                 </h1>
                 
                 {/* Subtitle */}
                 <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed max-w-xl font-normal">
-                  Join India’s premier zero-royalty preschool franchise ecosystem. Combine Nordic early childhood standards with NEP 2020 frameworks to build a high-profit, child-centered school.
+                  Kinderbee is the best preschool franchise in India with no royalty: own an international preschool franchise with a Finnish curriculum, lesson plans, teacher training and full setup support, and keep 100% of your fees.
                 </p>
                 
                 {/* 4 Stat Cards */}

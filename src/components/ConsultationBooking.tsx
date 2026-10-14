@@ -182,8 +182,8 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
 
   const status = booking ? CONSULT_STATUS[booking.status] : null;
   const whatsappText = booking
-    ? `Hi KinderBee Team, my consultation booking reference is ${booking.ref} (${booking.category}, ${prettyDay(booking.preferredDate)}, ${booking.timeSlot}).`
-    : 'Hi KinderBee Team, I would like to book a 1:1 consultation.';
+    ? `Hi Kinderbee Team, my consultation booking reference is ${booking.ref} (${booking.category}, ${prettyDay(booking.preferredDate)}, ${booking.timeSlot}).`
+    : 'Hi Kinderbee Team, I would like to book a 1:1 consultation.';
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-fadeIn" onMouseDown={e => e.target === e.currentTarget && setOpen(false)}>
@@ -239,10 +239,10 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
                   <input {...fieldProps('name')} autoComplete="name" maxLength={80} placeholder="Your full name" />
                 </FieldWrap>
                 <FieldWrap id="phone" label="Mobile number *" error={errors.phone}>
-                  <input {...fieldProps('phone')} type="tel" inputMode="numeric" autoComplete="tel" maxLength={14} placeholder="10-digit mobile" />
+                  <input {...fieldProps('phone')} type="tel" inputMode="numeric" autoComplete="tel" maxLength={16} placeholder="10-digit mobile" />
                 </FieldWrap>
                 <FieldWrap id="whatsapp" label="WhatsApp number (if different)" error={errors.whatsapp}>
-                  <input {...fieldProps('whatsapp')} type="tel" inputMode="numeric" maxLength={14} placeholder="Optional" />
+                  <input {...fieldProps('whatsapp')} type="tel" inputMode="numeric" maxLength={16} placeholder="Optional" />
                 </FieldWrap>
                 <FieldWrap id="email" label="Email address (optional)" error={errors.email}>
                   <input {...fieldProps('email')} type="email" autoComplete="email" maxLength={120} placeholder="you@example.com" />
@@ -429,7 +429,7 @@ export const ConsultationOffer: React.FC<{ category?: string; className?: string
               <CalendarCheck className="h-3.5 w-3.5" /> 1:1 Consultation
             </span>
             <h3 className="font-display text-[1.65rem] sm:text-3xl font-extrabold leading-tight tracking-tight">
-              Talk to us, <span className="text-[#FFD400]">one-to-one.</span>
+              Talk to us, <span className="text-[#FFD400]">one-to-one</span>
             </h3>
             <p className="text-sm text-pink-50/90 leading-relaxed max-w-xl">
               Discuss your requirement directly with the Kinderbee team: admissions, starting a preschool, teacher training or anything else.

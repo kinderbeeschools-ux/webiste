@@ -31,7 +31,8 @@ export const PhotosTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }) =
 
   return (
     <div className="space-y-4">
-      <Toolbar title="Event photographs" count={items.length} onReload={reload} />
+      <Toolbar title="Gallery photos" count={items.length} onReload={reload} />
+      <p className="text-sm text-stone-600">Approved photos appear first in the <b>Life at Kinderbee</b> gallery on the About page. Photos under 3 MB; landscape works best.</p>
       <div className={`${card} grid gap-3 sm:grid-cols-4`}>
         <Field label="Event title"><input className={input} value={f.title} onChange={e => setF({ ...f, title: e.target.value })} placeholder="e.g. Annual Day 2026" /></Field>
         <Field label="Date"><input type="date" className={input} max={todayIST()} value={f.date} onChange={e => setF({ ...f, date: e.target.value })} /></Field>

@@ -41,19 +41,19 @@ export const TrainingHero: React.FC<{ onExplore: () => void; onEnquire: () => vo
       >
         <motion.div variants={item} className="inline-flex items-center gap-2 bg-white border border-pink-200 text-[#E1007A] text-[11px] sm:text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-[#FFD400] kb-wiggle" />
-          <span>Teacher Training &amp; Pedagogy Certifications</span>
+          <span>NTT Course in Bengaluru</span>
         </motion.div>
 
         <motion.h1 variants={item} className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.08]">
-          Early Childhood &amp;{' '}
+          Advanced Diploma in{' '}
           <span className="relative inline-block">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E1007A] via-pink-500 to-[#70162A]">Teacher Training Programs</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E1007A] via-pink-500 to-[#70162A]">Early Childhood Care &amp; Education (NTT)</span>
             <Squiggle className="absolute -bottom-3 left-1/2 -translate-x-1/2 lg:left-0 lg:translate-x-0 w-40 h-5" />
           </span>
         </motion.h1>
 
         <motion.p variants={item} className="text-stone-600 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-          Empowering future preschool educators with world-class curriculum frameworks and recognized credentials.
+          A nursery teacher training course from Kinderbee: earn an early childhood care and education diploma and train in Finnish playful pedagogy.
         </motion.p>
 
         <motion.ul variants={item} className="grid grid-cols-2 gap-2.5 max-w-md mx-auto lg:mx-0">

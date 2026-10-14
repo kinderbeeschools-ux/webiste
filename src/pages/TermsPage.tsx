@@ -305,7 +305,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ setCurrentTab, settings })
               <div className="space-y-2 pt-2 border-t border-stone-200">
                 <div className="flex items-start gap-2.5">
                   <MapPin className="w-4 h-4 text-[#E1007A] shrink-0 mt-0.5" />
-                  <span>No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016</span>
+                  <span>No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Mail className="w-4 h-4 text-[#E1007A] shrink-0" />

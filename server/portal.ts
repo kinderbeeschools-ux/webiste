@@ -2,7 +2,7 @@ import crypto from "crypto";
 import type { Express, Request, Response, NextFunction } from "express";
 import { enquiryCategory, categoryInfo } from "../src/data/enquiry.js";
 
-// Role-based access for the KinderBee management platform (CEO, Admin, Teacher Admin, Sales & Marketing,
+// Role-based access for the Kinderbee management platform (CEO, Admin, Teacher Admin, Sales & Marketing,
 // Franchise Partner). Every rule here is enforced on the server; the admin UI only mirrors it.
 //
 // Storage reuses the existing content store (Supabase `site_data` key/value table, or db.json locally),

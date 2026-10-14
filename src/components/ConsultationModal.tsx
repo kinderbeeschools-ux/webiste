@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { COURSE_FEES, ECCE } from '../data/courses';
 import { X, Send, CheckCircle2, Sparkles, Building2, Baby, GraduationCap, Briefcase, CreditCard, Download, School, Landmark } from 'lucide-react';
 import { categoryInfo, type EnquiryCategory } from '../data/enquiry';
 
@@ -219,7 +220,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
               {activeTab === 'ntt' && onNavigateToPayment ? (
                 <button
-                  onClick={() => { onClose(); onNavigateToPayment('Advanced Diploma in Early Childhood Care & Education (ECCE)', '4999'); }}
+                  onClick={() => { onClose(); onNavigateToPayment(ECCE, String(COURSE_FEES[ECCE])); }}
                   className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <CreditCard className="w-4 h-4" />

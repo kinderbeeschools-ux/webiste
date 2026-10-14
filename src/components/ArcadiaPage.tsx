@@ -152,7 +152,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         <motion.div className="mb-12 grid items-end gap-6 lg:grid-cols-[.7fr_1.3fr] lg:gap-12" {...inView} variants={stagger()}>
           <motion.div variants={up}>
             <Eyebrow>Four ways to participate</Eyebrow>
-            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Purposeful capital. Multiple pathways.</h2>
+            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Purposeful capital. Multiple pathways</h2>
           </motion.div>
           <motion.p variants={up} className="max-w-[720px] text-lg text-[#52615e]">
             KIPS brings opportunity origination, education strategy and project coordination together so each investor can enter at the level that best matches capital, risk appetite and legacy goals.
@@ -188,7 +188,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         <motion.div className="mb-12 grid items-end gap-6 lg:grid-cols-[.7fr_1.3fr] lg:gap-12" {...inView} variants={stagger()}>
           <motion.div variants={up}>
             <Eyebrow light>Build your legacy</Eyebrow>
-            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Capital can build more than buildings.</h2>
+            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Capital can build more than buildings</h2>
           </motion.div>
           <motion.p variants={up} className="max-w-[720px] text-lg text-[#d8e3df]">
             For investors who want their participation to carry meaning across generations, ARCADIA can explore legacy-led structures around access, research, innovation and student opportunity.
@@ -213,7 +213,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         <motion.div className="mb-12 grid items-end gap-6 lg:grid-cols-[.7fr_1.3fr] lg:gap-12" {...inView} variants={stagger()}>
           <motion.div variants={up}>
             <Eyebrow>KIPS Confidential Education Asset Desk</Eyebrow>
-            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Access curated opportunities across India.</h2>
+            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">Access curated opportunities across India</h2>
           </motion.div>
           <motion.p variants={up} className="max-w-[720px] text-lg text-[#52615e]">
             Current sourcing includes operating school assets and institutional campuses in Tamil Nadu, with the platform designed to expand across India. Detailed information is released only after opportunity verification, investor qualification and, where appropriate, NDA.
@@ -252,7 +252,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         <motion.div className="mb-10 grid items-end gap-6 lg:grid-cols-[.7fr_1.3fr] lg:gap-12" {...inView} variants={stagger()}>
           <motion.div variants={up}>
             <Eyebrow>KIPS 360° Education Development</Eyebrow>
-            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">From opportunity to institution.</h2>
+            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.4rem]">From opportunity to institution</h2>
           </motion.div>
           <motion.p variants={up} className="max-w-[720px] text-lg text-[#52615e]">
             KIPS proposes a single coordinating platform that brings together the specialists required to move from initial opportunity screening to launch readiness.
@@ -287,7 +287,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.9, ease: EASE }}>
         <div className="p-8 sm:p-14">
           <Eyebrow light>KIPS–ARCADIA Investor Relations</Eyebrow>
-          <h2 style={serif} className="text-4xl leading-[1.05] sm:text-5xl">Let your capital leave a legacy.</h2>
+          <h2 style={serif} className="text-4xl leading-[1.05] sm:text-5xl">Let your capital leave a legacy</h2>
           <p className="my-5 max-w-[670px] text-lg text-[#d8e1df]">
             Share your preferred geography, indicative capital commitment, education interests and desired role. KIPS can then prepare a focused opportunity brief and define the next-stage diligence process.
           </p>
@@ -319,7 +319,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
       <div className="mx-auto max-w-[1180px]">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
           <div>
-            <img src={`${IMG}/kips_logo.png`} alt="KIPS logo" className="mb-4 w-44 rounded-lg bg-white p-2" loading="lazy" />
+            <img src={`${IMG}/finnish-way-educare-logo.jpg`} alt="Finnish-Way Educare Private Limited logo" className="mb-4 w-56 rounded-lg" loading="lazy" />
             <p><b className="text-white">Finnish-Way Educare Private Limited</b><br />BS 06, VIKRAM, B Block, Visthara Apartments, Vilangudi, Madurai – 625018, Tamil Nadu, India</p>
           </div>
           <p>

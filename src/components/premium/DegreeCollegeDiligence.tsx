@@ -101,7 +101,7 @@ export const DegreeCollegeDiligence: React.FC<{ onRequestBrief: () => void }> = 
       <motion.div className="mt-14 grid overflow-hidden rounded-2xl border bg-white lg:grid-cols-2" style={{ borderColor: P.line }} variants={rise} {...inView}>
         <div className="p-7 sm:p-10" style={{ background: GREEN }}>
           <Eyebrow color={P.accentSoft}>What KIPS does</Eyebrow>
-          <h3 style={SERIF} className="text-2xl leading-tight text-white sm:text-3xl">Your education-development partner.</h3>
+          <h3 style={SERIF} className="text-2xl leading-tight text-white sm:text-3xl">Your education-development partner</h3>
           <ul className="mt-6 space-y-3">
             {KIPS_HELPS.map(x => (
               <li key={x} className="flex items-start gap-3 text-sm text-[#d8e1df]"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" style={{ color: P.accentSoft }} />{x}</li>
@@ -110,7 +110,7 @@ export const DegreeCollegeDiligence: React.FC<{ onRequestBrief: () => void }> = 
         </div>
         <div className="p-7 sm:p-10">
           <Eyebrow color={P.accent}>What needs your own advisors</Eyebrow>
-          <h3 style={SERIF} className="text-2xl leading-tight sm:text-3xl"><span style={{ color: GREEN }}>Independent eyes, always.</span></h3>
+          <h3 style={SERIF} className="text-2xl leading-tight sm:text-3xl"><span style={{ color: GREEN }}>Independent eyes, always</span></h3>
           <ul className="mt-6 space-y-3">
             {YOUR_ADVISORS.map(x => (
               <li key={x} className="flex items-start gap-3 text-sm" style={{ color: P.muted }}><Scale className="mt-0.5 h-4 w-4 shrink-0" style={{ color: P.accent }} />{x}</li>
@@ -122,7 +122,7 @@ export const DegreeCollegeDiligence: React.FC<{ onRequestBrief: () => void }> = 
       <div className="mt-14 grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <motion.div variants={rise} {...inView}>
           <Eyebrow color={P.accent}>Straight answers</Eyebrow>
-          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.3rem]"><span style={{ color: GREEN }}>Clarity first. Commitment second.</span></h3>
+          <h3 style={SERIF} className="text-3xl leading-tight sm:text-[2.3rem]"><span style={{ color: GREEN }}>Clarity first. Commitment second</span></h3>
           <p className="mt-3 text-sm leading-relaxed" style={{ color: P.muted }}>The best education partnerships begin with candid questions. Ask us anything.</p>
           <button onClick={onRequestBrief} className="group mt-6 inline-flex cursor-pointer items-center gap-2 rounded-md px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-xl" style={{ background: P.accent }}>
             Request Investor Brief <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

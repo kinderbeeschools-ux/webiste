@@ -114,7 +114,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               <div className="space-y-1">
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Office Address</h4>
                 <p className="text-xs text-stone-600 leading-relaxed">
-                  {settings?.officeAddress || 'No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016'}
+                  {settings?.officeAddress || 'No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016'}
                 </p>
                 <a 
                   href="https://share.google/ciljJNjjxvWZUTcWi" 

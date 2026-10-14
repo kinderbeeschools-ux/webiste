@@ -78,7 +78,7 @@ By creating a partnership with parents, preschools can enhance the educational e
       "NEP 2020",
       "Preschool Partnership"
     ],
-    author: "KinderBee",
+    author: "Kinderbee",
     status: "Published",
     date: "2026-09-18",
     readTime: "5 min read",

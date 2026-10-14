@@ -37,7 +37,7 @@ const TABS: { id: Tab; label: string; icon: React.ElementType; need: Perm[] }[] 
   { id: 'consultations', label: 'Consultations', icon: CalendarCheck, need: ['leads'] },
   { id: 'payments', label: 'Payments', icon: CreditCard, need: ['payments'] },
   { id: 'staff', label: 'Staff & payroll', icon: CalendarCheck, need: ['attendance', 'salary'] },
-  { id: 'photos', label: 'Event photos', icon: ImageIcon, need: ['gallery'] },
+  { id: 'photos', label: 'Gallery photos', icon: ImageIcon, need: ['gallery'] },
   { id: 'franchise', label: 'Branch payments', icon: Landmark, need: ['finance'] },
   { id: 'opportunities', label: 'Opportunities', icon: Building2, need: ['opportunities'] },
   { id: 'blogs', label: 'Blogs', icon: FileText, need: ['website'] },

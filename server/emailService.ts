@@ -92,7 +92,7 @@ export async function sendApplicantConfirmationEmail(data: EnquiryEmailData): Pr
     <div style="background: linear-gradient(135deg, #200213 0%, #12010B 50%, #2A041A 100%); padding: 32px 28px; text-align: center; border-bottom: 3px solid #E1007A;">
       <div style="display: inline-block; background: #ffffff; padding: 8px 16px; border-radius: 12px; margin-bottom: 16px;">
         <span style="font-size: 20px; font-weight: 900; color: #E1007A; letter-spacing: 1px;">KIPS</span>
-        <span style="font-size: 13px; font-weight: 700; color: #44403c; margin-left: 6px;">KINDERBEE</span>
+        <span style="font-size: 13px; font-weight: 700; color: #44403c; margin-left: 6px;">Kinderbee</span>
       </div>
       <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">We Received Your Enquiry</h1>
       <p style="margin: 8px 0 0; color: #fbcfe8; font-size: 14px;">Inquiry Reference: <strong style="color: #FFD400;">#${data.enquiryId.slice(-6).toUpperCase()}</strong></p>
@@ -170,7 +170,7 @@ export async function sendApplicantConfirmationEmail(data: EnquiryEmailData): Pr
 
     <!-- Footer -->
     <div style="background: #f5f5f4; padding: 18px 28px; text-align: center; border-top: 1px solid #e7e5e4; font-size: 11px; color: #78716c;">
-      <p style="margin: 0 0 6px;">Corporate Office: No. 1, Old UCO Bank Road, Ramamurthy Nagar, Bengaluru – 560016</p>
+      <p style="margin: 0 0 6px;">Corporate Office: No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016</p>
       <p style="margin: 0;">Website: <a href="https://kinderbeeschools.com" style="color: #E1007A; text-decoration: none; font-weight: 600;">kinderbeeschools.com</a> | Email: <a href="mailto:kinderbeeschools@gmail.com" style="color: #E1007A; text-decoration: none;">kinderbeeschools@gmail.com</a></p>
     </div>
   </div>

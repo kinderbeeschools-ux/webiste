@@ -20,6 +20,7 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
+import { COURSE_FEES, ECCE } from './data/courses';
 import { PaymentPage } from './pages/PaymentPage';
 import { JointVenturesPage } from './pages/JointVenturesPage';
 import { AdminPanel } from './pages/AdminPanel';
@@ -42,6 +43,12 @@ export function App() {
 
     if (hash === '#payments' || hash === '#/payments' || pathname === '/payments') {
       return 'payments';
+    }
+
+    // Policy links from the payment and enquiry popups (opened in a new tab)
+    const policy = hash.replace(/^#\/?/, '');
+    if (['cancellation-refund', 'terms-and-conditions', 'privacy-policy'].includes(policy)) {
+      return policy;
     }
 
     // Shared opportunity links (#opportunity/<id>) open the Joint Ventures page
@@ -69,8 +76,8 @@ export function App() {
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
 
   // Payment Pre-selection
-  const [paymentProgramme, setPaymentProgramme] = useState('Advanced Diploma in Early Childhood Care & Education (ECCE)');
-  const [paymentAmount, setPaymentAmount] = useState('4999');
+  const [paymentProgramme, setPaymentProgramme] = useState(ECCE);
+  const [paymentAmount, setPaymentAmount] = useState(String(COURSE_FEES[ECCE]));
 
   // Persist tab changes
   useEffect(() => {
@@ -157,8 +164,8 @@ export function App() {
   };
 
   const handleNavigateToPayment = (
-    programme = 'Advanced Diploma in Early Childhood Care & Education (ECCE)',
-    amount = '4999'
+    programme = ECCE,
+    amount = String(COURSE_FEES[ECCE])
   ) => {
     // Course fees use the simple popup (details, pay, done); the Payments page stays for other fees
     openCoursePayment(programme, amount);

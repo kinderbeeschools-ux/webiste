@@ -27,111 +27,77 @@ interface GalleryPhoto {
   aspect: string;
 }
 
-const SUPABASE_BASE = "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public";
-
-const galleryPhotos: GalleryPhoto[] = [
-  // Column 1 (5 items)
+// Built-in photos; photos approved in the CRM (Photos tab, /api/gallery) are shown before these
+const DEFAULT_GALLERY: GalleryPhoto[] = [
   {
     id: 'photo-1',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(1).jfif`,
-    title: 'Hands-On Play & Tactile Exploration',
-    category: 'Creative Play',
-    aspect: 'aspect-[3/4]',
+    url: '/images/gallery/kinderbee-pretend-play-shop.jpg',
+    title: 'Pretend Play: Running a Little Shop',
+    category: 'Life Skills',
+    aspect: 'aspect-[16/9]',
   },
   {
     id: 'photo-2',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(1).jpeg`,
-    title: 'Expressive Art & Sensory Painting',
-    category: 'Art & Creativity',
+    url: '/images/gallery/kinderbee-onam-pookalam.jpg',
+    title: 'Onam Celebration & Flower Pookalam',
+    category: 'Festivals',
     aspect: 'aspect-[4/3]',
   },
   {
     id: 'photo-3',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(2).jfif`,
-    title: 'Interactive Circle Time & Rhymes',
-    category: 'Language & Social',
-    aspect: 'aspect-[4/3]',
+    url: '/images/gallery/kinderbee-independence-day.jpg',
+    title: 'Independence Day: Our Little Freedom Fighters',
+    category: 'Celebrations',
+    aspect: 'aspect-[16/9]',
   },
   {
     id: 'photo-4',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(2).jpeg`,
-    title: 'Curiosity & Science Discovery Labs',
-    category: 'STEM Exploration',
+    url: '/images/gallery/kinderbee-body-parts-activity.jpg',
+    title: 'Learning About Our Body',
+    category: 'Early Learning',
     aspect: 'aspect-[4/3]',
   },
   {
     id: 'photo-5',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(3).jfif`,
-    title: 'Safe, Joyful & Child-Centred Spaces',
-    category: 'Campus Life',
-    aspect: 'aspect-[4/3]',
+    url: '/images/gallery/kinderbee-classroom-learning.jpg',
+    title: 'Focused Learning in Small Groups',
+    category: 'Classroom',
+    aspect: 'aspect-[16/9]',
   },
-
-  // Column 2 (5 items)
   {
     id: 'photo-6',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(3).jpeg`,
-    title: 'Practical Life Skills & Montessori Corner',
-    category: 'Life Skills',
-    aspect: 'aspect-[16/10]',
+    url: '/images/gallery/kinderbee-pretend-play-queue.jpg',
+    title: 'Taking Turns & Waiting in Line',
+    category: 'Social Skills',
+    aspect: 'aspect-[16/9]',
   },
   {
     id: 'photo-7',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(4).jfif`,
-    title: 'Collaborative Teamwork & Social Play',
-    category: 'Collaborative Play',
-    aspect: 'aspect-[16/10]',
-  },
-  {
-    id: 'photo-8',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(5).jfif`,
-    title: 'Building Blocks & Fine Motor Skills',
-    category: 'Cognitive Skills',
-    aspect: 'aspect-square',
-  },
-  {
-    id: 'photo-9',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(6).jfif`,
-    title: 'Curious Minds & Guided Discovery',
-    category: 'Active Discovery',
-    aspect: 'aspect-[4/5]',
-  },
-  {
-    id: 'photo-10',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(7).jfif`,
-    title: 'Outdoor Play & Physical Agility',
-    category: 'Outdoor Activities',
-    aspect: 'aspect-[16/10]',
-  },
-
-  // Column 3 (4 items)
-  {
-    id: 'photo-11',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(8).jfif`,
-    title: 'Sensory Sand, Color & Water Play',
-    category: 'Sensory Learning',
-    aspect: 'aspect-[3/4]',
-  },
-  {
-    id: 'photo-12',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(9).jfif`,
-    title: 'Music, Rhythm & Dance Celebrations',
-    category: 'Performing Arts',
+    url: '/images/gallery/kinderbee-circle-time.jpg',
+    title: 'Circle Time Together',
+    category: 'Classroom',
     aspect: 'aspect-[4/3]',
   },
   {
-    id: 'photo-13',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(10).jfif`,
-    title: 'Early STEM, Logic & Puzzles',
-    category: 'Early Math & STEM',
-    aspect: 'aspect-[16/10]',
+    id: 'photo-8',
+    url: '/images/gallery/kinderbee-number-worksheet.jpg',
+    title: 'Counting & Tracing Number Seven',
+    category: 'Early Numeracy',
+    aspect: 'aspect-[16/9]',
   },
   {
-    id: 'photo-14',
-    url: `${SUPABASE_BASE}/Gallery%20Images/Kids%20%20(11).jfif`,
-    title: 'Reading Nook & Storybook Magic',
-    category: 'Literacy & Imagination',
-    aspect: 'aspect-[16/10]',
+    id: 'photo-9',
+    url: '/images/gallery/kinderbee-colouring-activity.jpg',
+    title: 'Colouring & Fine Motor Skills',
+    category: 'Art & Creativity',
+    aspect: 'aspect-[16/9]',
+  },
+  {
+    id: 'photo-10',
+    url: '/images/gallery/kinderbee-puppet-show.jpg',
+    title: 'Curtain Call Puppet Show',
+    category: 'Storytelling',
+    aspect: 'aspect-[16/9]',
   },
 ];
 
@@ -145,18 +111,18 @@ interface VisionGalleryItem {
 
 const ABOUT_MENTORS_IMAGES: VisionGalleryItem[] = [
   {
-    id: 'mentor-1',
-    title: 'Foundational Leadership & Mentorship',
-    subtitle: 'Guiding visionary preschool educators, pedagogical leaders, and early childhood excellence',
-    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(1).jpeg',
-    tag: 'Preschool Mentors',
-  },
-  {
     id: 'mentor-2',
     title: 'Experiential Pedagogy & Nordic Guides',
     subtitle: 'Master trainers specialized in child-led curiosity, active inquiry & Finnish learning methods',
     url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(2).jpeg',
     tag: 'Academic Mentors',
+  },
+  {
+    id: 'mentor-1',
+    title: 'Foundational Leadership & Mentorship',
+    subtitle: 'Guiding visionary preschool educators, pedagogical leaders, and early childhood excellence',
+    url: 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/About%20Us/Mentors%20(1).jpeg',
+    tag: 'Preschool Mentors',
   },
   {
     id: 'mentor-3',
@@ -197,6 +163,20 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
     }
   };
 
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>(DEFAULT_GALLERY);
+  useEffect(() => {
+    fetch('/api/gallery')
+      .then(res => (res.ok ? res.json() : []))
+      .then((list: { id: string; title: string; url: string }[]) => {
+        if (!Array.isArray(list) || !list.length) return;
+        setGalleryPhotos([
+          ...list.map(p => ({ id: p.id, url: p.url, title: p.title, category: 'Kinderbee Moments', aspect: 'aspect-[4/3]' })),
+          ...DEFAULT_GALLERY,
+        ]);
+      })
+      .catch(() => {});
+  }, []);
+
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -211,7 +191,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedPhotoIndex]);
+  }, [selectedPhotoIndex, galleryPhotos.length]);
 
   // Lock background scroll when lightbox is open
   useEffect(() => {
@@ -247,7 +227,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
             Our Story and Purpose
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
-            Nurturing Young Minds. Shaping Bright Futures.
+            Nurturing Young Minds. Shaping Bright Futures
           </h2>
           <Squiggle className="w-28 h-5 -mt-3" />
           <p className="text-stone-600 text-base leading-relaxed">
@@ -558,8 +538,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
           {/* Column 1 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(0, 5).map((photo, colIndex) => {
-              const globalIndex = colIndex;
+            {galleryPhotos.map((photo, globalIndex) => ({ photo, globalIndex })).filter((_, i) => i % 3 === 0).map(({ photo, globalIndex }) => {
               return (
                 <div
                   key={photo.id}
@@ -592,8 +571,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 2 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(5, 10).map((photo, colIndex) => {
-              const globalIndex = 5 + colIndex;
+            {galleryPhotos.map((photo, globalIndex) => ({ photo, globalIndex })).filter((_, i) => i % 3 === 1).map(({ photo, globalIndex }) => {
               return (
                 <div
                   key={photo.id}
@@ -626,8 +604,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
 
           {/* Column 3 */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            {galleryPhotos.slice(10, 14).map((photo, colIndex) => {
-              const globalIndex = 10 + colIndex;
+            {galleryPhotos.map((photo, globalIndex) => ({ photo, globalIndex })).filter((_, i) => i % 3 === 2).map(({ photo, globalIndex }) => {
               return (
                 <div
                   key={photo.id}
@@ -662,7 +639,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         {/* Footer Sub-note */}
         <div className="text-center pt-8">
           <p className="text-xs sm:text-sm text-stone-500 font-medium">
-            Click on any moment to open full-screen view • 14 joyful campus memories
+            Click on any moment to open full-screen view • {galleryPhotos.length} joyful campus memories
           </p>
         </div>
       </section>

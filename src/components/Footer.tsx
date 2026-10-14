@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
   const phone = settings?.phone || '81223 44040';
   const cleanPhone = phone.replace(/[^0-9]/g, '');
   const email = settings?.email || 'kinderbeeschools@gmail.com';
-  const officeAddress = settings?.officeAddress || 'No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016';
+  const officeAddress = settings?.officeAddress || 'No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016';
   const mapsUrl = settings?.mapsUrl || 'https://share.google/ciljJNjjxvWZUTcWi';
 
   return (

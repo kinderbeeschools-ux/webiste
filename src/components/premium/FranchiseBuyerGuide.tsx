@@ -71,10 +71,10 @@ const JOURNEY = [
 
 // Kinderbee's own photographs (the spaces shown on the home page)
 const SPACES = [
-  { src: '/visuals/nordic-classroom.webp', alt: 'Nordic-style Kinderbee classroom', caption: 'Nordic classroom' },
-  { src: '/visuals/discovery-lab.webp', alt: 'Children exploring in a Kinderbee discovery lab', caption: 'Discovery lab' },
-  { src: '/visuals/reading-nook.webp', alt: 'Cosy Kinderbee reading nook', caption: 'Reading nook' },
-  { src: '/visuals/art-studio.webp', alt: 'Kinderbee sensory art studio', caption: 'Sensory art studio' },
+  { src: '/images/campus/kinderbee-campus-bengaluru.jpg', alt: 'Kinderbee preschool campus in Ramamurthy Nagar, Bengaluru', caption: 'Kinderbee campus' },
+  { src: '/images/campus/kinderbee-number-worksheet-activity.jpg', alt: 'Kinderbee children tracing numbers on worksheets', caption: 'Early numeracy' },
+  { src: '/images/campus/kinderbee-classroom-learning.jpg', alt: 'Kinderbee children learning in a small group', caption: 'Small-group classroom' },
+  { src: '/images/campus/kinderbee-puppet-storytelling.jpg', alt: 'Kinderbee teachers presenting a puppet show', caption: 'Puppet storytelling' },
 ];
 
 const READINESS = [
@@ -200,7 +200,7 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
         <div className="relative mt-20 grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <motion.div variants={rise} {...inView} className="rounded-[1.75rem] border p-6 sm:p-8" style={{ background: P.card, borderColor: P.line }}>
             <Eyebrow color={P.accent}>Verify us before you invest</Eyebrow>
-            <h3 style={SERIF} className="text-2xl leading-tight text-white sm:text-[1.9rem]">Check who you are partnering with.</h3>
+            <h3 style={SERIF} className="text-2xl leading-tight text-white sm:text-[1.9rem]">Check who you are partnering with</h3>
             <dl className="mt-6 space-y-4 text-sm">
               {[
                 ['Legal entity', 'Finnish-Way Educare Private Limited'],
@@ -222,7 +222,7 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
 
           <motion.div variants={rise} {...inView}>
             <Eyebrow color={P.accent}>Good to know</Eyebrow>
-            <h3 style={SERIF} className="mb-6 text-2xl leading-tight text-white sm:text-[1.9rem]">Straight answers to the hard questions.</h3>
+            <h3 style={SERIF} className="mb-6 text-2xl leading-tight text-white sm:text-[1.9rem]">Straight answers to the hard questions</h3>
             <Accordion items={FAQ} p={P} />
           </motion.div>
         </div>

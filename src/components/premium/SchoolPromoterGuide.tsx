@@ -45,7 +45,7 @@ const FAQ = [
   },
   {
     q: 'What does the feasibility and project report include?',
-    a: 'Demographic analysis, a catchment survey and financial modelling, including a 10-year P&L. It is where a promoter sees the numbers before committing to land or construction.',
+    a: 'Demographic analysis, a catchment survey and financial modelling, including a 10-year P&L. It is where a partner sees the numbers before committing to land or construction.',
   },
   {
     q: 'Do you only advise, or do you help carry it through?',
@@ -69,7 +69,7 @@ export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: S
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:44px_44px]" />
 
         <motion.div className="relative mx-auto max-w-3xl text-center" variants={stagger(0.12)} {...inView}>
-          <motion.div variants={rise}><Eyebrow color={P.accent} center>The promoter&rsquo;s guide</Eyebrow></motion.div>
+          <motion.div variants={rise}><Eyebrow color={P.accent} center>The partner&rsquo;s guide</Eyebrow></motion.div>
           <motion.h2 id="promoter-guide-title" variants={rise} style={SERIF} className="text-4xl leading-[1.08] text-white sm:text-5xl">
             Six things to weigh <span style={{ color: P.accent }}>before you build a school.</span>
           </motion.h2>
@@ -117,7 +117,7 @@ export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: S
         <motion.div className="relative mt-16" variants={rise} {...inView}>
           <ReadinessCheck
             p={P}
-            title="Promoter readiness check"
+            title="Partner readiness check"
             intro="Tick what is already in place. It shows how ready you are and what to prepare before the first meeting."
             items={READINESS}
             doneLabel="You are ready to plan in detail."
@@ -129,7 +129,7 @@ export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: S
         <div className="relative mt-16 grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <motion.div variants={rise} {...inView}>
             <Eyebrow color={P.accent}>Straight answers</Eyebrow>
-            <h3 style={SERIF} className="text-3xl leading-tight text-white sm:text-[2.3rem]">What promoters ask before they commit.</h3>
+            <h3 style={SERIF} className="text-3xl leading-tight text-white sm:text-[2.3rem]">What partners ask before they commit</h3>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: P.muted }}>Have a different question? Our school planning team is happy to talk it through.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
               <button onClick={onConsult} className="group inline-flex w-fit cursor-pointer items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-[#14110F] transition hover:-translate-y-0.5 hover:shadow-xl" style={{ background: `linear-gradient(135deg, ${P.accentSoft}, ${P.accent})` }}>

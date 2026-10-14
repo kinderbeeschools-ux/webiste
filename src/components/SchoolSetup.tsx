@@ -172,7 +172,7 @@ export const SchoolSetup: React.FC<{ onConsult: () => void }> = ({ onConsult }) 
             </div>
             <h2 className="text-3xl font-display font-extrabold tracking-tight text-stone-900 sm:text-4xl">Choose the Ideal Framework for Your Campus</h2>
             <p className="text-sm leading-relaxed text-stone-600 sm:text-base">
-              Whether you plan to launch India's most trusted national board or an elite global IB World School, KinderBee provides 360-degree turnkey consultancy from land sanctioning to campus inauguration.
+              Whether you plan to launch India's most trusted national board or an elite global IB World School, Kinderbee provides 360-degree turnkey consultancy from land sanctioning to campus inauguration.
             </p>
           </div>
         </Reveal>

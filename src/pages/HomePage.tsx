@@ -117,9 +117,9 @@ const TESTIMONIALS: Testimonial[] = [
   {
     id: 'test-1',
     title: 'A Wonderful Opportunity to Make a Difference',
-    quote: 'Partnering with KinderBee has been an incredible journey. The structured curriculum, continuous guidance, and strong operational support have helped us build a nurturing preschool. We are proud to be part of a brand that truly values children’s holistic development.',
+    quote: 'Partnering with Kinderbee has been an incredible journey. The structured curriculum, continuous guidance, and strong operational support have helped us build a nurturing preschool. We are proud to be part of a brand that truly values children’s holistic development.',
     author: 'Siraj (Kanpur)',
-    role: 'KinderBee Preschool Franchise Partner',
+    role: 'Kinderbee Preschool Franchise Partner',
     category: 'franchise',
     categoryLabel: 'Franchise Partner',
     badgeColor: 'bg-amber-400/20 text-amber-300 border-amber-400/30',
@@ -128,7 +128,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     id: 'test-2',
     title: 'A Transformative Learning Experience',
-    quote: 'The KinderBee Teacher Training Programme completely changed my approach to teaching. I learned how to create engaging classroom experiences, understand children’s needs, and make learning more joyful through play-based methods.',
+    quote: 'The Kinderbee Teacher Training Programme completely changed my approach to teaching. I learned how to create engaging classroom experiences, understand children’s needs, and make learning more joyful through play-based methods.',
     author: 'Nivetha',
     role: 'Teacher Training Programme Participant',
     category: 'teacher',
@@ -150,9 +150,9 @@ const TESTIMONIALS: Testimonial[] = [
   {
     id: 'test-4',
     title: 'Building a Preschool with Purpose',
-    quote: 'KinderBee gave us the confidence and resources to turn our vision of a quality preschool into reality. The FinnishWay-inspired learning approach, professional support, and focus on child development make this partnership truly special.',
+    quote: 'Kinderbee gave us the confidence and resources to turn our vision of a quality preschool into reality. The FinnishWay-inspired learning approach, professional support, and focus on child development make this partnership truly special.',
     author: 'Soman',
-    role: 'KinderBee Preschool Franchise Partner',
+    role: 'Kinderbee Preschool Franchise Partner',
     category: 'franchise',
     categoryLabel: 'Franchise Partner',
     badgeColor: 'bg-amber-400/20 text-amber-300 border-amber-400/30',
@@ -315,8 +315,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
-        title="Kinderbee International Preschool | Nurturing Joyful Learners for Life"
-        description="At Kinderbee International Preschool, children learn through play, exploration and meaningful everyday experiences in a warm, safe and child-centred environment."
+        title="Kinderbee International Preschool | Bengaluru"
+        description="Kinderbee brings the world-famous Finnish curriculum and playful learning to preschoolers in Bengaluru. Playgroup to UKG, daycare and more."
+        keywords="Kinderbee International Preschool, international preschool Bengaluru, Finnish curriculum preschool, best preschool near me, preschool in Bengaluru, no royalty preschool franchise India"
         settings={settings} 
       />
 
@@ -346,21 +347,26 @@ export const HomePage: React.FC<HomePageProps> = ({
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1, ease: EASE }} className="flex justify-center">
             <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#FFD400] bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
               <Sparkles className="w-4 h-4 text-[#FFD400]" />
-              <span>THE FUTURE OF EDUCATION STARTS HERE</span>
+              <span>Admissions Open · Playgroup to UKG</span>
             </div>
           </motion.div>
 
           {/* Main Headline */}
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.3, ease: EASE }} className="space-y-3">
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
-              Reimagine Education.
+              Kinderbee International Preschool
               <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1">
-                Transform Tomorrow.
+                Finnish Play-Based Learning in Bengaluru
               </span>
             </h1>
             <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-2 drop-shadow-sm">
-              A future-ready education ecosystem empowering schools, educators and young minds through innovation, excellence and transformative learning.
+              World-class Finnish preschool education in Ramamurthy Nagar, Bengaluru. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
             </p>
+            <ul className="flex flex-wrap justify-center gap-2 pt-1 text-xs sm:text-sm font-semibold text-white">
+              {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Finnish curriculum'].map((fact) => (
+                <li key={fact} className="bg-white/10 border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">{fact}</li>
+              ))}
+            </ul>
           </motion.div>
 
           {/* Call-to-Action Buttons */}
@@ -369,7 +375,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={scrollToPreschool}
               className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
             >
-              <span>Explore KIPS</span>
+              <span>Explore Programmes</span>
               <span className="text-lg">→</span>
             </button>
 
@@ -398,10 +404,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               <span>EARLY CHILDHOOD DEVELOPMENT PATHWAYS</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-              Our Preschool Programmes
+              Our Preschool Programmes in Bengaluru
             </h2>
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              Age-aligned developmental stages thoughtfully designed to ignite innate curiosity, nurture emotional confidence, and cultivate foundational literacy and numeracy.
+              From playgroup admission to LKG and UKG, every Kinderbee nursery school stage follows a Finnish curriculum and playful pedagogy that builds curiosity, confidence, literacy and numeracy.
             </p>
           </div>
 
@@ -711,7 +717,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   Why Parents Choose <span className="text-[#E1007A]">Kinderbee</span>
                 </h2>
                 <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-                  We combine global early learning benchmarks with authentic care, creating a joyful second home where every child thrives naturally.
+                  Parents searching for the best preschool near me choose Kinderbee for its Finnish curriculum, trained teachers and warm, safe classrooms that feel like a second home.
                 </p>
               </div>
               <button
@@ -727,7 +733,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               {[
                 {
                   icon: Sparkles,
-                  title: 'Nordic Play Pedagogy',
+                  title: 'Finnish Playful Pedagogy',
                   text: 'Children explore through structured inquiry and hands-on discovery rather than passive rote memorization, building deep critical thinking.',
                   tile: 'from-[#E1007A] to-pink-500 text-white',
                 },
@@ -797,11 +803,11 @@ export const HomePage: React.FC<HomePageProps> = ({
               </h2>
 
               <h3 className="text-xl font-bold text-stone-700">
-                Zero-Royalty Preschool Partnership with 360-Degree Institutional Support
+                No Royalty Preschool Franchise in India with 360-Degree Support
               </h3>
 
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-                Empowering edupreneurs and school owners to establish world-class preschools. Retain 100% of your student tuition fees while benefiting from our complete academic syllabus, teacher enablement, campus architecture, and admission marketing engines.
+                Start a Kinderbee preschool franchise with zero royalty and keep 100% of your student tuition fees while benefiting from our complete academic syllabus, teacher enablement, campus architecture, and admission marketing engines.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -831,7 +837,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   }}
                   className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer text-sm"
                 >
-                  <span>Learn About Partnership</span>
+                  <span>No Royalty Preschool Franchise</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -849,7 +855,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="kb-frame rounded-2xl overflow-hidden shadow-lg border border-stone-200">
                 <img 
                   src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Partner/Partner%20With%20Kinderbee.jpeg" 
-                  alt="Partner with Kinderbee - Zero-Royalty Preschool Partnership" 
+                  alt="Kinderbee no royalty preschool franchise in India" 
                   className="w-full aspect-video object-cover"
                 />
               </div>
@@ -881,7 +887,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </h2>
 
               <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-                Elevate your career with globally accredited, Nordic-inspired teacher training. Master play-based pedagogy, child psychology, classroom leadership, and NEP 2020 frameworks.
+                Join the Kinderbee NTT course in Bengaluru: an early childhood care and education diploma with Finnish playful pedagogy. Master play-based teaching, child psychology, classroom leadership, and NEP 2020 frameworks.
               </p>
             </div>
 
@@ -971,7 +977,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Our Holistic Learning Approach
             </h2>
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              Every day at Kinderbee integrates cognitive, language, social-emotional, and physical growth through balanced, playful exploration.
+              Every day at Kinderbee, our Finnish curriculum preschool integrates cognitive, language, social-emotional and physical growth through balanced, playful exploration.
             </p>
           </div>
 
@@ -1044,10 +1050,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <span>CAMPUS &amp; LEARNING ARCHITECTURE</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-                  Safe, Inspiring &amp; Child-Centred Spaces
+                  Safe, Inspiring &amp; Child-Centred Space
                 </h2>
                 <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-                  Conceived as the &ldquo;Third Teacher&rdquo;—every corner of a Kinderbee campus promotes active discovery, unhurried focus, and uncompromised child safety.
+                  Conceived as the &ldquo;Third Teacher&rdquo;—every corner of the Kinderbee international preschool in Bengaluru promotes active discovery, unhurried focus, and uncompromised child safety.
                 </p>
               </div>
 
@@ -1075,56 +1081,56 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div ref={campusRef} className={`stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[190px] gap-4 ${campusIn ? "is-in" : ""}`}>
               <div className="kb-frame relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:col-span-2 lg:row-span-2 bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Nordic%20classroom.jfif"
-                  alt="Modern Child-Centred Campus"
+                  src="/images/campus/kinderbee-campus-bengaluru.jpg"
+                  alt="Kinderbee international preschool campus in Ramamurthy Nagar, Bengaluru"
                   className="w-full h-full object-cover"
                 />
                 <div className="kb-caption absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
                   <div className="text-white">
-                    <div className="text-xs font-bold">Nordic Classrooms</div>
-                    <div className="text-[11px] text-stone-300">Natural wood &amp; ergonomic seating</div>
+                    <div className="text-xs font-bold">Kinderbee Campus, Bengaluru</div>
+                    <div className="text-[11px] text-stone-300">Bright, safe &amp; child-centred</div>
                   </div>
                 </div>
               </div>
 
               <div className="kb-frame relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:col-span-2 bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Sensory%20art%20studio.jpeg"
-                  alt="Expressive Art & Sensory Zone"
+                  src="/images/campus/kinderbee-number-worksheet-activity.jpg"
+                  alt="Kinderbee preschoolers tracing numbers on activity worksheets"
                   className="w-full h-full object-cover"
                 />
                 <div className="kb-caption absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
                   <div className="text-white">
-                    <div className="text-xs font-bold">Sensory &amp; Art Studio</div>
-                    <div className="text-[11px] text-stone-300">Tactile colors &amp; clay creation</div>
+                    <div className="text-xs font-bold">Early Numeracy</div>
+                    <div className="text-[11px] text-stone-300">Hands-on number activities</div>
                   </div>
                 </div>
               </div>
 
               <div className="kb-frame relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Discovery%20labs.jpeg"
-                  alt="Curiosity Discovery Labs"
+                  src="/images/campus/kinderbee-classroom-learning.jpg"
+                  alt="Kinderbee children learning together in a classroom"
                   className="w-full h-full object-cover"
                 />
                 <div className="kb-caption absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
                   <div className="text-white">
-                    <div className="text-xs font-bold">Discovery Labs</div>
-                    <div className="text-[11px] text-stone-300">STEM puzzles &amp; natural inquiry</div>
+                    <div className="text-xs font-bold">Nordic Classrooms</div>
+                    <div className="text-[11px] text-stone-300">Small groups &amp; ergonomic seating</div>
                   </div>
                 </div>
               </div>
 
               <div className="kb-frame relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto bg-stone-100 group shadow-xs">
                 <img
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Safe%2C%20Inspiring%20%26%20Child-Centred%20Spaces/Reading%20Nook.jpeg"
-                  alt="Reading Nook & Montessori Corner"
+                  src="/images/campus/kinderbee-puppet-storytelling.jpg"
+                  alt="Kinderbee teachers presenting a puppet storytelling show"
                   className="w-full h-full object-cover"
                 />
                 <div className="kb-caption absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent flex items-end p-4">
                   <div className="text-white">
-                    <div className="text-xs font-bold">Reading Nook</div>
-                    <div className="text-[11px] text-stone-300">Storybook magic &amp; cozy cushions</div>
+                    <div className="text-xs font-bold">Storytelling &amp; Puppetry</div>
+                    <div className="text-[11px] text-stone-300">Language through play</div>
                   </div>
                 </div>
               </div>
@@ -1153,10 +1159,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <span>COMMUNITY VOICES &amp; TESTIMONIALS</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
-                What Our Community Says About KinderBee
+                What Our Community Says About Kinderbee
               </h2>
               <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-                Real reflections from our preschool franchise partners, teacher-training educators, and parent community.
+                Real reflections from our Kinderbee preschool franchise partners, teacher-training educators, and parent community.
               </p>
             </div>
 
@@ -1415,7 +1421,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="space-y-4 pt-4 border-t border-stone-800 text-sm">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-[#E1007A] shrink-0 mt-0.5" />
-                  <span className="text-stone-300">No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016</span>
+                  <span className="text-stone-300">No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[#E1007A] shrink-0" />

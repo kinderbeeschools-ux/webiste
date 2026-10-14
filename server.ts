@@ -7,6 +7,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
+import { COURSE_FEES } from "./src/data/courses.js";
 import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, type Consultation, type ConsultStatus } from "./src/data/consultation.js";
 import {
   sendApplicantConfirmationEmail,
@@ -91,7 +92,7 @@ According to research supported by the Finnish Way Academy, structured and free 
 3. **Resilience**: Experiencing minor set-backs during play (like a tower falling) in a low-stakes environment builds stress-management skills.
 
 ### Bringing Finland to India
-At KinderBee, we bridge the gap between rigorous academic expectations and healthy child development. By introducing the Nordic-inspired Play-Based Learning framework, we prepare preschoolers for the future of education, fostering lifetime curiosity and compliance with India's NEP 2020 guidelines.
+At Kinderbee, we bridge the gap between rigorous academic expectations and healthy child development. By introducing the Nordic-inspired Play-Based Learning framework, we prepare preschoolers for the future of education, fostering lifetime curiosity and compliance with India's NEP 2020 guidelines.
 
 *Want to learn more? Our Finnish Way Academy Teacher Training program equips school staff with practical play strategies.*`,
     image: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800",
@@ -229,7 +230,7 @@ const seedFAQs: FAQItem[] = [
 const seedSettings: SystemSettings = {
   phone: "+91 99013 32233",
   email: "kinderbeeschools@gmail.com",
-  officeAddress: "Opp Vijay Bakery, Old UCO Bank road, Ramamurthy Nagar, Bangalore, 560016",
+  officeAddress: "No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016",
   whatsappNumber: "+919901332233",
   facebookUrl: "https://facebook.com/kinderbee",
   linkedinUrl: "https://linkedin.com/company/kinderbee-education",
@@ -290,9 +291,9 @@ const seedPages = [
   {
     id: "home",
     title: "Build the Future of Education with KIPS",
-    subtitle: "The KinderBee Integrated Partnership System (KIPS) is India's leading complete educational ecosystem. We don't just sell franchises—we help entrepreneurs plan, establish, launch, and operate highly successful, world-class schools with absolute local authority.",
-    metaTitle: "KinderBee - Finnish-Inspired Zero Royalty Preschool Franchise & School Setup",
-    metaDescription: "Discover KinderBee, India's leading Finnish-inspired preschool franchise system. 100% Zero Royalty model, NEP-aligned curriculum, teacher training, and school setup consultancy.",
+    subtitle: "The Kinderbee Integrated Partnership System (KIPS) is India's leading complete educational ecosystem. We don't just sell franchises—we help entrepreneurs plan, establish, launch, and operate highly successful, world-class schools with absolute local authority.",
+    metaTitle: "Kinderbee - Finnish-Inspired Zero Royalty Preschool Franchise & School Setup",
+    metaDescription: "Discover Kinderbee, India's leading Finnish-inspired preschool franchise system. 100% Zero Royalty model, NEP-aligned curriculum, teacher training, and school setup consultancy.",
     keywords: "preschool franchise, school setup india, finnish education, zero royalty franchise, nep 2020 school setup, preschool business",
     badgeText: "Zero Royalty. Lifetime Support. Global Standards.",
     content1: "India's Zero Royalty Education Franchise & School Development Partner"
@@ -300,9 +301,9 @@ const seedPages = [
   {
     id: "about",
     title: "Empowering Educators & Entrepreneurs",
-    subtitle: "KinderBee is on a mission to democratize premium international education across India, eliminating royalty burdens and providing school owners with elite world-class tools.",
-    metaTitle: "About KinderBee - Global Standards, Nordic Pedagogy",
-    metaDescription: "Learn about KinderBee's mission, values, and our partnership with Finnish Way Academy to deliver top-tier education with Zero Royalty benefits across India.",
+    subtitle: "Kinderbee is on a mission to democratize premium international education across India, eliminating royalty burdens and providing school owners with elite world-class tools.",
+    metaTitle: "About Kinderbee - Global Standards, Nordic Pedagogy",
+    metaDescription: "Learn about Kinderbee's mission, values, and our partnership with Finnish Way Academy to deliver top-tier education with Zero Royalty benefits across India.",
     keywords: "kinderbee curriculum, finnish school franchise, nep preschool india, play-based early learning",
     badgeText: "OUR JOURNEY & CORE MISSION",
     content1: "Democratic Education with Zero Franchise Royalties"
@@ -311,8 +312,8 @@ const seedPages = [
     id: "partnerships",
     title: "Our Collaborative Education Models",
     subtitle: "From high-profit Preschool Franchises to comprehensive CBSE School Setup and existing school upgrades, explore our zero-royalty partnership pathways.",
-    metaTitle: "Education Partnerships - School Setup & Upgrades | KinderBee",
-    metaDescription: "Explore KinderBee educational models. Get comprehensive assistance for CBSE/IB school setups, play school franchise systems, and existing school transformation with zero royalties.",
+    metaTitle: "Education Partnerships - School Setup & Upgrades | Kinderbee",
+    metaDescription: "Explore Kinderbee educational models. Get comprehensive assistance for CBSE/IB school setups, play school franchise systems, and existing school transformation with zero royalties.",
     keywords: "cbse school setup, preschool franchise cost, school setup consultant, school rebranding",
     badgeText: "Strategic Association Portfolios",
     content1: "Custom Solutions Tailored to Your Property and Vision"
@@ -321,7 +322,7 @@ const seedPages = [
     id: "fwa",
     title: "Finnish Way Academy Teacher Training",
     subtitle: "Unlock globally acclaimed pedagogical expertise. Empower your teaching staff with active, play-based learning frameworks certified by Finnish childhood education experts.",
-    metaTitle: "Finnish Way Academy - Early Educator Certifications | KinderBee",
+    metaTitle: "Finnish Way Academy - Early Educator Certifications | Kinderbee",
     metaDescription: "Acquire international early childhood teacher diplomas and certifications. Finnish-inspired pedagogy, active play-based teacher training programs.",
     keywords: "teacher training diploma, preschool teacher course, finnish education training, ntt course online",
     badgeText: "Acclaimed Pedagogical Certifications",
@@ -331,7 +332,7 @@ const seedPages = [
     id: "investors",
     title: "High ROI Educational Investment Opportunities",
     subtitle: "Invest in one of India's most resilient and expanding sectors. Benefit from rapid capital recovery, zero recurring royalties, and complete operational guidance.",
-    metaTitle: "Investors Hub - High ROI Preschool Investment | KinderBee",
+    metaTitle: "Investors Hub - High ROI Preschool Investment | Kinderbee",
     metaDescription: "Explore premium preschool franchise investment options. Highly resilient cash flows, fast ROI within 18-24 months, and a 100% Zero Royalty setup.",
     keywords: "education investment, preschool franchise roi, profitable school franchise, education business opportunity",
     badgeText: "Capital Appreciation & Enterprise Growth",
@@ -341,8 +342,8 @@ const seedPages = [
     id: "contact",
     title: "Connect with our Central Advisors",
     subtitle: "Speak directly with our school planning consultants to map out your educational project feasibility, site criteria, and budget expectations.",
-    metaTitle: "Contact Us - KinderBee School Setup Advisory",
-    metaDescription: "Contact KinderBee corporate office today. Schedule a phone consultation or offline visit to discuss school franchise or consulting requirements.",
+    metaTitle: "Contact Us - Kinderbee School Setup Advisory",
+    metaDescription: "Contact Kinderbee corporate office today. Schedule a phone consultation or offline visit to discuss school franchise or consulting requirements.",
     keywords: "contact school franchise, kinderbee office phone, preschool setup consulting call",
     badgeText: "Get In Touch Today",
     content1: "Strategic Project Blueprint Session"
@@ -473,7 +474,7 @@ app.post("/api/enquiries", async (req, res) => {
         Message: ${fields.message || "None"}
         `;
 
-        const prompt = `You are a strategic business development assistant for KinderBee Integrated Partnership System (KIPS), an Indian educational network offering Zero Royalty school setups and teacher training.
+        const prompt = `You are a strategic business development assistant for Kinderbee Integrated Partnership System (KIPS), an Indian educational network offering Zero Royalty school setups and teacher training.
         Analyze this incoming lead context and provide a highly useful strategic lead card for the administrator.
         The card MUST start with an emoji indicator (e.g. 🌟 for high fit, 💎 for enterprise/large trusts, 📚 for educators/courses, 📞 for standard contact).
         Then provide a concise, maximum 2-sentence summary detailing:
@@ -977,9 +978,14 @@ app.post("/api/payments", async (req, res) => {
   if (!programme) problems.push("programme");
   if (!Number.isFinite(amount) || amount <= 0) problems.push("amount paid");
   if (!UTR_RE.test(upiRefNumber)) problems.push("the 12-digit UPI transaction ID (UTR)");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate)) problems.push("payment date");
+  if (!isRealDate(paymentDate) || paymentDate > istToday()) problems.push("the payment date (today or earlier)");
   if (problems.length) {
     return res.status(400).json({ error: `Please provide ${problems.join(", ")}.` });
+  }
+  // Course fees are fixed: a payment for a listed course must be for exactly that fee
+  const fee = COURSE_FEES[programme];
+  if (fee && amount !== fee) {
+    return res.status(400).json({ error: `The fee for ${programme} is ₹${fee.toLocaleString("en-IN")}. Please pay and enter that amount.` });
   }
 
   const newPayment: PaymentRecord = {
@@ -1306,8 +1312,14 @@ app.get("/api/payments", guard("payments"), handle(async (req, res) => res.json(
 app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
   const { id } = req.params;
   const { status, notes } = req.body;
+  if (status !== undefined && !["pending_verification", "verified", "rejected"].includes(status)) {
+    return res.status(400).json({ error: "Status must be pending_verification, verified or rejected." });
+  }
   const supabase = getSupabaseClient();
   if (supabase) {
+    // Read the current status first, so verifying an already-verified payment doesn't email the access details again
+    const { data: before } = await supabase.from("payments").select("status").eq("id", id).maybeSingle();
+    const newlyVerified = status === "verified" && before?.status !== "verified";
     const patch: any = {};
     if (status) {
       patch.status = status;
@@ -1321,7 +1333,7 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
     const isConsultation = consultRef.startsWith("KBC-");
     if (status && isConsultation) await syncConsultationPayment(consultRef, id, status);
     const p0 = data[0];
-    const access = status === "verified" && !isConsultation
+    const access = newlyVerified && !isConsultation
       ? await sendCourseAccess({ email: p0.payer_email, name: p0.applicant_name, programme: p0.programme, amount: p0.amount, utr: p0.upi_ref })
       : undefined;
 
@@ -1330,7 +1342,7 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
       const leadKey = leadKeyOf(p.payer_phone, p.payer_email);
       const label = status === "verified" ? "verified" : status === "rejected" ? "rejected" : "moved back to pending";
       await logActivity({ leadKey, type: "payment", detail: `Payment of ₹${p.amount} ${label} (UTR ${p.upi_ref})` });
-      if (status === "verified" && !isConsultation) {
+      if (newlyVerified && !isConsultation) {
         // ponytail: scans all enquiries to match the phone in JS (stored phone formats vary); add a normalised phone column if this grows large
         const { data: leads } = await supabase.from("enquiries").select("id, status, phone, email");
         for (const l of leads || []) {
@@ -1347,12 +1359,13 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
   const db = loadDb();
   const p = db.payments.find(p => p.id === id);
   if (!p) return res.status(404).json({ error: "Payment record not found." });
+  const newlyVerified = status === "verified" && p.status !== "verified";
   if (status) p.status = status;
   if (notes !== undefined) p.notes = notes;
   saveDb(db);
   const isConsult = String(p.admissionNumber || "").startsWith("KBC-");
   if (status && isConsult) await syncConsultationPayment(p.admissionNumber!, id, status);
-  const access = status === "verified" && !isConsult
+  const access = newlyVerified && !isConsult
     ? await sendCourseAccess({ email: p.payerEmail, name: p.applicantName, programme: p.programme, amount: String(p.amount), utr: p.upiRefNumber })
     : undefined;
   res.json({ success: true, access });
@@ -1507,14 +1520,14 @@ app.post("/api/ai/suggest-reply", guard("leads"), async (req, res) => {
         Message: ${enquiry.fields.message || "None"}
         `;
 
-        const prompt = `You are the Business Development Director for KinderBee Integrated Partnership System (KIPS) and FinnishWay Academy.
+        const prompt = `You are the Business Development Director for Kinderbee Integrated Partnership System (KIPS) and FinnishWay Academy.
         Write a highly polished, professional, and warm email response to this interested lead.
         Address them by their name (${enquiry.fields.name}).
         In the email, make sure to:
-        1. Acknowledge their specific interest in ${enquiry.fields.partnershipModel || enquiry.fields.courseOfInterest || "collaborating with KinderBee"}.
+        1. Acknowledge their specific interest in ${enquiry.fields.partnershipModel || enquiry.fields.courseOfInterest || "collaborating with Kinderbee"}.
         2. Strategically mention the 100% Zero Royalty Model (if they are franchise/investor leads) or Finnish-inspired global learning frameworks (if they are school setups or course leads).
         3. Suggest scheduling a 15-minute consultation callback.
-        4. Sign off professionally as "The KinderBee Partnership Team".
+        4. Sign off professionally as "The Kinderbee Partnership Team".
         Keep the tone encouraging, premium, and trustworthy. Avoid generic clichés. Return ONLY the complete email text (Subject and Body). Do not include any meta-text or wrapper.`;
 
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Gemini timeout")), 6000));
@@ -1536,10 +1549,10 @@ app.post("/api/ai/suggest-reply", guard("leads"), async (req, res) => {
 
   // Fallback Professional Mock Draft
   const modelStr = enquiry.fields.partnershipModel || enquiry.fields.courseOfInterest || "collaborating with KIPS";
-  const mockSubject = `Subject: KinderBee Partnership Enquiry - Next Steps for ${enquiry.fields.name}`;
+  const mockSubject = `Subject: Kinderbee Partnership Enquiry - Next Steps for ${enquiry.fields.name}`;
   const mockBody = `Dear ${enquiry.fields.name},
 
-Thank you for reaching out to the KinderBee Integrated Partnership System (KIPS). We have received your query regarding starting a ${modelStr} in ${enquiry.fields.city || "your city"}.
+Thank you for reaching out to the Kinderbee Integrated Partnership System (KIPS). We have received your query regarding starting a ${modelStr} in ${enquiry.fields.city || "your city"}.
 
 Your interest aligns perfectly with our vision of building future-ready, high-standard educational institutions across India. Since KIPS operates on a 100% Zero Royalty Franchise Model, our partners retain all of their recurring tuition revenues, allowing for much faster capital recovery and highly sustainable local growth.
 
@@ -1551,7 +1564,7 @@ Looking forward to building the future of education together.
 
 Warm regards,
 
-The KinderBee Partnership Team
+The Kinderbee Partnership Team
 ${db.settings.phone} | ${db.settings.email}`;
 
   res.json({ success: true, emailDraft: `${mockSubject}\n\n${mockBody}` });

@@ -132,7 +132,7 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
               </div>
               <div>
                 <label htmlFor="cp-phone" className={labelCls}>Mobile number *</label>
-                <input id="cp-phone" className={inputCls} value={phone} onChange={e => setPhone(e.target.value)} type="tel" inputMode="numeric" autoComplete="tel" maxLength={14} placeholder="10-digit mobile" />
+                <input id="cp-phone" className={inputCls} value={phone} onChange={e => setPhone(e.target.value)} type="tel" inputMode="numeric" autoComplete="tel" maxLength={16} placeholder="10-digit mobile" />
               </div>
               <div>
                 <label htmlFor="cp-email" className={labelCls}>Email address *</label>
@@ -193,7 +193,7 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
                 <p className="text-xs text-stone-500">Usually within one working day. Please check your spam folder too.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <a href={waLink(settings, `Hi KinderBee Team, I have paid ${amountLabel} for ${course.programme}. UTR: ${utr.replace(/\s/g, '')}. Name: ${name}.`)} target="_blank" rel="noopener noreferrer"
+                <a href={waLink(settings, `Hi Kinderbee Team, I have paid ${amountLabel} for ${course.programme}. UTR: ${utr.replace(/\s/g, '')}. Name: ${name}.`)} target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] hover:bg-[#20be5b] py-3 text-sm font-bold text-white transition">
                   <MessageCircle className="h-4 w-4" /> WhatsApp us
                 </a>

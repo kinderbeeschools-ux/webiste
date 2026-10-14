@@ -3,7 +3,7 @@ import { Phone, ArrowRight, X, MessageCircle, CalendarCheck } from 'lucide-react
 import { SystemSettings } from '../types';
 import { openConsultationBooking, waLink } from './ConsultationBooking';
 
-const ADMISSION_WHATSAPP_TEXT = 'Hi KinderBee Team, I would like to enquire about preschool admissions. Please share the details.';
+const ADMISSION_WHATSAPP_TEXT = 'Hi Kinderbee Team, I would like to enquire about preschool admissions. Please share the details.';
 
 interface StickyContactWidgetProps {
   settings: SystemSettings | null;
@@ -80,17 +80,17 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
         </div>
       )}
 
-      {/* ENQUIRY NOW Pill Button (Brand Magenta & Gold Accent Pill): opens the Call / WhatsApp options */}
+      {/* ENQUIRE NOW Pill Button (Brand Magenta & Gold Accent Pill): opens the Call / WhatsApp options */}
       <button
         onClick={() => setShowPopup(v => !v)}
         aria-expanded={showPopup}
         aria-controls="enquiry-desk"
         className="group flex items-center gap-2 bg-gradient-to-r from-[#E1007A] via-[#d6006e] to-[#be005d] hover:from-[#c2005f] hover:to-[#9e0049] text-white px-4.5 py-2.5 rounded-full shadow-xl shadow-pink-950/25 hover:shadow-2xl hover:shadow-pink-950/35 border border-pink-300/40 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98 cursor-pointer"
-        title="Enquiry Now - Call or WhatsApp us"
+        title="Enquire Now - Call or WhatsApp us"
       >
         <span className="w-2.5 h-2.5 rounded-full bg-[#FFD400] shrink-0 animate-pulse"></span>
         <span className="text-[11px] sm:text-xs font-extrabold tracking-wider uppercase text-white whitespace-nowrap">
-          ENQUIRY NOW
+          Enquire Now
         </span>
         <ArrowRight className="w-3.5 h-3.5 text-[#FFD400] group-hover:translate-x-0.5 transition-transform" />
       </button>
