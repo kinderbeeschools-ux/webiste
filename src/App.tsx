@@ -96,12 +96,8 @@ export function App() {
       const isHashAdmin = hash === '#admin' || hash === '#/admin';
 
       if (isPathAdmin || isHashAdmin || isParamAdmin) {
-        const token = localStorage.getItem('kips_admin_token');
-        if (token) {
-          setCurrentTab('admin');
-        } else {
-          setAdminLoginOpen(true);
-        }
+        // Signed in: the CRM. Signed out: the standalone sign-in page (also rendered for the admin tab)
+        setCurrentTab('admin');
       }
     };
 
@@ -187,12 +183,17 @@ export function App() {
   const inAdmin = currentTab === 'admin' && !!adminToken;
   useAutoReveal(`${currentTab}|${selectedBlog?.id || ''}|${blogs.length}`, !inAdmin);
 
+  // Signed-out /admin: a standalone sign-in page, without the website around it
+  if (currentTab === 'admin' && !adminToken) {
+    return <AdminLoginModal isOpen asPage onClose={() => setCurrentTab('home')} onLoginSuccess={handleLoginSuccess} />;
+  }
+
   // If user is on Admin Tab and authenticated, show the admin panel
   if (inAdmin) {
     return (
       <AdminPanel
         adminToken={adminToken}
-        onLogout={handleLogoutAdmin}
+        onLogout={() => { handleLogoutAdmin(); setCurrentTab('admin'); }} // back to the sign-in screen
         onVisitSite={() => setCurrentTab('home')}
         settings={settings}
         onUpdateSettings={newSets => setSettings(newSets)}
@@ -294,21 +295,6 @@ export function App() {
         )}
         {(currentTab === 'cancellation-refund' || currentTab === 'refund-policy') && (
           <RefundPolicyPage setCurrentTab={setCurrentTab} settings={settings} />
-        )}
-        {currentTab === 'admin' && !adminToken && (
-          <div className="max-w-md mx-auto my-20 p-8 bg-white rounded-3xl border border-stone-200 text-center space-y-4 shadow-sm">
-            <div className="w-12 h-12 rounded-2xl bg-[#E1007A]/10 text-[#E1007A] flex items-center justify-center mx-auto">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold">Admin Authentication Required</h3>
-            <p className="text-sm text-stone-600">Please sign in with the admin password to manage enquiries, payments, blogs and settings.</p>
-            <button
-              onClick={() => setAdminLoginOpen(true)}
-              className="bg-[#E1007A] hover:bg-[#c00068] text-white px-6 py-3 rounded-xl text-sm font-semibold transition cursor-pointer"
-            >
-              Sign In to Admin
-            </button>
-          </div>
         )}
       </main>
 

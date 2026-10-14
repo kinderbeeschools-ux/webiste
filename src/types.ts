@@ -65,6 +65,8 @@ export interface SystemSettings {
   workingHours: string;
   logoUrl?: string;
   logoText?: string;
+  crmName?: string; // CRM product name (white-label)
+  crmAccent?: string; // CRM brand colour, hex
   logoSubtext?: string;
   footerTagline?: string;
   footerCopyright?: string;

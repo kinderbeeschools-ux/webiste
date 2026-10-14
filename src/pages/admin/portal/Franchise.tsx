@@ -36,8 +36,8 @@ export const FranchiseTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }
       <section className="space-y-4">
         <Toolbar title={head ? 'Branch payments & receipts' : 'Payment history'} count={ledger.items.length} onReload={ledger.reload} />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div className={card}><div className="text-xs font-semibold uppercase text-stone-500">Received</div><div className="font-display text-2xl font-bold text-emerald-700">{inr(received)}</div></div>
-          <div className={card}><div className="text-xs font-semibold uppercase text-stone-500">Pending</div><div className="font-display text-2xl font-bold text-amber-700">{inr(ledger.items.filter(l => l.status === 'pending').reduce((s, l) => s + l.amount, 0))}</div></div>
+          <div className={card}><div className="text-xs font-semibold uppercase text-slate-500">Received</div><div className="text-lg tracking-tight font-semibold text-emerald-700">{inr(received)}</div></div>
+          <div className={card}><div className="text-xs font-semibold uppercase text-slate-500">Pending</div><div className="text-lg tracking-tight font-semibold text-amber-700">{inr(ledger.items.filter(l => l.status === 'pending').reduce((s, l) => s + l.amount, 0))}</div></div>
         </div>
         {head && can(me, 'finance') && (
           <form onSubmit={addEntry} className={`${card} grid gap-3 sm:grid-cols-3`}>
@@ -51,26 +51,26 @@ export const FranchiseTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }
             <div className="flex items-end sm:col-span-2"><button className={btnPrimary}><Plus className="h-4 w-4" /> Record entry</button></div>
           </form>
         )}
-        <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
           <table className="w-full min-w-[620px] text-left text-sm">
-            <thead className="bg-stone-50 text-xs uppercase tracking-wide text-stone-500"><tr><th className="px-4 py-2">Date</th><th className="px-4 py-2">Branch</th><th className="px-4 py-2">Type</th><th className="px-4 py-2">Reference</th><th className="px-4 py-2">Amount</th><th className="px-4 py-2">Receipt</th>{head && <th />}</tr></thead>
-            <tbody className="divide-y divide-stone-100">
+            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-2">Date</th><th className="px-4 py-2">Branch</th><th className="px-4 py-2">Type</th><th className="px-4 py-2">Reference</th><th className="px-4 py-2">Amount</th><th className="px-4 py-2">Receipt</th>{head && <th />}</tr></thead>
+            <tbody className="divide-y divide-slate-100">
               {ledger.items.map(l => (
                 <tr key={l.id}>
-                  <td className="px-4 py-2">{fmtDay(l.date)}</td><td className="px-4 py-2">{nameOf(l.branchId)}</td><td className="px-4 py-2">{l.kind}</td><td className="px-4 py-2 text-stone-500">{l.reference || '—'}</td>
+                  <td className="px-4 py-2">{fmtDay(l.date)}</td><td className="px-4 py-2">{nameOf(l.branchId)}</td><td className="px-4 py-2">{l.kind}</td><td className="px-4 py-2 text-slate-500">{l.reference || '—'}</td>
                   <td className="px-4 py-2 font-semibold">{inr(l.amount)} <span className={`ml-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${l.status === 'received' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>{l.status}</span></td>
-                  <td className="px-4 py-2">{l.receiptUrl ? <a href={l.receiptUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#E1007A] hover:underline">Open <ExternalLink className="h-3.5 w-3.5" /></a> : '—'}</td>
-                  {head && <td className="px-2"><button className="p-1 text-stone-400 hover:text-red-600" aria-label="Delete entry" onClick={async () => { if (confirm('Delete this entry?')) { await api(`/api/portal/ledger/${l.id}`, { method: 'DELETE' }); ledger.reload(); } }}><Trash2 className="h-4 w-4" /></button></td>}
+                  <td className="px-4 py-2">{l.receiptUrl ? <a href={l.receiptUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-[var(--crm-accent)] hover:underline">Open <ExternalLink className="h-3.5 w-3.5" /></a> : '—'}</td>
+                  {head && <td className="px-2"><button className="p-1 text-slate-400 hover:text-red-600" aria-label="Delete entry" onClick={async () => { if (confirm('Delete this entry?')) { await api(`/api/portal/ledger/${l.id}`, { method: 'DELETE' }); ledger.reload(); } }}><Trash2 className="h-4 w-4" /></button></td>}
                 </tr>
               ))}
-              {!ledger.items.length && <tr><td colSpan={7} className="px-4 py-8 text-center text-stone-400">No payments recorded yet.</td></tr>}
+              {!ledger.items.length && <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">No payments recorded yet.</td></tr>}
             </tbody>
           </table>
         </div>
       </section>
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 font-display text-xl font-bold"><Megaphone className="h-5 w-5 text-[#E1007A]" /> Notices from head office</h2>
+        <h2 className="flex items-center gap-2 text-xl font-semibold"><Megaphone className="h-5 w-5 text-[var(--crm-accent)]" /> Notices from head office</h2>
         {head && can(me, 'notices') && (
           <form onSubmit={addNotice} className={`${card} grid gap-3 sm:grid-cols-3`}>
             <input required className={input} placeholder="Title" value={n.title} onChange={x => setN({ ...n, title: x.target.value })} />
@@ -82,11 +82,11 @@ export const FranchiseTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }
         <ul className="space-y-2">
           {notices.items.map(x => (
             <li key={x.id} className={`${card} flex items-start justify-between gap-3`}>
-              <div><b className="text-stone-900">{x.title}</b><span className="ml-2 text-xs text-stone-500">{x.branchId ? nameOf(x.branchId) : 'All branches'} · {fmtDay(x.at)} · {x.by}</span>{x.body && <p className="mt-1 text-sm text-stone-600">{x.body}</p>}</div>
+              <div><b className="text-slate-900">{x.title}</b><span className="ml-2 text-xs text-slate-500">{x.branchId ? nameOf(x.branchId) : 'All branches'} · {fmtDay(x.at)} · {x.by}</span>{x.body && <p className="mt-1 text-sm text-slate-600">{x.body}</p>}</div>
               {head && can(me, 'notices') && <button className={btnGhost} aria-label="Delete notice" onClick={async () => { await api(`/api/portal/notices/${x.id}`, { method: 'DELETE' }); notices.reload(); }}><Trash2 className="h-4 w-4" /></button>}
             </li>
           ))}
-          {!notices.items.length && <li className="text-sm text-stone-400">No notices.</li>}
+          {!notices.items.length && <li className="text-sm text-slate-400">No notices.</li>}
         </ul>
       </section>
     </div>

@@ -62,23 +62,23 @@ export const OpportunitiesTab: React.FC<TabProps> = ({ api, flash }) => {
         <a className={btnGhost} href="/joint-ventures" target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4" /> View page</a>
         <button className={btnPrimary} onClick={() => setEditing({ ...EMPTY, order: items.length + 1 })}><Plus className="h-4 w-4" /> New opportunity</button>
       </Toolbar>
-      <p className="text-xs text-stone-500">
+      <p className="text-xs text-slate-500">
         Listings appear on Partner With Us → Joint Ventures. Only <strong>published</strong> listings are visible to visitors; the <strong>featured</strong> one is shown large near the top.
       </p>
 
-      {loading ? <p className="text-sm text-stone-500">Loading…</p> : (
+      {loading ? <p className="text-sm text-slate-500">Loading…</p> : (
         <div className="space-y-3">
           {items.map((o, i) => (
             <div key={o.id} className={`${card} flex flex-col gap-4 sm:flex-row sm:items-center`}>
               <img src={o.images[0]?.url || '/arcadia/arcadia_hero.jpg'} alt="" className="h-28 w-full shrink-0 rounded-xl object-cover sm:h-20 sm:w-32" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-stone-900">{o.title}</span>
+                  <span className="font-semibold text-slate-900">{o.title}</span>
                   {o.featured && <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-800"><Star className="h-3 w-3" /> Featured</span>}
-                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${o.published ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-200 text-stone-600'}`}>{o.published ? 'Published' : 'Draft'}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${o.published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>{o.published ? 'Published' : 'Draft'}</span>
                 </div>
-                <div className="truncate text-sm text-stone-500">{o.location} · {o.category} · {o.status}</div>
-                <div className="text-xs text-stone-400">{o.images.length} photos</div>
+                <div className="truncate text-sm text-slate-500">{o.location} · {o.category} · {o.status}</div>
+                <div className="text-xs text-slate-400">{o.images.length} photos</div>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 <button className={btnGhost} title="Move up" disabled={i === 0} onClick={() => move(i, -1)}><ArrowUp className="h-4 w-4" /></button>
@@ -97,7 +97,7 @@ export const OpportunitiesTab: React.FC<TabProps> = ({ api, flash }) => {
               </div>
             </div>
           ))}
-          {!items.length && <p className="text-sm text-stone-500">No opportunities yet. Click “New opportunity” to add one.</p>}
+          {!items.length && <p className="text-sm text-slate-500">No opportunities yet. Click “New opportunity” to add one.</p>}
         </div>
       )}
     </section>
@@ -108,8 +108,8 @@ export const OpportunitiesTab: React.FC<TabProps> = ({ api, flash }) => {
 const Section: React.FC<{ title: string; hint?: string; children: React.ReactNode }> = ({ title, hint, children }) => (
   <div className={`${card} space-y-4`}>
     <div>
-      <h2 className="font-semibold text-stone-900">{title}</h2>
-      {hint && <p className="text-xs text-stone-500">{hint}</p>}
+      <h2 className="font-semibold text-slate-900">{title}</h2>
+      {hint && <p className="text-xs text-slate-500">{hint}</p>}
     </div>
     {children}
   </div>
@@ -187,7 +187,7 @@ const Editor: React.FC<{ initial: Opportunity; api: TabProps['api']; onCancel: (
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold">{o.id ? 'Edit opportunity' : 'New opportunity'}</h1>
+        <h2 className="text-lg font-semibold tracking-tight">{o.id ? 'Edit opportunity' : 'New opportunity'}</h2>
         <div className="flex gap-2">
           <button className={btnGhost} onClick={onCancel}>Cancel</button>
           <button className={btnPrimary} disabled={busy || uploading > 0} onClick={submit}>{busy ? 'Saving…' : 'Save'}</button>
@@ -206,32 +206,32 @@ const Editor: React.FC<{ initial: Opportunity; api: TabProps['api']; onCancel: (
           </Field>
           {text('headline', 'Headline', { full: true, placeholder: 'e.g. 22,000 sq. ft. land for Build-to-Suit and development JV' })}
           {text('summary', 'Short summary (card text)', { area: true })}
-          <label className="flex items-center gap-2 text-sm font-semibold text-stone-700"><input type="checkbox" className="h-4 w-4 accent-[#E1007A]" checked={o.published} onChange={e => set('published', e.target.checked)} /> Published (visible on the website)</label>
-          <label className="flex items-center gap-2 text-sm font-semibold text-stone-700"><input type="checkbox" className="h-4 w-4 accent-[#E1007A]" checked={o.featured} onChange={e => set('featured', e.target.checked)} /> Featured (shown large at the top)</label>
+          <label className="flex items-center gap-2 text-sm font-semibold text-slate-700"><input type="checkbox" className="h-4 w-4 accent-[var(--crm-accent)]" checked={o.published} onChange={e => set('published', e.target.checked)} /> Published (visible on the website)</label>
+          <label className="flex items-center gap-2 text-sm font-semibold text-slate-700"><input type="checkbox" className="h-4 w-4 accent-[var(--crm-accent)]" checked={o.featured} onChange={e => set('featured', e.target.checked)} /> Featured (shown large at the top)</label>
         </div>
       </Section>
 
       <Section title="Photos" hint="The first photo is the cover. Upload JPG/PNG under 3 MB each; you can upload several at once.">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {o.images.map((im, i) => (
-            <div key={im.url + i} className="overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+            <div key={im.url + i} className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
               <div className="relative">
                 <img src={im.url} alt="" className="h-28 w-full object-cover" />
-                {i === 0 && <span className="absolute left-2 top-2 rounded-full bg-[#E1007A] px-2 py-0.5 text-[10px] font-bold text-white">Cover</span>}
+                {i === 0 && <span className="absolute left-2 top-2 rounded-full bg-[var(--crm-accent)] px-2 py-0.5 text-[10px] font-bold text-white">Cover</span>}
               </div>
               <div className="space-y-1.5 p-2">
                 <input className={`${input} !py-1.5 !text-xs`} placeholder="Caption" value={im.caption} onChange={e => set('images', o.images.map((x, j) => (j === i ? { ...x, caption: e.target.value } : x)))} />
                 <div className="flex justify-between">
                   <div className="flex gap-1">
-                    <button type="button" className={`${btn} !p-1.5 text-stone-600 hover:bg-stone-200`} disabled={i === 0} onClick={() => moveImg(i, -1)} aria-label="Move left"><ArrowUp className="h-3.5 w-3.5 -rotate-90" /></button>
-                    <button type="button" className={`${btn} !p-1.5 text-stone-600 hover:bg-stone-200`} disabled={i === o.images.length - 1} onClick={() => moveImg(i, 1)} aria-label="Move right"><ArrowDown className="h-3.5 w-3.5 -rotate-90" /></button>
+                    <button type="button" className={`${btn} !p-1.5 text-slate-600 hover:bg-slate-200`} disabled={i === 0} onClick={() => moveImg(i, -1)} aria-label="Move left"><ArrowUp className="h-3.5 w-3.5 -rotate-90" /></button>
+                    <button type="button" className={`${btn} !p-1.5 text-slate-600 hover:bg-slate-200`} disabled={i === o.images.length - 1} onClick={() => moveImg(i, 1)} aria-label="Move right"><ArrowDown className="h-3.5 w-3.5 -rotate-90" /></button>
                   </div>
                   <button type="button" className={`${btn} !p-1.5 text-red-600 hover:bg-red-50`} onClick={() => set('images', o.images.filter((_, j) => j !== i))} aria-label="Remove photo"><Trash2 className="h-3.5 w-3.5" /></button>
                 </div>
               </div>
             </div>
           ))}
-          <label className="flex min-h-[10rem] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-stone-300 text-sm font-semibold text-stone-500 hover:border-[#E1007A] hover:text-[#E1007A]">
+          <label className="flex min-h-[10rem] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 text-sm font-semibold text-slate-500 hover:border-[var(--crm-accent)] hover:text-[var(--crm-accent)]">
             {uploading ? <>Uploading {uploading}…</> : <><ImagePlus className="h-6 w-6" /> Upload photos</>}
             <input type="file" accept="image/*" multiple className="hidden" onChange={e => { upload(e.target.files); e.target.value = ''; }} />
           </label>

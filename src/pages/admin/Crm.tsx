@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, animate, useReducedMotion } from 'motion/react';
-import { Bee, Star, Cloud, Heart, Squiggle } from '../../components/Doodles';
 import {
   Phone, MessageCircle, Mail, X, CalendarClock, AlertCircle, UserPlus, IndianRupee, GraduationCap, StickyNote,
-  ArrowRightLeft, CreditCard, Sparkles, Flame, Users, Building2, Plus, Pencil, Baby, Home, TrendingUp, Clock,
+  ArrowRightLeft, CreditCard, Sparkles, Flame, Users, Building2, Plus, Pencil, Baby, Home, TrendingUp, Clock, Inbox, Loader2,
 } from 'lucide-react';
 import type { Enquiry, PaymentRecord, LeadActivity, LeadStage, Student } from '../../types';
 import { ENQUIRY_CATEGORIES, enquiryCategory, categoryInfo } from '../../data/enquiry';
@@ -79,14 +78,15 @@ const VIEWS: [View, string, React.ElementType][] = [
 
 type LeadPatch = { status?: LeadStage; nextFollowUp?: string; followUpType?: string; lostReason?: string; notes?: string; fields?: Record<string, string> };
 
-export const CrmTab: React.FC<TabProps> = ({ api, flash }) => {
+// startAdding: open the New lead form straight away (dashboard quick action)
+export const CrmTab: React.FC<TabProps & { startAdding?: boolean }> = ({ api, flash, startAdding = false }) => {
   const enq = useList<Enquiry>(api, '/api/enquiries');
   const pay = useList<PaymentRecord>(api, '/api/payments');
   const stu = useList<Student>(api, '/api/crm/students');
   const [view, setView] = useState<View>('dashboard');
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [lostPrompt, setLostPrompt] = useState(false);
-  const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(startAdding);
 
   const contacts = useMemo(() => buildContacts(enq.items, pay.items, stu.items), [enq.items, pay.items, stu.items]);
   const open = contacts.find(c => c.key === openKey) || null;
@@ -105,18 +105,20 @@ export const CrmTab: React.FC<TabProps> = ({ api, flash }) => {
 
   return (
     <section className="space-y-4">
-      <Toolbar title="CRM" count={contacts.length} onReload={reload}>
+      <Toolbar title="Contacts" count={contacts.length} onReload={reload}>
         <button className={btnPrimary} onClick={() => setAdding(true)}><Plus className="h-4 w-4" /> New lead</button>
       </Toolbar>
 
-      <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4">
-        {VIEWS.map(([id, label, Icon]) => (
-          <button key={id} onClick={() => setView(id)}
-            className={`relative flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${view === id ? 'text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'}`}>
-            {view === id && <motion.span layoutId="crm-view-pill" className="absolute inset-0 rounded-full bg-gradient-to-r from-[#E1007A] to-pink-500 shadow-md shadow-pink-500/30" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
-            <Icon className="relative h-4 w-4" /> <span className="relative">{label}</span>
-          </button>
-        ))}
+      <div className="no-scrollbar -mx-4 overflow-x-auto px-4">
+        <div role="tablist" aria-label="CRM views" className="inline-flex gap-1 rounded-lg border border-slate-200 bg-slate-100/70 p-1">
+          {VIEWS.map(([id, label, Icon]) => (
+            <button key={id} role="tab" aria-selected={view === id} onClick={() => setView(id)}
+              className={`relative flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer ${view === id ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'}`}>
+              {view === id && <motion.span layoutId="crm-view-pill" className="absolute inset-0 rounded-md bg-white shadow-xs ring-1 ring-slate-200" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+              <Icon className={`relative h-4 w-4 ${view === id ? 'text-[var(--crm-accent)]' : ''}`} /> <span className="relative">{label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {enq.loading || pay.loading ? <CrmLoader /> : (
@@ -171,36 +173,31 @@ const CountUp: React.FC<{ value: number; format?: (n: number) => string }> = ({ 
 
 const Kpi: React.FC<{ label: string; value: number; format?: (n: number) => string; icon: React.ElementType; tone: string; hint?: string; index?: number }> = ({ label, value, format, icon: Icon, tone, hint, index = 0 }) => (
   <motion.div
-    className={`${card} group relative flex items-center gap-3 overflow-hidden !p-4 transition-shadow hover:shadow-lg`}
-    initial={{ opacity: 0, y: 18, scale: 0.97 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    whileHover={{ y: -3 }}
-    transition={{ duration: 0.5, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+    className={`${card} flex items-center gap-3 !p-4`}
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.35, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
   >
-    <span aria-hidden="true" className={`absolute -right-6 -top-6 h-16 w-16 rounded-full opacity-40 blur-xl ${tone}`} />
-    <span className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 ${tone}`}><Icon className="h-5 w-5" /></span>
-    <div className="relative min-w-0">
-      <div className="truncate text-xl font-extrabold leading-none text-stone-900 sm:text-2xl"><CountUp value={value} format={format} /></div>
-      <div className="mt-1 text-[11px] font-semibold leading-tight text-stone-500 sm:text-xs">{label}</div>
-      {hint && <div className="text-[10px] text-stone-400">{hint}</div>}
+    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tone}`}><Icon className="h-5 w-5" /></span>
+    <div className="min-w-0">
+      <div className="truncate text-xl font-semibold leading-none tabular-nums text-slate-900 sm:text-2xl"><CountUp value={value} format={format} /></div>
+      <div className="mt-1 text-xs font-medium leading-tight text-slate-500">{label}</div>
+      {hint && <div className="text-[10px] text-slate-400">{hint}</div>}
     </div>
   </motion.div>
 );
 
 // Friendly empty state with a small illustration
-const EmptyState: React.FC<{ text: string; art?: 'cloud' | 'star' | 'heart' }> = ({ text, art = 'cloud' }) => (
-  <div className="flex flex-col items-center gap-2 py-6 text-center">
-    {art === 'cloud' && <Cloud className="w-20 kb-float" />}
-    {art === 'star' && <Star className="w-10 kb-spin-slow" />}
-    {art === 'heart' && <Heart className="w-10 kb-wiggle" />}
-    <p className="max-w-xs text-sm text-stone-500">{text}</p>
+const EmptyState: React.FC<{ text: string; art?: 'cloud' | 'star' | 'heart' }> = ({ text }) => (
+  <div className="flex flex-col items-center gap-2 py-8 text-center">
+    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-400"><Inbox className="h-5 w-5" /></span>
+    <p className="max-w-xs text-sm text-slate-500">{text}</p>
   </div>
 );
 
 const CrmLoader = () => (
-  <div className="flex flex-col items-center gap-3 py-16">
-    <Bee className="w-24 kb-fly" />
-    <p className="text-sm font-semibold text-stone-500">Gathering your leads…</p>
+  <div className="flex items-center justify-center gap-2 py-16 text-sm text-slate-500" role="status">
+    <Loader2 className="h-4 w-4 animate-spin" /> Loading leads…
   </div>
 );
 
@@ -209,23 +206,18 @@ const greeting = () => { const h = new Date().getHours(); return h < 12 ? 'Good 
 // Illustrated welcome banner at the top of the dashboard
 const WelcomeBanner: React.FC<{ due: number; hot: number; fresh: number; pendingPay: number }> = ({ due, hot, fresh, pendingPay }) => (
   <motion.div
-    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#70162A] via-[#9b1f3d] to-[#E1007A] p-5 text-white shadow-xl shadow-pink-900/20 sm:p-7"
-    initial={{ opacity: 0, y: 20 }}
+    className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-xs sm:p-6"
+    initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
   >
-    <div aria-hidden="true" className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:18px_18px]" />
-    <div aria-hidden="true" className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#FFD400]/25 blur-3xl kb-drift" />
-    <Bee className="absolute right-4 top-3 hidden w-28 sm:block kb-fly" />
-    <Star className="absolute bottom-4 right-28 hidden w-7 sm:block kb-spin-slow" />
-    <Star color="#FFD400" className="absolute right-44 top-6 hidden w-5 md:block kb-wiggle" />
-    <div className="relative max-w-xl space-y-2">
-      <div className="text-xs font-semibold uppercase tracking-widest text-pink-100/80">
+    <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-[var(--crm-accent)]" />
+    <div className="max-w-2xl space-y-1.5">
+      <div className="text-xs font-medium text-slate-500">
         {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
       </div>
-      <h2 className="font-display text-2xl font-extrabold sm:text-3xl">{greeting()} 👋</h2>
-      <Squiggle color="#FFD400" className="h-4 w-24" />
-      <p className="text-sm text-pink-50/90 sm:text-base">
+      <h2 className="text-xl font-semibold tracking-tight text-slate-900">{greeting()}</h2>
+      <p className="text-sm text-slate-600">
         {due + hot + fresh + pendingPay === 0
           ? 'All caught up. A great day to bring in new families!'
           : 'Here is what needs your attention today.'}
@@ -237,10 +229,9 @@ const WelcomeBanner: React.FC<{ due: number; hot: number; fresh: number; pending
           [fresh, 'new leads to call'],
           [pendingPay, 'payments to verify'],
         ].filter(([n]) => (n as number) > 0).map(([n, t], i) => (
-          <motion.span key={t as string} className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur"
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 + i * 0.08, type: 'spring' }}>
-            <strong className="text-[#FFD400]">{n as number}</strong> {t as string}
-          </motion.span>
+          <span key={t as string} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
+            <strong className="tabular-nums text-slate-900">{n as number}</strong> {t as string}
+          </span>
         ))}
       </div>
     </div>
@@ -254,34 +245,34 @@ const TempChip: React.FC<{ c: Contact }> = ({ c }) => {
 };
 
 const Avatar: React.FC<{ name: string; size?: string }> = ({ name, size = 'h-9 w-9 text-sm' }) => (
-  <span className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-200 to-amber-100 font-bold text-[#E1007A] ${size}`}>
+  <span className={`flex shrink-0 items-center justify-center rounded-full bg-slate-100 font-semibold text-slate-600 ring-1 ring-slate-200 ${size}`}>
     {(name || '?').charAt(0).toUpperCase()}
   </span>
 );
 
 const ContactRow: React.FC<{ c: Contact; onOpen: (k: string) => void; right?: React.ReactNode; sub?: string }> = ({ c, onOpen, right, sub }) => (
-  <button onClick={() => onOpen(c.key)} className="flex w-full items-center gap-3 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-left transition hover:border-pink-200 hover:bg-pink-50/40">
+  <button onClick={() => onOpen(c.key)} className="flex w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer">
     <Avatar name={c.name} />
     <span className="min-w-0 flex-1">
-      <span className="block truncate text-sm font-semibold text-stone-800">{c.name || c.phone}</span>
-      <span className="block truncate text-xs text-stone-500">{sub ?? `${programOf(c.lead) || 'Payment only'} · ${c.phone}`}</span>
+      <span className="block truncate text-sm font-semibold text-slate-800">{c.name || c.phone}</span>
+      <span className="block truncate text-xs text-slate-500">{sub ?? `${programOf(c.lead) || 'Payment only'} · ${c.phone}`}</span>
     </span>
     {right}
   </button>
 );
 
-const Bars: React.FC<{ rows: { label: string; value: number; display?: string }[]; tone?: string }> = ({ rows, tone = 'from-[#E1007A] to-pink-400' }) => {
+const Bars: React.FC<{ rows: { label: string; value: number; display?: string }[]; tone?: string }> = ({ rows, tone = 'from-[var(--crm-accent)] to-[var(--crm-accent)]' }) => {
   const max = Math.max(1, ...rows.map(r => r.value));
   if (!rows.length) return <EmptyState text="No data yet. It fills in as leads arrive." art="star" />;
   return (
     <div className="space-y-2">
       {rows.map((r, i) => (
         <div key={r.label} className="grid grid-cols-[7rem_1fr_auto] items-center gap-2 text-xs">
-          <span className="truncate font-semibold text-stone-600" title={r.label}>{r.label}</span>
-          <span className="h-3 overflow-hidden rounded-full bg-stone-100">
+          <span className="truncate font-semibold text-slate-600" title={r.label}>{r.label}</span>
+          <span className="h-3 overflow-hidden rounded-full bg-slate-100">
             <motion.span className={`block h-full rounded-full bg-gradient-to-r ${tone}`} initial={{ width: 0 }} animate={{ width: `${(r.value / max) * 100}%` }} transition={{ duration: 0.9, delay: 0.15 + i * 0.05, ease: [0.22, 1, 0.36, 1] }} />
           </span>
-          <span className="w-16 text-right font-bold text-stone-800">{r.display ?? r.value}</span>
+          <span className="w-16 text-right font-bold text-slate-800">{r.display ?? r.value}</span>
         </div>
       ))}
     </div>
@@ -337,13 +328,13 @@ const DashboardView: React.FC<{ contacts: Contact[]; enquiries: Enquiry[]; payme
     <div className="space-y-5">
       <WelcomeBanner due={due.length} hot={hot.length} fresh={fresh} pendingPay={pendingCount} />
       {due.length > 0 && (
-        <div className="flex items-start gap-3 rounded-2xl border border-pink-200 bg-pink-50 p-4">
-          <CalendarClock className="mt-0.5 h-5 w-5 shrink-0 text-[#E1007A]" />
+        <div className="flex items-start gap-3 rounded-2xl border border-[var(--crm-accent)]/25 bg-[var(--crm-accent)]/5 p-4">
+          <CalendarClock className="mt-0.5 h-5 w-5 shrink-0 text-[var(--crm-accent)]" />
           <div className="min-w-0 text-sm">
-            <div className="font-bold text-stone-900">🔔 {due.length} follow-up{due.length > 1 ? 's' : ''} due</div>
+            <div className="font-bold text-slate-900">{due.length} follow-up{due.length > 1 ? 's' : ''} due</div>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {due.slice(0, 6).map(c => (
-                <button key={c.key} onClick={() => onOpen(c.key)} className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-stone-700 border border-pink-200 hover:border-[#E1007A]">
+                <button key={c.key} onClick={() => onOpen(c.key)} className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 border border-[var(--crm-accent)]/25 hover:border-[var(--crm-accent)]">
                   {c.name} · {c.lead!.followUpType || 'Follow-up'}
                 </button>
               ))}
@@ -355,14 +346,14 @@ const DashboardView: React.FC<{ contacts: Contact[]; enquiries: Enquiry[]; payme
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         <Kpi index={0} label="Total leads" value={enquiries.length} icon={Users} tone="bg-amber-100 text-amber-700" />
         <Kpi index={1} label="New leads today" value={enquiries.filter(e => e.createdAt.slice(0, 10) === today).length} icon={UserPlus} tone="bg-sky-100 text-sky-700" />
-        <Kpi index={2} label="Follow-ups due" value={due.length} icon={CalendarClock} tone="bg-pink-100 text-[#E1007A]" />
+        <Kpi index={2} label="Follow-ups due" value={due.length} icon={CalendarClock} tone="bg-[var(--crm-accent)]/10 text-[var(--crm-accent)]" />
         <Kpi index={3} label="Hot leads" value={hot.length} icon={Flame} tone="bg-red-100 text-red-600" />
         <Kpi index={4} label="Admissions this month" value={admissionsMonth} icon={GraduationCap} tone="bg-emerald-100 text-emerald-700" />
         <Kpi index={5} label="Conversion rate" value={enquiries.length ? (won / enquiries.length) * 100 : 0} format={n => `${Math.round(n)}%`} icon={TrendingUp} tone="bg-violet-100 text-violet-700" hint="leads → admission" />
         <Kpi index={6} label="Total students" value={students.length} icon={Baby} tone="bg-cyan-100 text-cyan-700" />
         <Kpi index={7} label="Fees collected" value={collected} format={rupees} icon={IndianRupee} tone="bg-emerald-100 text-emerald-700" hint="verified payments" />
         <Kpi index={8} label="Awaiting verification" value={pending} format={rupees} icon={CreditCard} tone="bg-orange-100 text-orange-700" />
-        <Kpi index={9} label="Active branches" value={branches.size} icon={Building2} tone="bg-stone-100 text-stone-700" />
+        <Kpi index={9} label="Active branches" value={branches.size} icon={Building2} tone="bg-slate-100 text-slate-700" />
         <Kpi index={10} label="Franchise enquiries" value={enquiries.filter(isFranchise).length} icon={Sparkles} tone="bg-fuchsia-100 text-fuchsia-700" />
       </div>
 
@@ -375,21 +366,21 @@ const DashboardView: React.FC<{ contacts: Contact[]; enquiries: Enquiry[]; payme
               const top = Math.max(1, reached('new'));
               return (
                 <div key={s.id} className="flex items-center gap-2">
-                  <span className="w-24 shrink-0 text-xs font-semibold text-stone-600">{s.label}</span>
+                  <span className="w-24 shrink-0 text-xs font-semibold text-slate-600">{s.label}</span>
                   <span className="relative h-7 flex-1">
                     <motion.span className={`absolute inset-y-0 left-1/2 -translate-x-1/2 rounded-md ${s.dot} opacity-80`} initial={{ width: 0 }} animate={{ width: `${Math.max(6, (n / top) * 100)}%` }} transition={{ duration: 0.8, delay: 0.2 + i * 0.08, ease: [0.22, 1, 0.36, 1] }} />
                   </span>
-                  <span className="w-14 shrink-0 text-right text-xs font-bold text-stone-800">{n}{i > 0 && reached(arr[i - 1].id) ? <span className="ml-1 font-normal text-stone-400">{Math.round((n / reached(arr[i - 1].id)) * 100)}%</span> : null}</span>
+                  <span className="w-14 shrink-0 text-right text-xs font-bold text-slate-800">{n}{i > 0 && reached(arr[i - 1].id) ? <span className="ml-1 font-normal text-slate-400">{Math.round((n / reached(arr[i - 1].id)) * 100)}%</span> : null}</span>
                 </div>
               );
             })}
-            <div className="pt-1 text-xs text-stone-500">Lost: {enquiries.filter(e => e.status === 'lost').length}</div>
+            <div className="pt-1 text-xs text-slate-500">Lost: {enquiries.filter(e => e.status === 'lost').length}</div>
           </div>
         </div>
 
         <div className={`${card} space-y-3`}>
           <h2 className="font-semibold">Enquiries by type</h2>
-          <Bars tone="from-fuchsia-500 to-pink-300" rows={tally(enquiries.map(e => categoryInfo(catOf(e)).label))} />
+          <Bars tone="from-fuchsia-500 to-[var(--crm-accent)]/60" rows={tally(enquiries.map(e => categoryInfo(catOf(e)).label))} />
         </div>
 
         <div className={`${card} space-y-3`}>
@@ -427,7 +418,7 @@ const DashboardView: React.FC<{ contacts: Contact[]; enquiries: Enquiry[]; payme
 
         <div className={`${card} space-y-3`}>
           <h2 className="font-semibold">Why leads were lost</h2>
-          <Bars tone="from-stone-500 to-stone-300" rows={tally(enquiries.filter(e => e.status === 'lost').map(e => e.lostReason || ''))} />
+          <Bars tone="from-slate-500 to-slate-300" rows={tally(enquiries.filter(e => e.status === 'lost').map(e => e.lostReason || ''))} />
         </div>
       </div>
     </div>
@@ -445,7 +436,7 @@ const PipelineView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void;
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-stone-500">Drag a card to another column. On a phone, open the card and pick its stage.</p>
+      <p className="text-xs text-slate-500">Drag a card to another column. On a phone, open the card and pick its stage.</p>
       <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-3">
         {STAGES.map(st => {
           const col = leads.filter(c => c.lead!.status === st.id).sort((a, b) => scoreOf(b).score - scoreOf(a).score);
@@ -460,11 +451,11 @@ const PipelineView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void;
                 const c = leads.find(x => x.key === dragKey);
                 if (c && c.lead!.status !== st.id) onMove(c, st.id);
               }}
-              className={`flex w-60 shrink-0 flex-col rounded-2xl border p-2.5 transition-colors ${overStage === st.id ? 'border-[#E1007A] bg-pink-50' : 'border-stone-200 bg-stone-100/70'}`}
+              className={`flex w-60 shrink-0 flex-col rounded-2xl border p-2.5 transition-colors ${overStage === st.id ? 'border-[var(--crm-accent)] bg-[var(--crm-accent)]/5' : 'border-slate-200 bg-slate-100/70'}`}
             >
               <div className="mb-2 flex items-center justify-between px-1">
-                <span className="flex items-center gap-2 text-sm font-bold text-stone-700"><span className={`h-2.5 w-2.5 rounded-full ${st.dot}`} />{st.label}</span>
-                <span className="rounded-full bg-white px-2 text-xs font-semibold text-stone-500">{col.length}</span>
+                <span className="flex items-center gap-2 text-sm font-bold text-slate-700"><span className={`h-2.5 w-2.5 rounded-full ${st.dot}`} />{st.label}</span>
+                <span className="rounded-full bg-white px-2 text-xs font-semibold text-slate-500">{col.length}</span>
               </div>
               <div className="min-h-[120px] space-y-2">
                 {col.map(c => {
@@ -472,22 +463,22 @@ const PipelineView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void;
                   const paid = verifiedTotal(c);
                   return (
                     <div key={c.key} draggable onDragStart={() => setDragKey(c.key)} onDragEnd={() => setDragKey(null)} onClick={() => onOpen(c.key)}
-                      className={`cursor-grab rounded-xl border border-stone-200 bg-white p-3 shadow-xs transition-[box-shadow,translate,border-color] duration-200 hover:-translate-y-0.5 hover:border-pink-200 hover:shadow-md active:cursor-grabbing ${dragKey === c.key ? 'opacity-40' : ''}`}>
+                      className={`cursor-grab rounded-xl border border-slate-200 bg-white p-3 shadow-xs transition-[box-shadow,translate,border-color] duration-200 hover:-translate-y-0.5 hover:border-[var(--crm-accent)]/40 hover:shadow-md active:cursor-grabbing ${dragKey === c.key ? 'opacity-40' : ''}`}>
                       <div className="flex items-start justify-between gap-1">
                         <div className="min-w-0">
-                          <div className="truncate text-sm font-semibold text-stone-800">{c.name}</div>
-                          <div className="truncate text-xs text-stone-500">{programOf(c.lead)}</div>
+                          <div className="truncate text-sm font-semibold text-slate-800">{c.name}</div>
+                          <div className="truncate text-xs text-slate-500">{programOf(c.lead)}</div>
                         </div>
                         <TempChip c={c} />
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1">
-                        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">{sourceOf(c.lead)}</span>
+                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">{sourceOf(c.lead)}</span>
                         {fu && isOpenStage(c.lead!.status) && (
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${fu < today ? 'bg-red-100 text-red-700' : fu === today ? 'bg-pink-100 text-[#E1007A]' : 'bg-stone-100 text-stone-600'}`}>
+                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${fu < today ? 'bg-red-100 text-red-700' : fu === today ? 'bg-[var(--crm-accent)]/10 text-[var(--crm-accent)]' : 'bg-slate-100 text-slate-600'}`}>
                             {fu < today ? 'Overdue' : fu === today ? 'Today' : fmtDay(fu)}
                           </span>
                         )}
-                        {c.lead!.status === 'lost' && c.lead!.lostReason && <span className="rounded-full bg-stone-200 px-2 py-0.5 text-[10px] font-semibold text-stone-600">{c.lead!.lostReason}</span>}
+                        {c.lead!.status === 'lost' && c.lead!.lostReason && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-600">{c.lead!.lostReason}</span>}
                         {paid > 0 && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{rupees(paid)} paid</span>}
                       </div>
                     </div>
@@ -532,7 +523,7 @@ const LeadsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void }> 
           if (c.id !== 'all' && !n && ['investor', 'other'].includes(c.id)) return null;
           return (
             <button key={c.id} role="tab" aria-selected={category === c.id} onClick={() => setCategory(c.id)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${category === c.id ? 'bg-[#E1007A] text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'}`}>
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${category === c.id ? 'bg-[var(--crm-accent)] text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}`}>
               {c.short} <span className="opacity-70">({n})</span>
             </button>
           );
@@ -580,8 +571,8 @@ const FollowUpsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void
     .sort((a, b) => (a.lead!.nextFollowUp! < b.lead!.nextFollowUp! ? -1 : 1));
   const groups: [string, Contact[], string][] = [
     ['Overdue', withFu.filter(c => c.lead!.nextFollowUp! < today), 'bg-red-100 text-red-700'],
-    ['Today', withFu.filter(c => c.lead!.nextFollowUp === today), 'bg-pink-100 text-[#E1007A]'],
-    ['Upcoming', withFu.filter(c => c.lead!.nextFollowUp! > today), 'bg-stone-100 text-stone-600'],
+    ['Today', withFu.filter(c => c.lead!.nextFollowUp === today), 'bg-[var(--crm-accent)]/10 text-[var(--crm-accent)]'],
+    ['Upcoming', withFu.filter(c => c.lead!.nextFollowUp! > today), 'bg-slate-100 text-slate-600'],
   ];
   const noPlan = contacts.filter(c => c.lead && isOpenStage(c.lead.status) && !c.lead.nextFollowUp);
 
@@ -593,13 +584,13 @@ const FollowUpsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void
           {!list.length ? <EmptyState text="Nothing here. Nice work!" art="heart" /> : list.map(c => (
             <ContactRow key={c.key} c={c} onOpen={onOpen}
               sub={`${c.lead!.followUpType || 'Follow-up'} · ${programOf(c.lead)}`}
-              right={<span className="shrink-0 text-right text-[11px] font-semibold text-stone-500">{fmtDay(c.lead!.nextFollowUp)}<br /><TempChip c={c} /></span>} />
+              right={<span className="shrink-0 text-right text-[11px] font-semibold text-slate-500">{fmtDay(c.lead!.nextFollowUp)}<br /><TempChip c={c} /></span>} />
           ))}
         </div>
       ))}
       <div className={`${card} space-y-3`}>
         <h2 className="flex items-center justify-between font-semibold">Open leads with no follow-up <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">{noPlan.length}</span></h2>
-        <p className="text-xs text-stone-500">Every open lead should have a next step. Open one to schedule it.</p>
+        <p className="text-xs text-slate-500">Every open lead should have a next step. Open one to schedule it.</p>
         {noPlan.slice(0, 12).map(c => <ContactRow key={c.key} c={c} onOpen={onOpen} right={<TempChip c={c} />} />)}
       </div>
     </div>
@@ -628,22 +619,22 @@ const StudentsView: React.FC<{ students: Student[]; api: Api; flash: (m: string)
           {branches.map(b => <option key={b}>{b}</option>)}
         </select>
       </div>
-      <p className="text-xs text-stone-500">Students are created from a lead: open the lead and choose “Admit as student”.</p>
+      <p className="text-xs text-slate-500">Students are created from a lead: open the lead and choose “Admit as student”.</p>
       <div className="grid gap-3 md:grid-cols-2">
         {shown.map(s => (
-          <button key={s.id} onClick={() => setEditing(s)} className={`${card} !p-4 text-left transition hover:border-pink-200`}>
+          <button key={s.id} onClick={() => setEditing(s)} className={`${card} !p-4 text-left transition hover:border-[var(--crm-accent)]/40`}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
                 <Avatar name={s.childName} size="h-11 w-11 text-base" />
                 <div>
-                  <div className="font-semibold text-stone-900">{s.childName}</div>
-                  <div className="font-mono text-xs text-[#E1007A]">{s.id}</div>
+                  <div className="font-semibold text-slate-900">{s.childName}</div>
+                  <div className="font-mono text-xs text-[var(--crm-accent)]">{s.id}</div>
                 </div>
               </div>
               {s.className && <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-bold text-violet-700">{s.className}</span>}
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-stone-600">
-              <span>Parent: <strong className="text-stone-800">{s.parentName}</strong></span>
+            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-600">
+              <span>Parent: <strong className="text-slate-800">{s.parentName}</strong></span>
               <span>{s.parentPhone}</span>
               {s.branch && <span>Branch: {s.branch}</span>}
               {s.dob && <span>Age: {ageOf(s.dob)}</span>}
@@ -671,23 +662,23 @@ const ParentsView: React.FC<{ contacts: Contact[]; onOpen: (k: string) => void }
       <input className={input} placeholder="Search parent, child, mobile…" value={q} onChange={e => setQ(e.target.value)} />
       <div className="grid gap-3 md:grid-cols-2">
         {families.map(c => (
-          <button key={c.key} onClick={() => onOpen(c.key)} className={`${card} !p-4 text-left transition hover:border-pink-200`}>
+          <button key={c.key} onClick={() => onOpen(c.key)} className={`${card} !p-4 text-left transition hover:border-[var(--crm-accent)]/40`}>
             <div className="flex items-center gap-3">
               <Avatar name={c.name} size="h-11 w-11 text-base" />
               <div className="min-w-0">
-                <div className="truncate font-semibold text-stone-900">{c.name}</div>
-                <div className="truncate text-xs text-stone-500">{c.phone}{c.email ? ` · ${c.email}` : ''}</div>
+                <div className="truncate font-semibold text-slate-900">{c.name}</div>
+                <div className="truncate text-xs text-slate-500">{c.phone}{c.email ? ` · ${c.email}` : ''}</div>
               </div>
             </div>
             <div className="mt-3 space-y-1.5">
               {c.students.map(s => (
-                <div key={s.id} className="flex items-center justify-between rounded-lg bg-stone-50 px-3 py-1.5 text-xs">
-                  <span className="font-semibold text-stone-700">{s.childName}</span>
-                  <span className="text-stone-500">{[s.className, s.branch].filter(Boolean).join(' · ')}</span>
+                <div key={s.id} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-xs">
+                  <span className="font-semibold text-slate-700">{s.childName}</span>
+                  <span className="text-slate-500">{[s.className, s.branch].filter(Boolean).join(' · ')}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-2 flex gap-3 text-[11px] text-stone-500">
+            <div className="mt-2 flex gap-3 text-[11px] text-slate-500">
               <span>{c.students.length} child{c.students.length > 1 ? 'ren' : ''}</span>
               {verifiedTotal(c) > 0 && <span className="font-semibold text-emerald-700">{rupees(verifiedTotal(c))} paid</span>}
             </div>
@@ -710,12 +701,12 @@ const Modal: React.FC<{ title: string; onClose: () => void; children: React.Reac
   }, [onClose]);
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={title}>
-      <motion.div className="absolute inset-0 bg-stone-900/40 backdrop-blur-[2px]" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
+      <motion.div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
       <motion.div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl sm:rounded-3xl sm:p-6"
         initial={{ opacity: 0, y: 40, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 30 }}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-stone-900">{title}</h2>
-          <button onClick={onClose} className="rounded-full p-2 text-stone-500 hover:bg-stone-100" aria-label="Close"><X className="h-5 w-5" /></button>
+          <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+          <button onClick={onClose} className="rounded-full p-2 text-slate-500 hover:bg-slate-100" aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
         {children}
       </motion.div>
@@ -788,7 +779,7 @@ const NewLeadModal: React.FC<{ api: Api; onClose: () => void; onCreated: () => v
     <Modal title="New lead" onClose={onClose}>
       <div className="space-y-4">
         <LeadDetailsForm value={fields} onChange={setFields} />
-        <div className="grid gap-3 rounded-2xl bg-pink-50/60 p-3 sm:grid-cols-2">
+        <div className="grid gap-3 rounded-2xl bg-[var(--crm-accent)]/5 p-3 sm:grid-cols-2">
           <Field label="First follow-up"><input type="date" className={input} value={nextFollowUp} onChange={e => setNextFollowUp(e.target.value)} /></Field>
           <Field label="Follow-up type">
             <select className={input} value={followUpType} onChange={e => setFollowUpType(e.target.value)}>{FOLLOW_UP_TYPES.map(t => <option key={t}>{t}</option>)}</select>
@@ -828,7 +819,7 @@ const StudentForm: React.FC<{ api: Api; initial: Partial<Student>; onClose: () =
   return (
     <Modal title={isNew ? 'Admit as student' : `${s.childName} · ${s.id}`} onClose={onClose}>
       <div className="space-y-4">
-        <div className="text-xs font-bold uppercase tracking-wide text-[#E1007A]">Child</div>
+        <div className="text-xs font-bold uppercase tracking-wide text-[var(--crm-accent)]">Child</div>
         <div className="grid gap-3 sm:grid-cols-2">
           {F('childName', 'Child name *')}
           {F('dob', 'Date of birth', 'date')}
@@ -839,7 +830,7 @@ const StudentForm: React.FC<{ api: Api; initial: Partial<Student>; onClose: () =
           {F('admissionDate', 'Admission date', 'date')}
           {F('previousSchool', 'Previous school')}
         </div>
-        <div className="text-xs font-bold uppercase tracking-wide text-[#E1007A]">Parent</div>
+        <div className="text-xs font-bold uppercase tracking-wide text-[var(--crm-accent)]">Parent</div>
         <div className="grid gap-3 sm:grid-cols-2">
           {F('parentName', 'Parent name *')}
           {F('parentRelation', 'Relation')}
@@ -851,7 +842,7 @@ const StudentForm: React.FC<{ api: Api; initial: Partial<Student>; onClose: () =
         <Field label="Medical / emergency information" full>
           <textarea className={input} rows={2} value={s.medicalInfo || ''} onChange={e => set('medicalInfo', e.target.value)} />
         </Field>
-        {isNew && <p className="text-xs text-stone-500">A student ID like KB-{new Date().getFullYear()}-00001 is generated automatically, and the lead moves to Admission.</p>}
+        {isNew && <p className="text-xs text-slate-500">A student ID like KB-{new Date().getFullYear()}-00001 is generated automatically, and the lead moves to Admission.</p>}
         {err && <p className="text-sm text-red-600">{err}</p>}
         <div className="flex justify-end gap-2">
           <button className={btnGhost} onClick={onClose}>Cancel</button>
@@ -931,23 +922,23 @@ const ContactDrawer: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label={`Contact ${c.name}`}>
-      <motion.div className="absolute inset-0 bg-stone-900/40 backdrop-blur-[2px]" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
+      <motion.div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
       <motion.div className="relative flex h-full w-full max-w-xl flex-col overflow-y-auto bg-[#FAF9F6] shadow-2xl"
         initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 34 }}>
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-stone-200 bg-white/95 px-5 py-4 backdrop-blur">
+        <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
               <Avatar name={c.name} size="h-12 w-12 text-lg" />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="truncate text-lg font-bold text-stone-900">{c.name}</span>
+                  <span className="truncate text-lg font-bold text-slate-900">{c.name}</span>
                   {lead && isOpenStage(lead.status) && <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${TEMP_STYLE[temp]}`}>{temp} · {score}</span>}
                 </div>
-                <div className="truncate text-xs text-stone-500">{c.phone}{c.email ? ` · ${c.email}` : ''}</div>
+                <div className="truncate text-xs text-slate-500">{c.phone}{c.email ? ` · ${c.email}` : ''}</div>
               </div>
             </div>
-            <button onClick={onClose} className="rounded-full p-2 text-stone-500 hover:bg-stone-100" aria-label="Close"><X className="h-5 w-5" /></button>
+            <button onClick={onClose} className="rounded-full p-2 text-slate-500 hover:bg-slate-100" aria-label="Close"><X className="h-5 w-5" /></button>
           </div>
           <div className="relative mt-3 flex flex-wrap gap-2">
             {c.phone && <a className={btnGhost} href={`tel:${c.phone}`} onClick={() => log('call', 'Called')}><Phone className="h-4 w-4" /> Call</a>}
@@ -955,12 +946,12 @@ const ContactDrawer: React.FC<{
             {c.email && <a className={btnGhost} href={`mailto:${c.email}`} onClick={() => log('email', 'Email opened')}><Mail className="h-4 w-4" /> Email</a>}
             {lead && <button className={btnGhost} onClick={startEdit}><Pencil className="h-4 w-4" /> Edit details</button>}
             {waOpen && (
-              <div className="absolute left-0 top-full z-20 mt-2 w-72 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
-                <div className="px-2 pb-1 text-[11px] font-bold uppercase tracking-wide text-stone-400">Send a template</div>
+              <div className="absolute left-0 top-full z-20 mt-2 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+                <div className="px-2 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400">Send a template</div>
                 {WHATSAPP_TEMPLATES.map(t => (
                   <button key={t.id} onClick={() => sendWhatsApp(t.id)} className="block w-full rounded-lg px-2.5 py-2 text-left text-sm hover:bg-emerald-50">
-                    <span className="font-semibold text-stone-800">{t.label}</span>
-                    <span className="block truncate text-xs text-stone-500">{fillTemplate(t.text, c.name, child).split('\n')[0]}</span>
+                    <span className="font-semibold text-slate-800">{t.label}</span>
+                    <span className="block truncate text-xs text-slate-500">{fillTemplate(t.text, c.name, child).split('\n')[0]}</span>
                   </button>
                 ))}
               </div>
@@ -973,21 +964,21 @@ const ContactDrawer: React.FC<{
             <>
               {/* Stage */}
               <div className={`${card} space-y-3`}>
-                <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Stage</div>
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Stage</div>
                 <div className="flex flex-wrap gap-1.5">
                   {STAGES.map(s => (
                     <button key={s.id}
                       onClick={() => s.id === 'lost' ? setLostOpen(true) : (s.id !== lead.status && save({ status: s.id }))}
-                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${lead.status === s.id ? `${s.color} ring-2 ring-offset-1 ring-current` : 'bg-stone-100 text-stone-500 hover:bg-stone-200'}`}>
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${lead.status === s.id ? `${s.color} ring-2 ring-offset-1 ring-current` : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
                       {s.label}
                     </button>
                   ))}
                 </div>
-                {lead.status === 'lost' && lead.lostReason && !lostOpen && <p className="text-xs text-stone-500">Lost reason: <strong>{lead.lostReason}</strong></p>}
+                {lead.status === 'lost' && lead.lostReason && !lostOpen && <p className="text-xs text-slate-500">Lost reason: <strong>{lead.lostReason}</strong></p>}
                 {lostOpen && (
-                  <div className="flex flex-wrap items-end gap-2 rounded-xl bg-stone-100 p-3">
+                  <div className="flex flex-wrap items-end gap-2 rounded-xl bg-slate-100 p-3">
                     <label className="flex-1 space-y-1">
-                      <span className="text-xs font-semibold text-stone-600">Why was this lead lost?</span>
+                      <span className="text-xs font-semibold text-slate-600">Why was this lead lost?</span>
                       <select className={input} value={lostReason} onChange={e => setLostReason(e.target.value)}>
                         <option value="">Choose a reason</option>
                         {LOST_REASONS.map(r => <option key={r}>{r}</option>)}
@@ -1007,7 +998,7 @@ const ContactDrawer: React.FC<{
               {/* Follow-up */}
               {isOpenStage(lead.status) && (
                 <div className={`${card} space-y-3`}>
-                  <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Next follow-up</div>
+                  <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Next follow-up</div>
                   <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
                     <input type="date" className={input} value={followUp} onChange={e => setFollowUp(e.target.value)} />
                     <select className={input} value={fuType} onChange={e => setFuType(e.target.value)}>{FOLLOW_UP_TYPES.map(t => <option key={t}>{t}</option>)}</select>
@@ -1015,9 +1006,9 @@ const ContactDrawer: React.FC<{
                       onClick={() => save({ nextFollowUp: followUp, followUpType: fuType })}>Schedule</button>
                   </div>
                   {lead.nextFollowUp && (
-                    <div className="flex items-center justify-between text-xs text-stone-500">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
                       <span><Clock className="mr-1 inline h-3.5 w-3.5" />{lead.followUpType || 'Follow-up'} on {fmtDay(lead.nextFollowUp)}</span>
-                      <button className="font-semibold text-[#E1007A]" onClick={() => { setFollowUp(''); save({ nextFollowUp: '', followUpType: '' }); }}>Mark done / clear</button>
+                      <button className="font-semibold text-[var(--crm-accent)]" onClick={() => { setFollowUp(''); save({ nextFollowUp: '', followUpType: '' }); }}>Mark done / clear</button>
                     </div>
                   )}
                 </div>
@@ -1025,7 +1016,7 @@ const ContactDrawer: React.FC<{
 
               {/* Lead details */}
               <div className={`${card} space-y-2`}>
-                <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Lead details</div>
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Lead details</div>
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   {[
                     ['Programme', programOf(lead)], ['Source', sourceOf(lead)], ['Branch', branchOf(lead)],
@@ -1034,15 +1025,15 @@ const ContactDrawer: React.FC<{
                     ['Admission month', lead.fields?.preferredMonth], ['Budget', lead.fields?.budget], ['Relation', lead.fields?.relation],
                     ['Campaign', [lead.fields?.utm_source, lead.fields?.utm_campaign].filter(Boolean).join(' / ')],
                   ].filter(([, v]) => v).map(([k, v]) => (
-                    <div key={k as string}><dt className="text-[11px] uppercase tracking-wide text-stone-400">{k}</dt><dd className="break-words text-stone-800">{v}</dd></div>
+                    <div key={k as string}><dt className="text-[11px] uppercase tracking-wide text-slate-400">{k}</dt><dd className="break-words text-slate-800">{v}</dd></div>
                   ))}
                 </dl>
-                {lead.fields?.message && <p className="rounded-lg bg-stone-50 p-2.5 text-xs text-stone-600">“{lead.fields.message}”</p>}
-                {lead.aiSummary && <p className="rounded-lg bg-amber-50 p-2.5 text-xs text-stone-700">{lead.aiSummary}</p>}
+                {lead.fields?.message && <p className="rounded-lg bg-slate-50 p-2.5 text-xs text-slate-600">“{lead.fields.message}”</p>}
+                {lead.aiSummary && <p className="rounded-lg bg-amber-50 p-2.5 text-xs text-slate-700">{lead.aiSummary}</p>}
               </div>
             </>
           ) : (
-            <div className={`${card} flex items-start gap-2 text-sm text-stone-600`}>
+            <div className={`${card} flex items-start gap-2 text-sm text-slate-600`}>
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
               No enquiry on record for this family, so they are not on the pipeline.
             </div>
@@ -1051,11 +1042,11 @@ const ContactDrawer: React.FC<{
           {/* Children */}
           {c.students.length > 0 && (
             <div className={`${card} space-y-2`}>
-              <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Children ({c.students.length})</div>
+              <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Children ({c.students.length})</div>
               {c.students.map(s => (
                 <div key={s.id} className="flex items-center justify-between rounded-xl bg-emerald-50/60 px-3 py-2 text-sm">
-                  <span><strong>{s.childName}</strong> <span className="font-mono text-xs text-[#E1007A]">{s.id}</span></span>
-                  <span className="text-xs text-stone-500">{[s.className, s.branch].filter(Boolean).join(' · ')}</span>
+                  <span><strong>{s.childName}</strong> <span className="font-mono text-xs text-[var(--crm-accent)]">{s.id}</span></span>
+                  <span className="text-xs text-slate-500">{[s.className, s.branch].filter(Boolean).join(' · ')}</span>
                 </div>
               ))}
             </div>
@@ -1063,20 +1054,20 @@ const ContactDrawer: React.FC<{
 
           {/* Note */}
           <div className={`${card} space-y-2`}>
-            <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Add a note</div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Add a note</div>
             <textarea className={input} rows={2} placeholder="e.g. Interested in FinnishWay programme, asked about transport" value={note} onChange={e => setNote(e.target.value)} />
             <button className={btnPrimary} disabled={!note.trim()} onClick={addNote}>Add to timeline</button>
           </div>
 
           {/* Payments */}
           <div className={`${card} space-y-2`}>
-            <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Payments ({c.payments.length})</div>
-            {!c.payments.length && <p className="text-sm text-stone-500">None yet.</p>}
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Payments ({c.payments.length})</div>
+            {!c.payments.length && <p className="text-sm text-slate-500">None yet.</p>}
             {c.payments.map(p => (
-              <div key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-stone-50 p-3 text-sm">
+              <div key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 p-3 text-sm">
                 <div className="min-w-0">
-                  <div className="font-semibold text-stone-800">{rupees(Number(p.amount))}</div>
-                  <div className="truncate text-xs text-stone-500">{p.programme} · UTR {p.upiRefNumber}</div>
+                  <div className="font-semibold text-slate-800">{rupees(Number(p.amount))}</div>
+                  <div className="truncate text-xs text-slate-500">{p.programme} · UTR {p.upiRefNumber}</div>
                 </div>
                 <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${STATUS_COLORS[p.status] || ''}`}>{p.status === 'pending_verification' ? 'pending' : p.status}</span>
               </div>
@@ -1086,11 +1077,11 @@ const ContactDrawer: React.FC<{
           {/* Enquiries */}
           {c.enquiries.length > 1 && (
             <div className={`${card} space-y-2`}>
-              <div className="text-xs font-bold uppercase tracking-wide text-stone-500">All enquiries ({c.enquiries.length})</div>
+              <div className="text-xs font-bold uppercase tracking-wide text-slate-500">All enquiries ({c.enquiries.length})</div>
               {c.enquiries.map(e => (
-                <div key={e.id} className="flex items-center justify-between rounded-xl bg-stone-50 px-3 py-2 text-xs">
-                  <span className="font-semibold text-stone-700">{programOf(e)}</span>
-                  <span className="text-stone-400">{fmtDay(e.createdAt)} · {stageOf(e.status).label}</span>
+                <div key={e.id} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 text-xs">
+                  <span className="font-semibold text-slate-700">{programOf(e)}</span>
+                  <span className="text-slate-400">{fmtDay(e.createdAt)} · {stageOf(e.status).label}</span>
                 </div>
               ))}
             </div>
@@ -1098,16 +1089,16 @@ const ContactDrawer: React.FC<{
 
           {/* Timeline */}
           <div className={`${card} space-y-3`}>
-            <div className="text-xs font-bold uppercase tracking-wide text-stone-500">Timeline</div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-500">Timeline</div>
             {!timeline.length && <EmptyState text="No activity yet. Calls, messages and notes will appear here." />}
-            <ol className="relative space-y-3 border-l border-stone-200 pl-5">
+            <ol className="relative space-y-3 border-l border-slate-200 pl-5">
               {timeline.map(a => {
                 const Icon = ACTIVITY_ICONS[a.type] || StickyNote;
                 return (
                   <li key={a.id} className="relative">
-                    <span className="absolute -left-[29px] flex h-6 w-6 items-center justify-center rounded-full border border-stone-200 bg-white text-[#E1007A]"><Icon className="h-3 w-3" /></span>
-                    <div className="text-sm text-stone-800">{a.detail}</div>
-                    <div className="text-[11px] text-stone-400">{fmtDate(a.createdAt)}</div>
+                    <span className="absolute -left-[29px] flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-[var(--crm-accent)]"><Icon className="h-3 w-3" /></span>
+                    <div className="text-sm text-slate-800">{a.detail}</div>
+                    <div className="text-[11px] text-slate-400">{fmtDate(a.createdAt)}</div>
                   </li>
                 );
               })}

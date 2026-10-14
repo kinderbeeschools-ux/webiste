@@ -24,9 +24,9 @@ export const StaffTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }) =>
   return (
     <div className="space-y-4">
       <Toolbar title="Staff & payroll" count={staff.items.length} onReload={staff.reload} />
-      <div className="flex gap-1 rounded-xl bg-stone-100 p-1">
+      <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
         {views.map(([id, label]) => (
-          <button key={id} onClick={() => setView(id as any)} className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${view === id ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}>{label}</button>
+          <button key={id} onClick={() => setView(id as any)} className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${view === id ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-800'}`}>{label}</button>
         ))}
       </div>
       {view === 'attendance' && <Attendance api={api} flash={flash} staff={staff.items.filter(s => s.active)} branchName={nameOf} />}
@@ -68,27 +68,27 @@ const Attendance: React.FC<TabProps & { staff: Staff[]; branchName: (id?: string
             <button className={btnPrimary} onClick={save} disabled={!Object.keys(marks).length}>Save attendance</button>
           </div>
         </div>
-        <ul className="divide-y divide-stone-100">
+        <ul className="divide-y divide-slate-100">
           {staff.map(s => (
             <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
-              <div><div className="font-semibold text-stone-900">{s.name}</div><div className="text-xs text-stone-500">{[s.designation, branchName(s.branchId)].filter(Boolean).join(' · ')}</div></div>
+              <div><div className="font-semibold text-slate-900">{s.name}</div><div className="text-xs text-slate-500">{[s.designation, branchName(s.branchId)].filter(Boolean).join(' · ')}</div></div>
               <div className="flex gap-1" role="group" aria-label={`Attendance for ${s.name}`}>
                 {STATUS.map(st => (
                   <button key={st.id} aria-pressed={marks[s.id] === st.id} onClick={() => setMarks({ ...marks, [s.id]: st.id })}
-                    className={`rounded-lg border px-2.5 py-1.5 text-xs font-bold transition ${marks[s.id] === st.id ? st.on : 'border-stone-300 text-stone-600 hover:bg-stone-100'}`}>{st.label}</button>
+                    className={`rounded-lg border px-2.5 py-1.5 text-xs font-bold transition ${marks[s.id] === st.id ? st.on : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>{st.label}</button>
                 ))}
               </div>
             </li>
           ))}
-          {!staff.length && <li className="py-6 text-center text-sm text-stone-400">Add staff under “Staff records” first.</li>}
+          {!staff.length && <li className="py-6 text-center text-sm text-slate-400">Add staff under “Staff records” first.</li>}
         </ul>
       </div>
       {!!staff.length && (
-        <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
-          <div className="border-b border-stone-100 px-4 py-3 font-display font-bold">Monthly summary · {date.slice(0, 7)}</div>
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <div className="border-b border-slate-100 px-4 py-3 font-semibold">Monthly summary · {date.slice(0, 7)}</div>
           <table className="w-full min-w-[480px] text-left text-sm">
-            <thead className="bg-stone-50 text-xs uppercase tracking-wide text-stone-500"><tr><th className="px-4 py-2">Staff</th><th className="px-4 py-2">Days present</th><th className="px-4 py-2">Leave</th><th className="px-4 py-2">Absent</th></tr></thead>
-            <tbody className="divide-y divide-stone-100">{summary.map(({ s, present, leave, absent }) => <tr key={s.id}><td className="px-4 py-2 font-medium">{s.name}</td><td className="px-4 py-2">{present}</td><td className="px-4 py-2">{leave}</td><td className="px-4 py-2">{absent}</td></tr>)}</tbody>
+            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-2">Staff</th><th className="px-4 py-2">Days present</th><th className="px-4 py-2">Leave</th><th className="px-4 py-2">Absent</th></tr></thead>
+            <tbody className="divide-y divide-slate-100">{summary.map(({ s, present, leave, absent }) => <tr key={s.id}><td className="px-4 py-2 font-medium">{s.name}</td><td className="px-4 py-2">{present}</td><td className="px-4 py-2">{leave}</td><td className="px-4 py-2">{absent}</td></tr>)}</tbody>
           </table>
         </div>
       )}
@@ -120,17 +120,17 @@ const StaffList: React.FC<TabProps & { me: Me; staff: Staff[]; reload: () => voi
           <button className={btnPrimary}><Plus className="h-4 w-4" /> Add staff</button>
         </form>
       )}
-      <ul className={`${card} divide-y divide-stone-100`}>
+      <ul className={`${card} divide-y divide-slate-100`}>
         {staff.map(s => (
-          <li key={s.id} className={`flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm ${s.active ? '' : 'text-stone-400'}`}>
-            <span><b className="text-stone-900">{s.name}</b> <span className="text-stone-500">{[s.designation, branchName(s.branchId), s.phone].filter(Boolean).join(' · ')}</span></span>
+          <li key={s.id} className={`flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm ${s.active ? '' : 'text-slate-400'}`}>
+            <span><b className="text-slate-900">{s.name}</b> <span className="text-slate-500">{[s.designation, branchName(s.branchId), s.phone].filter(Boolean).join(' · ')}</span></span>
             <span className="flex items-center gap-3">
-              {s.monthlySalary !== undefined && <span className="font-semibold text-stone-700">{inr(s.monthlySalary)}/mo</span>}
+              {s.monthlySalary !== undefined && <span className="font-semibold text-slate-700">{inr(s.monthlySalary)}/mo</span>}
               {can(me, 'attendance') && <button className={btnGhost} onClick={async () => { await api(`/api/portal/staff/${s.id}`, { method: 'PUT', body: JSON.stringify({ active: !s.active }) }); reload(); }}>{s.active ? 'Mark left' : 'Reinstate'}</button>}
             </span>
           </li>
         ))}
-        {!staff.length && <li className="py-4 text-sm text-stone-400">No staff yet.</li>}
+        {!staff.length && <li className="py-4 text-sm text-slate-400">No staff yet.</li>}
       </ul>
     </div>
   );
@@ -164,21 +164,21 @@ const Payslips: React.FC<TabProps & { staff: Staff[]; branchName: (id?: string) 
         </div>
         <input className={input} placeholder="Note (optional)" value={f.note} onChange={e => setF({ ...f, note: e.target.value })} />
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-sm text-stone-600">{person ? `Net pay: ${inr(Math.max(0, (person.monthlySalary || 0) + Number(f.allowances || 0) - Number(f.deductions || 0)))}` : 'Choose a staff member to prepare their slip.'}</span>
+          <span className="text-sm text-slate-600">{person ? `Net pay: ${inr(Math.max(0, (person.monthlySalary || 0) + Number(f.allowances || 0) - Number(f.deductions || 0)))}` : 'Choose a staff member to prepare their slip.'}</span>
           <div className="flex gap-2"><button className={btnGhost} disabled={!f.staffId} onClick={() => save('pending')}>Save as pending</button><button className={btnPrimary} disabled={!f.staffId} onClick={() => save('paid')}>Mark as paid</button></div>
         </div>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
         <table className="w-full min-w-[560px] text-left text-sm">
-          <thead className="bg-stone-50 text-xs uppercase tracking-wide text-stone-500"><tr><th className="px-4 py-2">Staff</th><th className="px-4 py-2">Basic</th><th className="px-4 py-2">+ / −</th><th className="px-4 py-2">Net</th><th className="px-4 py-2">Status</th></tr></thead>
-          <tbody className="divide-y divide-stone-100">
+          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-2">Staff</th><th className="px-4 py-2">Basic</th><th className="px-4 py-2">+ / −</th><th className="px-4 py-2">Net</th><th className="px-4 py-2">Status</th></tr></thead>
+          <tbody className="divide-y divide-slate-100">
             {items.map(p => (
-              <tr key={p.id}><td className="px-4 py-2 font-medium">{p.staffName}</td><td className="px-4 py-2">{inr(p.basic)}</td><td className="px-4 py-2 text-stone-500">+{inr(p.allowances)} / −{inr(p.deductions)}</td><td className="px-4 py-2 font-semibold">{inr(p.net)}</td>
+              <tr key={p.id}><td className="px-4 py-2 font-medium">{p.staffName}</td><td className="px-4 py-2">{inr(p.basic)}</td><td className="px-4 py-2 text-slate-500">+{inr(p.allowances)} / −{inr(p.deductions)}</td><td className="px-4 py-2 font-semibold">{inr(p.net)}</td>
                 <td className="px-4 py-2"><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${p.status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>{p.status === 'paid' ? `Paid ${p.paidOn || ''}` : 'Pending'}</span></td></tr>
             ))}
-            {!items.length && <tr><td colSpan={5} className="px-4 py-6 text-center text-stone-400">No payslips for this month yet.</td></tr>}
+            {!items.length && <tr><td colSpan={5} className="px-4 py-6 text-center text-slate-400">No payslips for this month yet.</td></tr>}
           </tbody>
-          {!!items.length && <tfoot><tr className="bg-stone-50 font-semibold"><td className="px-4 py-2" colSpan={3}>Total for the month</td><td className="px-4 py-2" colSpan={2}>{inr(total)}</td></tr></tfoot>}
+          {!!items.length && <tfoot><tr className="bg-slate-50 font-semibold"><td className="px-4 py-2" colSpan={3}>Total for the month</td><td className="px-4 py-2" colSpan={2}>{inr(total)}</td></tr></tfoot>}
         </table>
       </div>
     </div>

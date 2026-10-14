@@ -32,7 +32,7 @@ export const PhotosTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }) =
   return (
     <div className="space-y-4">
       <Toolbar title="Gallery photos" count={items.length} onReload={reload} />
-      <p className="text-sm text-stone-600">Approved photos appear first in the <b>Life at Kinderbee</b> gallery on the About page. Photos under 3 MB; landscape works best.</p>
+      <p className="text-sm text-slate-600">Approved photos appear first in the <b>Life at Kinderbee</b> gallery on the About page. Photos under 3 MB; landscape works best.</p>
       <div className={`${card} grid gap-3 sm:grid-cols-4`}>
         <Field label="Event title"><input className={input} value={f.title} onChange={e => setF({ ...f, title: e.target.value })} placeholder="e.g. Annual Day 2026" /></Field>
         <Field label="Date"><input type="date" className={input} max={todayIST()} value={f.date} onChange={e => setF({ ...f, date: e.target.value })} /></Field>
@@ -49,11 +49,11 @@ export const PhotosTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }) =
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map(p => (
-          <figure key={p.id} className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
+          <figure key={p.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
             <img src={p.url} alt={p.title} loading="lazy" className="h-44 w-full object-cover" />
             <figcaption className="space-y-2 p-3 text-sm">
-              <div className="flex items-start justify-between gap-2"><b className="text-stone-900">{p.title}</b><span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${BADGE[p.status]}`}>{p.status}</span></div>
-              <div className="text-xs text-stone-500">{fmtDay(p.date)} · {nameOf(p.branchId)} · by {p.uploadedBy}</div>
+              <div className="flex items-start justify-between gap-2"><b className="text-slate-900">{p.title}</b><span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${BADGE[p.status]}`}>{p.status}</span></div>
+              <div className="text-xs text-slate-500">{fmtDay(p.date)} · {nameOf(p.branchId)} · by {p.uploadedBy}</div>
               <div className="flex gap-2">
                 {approver && p.status !== 'approved' && <button className={btnPrimary} onClick={() => setStatus(p, 'approved')}><Check className="h-4 w-4" /> Approve</button>}
                 {approver && p.status === 'pending' && <button className={btnGhost} onClick={() => setStatus(p, 'rejected')}><X className="h-4 w-4" /> Reject</button>}
@@ -62,7 +62,7 @@ export const PhotosTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me }) =
             </figcaption>
           </figure>
         ))}
-        {!items.length && !loading && <p className="col-span-full rounded-2xl border border-dashed border-stone-300 p-8 text-center text-sm text-stone-400">No photographs yet.</p>}
+        {!items.length && !loading && <p className="col-span-full rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-400">No photographs yet.</p>}
       </div>
     </div>
   );

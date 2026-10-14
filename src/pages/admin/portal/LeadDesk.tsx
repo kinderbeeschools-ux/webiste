@@ -36,23 +36,23 @@ export const LeadDeskTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me })
       <Toolbar title="Lead desk" count={rows.length} onReload={reload} />
       <div className="flex flex-wrap gap-2">
         {(['unassigned', 'mine', 'all'] as const).map(k => (
-          <button key={k} onClick={() => setShow(k)} className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold transition ${show === k ? 'border-[#E1007A] bg-[#E1007A]/10 text-[#E1007A]' : 'border-stone-300 text-stone-600 hover:bg-stone-100'}`}>
+          <button key={k} onClick={() => setShow(k)} className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold transition ${show === k ? 'border-[var(--crm-accent)] bg-[var(--crm-accent)]/10 text-[var(--crm-accent)]' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
             {k === 'unassigned' ? 'Needs an owner' : k === 'mine' ? 'Assigned to me' : 'All leads'}
           </button>
         ))}
         <input className={`${input} max-w-xs`} placeholder="Search name, phone, city…" value={q} onChange={e => setQ(e.target.value)} />
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="bg-stone-50 text-xs uppercase tracking-wide text-stone-500"><tr><th className="px-4 py-2">Lead</th><th className="px-4 py-2">Enquiry</th><th className="px-4 py-2">Stage</th><th className="px-4 py-2">Owner</th><th className="px-4 py-2">Branch</th></tr></thead>
-          <tbody className="divide-y divide-stone-100">
+          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-2">Lead</th><th className="px-4 py-2">Enquiry</th><th className="px-4 py-2">Stage</th><th className="px-4 py-2">Owner</th><th className="px-4 py-2">Branch</th></tr></thead>
+          <tbody className="divide-y divide-slate-100">
             {rows.slice(0, 200).map(e => {
               const a = (e.fields as any)?.assignedTo || '';
               const b = (e.fields as any)?.branchId || '';
               return (
                 <tr key={e.id}>
-                  <td className="px-4 py-2"><div className="font-semibold text-stone-900">{e.fields?.name}</div><div className="text-xs text-stone-500">{e.fields?.phone} · {fmtDay(e.createdAt)}</div></td>
-                  <td className="px-4 py-2 text-stone-600">{e.type}</td>
+                  <td className="px-4 py-2"><div className="font-semibold text-slate-900">{e.fields?.name}</div><div className="text-xs text-slate-500">{e.fields?.phone} · {fmtDay(e.createdAt)}</div></td>
+                  <td className="px-4 py-2 text-slate-600">{e.type}</td>
                   <td className="px-4 py-2"><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_COLORS[e.status] || ''}`}>{stageOf(e.status).label}</span></td>
                   <td className="px-4 py-2">
                     {manage && assignees.length > 1 ? (
@@ -60,24 +60,24 @@ export const LeadDeskTab: React.FC<TabProps & { me: Me }> = ({ api, flash, me })
                         <option value="">Unassigned</option>{assignees.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                       </select>
                     ) : manage ? (
-                      <button className="text-sm font-semibold text-[#E1007A] hover:underline" onClick={() => assign(e, { assignedTo: a === me.id ? '' : me.id, assignedToName: a === me.id ? '' : me.name })}>{a === me.id ? 'Assigned to me · release' : a ? ((e.fields as any).assignedToName || 'Assigned') : 'Take this lead'}</button>
-                    ) : <span className="text-stone-500">{(e.fields as any)?.assignedToName || '—'}</span>}
+                      <button className="text-sm font-semibold text-[var(--crm-accent)] hover:underline" onClick={() => assign(e, { assignedTo: a === me.id ? '' : me.id, assignedToName: a === me.id ? '' : me.name })}>{a === me.id ? 'Assigned to me · release' : a ? ((e.fields as any).assignedToName || 'Assigned') : 'Take this lead'}</button>
+                    ) : <span className="text-slate-500">{(e.fields as any)?.assignedToName || '—'}</span>}
                   </td>
                   <td className="px-4 py-2">
                     {manage && me.scope === null ? (
                       <select className={input} value={b} onChange={ev => assign(e, { branchId: ev.target.value })} aria-label="Branch">
                         <option value="">Head office</option>{branches.map(x => <option key={x.id} value={x.id}>{x.name}</option>)}
                       </select>
-                    ) : <span className="text-stone-500">{nameOf(b)}</span>}
+                    ) : <span className="text-slate-500">{nameOf(b)}</span>}
                   </td>
                 </tr>
               );
             })}
-            {!rows.length && !loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-stone-400">{show === 'unassigned' ? 'Every open lead has an owner. Well done.' : 'No leads match.'}</td></tr>}
+            {!rows.length && !loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">{show === 'unassigned' ? 'Every open lead has an owner. Well done.' : 'No leads match.'}</td></tr>}
           </tbody>
         </table>
       </div>
-      <p className={`${card} text-xs text-stone-500`}>Tag a lead to a branch to let that franchise partner see it. Partners get a read-only view of their own branch leads.</p>
+      <p className={`${card} text-xs text-slate-500`}>Tag a lead to a branch to let that franchise partner see it. Partners get a read-only view of their own branch leads.</p>
     </div>
   );
 };

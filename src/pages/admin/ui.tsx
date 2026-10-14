@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import type { LeadStage } from '../../types';
 
-// Shared styles and helpers for the admin panel tabs
+// Shared styles and helpers for the admin panel tabs.
+// One design system for every CRM screen: neutral slate surfaces, a single brand accent (--crm-accent,
+// set from Settings → CRM branding), 8px radii, hairline borders and soft shadows.
 
-export const input = 'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-[#E1007A] focus:outline-none focus:ring-2 focus:ring-[#E1007A]/20';
-export const btn = 'inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition disabled:opacity-50';
-export const btnPrimary = `${btn} bg-[#E1007A] text-white hover:bg-[#c4006a]`;
-export const btnGhost = `${btn} border border-stone-300 text-stone-700 hover:bg-stone-100`;
-export const card = 'rounded-2xl border border-stone-200 bg-white p-4 sm:p-5';
+export const input = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs placeholder:text-slate-400 focus:border-[var(--crm-accent)] focus:outline-none focus:ring-3 focus:ring-[var(--crm-accent)]/15';
+export const btn = 'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--crm-accent)]/25 disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
+export const btnPrimary = `${btn} bg-[var(--crm-accent)] text-white shadow-xs hover:brightness-95`;
+export const btnGhost = `${btn} border border-slate-300 bg-white text-slate-700 shadow-xs hover:bg-slate-50`;
+export const card = 'rounded-xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5';
 
 export const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '');
 export const fmtDay = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
@@ -29,7 +31,7 @@ export const STAGES: { id: LeadStage; label: string; color: string; dot: string 
   { id: 'visit', label: 'Centre visit', color: 'bg-violet-100 text-violet-800', dot: 'bg-violet-500' },
   { id: 'application', label: 'Application', color: 'bg-fuchsia-100 text-fuchsia-800', dot: 'bg-fuchsia-500' },
   { id: 'admission', label: 'Admission', color: 'bg-emerald-100 text-emerald-800', dot: 'bg-emerald-500' },
-  { id: 'lost', label: 'Lost', color: 'bg-stone-200 text-stone-600', dot: 'bg-stone-400' },
+  { id: 'lost', label: 'Lost', color: 'bg-slate-200 text-slate-600', dot: 'bg-slate-400' },
 ];
 export const stageOf = (id?: string) => STAGES.find(s => s.id === id) || STAGES[0];
 export const stageIndex = (id?: string) => STAGES.findIndex(s => s.id === id);
@@ -98,19 +100,23 @@ export function useList<T>(api: Api, url: string) {
   return { items, setItems, loading, reload };
 }
 
+// Section heading row: title, record count and the section's actions
 export const Toolbar: React.FC<{ title: string; count: number; onReload: () => void; children?: React.ReactNode }> = ({ title, count, onReload, children }) => (
   <div className="flex flex-wrap items-center justify-between gap-3">
-    <h1 className="font-display text-2xl font-bold">{title} <span className="text-base font-medium text-stone-400">({count})</span></h1>
+    <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-900">
+      {title}
+      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-600">{count}</span>
+    </h2>
     <div className="flex flex-wrap gap-2">
       {children}
-      <button onClick={onReload} className={btnGhost}><RefreshCw className="h-4 w-4" /> Refresh</button>
+      <button onClick={onReload} className={btnGhost} aria-label={`Refresh ${title}`}><RefreshCw className="h-4 w-4" /> <span className="hidden sm:inline">Refresh</span></button>
     </div>
   </div>
 );
 
 export const Field: React.FC<{ label: string; full?: boolean; children: React.ReactNode }> = ({ label, full, children }) => (
-  <label className={`block space-y-1 ${full ? 'sm:col-span-2' : ''}`}>
-    <span className="text-xs font-bold uppercase tracking-wide text-stone-500">{label}</span>
+  <label className={`block space-y-1.5 ${full ? 'sm:col-span-2' : ''}`}>
+    <span className="text-xs font-medium text-slate-600">{label}</span>
     {children}
   </label>
 );
