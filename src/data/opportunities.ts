@@ -5,6 +5,7 @@ import type { Opportunity } from '../types';
 export const SEED_OPPORTUNITIES: Opportunity[] = [
   {
     id: 'opp-whitefield-22000',
+    seedVersion: 2,
     title: 'Whitefield Land Opportunity',
     location: 'EPIP Zone / Whitefield, Bengaluru – 560048',
     category: 'Land / Development',
@@ -65,7 +66,6 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
     ],
     images: [
       { url: '/opportunities/whitefield-7.jpg', caption: 'Surrounding streetscape and elevated infrastructure' },
-      { url: '/opportunities/whitefield-1.jpg', caption: 'Property frontage as photographed from the road' },
       { url: '/opportunities/whitefield-2.jpg', caption: 'Internal open area with vegetation and debris' },
       { url: '/opportunities/whitefield-3.jpg', caption: 'Boundary edge beside the road and elevated infrastructure' },
       { url: '/opportunities/whitefield-4.jpg', caption: 'Existing building and internal area' },
@@ -77,13 +77,23 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
     mapUrl: 'https://maps.app.goo.gl/brPJFJjkKUtgESdN6',
     contactPhone: '8122344040',
     documents: 'Khata, tax receipts, title and KIADB allotment records are reported by the landowner and remain subject to document review.',
+    diligence: [
+      { item: 'Title & allotment', status: 'reported', note: 'Reported clear title; originally KIADB-allotted and registered. Documents to be reviewed.' },
+      { item: 'Ownership', status: 'verify', note: 'Two owners; authority and participation of both to be confirmed.' },
+      { item: 'Khata', status: 'reported', note: 'Reported A-khata with e-khata conversion; records to be checked.' },
+      { item: 'Property tax', status: 'reported', note: 'Reported paid to date; latest receipts to be checked.' },
+      { item: 'Land area & survey', status: 'verify', note: 'Marketed as ~22,000 sq. ft.; stated 80 × 280 ft implies 22,400 sq. ft. A survey will reconcile it.' },
+      { item: 'Permitted use & FAR/FSI', status: 'not-established', note: 'Permissible built-up area, height, setbacks and use are not yet established.' },
+      { item: 'Commercial terms', status: 'on-request', note: 'Rate basis and chargeable area to be confirmed in a written quotation.' },
+      { item: 'Location', status: 'reported', note: 'EPIP Zone / Whitefield; Google Maps pin shared on the listing.' },
+    ],
     eligibility: 'Developers, corporate occupiers and investment partners.',
     disclaimer: 'Preliminary, non-binding property information. Title, boundaries, permissions, site condition, development feasibility and commercial terms require independent verification. No assured return, approved development capacity, tenant commitment or fuel dealership is represented. Final terms apply only through definitive agreements executed by the relevant parties.',
   },
   // From the client's Bengaluru_Preschool_Rental_Proposal.html. Bump seedVersion after editing so the live copy refreshes.
   {
     id: 'opp-bengaluru-4bhk-duplex',
-    seedVersion: 2,
+    seedVersion: 3,
     title: '4 BHK Duplex for Rent in Bengaluru',
     location: 'Bengaluru (exact location shared on enquiry)',
     category: 'Premises / Rental',
@@ -136,14 +146,20 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
     images: [
       { url: '/opportunities/bengaluru-4bhk-duplex-house.jpg', caption: 'Representative illustration of the duplex; actual property may differ' },
       { url: '/opportunities/bengaluru-4bhk-duplex.jpg', caption: 'Property poster with key particulars', fit: 'contain' },
-      { url: '/images/campus/kinderbee-classroom-learning.jpg', caption: 'Example: a Kinderbee classroom in Bengaluru (not this property)' },
-      { url: '/images/gallery/kinderbee-circle-time.jpg', caption: 'Example: circle time at Kinderbee (not this property)' },
-      { url: '/images/campus/kinderbee-puppet-storytelling.jpg', caption: 'Example: storytelling and activity space (not this property)' },
     ],
     posterUrl: '/opportunities/bengaluru-4bhk-duplex.jpg',
     contactPhone: '8122344040',
     documents: 'Exact location and site photographs shared on enquiry',
+    diligence: [
+      { item: 'Availability', status: 'verify', note: 'Current availability to be confirmed with the owner.' },
+      { item: 'Exact location', status: 'on-request', note: 'Shared privately on enquiry.' },
+      { item: 'Site photographs & floor plan', status: 'on-request', note: 'Shared on enquiry; review them at the site visit.' },
+      { item: 'Plot & built-up area', status: 'reported', note: '2,400 sq. ft. plot and 3,000 sq. ft. built-up, as stated. Confirm on site.' },
+      { item: 'Owner consent for preschool use', status: 'verify', note: 'Needed before committing; discuss permitted use and alterations with the owner.' },
+      { item: 'Preschool approvals', status: 'not-established', note: 'No approval, classroom capacity or outdoor play area is confirmed.' },
+      { item: 'Rent & deposit', status: 'reported', note: '₹80,000 a month and a ₹4 lakh deposit asked; final lease terms to be agreed.' },
+    ],
     eligibility: 'Educators and preschool operators seeking premises in Bengaluru',
-    disclaimer: 'Property particulars and asking terms are supplied for preliminary enquiry and should be confirmed during the site visit. The illustration is representative and does not depict the exact property or confirmed facilities. Availability and final lease terms are subject to confirmation. KIPS is the enquiry contact for this third-party property listing; ownership is not represented. Any preschool fit-out, licensing and associated costs are separate from the stated rent and deposit. Classroom photographs show other Kinderbee premises for illustration only.',
+    disclaimer: 'Property particulars and asking terms are supplied for preliminary enquiry and should be confirmed during the site visit. The illustration is representative and does not depict the exact property or confirmed facilities. Availability and final lease terms are subject to confirmation. KIPS is the enquiry contact for this third-party property listing; ownership is not represented. Any preschool fit-out, licensing and associated costs are separate from the stated rent and deposit.',
   },
 ];

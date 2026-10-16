@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Hammer, Building, Handshake, ArrowRight, ShieldCheck, FileSignature, Ban } from 'lucide-react';
 import { Accordion, Eyebrow, Palette, SERIF, inView, rise, stagger } from './kit';
-import { ChecklistVisual, PhotoMosaic } from './visuals';
+import { ChecklistVisual } from './visuals';
+import { DocReviewVisual } from './JvVisuals';
 
 // New section for the Joint Ventures page. The partner types and cautions restate what the listings
 // already say (eligibility, partnership options and the preliminary, non-binding disclaimer).
@@ -71,16 +72,7 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
         </motion.p>
       </motion.div>
 
-      <PhotoMosaic
-        className="mt-12"
-        accent={GREEN}
-        main={{ src: '/visuals/cbse-planning.webp', alt: 'Planning documents and school setup review' }}
-        side={[
-          { src: '/arcadia/facility_boardroom.jpg', alt: 'Boardroom for partner discussions' },
-          { src: '/arcadia/facility_auditorium.jpg', alt: 'Institutional auditorium' },
-        ]}
-        chips={[{ icon: ShieldCheck, label: 'Preliminary and non-binding' }, { icon: FileSignature, label: 'Verify before you commit' }]}
-      />
+      <div className="mt-12"><DocReviewVisual /></div>
 
       {/* Which partner are you */}
       <motion.div className="mt-10 grid gap-5 md:grid-cols-3" variants={stagger(0.1)} {...inView}>

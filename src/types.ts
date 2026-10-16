@@ -191,6 +191,7 @@ export interface Opportunity {
   partnershipOptions: OpportunityRow[];
   images: { url: string; caption: string; fit?: 'contain' }[];  // 'contain' shows the whole image (posters) instead of cropping
   posterUrl?: string;        // downloadable poster or brochure
+  diligence?: { item: string; status: 'reported' | 'verify' | 'on-request' | 'not-established'; note: string }[]; // investor diligence snapshot
   seedVersion?: number;      // built-in listings only: bump to refresh the stored copy once
   mapUrl?: string;
   contactPhone?: string;

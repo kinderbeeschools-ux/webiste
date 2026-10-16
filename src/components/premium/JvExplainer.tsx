@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Landmark, Coins, School, Compass, Layers, Building, KeyRound, Percent, Briefcase, Puzzle, Scale, Info } from 'lucide-react';
 import { Eyebrow, Palette, SERIF, inView, rise, stagger } from './kit';
-import { PhotoMosaic } from './visuals';
+import { JvDiagram } from './JvVisuals';
 
 // Joint Ventures page: what a JV is, who does what, common structures and how KIPS works.
 // General information only; the structures match those offered in the listings.
@@ -66,15 +66,7 @@ export const JvExplainer: React.FC = () => (
             In education, a JV often brings a landowner, an investor and a school operator together to create a preschool, school or college that none of them would build alone.
           </motion.p>
         </motion.div>
-        <PhotoMosaic
-          accent={GREEN}
-          main={{ src: '/visuals/kips-partner-school.webp', alt: 'KIPS partner preschool campus' }}
-          side={[
-            { src: '/images/campus/kinderbee-campus-bengaluru.jpg', alt: 'Kinderbee campus in Bengaluru' },
-            { src: '/arcadia/facility_campus.jpg', alt: 'Institutional campus building' },
-          ]}
-          chips={[{ icon: Puzzle, label: 'Land + capital + expertise' }, { icon: School, label: 'Education-led projects' }]}
-        />
+        <JvDiagram />
       </div>
 
       <motion.div className="mt-12 grid gap-5 md:grid-cols-3" variants={stagger(0.1)} {...inView}>

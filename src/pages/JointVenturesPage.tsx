@@ -11,6 +11,8 @@ import { EASE } from '../components/Motion';
 import { SEED_OPPORTUNITIES } from '../data/opportunities';
 import { JvDiligence } from '../components/premium/JvDiligence';
 import { JvExplainer } from '../components/premium/JvExplainer';
+import { PillarArt, ContourBackdrop } from '../components/premium/JvVisuals';
+import { InvestorLens, DiligenceBadge } from '../components/premium/InvestorLens';
 
 // Joint Ventures: premium investment-opportunity platform. Listings are managed in Admin → Opportunities.
 const GREEN = '#073D37';
@@ -29,9 +31,9 @@ const STEPS = [
 ];
 
 const PILLARS = [
-  { word: 'Opportunities', title: 'Strategic Opportunities', text: 'Identify land, development and education-related opportunities with potential for structured partnerships.', icon: Compass, img: '/visuals/kips-campus.webp' },
-  { word: 'Capital', title: 'Investor Partnerships', text: 'Connect suitable opportunities with investors and strategic partners.', icon: Users, img: '/arcadia/facility_boardroom.jpg' },
-  { word: 'Execution', title: 'Collaborative Development', text: 'Create mutually beneficial structures around investment, development and execution.', icon: Layers, img: '/arcadia/arcadia_hero.jpg' },
+  { word: 'Opportunities', title: 'Strategic Opportunities', text: 'Identify land, development and education-related opportunities with potential for structured partnerships.', icon: Compass, art: 'map' as const },
+  { word: 'Capital', title: 'Investor Partnerships', text: 'Connect suitable opportunities with investors and strategic partners.', icon: Users, art: 'capital' as const },
+  { word: 'Execution', title: 'Collaborative Development', text: 'Create mutually beneficial structures around investment, development and execution.', icon: Layers, art: 'build' as const },
 ];
 
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -121,6 +123,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
         <HowItWorks />
         <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
         <ProjectGallery opps={opps} onOpen={openOpp} />
+        <InvestorLens onInvest={() => enquire('invest')} />
         <JvDiligence onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorCta onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorForm opps={opps} mode={formMode} setMode={setFormMode} opportunity={formOpportunity} setOpportunity={setFormOpportunity} />
@@ -271,7 +274,7 @@ const WhyKips: React.FC = () => (
         {PILLARS.map((p, i) => (
           <motion.div key={p.title} className="group relative h-[380px] overflow-hidden rounded-[24px] border border-[#e2c478]/25 sm:h-[440px]"
             initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: i * 0.15, duration: 0.9, ease: EASE }}>
-            <img src={p.img} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-50 transition-all duration-[1.2s] group-hover:scale-110 group-hover:opacity-70" />
+            <div className="absolute inset-0 transition-transform duration-[1.2s] group-hover:scale-105"><PillarArt kind={p.art} /></div>
             <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,46,42,.2),rgba(6,46,42,.95)_70%)]" />
             <div className="relative flex h-full flex-col justify-between p-7">
               <div className="flex items-center justify-between">
@@ -303,7 +306,8 @@ const CardPhotos: React.FC<{ images: Opportunity['images']; title: string }> = (
     const t = setInterval(() => setI(x => (x + 1) % images.length), 1100);
     return () => clearInterval(t);
   }, [hover, images.length]);
-  const list = images.length ? images : [{ url: '/arcadia/arcadia_hero.jpg', caption: title }];
+  if (!images.length) return <div className="absolute inset-0 flex items-center justify-center" style={{ background: `linear-gradient(140deg, ${GREEN}, #04211e)` }}><Building2 className="h-12 w-12 text-[#e2c478]/70" /></div>;
+  const list = images;
   return (
     <div className="absolute inset-0" onMouseEnter={() => setHover(true)} onMouseLeave={() => { setHover(false); setI(0); }}>
       <AnimatePresence initial={false}>
@@ -339,6 +343,12 @@ const ListingCard: React.FC<{ o: Opportunity; n: number; onOpen: (id: string) =>
         <span className="rounded-full bg-[#F7F3EA] px-3 py-1 text-xs font-semibold text-[#073D37]">{o.category}</span>
         <span className="rounded-full border border-[#B48735]/40 px-3 py-1 text-xs font-semibold text-[#8a6726]">{o.status}</span>
       </div>
+      {!!o.diligence?.length && (
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#52615e]">
+          <ShieldCheck className="h-4 w-4 shrink-0 text-[#B48735]" />
+          Diligence snapshot · {o.diligence.filter(d => d.status === 'verify').length} to verify, {o.diligence.filter(d => d.status === 'not-established').length} not yet established
+        </div>
+      )}
       <div className="flex items-center gap-2 pt-2 text-sm font-bold text-[#073D37]">
         View details <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
         <span className="ml-auto h-px flex-1 origin-left scale-x-0 bg-[#B48735] transition-transform duration-500 group-hover:scale-x-100" />
@@ -500,7 +510,7 @@ const InvestorCta: React.FC<{ onInvest: () => void; onSubmit: () => void }> = ({
   const y = useTransform(scrollYProgress, [0, 1], ['-12%', '12%']);
   return (
     <section ref={ref} className="relative overflow-hidden px-5 py-28 text-center text-white sm:py-40">
-      <motion.img src="/arcadia/arcadia_hero.jpg" alt="" aria-hidden="true" style={{ y }} className="absolute inset-0 h-[124%] w-full object-cover" />
+      <ContourBackdrop />
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(7,61,55,.82),rgba(6,46,42,.97))]" />
       <motion.div className="relative mx-auto max-w-3xl" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={{ show: { transition: { staggerChildren: 0.15 } } }}>
         <motion.h2 variants={fadeUp} style={serif} className="text-4xl leading-[1.05] sm:text-6xl">
@@ -762,6 +772,20 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
             <DetailBlock title={rental ? 'Property at a glance' : 'Land & property details'} icon={Ruler}>
               <RowsTable rows={opp.details} />
               {opp.detailsNote && <p className="text-xs leading-relaxed text-[#7a817f]">{opp.detailsNote}</p>}
+            </DetailBlock>
+          )}
+          {!!opp.diligence?.length && (
+            <DetailBlock title="Diligence snapshot" icon={ShieldCheck}>
+              <p className="text-[15px] text-[#52615e]">What is reported, what still needs verifying and what is not yet established. Use it to plan your own checks with your advisors.</p>
+              <div className="divide-y divide-[#e4dac8] overflow-hidden rounded-2xl border border-[#e4dac8] bg-white">
+                {opp.diligence.map(d => (
+                  <div key={d.item} className="grid gap-2 px-5 py-3.5 sm:grid-cols-[12rem_10.5rem_1fr] sm:items-center sm:gap-4">
+                    <div className="text-sm font-bold text-[#073D37]">{d.item}</div>
+                    <div><DiligenceBadge status={d.status} /></div>
+                    <p className="text-sm leading-relaxed text-[#52615e]">{d.note}</p>
+                  </div>
+                ))}
+              </div>
             </DetailBlock>
           )}
           {opp.terms.length > 0 && (
