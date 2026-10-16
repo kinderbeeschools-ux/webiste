@@ -7,6 +7,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { submitIndexNow } from "./src/utils/indexnow.js";
+import { sendLeadToCrm } from "./server/kinderbeeCrm.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { COURSE_FEES } from "./src/data/courses.js";
 import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
@@ -585,8 +586,8 @@ app.post("/api/enquiries", async (req, res) => {
     console.error("[Email] Global dispatch error:", err);
   });
 
-  // Vercel freezes the function once the response is sent, so finish the sync + emails first
-  const [saved] = await Promise.all([syncPromise, emailPromise]);
+  // Vercel freezes the function once the response is sent, so finish the sync, emails and CRM copy first
+  const [saved] = await Promise.all([syncPromise, emailPromise, sendLeadToCrm(category, fields)]);
   if (!saved) {
     // The admin alert email (above) still carries the details, but never tell the visitor it worked when the CRM didn't get it
     return res.status(500).json({ error: "We could not save your enquiry right now. Please call or WhatsApp 81223 44040." });
@@ -1146,6 +1147,10 @@ app.post("/api/consultations", async (req, res) => {
     if (!booking) throw new Error("No free booking reference");
 
     await logActivity({ leadKey: c.phone, type: "consultation", detail: `Booked ₹${CONSULT_FEE} consultation ${booking.ref} (${c.category}) for ${c.preferredDate}, ${c.timeSlot}` });
+    await sendLeadToCrm("consultation", {
+      name: c.name, phone: c.phone, email: c.email, message: c.requirement, program: c.category,
+      formType: `₹${CONSULT_FEE} consultation ${booking.ref} · ${c.preferredDate}, ${c.timeSlot}`, source: "Website",
+    });
     try {
       await sendAdminLeadAlertEmail({
         enquiryId: booking.ref,
