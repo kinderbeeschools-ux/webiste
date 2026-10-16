@@ -70,7 +70,7 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
           {/* Hero Banner matching Reference Design */}
           <section className="relative overflow-hidden bg-[#FFF6F9] border-b border-pink-100/80 lg:min-h-[640px] flex items-center">
             {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
-            <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-[56%] xl:w-[58%] pointer-events-none overflow-hidden select-none">
+            <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
                 src="/franchise/preschool-hero.webp"
                 alt="Kinderbee Preschool campus with children playing outside"
@@ -93,7 +93,8 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
 
             {/* Foreground Content */}
             <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 pt-5 pb-10 sm:pt-8 lg:py-16 relative z-10">
-              <div className="max-w-2xl lg:max-w-xl xl:max-w-2xl space-y-5 sm:space-y-6">
+              {/* Desktop: text ends 2rem before the photo, which covers the right half (left edge 50vw) */}
+              <div className="max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
                 {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
                 <div className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
                   <img src="/franchise/preschool-hero.webp" alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
@@ -106,7 +107,7 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
                 </div>
                 
                 {/* Main Headline */}
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
                   India’s Best <span className="text-[#E1007A]">Preschool Franchise</span> with Zero Royalty
                 </h1>
                 
