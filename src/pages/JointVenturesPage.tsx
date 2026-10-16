@@ -3,13 +3,14 @@ import { motion, AnimatePresence, useScroll, useTransform, animate, useReducedMo
 import {
   MapPin, Building2, Ruler, IndianRupee, Handshake, TrendingUp, CalendarClock, ArrowRight, X, ChevronLeft, ChevronRight,
   Compass, Users, Layers, Search, Send, ClipboardCheck, FileSignature, Rocket, CheckCircle2, MessageCircle, FileText,
-  ShieldCheck, Maximize2, Sparkles,
+  ShieldCheck, Maximize2, Sparkles, Phone, Download,
 } from 'lucide-react';
 import type { Opportunity, SystemSettings } from '../types';
 import { SEOHead } from '../components/SEOHead';
 import { EASE } from '../components/Motion';
 import { SEED_OPPORTUNITIES } from '../data/opportunities';
 import { JvDiligence } from '../components/premium/JvDiligence';
+import { JvExplainer } from '../components/premium/JvExplainer';
 
 // Joint Ventures: premium investment-opportunity platform. Listings are managed in Admin → Opportunities.
 const GREEN = '#073D37';
@@ -63,9 +64,9 @@ const Eyebrow: React.FC<{ children: React.ReactNode; light?: boolean }> = ({ chi
 );
 
 // A site photo with the page's editorial colour grade
-const Photo: React.FC<{ src: string; alt?: string; className?: string; eager?: boolean }> = ({ src, alt = '', className = '', eager }) => (
+const Photo: React.FC<{ src: string; alt?: string; className?: string; eager?: boolean; fit?: 'contain' }> = ({ src, alt = '', className = '', eager, fit }) => (
   <>
-    <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} className={`jv-photo h-full w-full object-cover ${className}`} />
+    <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} className={`jv-photo h-full w-full ${fit === 'contain' ? 'object-contain bg-[#F7F3EA]' : 'object-cover'} ${className}`} />
     <span aria-hidden="true" className="jv-tint" />
   </>
 );
@@ -119,6 +120,7 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
         {featured && <Featured opp={featured} onView={() => openOpp(featured.id)} onEnquire={() => enquire('invest', featured.title)} />}
         {featured && featured.images.length > 2 && <FilmStrip opp={featured} onOpen={i => openOpp(featured.id, i)} />}
         <WhyKips />
+        <JvExplainer />
         <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
         <HowItWorks />
         <JvDiligence onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
@@ -489,7 +491,7 @@ const CardPhotos: React.FC<{ images: Opportunity['images']; title: string }> = (
     <div className="absolute inset-0" onMouseEnter={() => setHover(true)} onMouseLeave={() => { setHover(false); setI(0); }}>
       <AnimatePresence initial={false}>
         <motion.div key={list[i].url} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-          <Photo src={list[i].url} alt={list[i].caption || title} />
+          <Photo src={list[i].url} alt={list[i].caption || title} fit={list[i].fit} />
         </motion.div>
       </AnimatePresence>
       {list.length > 1 && (
@@ -780,6 +782,10 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
     return () => { document.body.style.overflow = prev; window.removeEventListener('keydown', k); };
   }, [lightbox, onClose]);
 
+  // Rental premises read as a property listing rather than an investment opportunity
+  const rental = /rent/i.test(opp.category);
+  const cta = rental ? 'Request Property Details' : 'Submit Investor Enquiry';
+  const phone = opp.contactPhone ? opp.contactPhone.replace(/\D/g, '').slice(-10) : '';
   const wa = opp.contactPhone ? `https://wa.me/91${opp.contactPhone.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(`Hello, I am interested in the ${opp.title} (${opp.location}). Please share further details.`)}` : '';
 
   return (
@@ -792,7 +798,7 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
           <div style={serif} className="truncate text-lg">{opp.title}</div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={onEnquire} className="hidden rounded-md px-4 py-2 text-sm font-bold text-white sm:block" style={{ background: GREEN }}>Submit Investor Enquiry</button>
+          <button onClick={onEnquire} className="hidden rounded-md px-4 py-2 text-sm font-bold text-white sm:block" style={{ background: GREEN }}>{cta}</button>
           <button onClick={onClose} className="rounded-full p-2 text-[#073D37] hover:bg-[#F7F3EA]" aria-label="Close"><X className="h-6 w-6" /></button>
         </div>
       </div>
@@ -801,7 +807,7 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
       {imgs.length > 0 && (
         <div className="relative h-[52vh] min-h-[320px] overflow-hidden bg-[#062e2a] sm:h-[68vh]">
           <AnimatePresence mode="wait">
-            <motion.img key={imgs[idx].url} src={imgs[idx].url} alt={imgs[idx].caption} className="absolute inset-0 h-full w-full cursor-zoom-in object-cover"
+            <motion.img key={imgs[idx].url} src={imgs[idx].url} alt={imgs[idx].caption} className={`absolute inset-0 h-full w-full cursor-zoom-in ${imgs[idx].fit === 'contain' ? 'object-contain py-4' : 'object-cover'}`}
               initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} onClick={() => setLightbox(true)} />
           </AnimatePresence>
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#062e2a]/90 via-transparent to-transparent" />
@@ -835,18 +841,18 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
           </div>
 
           {opp.overview.length > 0 && (
-            <DetailBlock title="The opportunity" icon={Sparkles}>
+            <DetailBlock title={rental ? 'About the property' : 'The opportunity'} icon={Sparkles}>
               {opp.overview.map(p => <p key={p.slice(0, 40)} className="text-[16px] leading-relaxed text-[#374744]">{p}</p>)}
             </DetailBlock>
           )}
           {imgs.length > 2 && (
-            <DetailBlock title="All photographs" icon={Maximize2}>
+            <DetailBlock title={rental ? 'Images' : 'All photographs'} icon={Maximize2}>
               <div className="grid auto-rows-[150px] grid-cols-2 gap-3 sm:auto-rows-[190px] sm:grid-cols-4">
                 {imgs.map((im, i) => (
                   <motion.button key={im.url + i} type="button" onClick={() => { setIdx(i); setLightbox(true); }}
                     className={`kb-frame group relative overflow-hidden rounded-2xl ${i === 0 ? 'col-span-2 row-span-2' : i === 3 ? 'sm:col-span-2' : ''}`}
                     initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: (i % 4) * 0.08, duration: 0.6, ease: EASE }}>
-                    <Photo src={im.url} alt={im.caption} />
+                    <Photo src={im.url} alt={im.caption} fit={im.fit} />
                     <span className="absolute inset-x-0 bottom-0 z-[3] translate-y-full bg-gradient-to-t from-[#062e2a]/90 to-transparent p-3 text-left text-xs font-semibold text-white transition-transform duration-300 group-hover:translate-y-0">{im.caption}</span>
                   </motion.button>
                 ))}
@@ -854,24 +860,24 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
             </DetailBlock>
           )}
           {opp.details.length > 0 && (
-            <DetailBlock title="Land & property details" icon={Ruler}>
+            <DetailBlock title={rental ? 'Property at a glance' : 'Land & property details'} icon={Ruler}>
               <RowsTable rows={opp.details} />
               {opp.detailsNote && <p className="text-xs leading-relaxed text-[#7a817f]">{opp.detailsNote}</p>}
             </DetailBlock>
           )}
           {opp.terms.length > 0 && (
-            <DetailBlock title="Indicative commercial terms" icon={IndianRupee}>
+            <DetailBlock title={rental ? 'Rent & deposit' : 'Indicative commercial terms'} icon={IndianRupee}>
               <RowsTable rows={opp.terms} />
               {opp.termsNote && <p className="text-xs leading-relaxed text-[#7a817f]">{opp.termsNote}</p>}
             </DetailBlock>
           )}
           {opp.development.length > 0 && (
-            <DetailBlock title="Development potential" icon={TrendingUp}>
+            <DetailBlock title={rental ? 'Preschool suitability' : 'Development potential'} icon={TrendingUp}>
               {opp.development.map(p => <p key={p.slice(0, 40)} className="text-[16px] leading-relaxed text-[#374744]">{p}</p>)}
             </DetailBlock>
           )}
           {opp.partnershipOptions.length > 0 && (
-            <DetailBlock title="Partnership model" icon={Handshake}>
+            <DetailBlock title={rental ? 'Next steps' : 'Partnership model'} icon={Handshake}>
               <div className="grid gap-3 sm:grid-cols-2">
                 {opp.partnershipOptions.map((p, i) => (
                   <motion.div key={p.label} className="group rounded-2xl border border-[#e4dac8] bg-white p-5 transition hover:-translate-y-1 hover:border-[#B48735] hover:shadow-lg"
@@ -889,24 +895,35 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
         {/* Sticky side panel */}
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-2xl p-6 text-white" style={{ background: GREEN }}>
-            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#e2c478]">Interested in this opportunity?</div>
-            <div style={serif} className="mt-2 text-2xl">Submit an investor enquiry</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#e2c478]">{rental ? 'Interested in this property?' : 'Interested in this opportunity?'}</div>
+            <div style={serif} className="mt-2 text-2xl">{rental ? 'Arrange a site visit' : 'Submit an investor enquiry'}</div>
             <button onClick={onEnquire} className="group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#B48735] px-5 py-3.5 font-bold transition hover:bg-[#a37a2f]">
-              Submit Investor Enquiry <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              {cta} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
             {wa && (
               <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/30 px-5 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10">
-                <MessageCircle className="h-4 w-4" /> Prefer WhatsApp?
+                <MessageCircle className="h-4 w-4" /> {rental ? 'Enquire on WhatsApp' : 'Prefer WhatsApp?'}
+              </a>
+            )}
+            {rental && phone && (
+              <a href={`tel:+91${phone}`} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/30 px-5 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10">
+                <Phone className="h-4 w-4" /> Call {phone.replace(/(\d{5})(\d{5})/, '$1 $2')}
+              </a>
+            )}
+            {opp.posterUrl && (
+              <a href={opp.posterUrl} download className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/30 px-5 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10">
+                <Download className="h-4 w-4" /> Download poster
               </a>
             )}
           </div>
           <div className="space-y-3 rounded-2xl border border-[#e4dac8] bg-white p-5 text-sm">
             {[
               [MapPin, 'Location', opp.location],
-              [Ruler, 'Land area', opp.area],
-              [Building2, 'Project status', opp.status],
-              [FileText, 'Available documentation', opp.documents],
-              [Users, 'Investor eligibility', opp.eligibility],
+              [Ruler, rental ? 'Area' : 'Land area', opp.area],
+              ...(rental ? [[IndianRupee, 'Rent & deposit', opp.investmentRequirement], [Sparkles, 'Proposed use', opp.potential]] : []),
+              [Building2, rental ? 'Availability' : 'Project status', rental ? opp.timeline || opp.status : opp.status],
+              [FileText, rental ? 'Shared on enquiry' : 'Available documentation', opp.documents],
+              [Users, rental ? 'Suitable for' : 'Investor eligibility', opp.eligibility],
             ].filter(([, , v]) => v).map(([Icon, k, v]) => {
               const I = Icon as React.ElementType;
               return (
@@ -928,7 +945,7 @@ const OpportunityDetail: React.FC<{ opp: Opportunity; startPhoto?: number; onClo
 
       {/* Mobile enquiry bar */}
       <div className="sticky bottom-0 z-20 border-t border-[#e4dac8] bg-white/95 p-3 backdrop-blur sm:hidden">
-        <button onClick={onEnquire} className="w-full rounded-md py-3.5 font-bold text-white" style={{ background: GREEN }}>Submit Investor Enquiry</button>
+        <button onClick={onEnquire} className="w-full rounded-md py-3.5 font-bold text-white" style={{ background: GREEN }}>{cta}</button>
       </div>
 
       <AnimatePresence>

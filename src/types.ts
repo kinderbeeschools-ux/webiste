@@ -189,7 +189,9 @@ export interface Opportunity {
   termsNote?: string;
   development: string[];     // paragraphs
   partnershipOptions: OpportunityRow[];
-  images: { url: string; caption: string }[];
+  images: { url: string; caption: string; fit?: 'contain' }[];  // 'contain' shows the whole image (posters) instead of cropping
+  posterUrl?: string;        // downloadable poster or brochure
+  seedVersion?: number;      // built-in listings only: bump to refresh the stored copy once
   mapUrl?: string;
   contactPhone?: string;
   documents?: string;

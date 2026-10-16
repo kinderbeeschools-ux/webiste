@@ -1478,16 +1478,30 @@ const isAdminRequest = async (req: express.Request) => {
 const byOrder = (a: Opportunity, b: Opportunity) => (a.order || 0) - (b.order || 0);
 
 // Adds new built-in listings (SEED_OPPORTUNITIES) to the stored list once. "opportunitySeeds" remembers every
-// seed already present or added, so a listing the admin later deletes is not added back.
+// seed already present or added (as "id" or "id@seedVersion"), so a listing the admin later deletes is not added
+// back. Bumping a seed's seedVersion refreshes the stored copy once, keeping the admin's order/featured/published.
+const seedKey = (o: Opportunity) => (o.seedVersion ? `${o.id}@${o.seedVersion}` : o.id);
 async function seedOpportunities(): Promise<Opportunity[]> {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
   const seeded = new Set<string>((await getContent<string[]>("opportunitySeeds")) || []);
-  const fresh = SEED_OPPORTUNITIES.filter(o => !seeded.has(o.id));
+  const fresh = SEED_OPPORTUNITIES.filter(o => !seeded.has(seedKey(o)));
   if (!fresh.length) return list;
-  const add = fresh.filter(o => !list.some(x => x.id === o.id));
-  const next = [...list, ...add];
-  if (add.length) await setContent("opportunities", next);
-  await setContent("opportunitySeeds", [...seeded, ...fresh.map(o => o.id)]);
+  const next = [...list];
+  let changed = false;
+  for (const o of fresh) {
+    const i = next.findIndex(x => x.id === o.id);
+    const seenBefore = [...seeded].some(k => k === o.id || k.startsWith(`${o.id}@`));
+    if (i >= 0 && o.seedVersion && seenBefore) {
+      const { order, featured, published } = next[i];
+      next[i] = { ...o, order, featured, published };
+      changed = true;
+    } else if (i < 0 && !seenBefore) {
+      next.push(o);
+      changed = true;
+    }
+  }
+  if (changed) await setContent("opportunities", next);
+  await setContent("opportunitySeeds", [...seeded, ...fresh.map(seedKey)]);
   return next;
 }
 
