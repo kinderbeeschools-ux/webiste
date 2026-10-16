@@ -27,6 +27,7 @@ import { UPI_ID, UPI_NAME } from '../data/consultation';
 import { COURSE_FEES, ECCE } from '../data/courses';
 import { HeroDecor } from '../components/Doodles';
 import { PaymentRecord } from '../types';
+import { trackEvent } from '../utils/analytics';
 
 interface PaymentPageProps {
   onNavigate: (tab: string) => void;
@@ -158,6 +159,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
       const data = await res.json();
       if (data.success && data.paymentRecord) {
         setSubmittedPayment(data.paymentRecord);
+        trackEvent('fee_payment_submitted', { program: programme, value: Number(effectiveAmount) || undefined, currency: 'INR' });
       } else {
         setFormErrors([data.error || 'Failed to record payment reference. Please contact support.']);
       }

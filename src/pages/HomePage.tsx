@@ -13,6 +13,7 @@ import { motion, MotionConfig, useInView } from 'motion/react';
 import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
 import { AiCurriculum } from '../components/AiCurriculum';
+import { trackLead } from '../utils/analytics';
 
 interface HomePageProps {
   setCurrentTab: (tab: string) => void;
@@ -289,6 +290,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       const data = await res.json();
       if (data.success) {
         setEnquirySuccess(true);
+        trackLead(enquiryType, 'Homepage enquiry');
         setEnquiryName('');
         setEnquiryPhone('');
         setEnquiryEmail('');

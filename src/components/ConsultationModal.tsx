@@ -3,6 +3,7 @@ import { BROCHURE_URL } from './BrochureDownload';
 import { COURSE_FEES, ECCE } from '../data/courses';
 import { X, Send, CheckCircle2, Sparkles, Building2, Baby, GraduationCap, Briefcase, CreditCard, Download, School, Landmark } from 'lucide-react';
 import { categoryInfo, type EnquiryCategory } from '../data/enquiry';
+import { trackLead } from '../utils/analytics';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -171,6 +172,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
       const data = await res.json();
       if (data.success) {
         setSubmitted(true);
+        trackLead(activeTab, 'Consultation form', { program: fields.program });
         setSubmittedId(data.enquiryId || `ENQ-${Date.now().toString().slice(-6)}`);
         setAiSummaryResult(data.aiSummary || 'Consultation request indexed and routed to our central academic desk.');
       } else {

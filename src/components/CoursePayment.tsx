@@ -4,6 +4,7 @@ import { X, Smartphone, ShieldCheck, Loader2, CheckCircle2, ArrowRight, Copy, Ch
 import type { SystemSettings } from '../types';
 import { UPI_ID, UPI_NAME } from '../data/consultation';
 import { waLink } from './ConsultationBooking';
+import { trackLead } from '../utils/analytics';
 
 // Simple course payment: 1) details  2) pay by UPI + UTR  3) done. The team verifies in Admin → Payments,
 // which emails the access details automatically.
@@ -88,6 +89,7 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not submit your payment. Please try again.');
       setStep(3);
+      trackLead('course_payment', 'Course payment', { program: course.programme, value: Number(course.amount) || undefined });
     } catch (err: any) {
       setError(err.message === 'Failed to fetch' ? 'Network error. Check your connection and try again.' : err.message);
     } finally {

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Download, Loader2, CheckCircle2, FileText } from 'lucide-react';
+import { trackLead } from '../utils/analytics';
 
 // Brochures behind a short form: the visitor's details are saved as a CRM lead (in the brochure's category),
 // then the PDF downloads. A visitor who already filled it in on this device downloads straight away.
@@ -105,6 +106,7 @@ export const BrochureDownload: React.FC = () => {
       if (!res.ok) throw new Error(data.error || 'Could not send your details. Please try again.');
       try { localStorage.setItem(doneKey(req.kind), '1'); } catch { /* private mode */ }
       setDone(true);
+      trackLead('brochure', 'Brochure download', { program: req.course || b.program, brochure: req.kind });
       downloadBrochure(req.kind);
     } catch (err: any) {
       setError(err.message === 'Failed to fetch' ? 'Network error. Check your connection and try again.' : err.message);

@@ -3,6 +3,7 @@ import { Sparkles, Phone, Mail, MapPin, Send, CheckCircle2, MessageSquare } from
 import { SystemSettings } from '../types';
 import { HeroDecor } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
+import { trackLead } from '../utils/analytics';
 
 interface ContactPageProps {
   settings: SystemSettings | null;
@@ -43,6 +44,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
       const data = await res.json();
       if (data.success) {
         setSubmitted(true);
+        trackLead('contact', 'Contact page', { program: program || 'General' });
         setAiSummaryResult(data.aiSummary || 'Enquiry successfully recorded.');
       } else {
         alert(data.error || 'Failed to submit enquiry.');

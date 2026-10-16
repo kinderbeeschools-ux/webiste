@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { X, CalendarCheck, Copy, Check, ArrowRight, RefreshCw, Smartphone, ShieldCheck, Loader2, MessageCircle } from 'lucide-react';
 import type { SystemSettings } from '../types';
+import { trackLead, trackEvent } from '../utils/analytics';
 import {
   CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, UPI_ID, upiLink,
   type Consultation,
@@ -151,6 +152,7 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
     const data = await call('/api/consultations', { ...form, phone: toPhone(form.phone), whatsapp: toPhone(form.whatsapp) });
     if (data?.booking) {
       save(data.booking.ref, data.booking.phone);
+      trackLead('consultation_booking', 'Consultation booking', { program: form.category || undefined, value: Number(data.booking.amount) || 99 });
       setUtr('');
       setStep('pay');
     }
@@ -165,7 +167,10 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
       return;
     }
     const data = await call(`/api/consultations/${booking.ref}/payment`, { phone: booking.phone, utr: clean });
-    if (data?.booking) setStep('status');
+    if (data?.booking) {
+      trackEvent('payment_submitted', { payment_for: 'consultation', value: Number(data.booking.amount) || 99, currency: 'INR' });
+      setStep('status');
+    }
   };
 
   const loadStatus = async (ref: string, phone: string) => {

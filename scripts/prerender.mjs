@@ -16,7 +16,7 @@ Object.assign(globalThis, { addEventListener: noop, removeEventListener: noop, s
 const setUrl = p => { globalThis.location = new URL(p, SITE); };
 setUrl('/');
 
-const { render, PRERENDER_PATHS } = await import(pathToFileURL(path.resolve('dist-ssr/entry-server.js')).href);
+const { render, PRERENDER_PATHS, submitIndexNow } = await import(pathToFileURL(path.resolve('dist-ssr/entry-server.js')).href);
 
 // Posts and FAQs as the live API serves them (database + seeded journal posts); db.json if the API can't be reached.
 // Posts added after a build still work client-side until the next build.
@@ -33,6 +33,7 @@ const live = async key => {
 const blogs = (await live('blogs')).filter(b => !b.status || b.status === 'Published');
 const faqs = await live('faqs');
 const pages = [...PRERENDER_PATHS, ...blogs.map(b => `/blog/${encodeURIComponent(b.id)}`)];
+const built = {};
 // '/404' isn't a real route, so it renders the not-found page; Vercel serves 404.html with a 404 status
 for (const p of [...pages, '/404']) {
   setUrl(p);
@@ -46,6 +47,7 @@ for (const p of [...pages, '/404']) {
   const file = path.join(dist, p === '/' ? 'index.html' : p === '/404' ? '404.html' : `${decodeURIComponent(p)}/index.html`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, out);
+  built[p] = out;
 }
 
 const today = new Date().toISOString().slice(0, 10);
@@ -55,5 +57,23 @@ ${pages.map(p => `  <url><loc>${SITE}${p}</loc><lastmod>${today}</lastmod></url>
 </urlset>
 `);
 fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
-fs.rmSync('dist-ssr', { recursive: true, force: true });
 console.log(`prerender: ${pages.length} pages`);
+
+// IndexNow: on production builds, submit only the pages whose content differs from the live site.
+// Script and stylesheet tags are ignored because their file names change on every build.
+// ponytail: runs during the build, a minute before the deploy is live; Bing recrawls later than that in practice.
+if (process.env.VERCEL_ENV === 'production' || process.env.INDEXNOW_DRY) {
+  const fingerprint = html => html.replace(/<script[\s\S]*?<\/script>|<link[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  const changed = (await Promise.all(pages.map(async p => {
+    try {
+      const r = await fetch(SITE + p, { signal: AbortSignal.timeout(8000) });
+      return r.ok && fingerprint(await r.text()) === fingerprint(built[p]) ? null : p;
+    } catch {
+      return p;
+    }
+  }))).filter(Boolean);
+  if (process.env.INDEXNOW_DRY) console.log(`indexnow (dry run): ${changed.length} changed`, changed);
+  else if (changed.length) console.log(`indexnow: submitted ${changed.length} changed page(s), status ${await submitIndexNow(changed)}`);
+  else console.log('indexnow: no page changes to submit');
+}
+fs.rmSync('dist-ssr', { recursive: true, force: true });

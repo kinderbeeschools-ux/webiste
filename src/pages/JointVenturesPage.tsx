@@ -13,6 +13,7 @@ import { JvDiligence } from '../components/premium/JvDiligence';
 import { JvExplainer } from '../components/premium/JvExplainer';
 import { PillarArt, ContourBackdrop } from '../components/premium/JvVisuals';
 import { InvestorLens, DiligenceBadge } from '../components/premium/InvestorLens';
+import { trackLead } from '../utils/analytics';
 
 // Joint Ventures: premium investment-opportunity platform. Listings are managed in Admin → Opportunities.
 const GREEN = '#073D37';
@@ -567,6 +568,7 @@ const InvestorForm: React.FC<{
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Could not submit');
       setDone(true);
+      trackLead(mode === 'invest' ? 'investor' : 'opportunity_submission', 'Joint Ventures form', { opportunity: opportunity || 'General' });
     } catch {
       setErrors(['Something went wrong. Please try again or call 81223 44040.']);
     } finally {

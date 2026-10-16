@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
+import { submitIndexNow } from "./src/utils/indexnow.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { COURSE_FEES } from "./src/data/courses.js";
 import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
@@ -1398,6 +1399,19 @@ async function seedJournalBlogs(): Promise<any[]> {
   return next;
 }
 
+// A published blog post: rebuild the site through a Vercel deploy hook (VERCEL_DEPLOY_HOOK_URL) so the post is
+// prerendered and the build submits it to IndexNow. Without a hook, submit it to IndexNow straight away.
+async function announceBlogPost(item: any) {
+  if (process.env.VERCEL_ENV !== "production" || (item.status && item.status !== "Published")) return;
+  const hook = process.env.VERCEL_DEPLOY_HOOK_URL;
+  try {
+    if (hook) await fetch(hook, { method: "POST", signal: AbortSignal.timeout(5000) });
+    else await submitIndexNow([`/blog/${encodeURIComponent(item.id)}`, "/blog"]);
+  } catch (err) {
+    console.warn("announceBlogPost:", err);
+  }
+}
+
 function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, existing?: any) => any) {
   app.get(`/api/${key}`, handle(async (req, res) => res.json(key === "blogs" ? await seedJournalBlogs() : await getContent(key) || [])));
 
@@ -1405,6 +1419,7 @@ function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, 
     const list = await getContent<any[]>(key) || [];
     const item = prepare({ ...req.body, id: `${prefix}-${Date.now()}` });
     await setContent(key, key === "blogs" ? [item, ...list] : [...list, item]);
+    if (key === "blogs") await announceBlogPost(item);
     res.json({ success: true, item });
   }));
 
@@ -1414,6 +1429,7 @@ function listRoutes(key: "blogs" | "faqs", prefix: string, prepare: (item: any, 
     if (idx === -1) return res.status(404).json({ error: "Not found" });
     list[idx] = prepare({ ...list[idx], ...req.body, id: req.params.id }, list[idx]);
     await setContent(key, list);
+    if (key === "blogs") await announceBlogPost(list[idx]);
     res.json({ success: true, item: list[idx] });
   }));
 

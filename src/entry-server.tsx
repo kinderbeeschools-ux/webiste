@@ -6,6 +6,7 @@ import App from './App';
 import { BlogPost, FAQItem } from './types';
 
 export { PRERENDER_PATHS } from './utils/routes';
+export { submitIndexNow } from './utils/indexnow';
 
 export function render(blogs: BlogPost[], faqs: FAQItem[]) {
   const ctx: any = {};
