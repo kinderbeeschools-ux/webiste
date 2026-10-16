@@ -25,6 +25,20 @@ import { createPortal } from "./server/portal.js";
 const app = express();
 app.use(express.json({ limit: "4mb" })); // room for base64 image uploads (Vercel caps bodies at 4.5MB)
 
+// The KinderBee CRM (Website Content module) calls the content APIs from its own domain
+const CRM_ORIGINS = ["https://kinderbee-crm.vercel.app", "http://localhost:3400"];
+app.use("/api", (req, res, next) => {
+  const origin = String(req.headers.origin || "");
+  if (CRM_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    if (req.method === "OPTIONS") return res.sendStatus(204);
+  }
+  next();
+});
+
 const PORT = Number(process.env.PORT) || 3000;
 const DB_FILE = path.join(process.cwd(), "db.json");
 

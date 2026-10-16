@@ -105,7 +105,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
       
       {/* Illustrated hero */}
       <div>
-        <TrainingHero onExplore={scrollToSlider} onEnquire={() => onOpenConsultation('fwa_course')} />
+        <TrainingHero onExplore={scrollToSlider} onEnquire={() => onOpenConsultation('fwa_course')} photo={settings?.nttHeroImage} />
       </div>
 
       {/* Programme slider (follows the hero) */}

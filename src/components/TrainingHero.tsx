@@ -24,7 +24,7 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
-export const TrainingHero: React.FC<{ onExplore: () => void; onEnquire: () => void }> = ({ onExplore, onEnquire }) => (
+export const TrainingHero: React.FC<{ onExplore: () => void; onEnquire: () => void; photo?: string }> = ({ onExplore, onEnquire, photo }) => (
   <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-[#FAF9F6] to-yellow-50 px-4 sm:px-8 pt-10 sm:pt-16 pb-14 sm:pb-20">
     {/* Background texture */}
     <div aria-hidden="true" className="absolute inset-0 opacity-40 bg-[radial-gradient(#E1007A_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_70%)]" />
@@ -102,8 +102,20 @@ export const TrainingHero: React.FC<{ onExplore: () => void; onEnquire: () => vo
         />
         <div aria-hidden="true" className="kb-morph absolute inset-[14%] bg-white/15 [animation-delay:-4s]" />
 
+        {/* Hero photo (set from the KinderBee CRM) replaces the fanned course cards */}
+        {photo && (
+          <motion.img
+            src={photo}
+            alt="Teacher training at FinnishWay Academy"
+            className="absolute inset-[11%] h-[78%] w-[78%] rounded-[2rem] border-4 border-white object-cover shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+          />
+        )}
+
         {/* Fanned course cards */}
-        {COURSE_CARDS.map((c, i) => (
+        {!photo && COURSE_CARDS.map((c, i) => (
           <motion.div
             key={c.title}
             className="absolute w-[40%]"

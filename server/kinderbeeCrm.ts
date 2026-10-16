@@ -36,3 +36,31 @@ export async function sendLeadToCrm(category: string, f: Record<string, any>): P
     console.warn("KinderBee CRM: lead forward failed", err);
   }
 }
+
+// CRM staff managing website images: a CRM sign-in token (Supabase JWT) is accepted by the website's content APIs
+// when the CRM confirms the account is active and is the CEO or has the "website" module. Checked against the CRM,
+// then cached for a minute per token so deactivating someone in the CRM takes effect within a minute.
+const crmUsers = new Map<string, { user: { id: string; name: string } | null; until: number }>();
+
+export async function crmWebsiteUser(token: string): Promise<{ id: string; name: string } | null> {
+  const hit = crmUsers.get(token);
+  if (hit && hit.until > Date.now()) return hit.user;
+  let user: { id: string; name: string } | null = null;
+  try {
+    const headers = { apikey: CRM_KEY, Authorization: `Bearer ${token}` };
+    const me = await fetch(`${CRM_URL}/auth/v1/user`, { headers, signal: AbortSignal.timeout(4000) });
+    if (me.ok) {
+      const u: any = await me.json();
+      const allowed = await fetch(`${CRM_URL}/rest/v1/rpc/has_module`, {
+        method: "POST", headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ m: "website" }), signal: AbortSignal.timeout(4000),
+      });
+      if (allowed.ok && (await allowed.json()) === true) user = { id: `crm-${u.id}`, name: `${String(u.email || "").split("@")[0]} (CRM)` };
+    }
+  } catch (err) {
+    console.warn("KinderBee CRM: sign-in check failed", err);
+  }
+  if (crmUsers.size > 500) crmUsers.clear();
+  crmUsers.set(token, { user, until: Date.now() + 60_000 });
+  return user;
+}

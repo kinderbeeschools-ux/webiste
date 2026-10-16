@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import type { Express, Request, Response, NextFunction } from "express";
 import { enquiryCategory, categoryInfo } from "../src/data/enquiry.js";
+import { crmWebsiteUser } from "./kinderbeeCrm.js";
 
 // Role-based access for the Kinderbee management platform (CEO, Admin, Teacher Admin, Sales & Marketing,
 // Franchise Partner). Every rule here is enforced on the server; the admin UI only mirrors it.
@@ -151,6 +152,11 @@ export function createPortal(d: Deps) {
     const legacy = d.legacyToken();
     if (legacy && d.safeEqual(header, `Bearer ${legacy}`)) {
       return { id: "ceo-root", name: "CEO", role: "ceo", perms: ALL, scope: null, legacy: true };
+    }
+    // KinderBee CRM staff (Website Content module): website images, gallery and property listings only
+    if (/^Bearer eyJ[\w-]*\.[\w-]+\.[\w-]+$/.test(header)) {
+      const u = await crmWebsiteUser(header.slice(7));
+      return u ? { id: u.id, name: u.name, role: "admin", perms: ["website", "gallery", "opportunities"], scope: null } : null;
     }
     const m = header.match(/^Bearer (u\.[\w-]+\.[\w-]+)$/);
     if (!m || !secret()) return null;
@@ -412,8 +418,8 @@ export function createPortal(d: Deps) {
       const url = clean(req.body?.url, 600);
       if (!/^https:\/\//.test(url) || clean(req.body?.title).length < 2) return res.status(400).json({ error: "Add a title and upload a photo first." });
       if (!inScope(a, branchId) && !(a.scope === null && !branchId)) return res.status(403).json({ error: "You can only upload for your own branch." });
-      // Staff uploads wait for approval before anything can be published on the website
-      const g = { id: uid("img"), title: clean(req.body?.title, 100), url, branchId, date: clean(req.body?.date, 10) || today(), status: "pending", uploadedBy: a.name, createdAt: new Date().toISOString() };
+      // Staff uploads wait for approval; uploads by people who approve website content go live straight away
+      const g = { id: uid("img"), title: clean(req.body?.title, 100), url, branchId, date: clean(req.body?.date, 10) || today(), status: can(a, "website") ? "approved" : "pending", uploadedBy: a.name, createdAt: new Date().toISOString() };
       await d.setContent("gallery", [g, ...(((await d.getContent<any[]>("gallery")) || []))]);
       res.json({ success: true, photo: g });
     }));
@@ -422,6 +428,7 @@ export function createPortal(d: Deps) {
       const g = list.find(x => x.id === req.params.id);
       if (!g) return res.status(404).json({ error: "Photo not found." });
       if (["approved", "rejected", "pending"].includes(req.body?.status)) g.status = req.body.status;
+      if (clean(req.body?.title, 100).length >= 2) g.title = clean(req.body.title, 100);
       await d.setContent("gallery", list);
       res.json({ success: true, photo: g });
     }));

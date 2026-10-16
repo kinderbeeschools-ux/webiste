@@ -100,6 +100,7 @@ export interface SystemSettings {
   contactHeroSubtitle?: string;
   customHeaderScripts?: string;
   googleAnalyticsId?: string;
+  nttHeroImage?: string; // NTT / teacher-training page hero photo (set from the KinderBee CRM); empty = illustration
 }
 
 export interface PageConfig {
