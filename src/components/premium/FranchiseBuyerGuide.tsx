@@ -207,7 +207,7 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
                 ['Legal entity', 'Finnish-Way Educare Private Limited'],
                 ['CIN', 'U85500TN2024PTC169138'],
                 ['GSTIN', '33AAFCF8851Q1ZZ'],
-                ['Registered office', 'Vilangudi, Madurai – 625018, Tamil Nadu'],
+                ['Office', 'No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016, Karnataka'],
                 ['Website', 'www.kinderbeeschools.com'],
               ].map(([k, v]) => (
                 <div key={k} className="flex flex-col gap-0.5 border-b pb-3 last:border-0 last:pb-0 sm:flex-row sm:gap-4" style={{ borderColor: P.line }}>
