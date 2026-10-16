@@ -34,7 +34,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     finalTitle = `${blogPost.title} | ${brandName} Research & Pedagogy Blog`;
   } else if (title) {
     // Titles that already name the brand are used as written (keyword-map titles, <= 60 chars)
-    finalTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
+    finalTitle = title.toLowerCase().includes(brandName.toLowerCase()) ? title : `${title} | ${brandName}`;
   } else if (settings?.metaTitle) {
     finalTitle = settings.metaTitle;
   } else {

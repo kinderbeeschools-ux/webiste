@@ -315,9 +315,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
-        title="Kinderbee International Preschool | Bengaluru"
-        description="Kinderbee brings the world-famous Finnish curriculum and playful learning to preschoolers in Bengaluru. Playgroup to UKG, daycare and more."
-        keywords="Kinderbee International Preschool, international preschool Bengaluru, Finnish curriculum preschool, best preschool near me, preschool in Bengaluru, no royalty preschool franchise India"
+        title="KinderBee Franchise | Preschool, School & College Setup India"
+        description="Explore KinderBee preschool franchise opportunities, CBSE school setup, degree college establishment and teacher training programs across India."
+        keywords="KinderBee franchise, preschool franchise India, best preschool franchise in India, no royalty preschool franchise, low investment preschool franchise, play school franchise, CBSE school setup, how to start a CBSE school, school franchise India, degree college establishment, college setup consultancy India, teacher training programs, NTT course, Kinderbee International Preschool Bengaluru"
         settings={settings} 
       />
 
