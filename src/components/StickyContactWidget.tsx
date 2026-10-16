@@ -80,12 +80,13 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
         </div>
       )}
 
-      {/* ENQUIRE NOW Pill Button (Brand Magenta & Gold Accent Pill): opens the Call / WhatsApp options */}
+      {/* ENQUIRE NOW Pill Button (Brand Magenta & Gold Accent Pill): opens the Call / WhatsApp options.
+          Hidden on phones, where it covered hero buttons; the call and WhatsApp buttons stay. */}
       <button
         onClick={() => setShowPopup(v => !v)}
         aria-expanded={showPopup}
         aria-controls="enquiry-desk"
-        className="group flex items-center gap-2 bg-gradient-to-r from-[#E1007A] via-[#d6006e] to-[#be005d] hover:from-[#c2005f] hover:to-[#9e0049] text-white px-4.5 py-2.5 rounded-full shadow-xl shadow-pink-950/25 hover:shadow-2xl hover:shadow-pink-950/35 border border-pink-300/40 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98 cursor-pointer"
+        className="group hidden sm:flex items-center gap-2 bg-gradient-to-r from-[#E1007A] via-[#d6006e] to-[#be005d] hover:from-[#c2005f] hover:to-[#9e0049] text-white px-4.5 py-2.5 rounded-full shadow-xl shadow-pink-950/25 hover:shadow-2xl hover:shadow-pink-950/35 border border-pink-300/40 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98 cursor-pointer"
         title="Enquire Now - Call or WhatsApp us"
       >
         <span className="w-2.5 h-2.5 rounded-full bg-[#FFD400] shrink-0 animate-pulse"></span>

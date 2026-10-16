@@ -226,9 +226,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
             Our Story and Purpose
           </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
+          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
             Nurturing Young Minds. Shaping Bright Futures
-          </h2>
+          </h1>
           <Squiggle className="w-28 h-5 -mt-3" />
           <p className="text-stone-600 text-base leading-relaxed">
             Kinderbee was founded with a simple yet meaningful purpose: to create joyful early-learning environments where every child feels safe, valued and inspired to explore. Our child-centred approach combines play-based learning, thoughtful guidance and modern pedagogical perspectives to support each child’s holistic development.
@@ -718,7 +718,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
                       transition={{ duration: 0.6, delay: 0.15 + i * 0.45, ease: EASE }}
                     >
                       <h4 className="text-xs font-bold text-white uppercase tracking-wide">{p.title}</h4>
-                      <p className="text-[11px] text-stone-300 mt-1 leading-snug">{p.text}</p>
+                      <p className="text-xs text-stone-300 mt-1 leading-snug">{p.text}</p>
                     </motion.div>
                   </div>
                 ))}

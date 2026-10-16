@@ -140,6 +140,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   return (
     <div className="space-y-12 pb-20 bg-[#FAF9F6] min-h-screen">
       
+      <h1 className="sr-only">Kinderbee Blog: Preschool Parenting, Teaching & Franchise Insights</h1>
+
       {/* React Helmet Dynamic Meta Tags */}
       <SEOHead
         title={selectedCategory === 'All' ? 'Research Dispatches & Pedagogical Blogs' : `${selectedCategory} Insights & Research`}

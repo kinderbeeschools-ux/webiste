@@ -934,7 +934,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                     <h3 className="font-display font-bold text-base leading-snug text-white group-hover:text-[#FFD400] transition-colors duration-300">
                       {course.title}
                     </h3>
-                    <p className="text-[11px] text-pink-200/80 mt-1">{course.subtitle}</p>
+                    <p className="text-xs text-pink-200/80 mt-1">{course.subtitle}</p>
                   </div>
 
                   <ul className="space-y-1.5 flex-1">

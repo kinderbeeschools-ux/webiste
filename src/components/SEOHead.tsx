@@ -26,7 +26,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   noIndex = false
 }) => {
   const brandName = settings?.logoText || 'Kinderbee';
-  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kinderbee.in';
+  const siteUrl = 'https://www.kinderbeeschools.com';
   
   // Format dynamic title
   let finalTitle = '';

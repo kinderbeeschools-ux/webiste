@@ -24,12 +24,14 @@ import { RefundPolicyPage } from './pages/RefundPolicyPage';
 import { COURSE_FEES, ECCE } from './data/courses';
 import { PaymentPage } from './pages/PaymentPage';
 import { JointVenturesPage } from './pages/JointVenturesPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { AdminPanel } from './pages/AdminPanel';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 import { DEFAULT_BLOGS } from './data/defaultBlogs';
+import { pathFor, tabFor, blogIdFor } from './utils/routes';
 
-export function App() {
+export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initialBlogs?: BlogPost[]; initialFaqs?: FAQItem[] } = {}) {
   const [currentTab, setCurrentTab] = useState<string>(() => {
     const hash = window.location.hash.toLowerCase();
     const pathname = window.location.pathname.toLowerCase();
@@ -57,24 +59,28 @@ export function App() {
       return 'joint-ventures';
     }
 
+    const fromPath = tabFor(pathname);
+    if (fromPath && fromPath !== 'home') return fromPath;
+    if (!fromPath) return 'not-found';
+
     // Default to last active tab if logged in as admin
     const token = localStorage.getItem('kips_admin_token');
     const savedTab = localStorage.getItem('kips_current_tab');
-    if (token && savedTab) {
-      return savedTab;
-    }
-    return savedTab || 'home';
+    return token && savedTab ? savedTab : 'home';
   });
   const [settings, setSettings] = useState<SystemSettings | null>(null);
-  const [blogs, setBlogs] = useState<BlogPost[]>(DEFAULT_BLOGS);
-  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>(initialBlogs);
+  const [faqs, setFaqs] = useState<FAQItem[]>(initialFaqs);
 
   // Modals & Single Post Selection
   const [consultationOpen, setConsultationOpen] = useState(false);
   const [consultationType, setConsultationType] = useState('franchise');
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem('kips_admin_token'));
-  const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+  const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(() => {
+    const id = blogIdFor(window.location.pathname);
+    return (id && initialBlogs.find(b => b.id === id)) || null;
+  });
 
   // Payment Pre-selection
   const [paymentProgramme, setPaymentProgramme] = useState(ECCE);
@@ -110,6 +116,31 @@ export function App() {
     window.scrollTo(0, 0);
   }, [currentTab, selectedBlog]);
 
+  const initialBlogId = React.useRef(blogIdFor(window.location.pathname)).current;
+
+  // Keep the address bar on the current page's own URL (first sync keeps any query/hash the page reads)
+  const firstSync = React.useRef(true);
+  useEffect(() => {
+    if (currentTab === 'not-found') return; // keep the mistyped URL so the 404 status matches it
+    const want = pathFor(currentTab, currentTab === 'blogs' ? selectedBlog?.id : undefined);
+    if (window.location.pathname !== want) {
+      if (firstSync.current) history.replaceState(null, '', want + window.location.search + window.location.hash);
+      else history.pushState(null, '', want);
+    }
+    firstSync.current = false;
+  }, [currentTab, selectedBlog]);
+
+  // Browser back/forward
+  useEffect(() => {
+    const onPop = () => {
+      const id = blogIdFor(window.location.pathname);
+      setCurrentTab(tabFor(window.location.pathname) || 'not-found');
+      setSelectedBlog(id ? blogs.find(b => b.id === id) || null : null);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [blogs]);
+
   useEffect(() => {
     // Fetch initial settings, blogs, faqs
     fetch('/api/settings')
@@ -126,7 +157,7 @@ export function App() {
         if (Array.isArray(data) && data.length > 0) {
           setBlogs(data.filter((b: BlogPost) => !b.status || b.status === 'Published'));
           const params = new URLSearchParams(window.location.search);
-          const blogIdParam = params.get('blogId');
+          const blogIdParam = params.get('blogId') || initialBlogId;
           if (blogIdParam) {
             const found = data.find((b: BlogPost) => b.id === blogIdParam);
             if (found) {
@@ -139,7 +170,7 @@ export function App() {
       .catch(err => {
         console.warn('Using default blogs due to API note:', err);
         const params = new URLSearchParams(window.location.search);
-        const blogIdParam = params.get('blogId');
+        const blogIdParam = params.get('blogId') || initialBlogId;
         if (blogIdParam) {
           const found = DEFAULT_BLOGS.find((b: BlogPost) => b.id === blogIdParam);
           if (found) {
@@ -262,6 +293,7 @@ export function App() {
           />
         )}
         {currentTab === 'joint-ventures' && <JointVenturesPage settings={settings} />}
+        {currentTab === 'not-found' && <NotFoundPage setCurrentTab={setCurrentTab} settings={settings} />}
         {currentTab === 'investors' && (
           <InvestorsPage onOpenConsultation={handleOpenConsultation} settings={settings} setCurrentTab={setCurrentTab} />
         )}

@@ -280,7 +280,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                   )}
                 </button>
 
-                <p className="text-center text-[11px] text-stone-400 pt-0.5">
+                <p className="text-center text-xs text-stone-400 pt-0.5">
                   We respond within 24 business hours. Your details remain confidential.
                 </p>
               </form>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Menu, X, ChevronDown, MessageSquare, ArrowRight, CreditCard, QrCode } from 'lucide-react';
 import { SystemSettings } from '../types';
+import { pathFor } from '../utils/routes';
 
 interface NavbarProps {
   currentTab: string;
@@ -123,10 +124,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                         {link.dropdown.map((sub, i) => {
                           const isSubActive = currentTab === sub.id;
                           return (
-                            <button
+                            <a
                               key={i}
-                              type="button"
-                              onClick={() => {
+                              href={pathFor(sub.id)}
+                              onClick={e => {
+                                e.preventDefault();
                                 setCurrentTab(sub.id);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }}
@@ -147,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                                   {sub.desc}
                                 </span>
                               )}
-                            </button>
+                            </a>
                           );
                         })}
                       </div>
@@ -157,9 +159,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
 
               return (
-                <button
+                <a
                   key={link.id}
-                  onClick={() => setCurrentTab(link.id)}
+                  href={pathFor(link.id)}
+                  onClick={e => { e.preventDefault(); setCurrentTab(link.id); }}
                   className={`h-9 xl:h-10 px-2 xl:px-2.5 2xl:px-3.5 inline-flex items-center justify-center relative text-xs xl:text-[13.5px] 2xl:text-[15px] font-semibold transition-colors duration-150 whitespace-nowrap cursor-pointer after:absolute after:left-2 after:right-2 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#E1007A] after:transition-transform after:duration-200 after:origin-left shrink-0 ${
                     isActive
                       ? 'text-[#E1007A] after:scale-x-100'
@@ -174,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   ) : (
                     link.label
                   )}
-                </button>
+                </a>
               );
             })}
           </nav>

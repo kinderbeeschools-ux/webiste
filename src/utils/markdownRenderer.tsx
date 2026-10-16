@@ -200,9 +200,9 @@ export function renderMarkdown(text: string): React.ReactNode {
         }
         if (trimmed.startsWith('# ')) {
           return (
-            <h1 key={idx} className="font-display font-black text-3xl sm:text-4xl text-stone-900 mt-8 mb-4">
+            <h2 key={idx} className="font-display font-black text-3xl sm:text-4xl text-stone-900 mt-8 mb-4">
               {parseInline(trimmed.replace(/^#\s+/, ''))}
-            </h1>
+            </h2>
           );
         }
 
