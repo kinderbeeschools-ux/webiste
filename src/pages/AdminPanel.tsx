@@ -721,7 +721,7 @@ const SETTING_GROUPS: { title: string; fields: SettingField[] }[] = [
   { title: 'Logo & footer', fields: [['logoUrl', 'Logo image URL'], ['logoText', 'Logo text'], ['logoSubtext', 'Logo subtext'], ['footerCopyright', 'Footer copyright'], ['footerTagline', 'Footer tagline', 'textarea']] },
   { title: 'Enquiry popup', fields: [['popupEnabled', 'Show popup', 'checkbox'], ['popupDelay', 'Delay (seconds)', 'number'], ['popupTag', 'Small tag'], ['popupTitle', 'Title'], ['popupSubtitle', 'Subtitle', 'textarea'], ['popupImageUrl', 'Image URL']] },
   { title: 'Page headings', fields: [['homeHeroH1', 'Home heading'], ['homeHeroH2', 'Home subheading'], ['homeHeroSubtitle', 'Home intro', 'textarea'], ['aboutHeroH1', 'About heading'], ['aboutHeroSubtitle', 'About intro', 'textarea'], ['franchiseHeroH1', 'Franchise heading'], ['franchiseHeroSubtitle', 'Franchise intro', 'textarea'], ['fwaHeroH1', 'FWA heading'], ['fwaHeroSubtitle', 'FWA intro', 'textarea'], ['blogsHeroH1', 'Blogs heading'], ['blogsHeroSubtitle', 'Blogs intro', 'textarea'], ['contactHeroH1', 'Contact heading'], ['contactHeroSubtitle', 'Contact intro', 'textarea']] },
-  { title: 'SEO', fields: [['metaTitle', 'Site title'], ['metaDescription', 'Site description', 'textarea'], ['metaKeywords', 'Keywords'], ['googleAnalyticsId', 'Google Analytics ID']] },
+  { title: 'SEO', fields: [['metaTitle', 'Site title'], ['metaDescription', 'Site description', 'textarea'], ['metaKeywords', 'Keywords']] },
 ];
 
 const SettingsTab: React.FC<TabProps & { settings: SystemSettings | null; onUpdateSettings: (s: SystemSettings) => void }> = ({ api, flash, settings, onUpdateSettings }) => {

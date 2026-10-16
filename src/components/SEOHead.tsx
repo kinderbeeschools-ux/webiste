@@ -135,11 +135,6 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <script type="application/ld+json">
         {JSON.stringify(schemaData)}
       </script>
-
-      {/* Custom Google Analytics or Tracking Scripts from Admin Settings */}
-      {settings?.googleAnalyticsId && (
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAnalyticsId}`}></script>
-      )}
     </Helmet>
   );
 };
