@@ -1477,8 +1477,22 @@ const isAdminRequest = async (req: express.Request) => {
 };
 const byOrder = (a: Opportunity, b: Opportunity) => (a.order || 0) - (b.order || 0);
 
-app.get("/api/opportunities", handle(async (req, res) => {
+// Adds new built-in listings (SEED_OPPORTUNITIES) to the stored list once. "opportunitySeeds" remembers every
+// seed already present or added, so a listing the admin later deletes is not added back.
+async function seedOpportunities(): Promise<Opportunity[]> {
   const list: Opportunity[] = (await getContent<Opportunity[]>("opportunities")) || [];
+  const seeded = new Set<string>((await getContent<string[]>("opportunitySeeds")) || []);
+  const fresh = SEED_OPPORTUNITIES.filter(o => !seeded.has(o.id));
+  if (!fresh.length) return list;
+  const add = fresh.filter(o => !list.some(x => x.id === o.id));
+  const next = [...list, ...add];
+  if (add.length) await setContent("opportunities", next);
+  await setContent("opportunitySeeds", [...seeded, ...fresh.map(o => o.id)]);
+  return next;
+}
+
+app.get("/api/opportunities", handle(async (req, res) => {
+  const list = await seedOpportunities();
   res.json(((await isAdminRequest(req)) ? list : list.filter(o => o.published)).sort(byOrder));
 }));
 

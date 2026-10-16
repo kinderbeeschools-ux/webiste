@@ -520,7 +520,7 @@ const OpportunityGrid: React.FC<{ opps: Opportunity[]; onOpen: (id: string) => v
             <div className="relative h-60 overflow-hidden">
               <CardPhotos images={o.images} title={o.title} />
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#073D37]/70 to-transparent" />
-              <span className="absolute left-4 top-4 rounded-full bg-[#073D37]/85 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">Investment opportunity</span>
+              <span className="absolute left-4 top-4 rounded-full bg-[#073D37]/85 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">{/rent/i.test(o.category) ? 'For rent' : 'Investment opportunity'}</span>
               <span style={serif} className="absolute bottom-3 left-4 text-4xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
             </div>
             <div className="space-y-3 p-6">
