@@ -320,7 +320,7 @@ export const ArcadiaPage: React.FC<{ onRequestBrief: () => void; extra?: React.R
         <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
           <div>
             <img src={`${IMG}/finnish-way-educare-logo.jpg`} alt="Finnish-Way Educare Private Limited logo" className="mb-4 w-56 rounded-lg" loading="lazy" />
-            <p><b className="text-white">Finnish-Way Educare Private Limited</b><br />BS 06, VIKRAM, B Block, Visthara Apartments, Vilangudi, Madurai – 625018, Tamil Nadu, India</p>
+            <p><b className="text-white">Finnish-Way Educare Private Limited</b><br />No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016, Karnataka, India</p>
           </div>
           <p>
             <b className="text-white">CIN</b> U85500TN2024PTC169138<br />
