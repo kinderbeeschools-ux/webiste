@@ -68,10 +68,10 @@ export const JvExplainer: React.FC = () => (
         </motion.div>
         <PhotoMosaic
           accent={GREEN}
-          main={{ src: '/arcadia/facility_campus.jpg', alt: 'Institutional campus building' }}
+          main={{ src: '/visuals/kips-partner-school.webp', alt: 'KIPS partner preschool campus' }}
           side={[
             { src: '/images/campus/kinderbee-campus-bengaluru.jpg', alt: 'Kinderbee campus in Bengaluru' },
-            { src: '/arcadia/facility_boardroom.jpg', alt: 'Boardroom for partner discussions' },
+            { src: '/arcadia/facility_campus.jpg', alt: 'Institutional campus building' },
           ]}
           chips={[{ icon: Puzzle, label: 'Land + capital + expertise' }, { icon: School, label: 'Education-led projects' }]}
         />

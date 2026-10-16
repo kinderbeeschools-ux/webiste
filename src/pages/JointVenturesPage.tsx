@@ -29,7 +29,7 @@ const STEPS = [
 ];
 
 const PILLARS = [
-  { word: 'Opportunities', title: 'Strategic Opportunities', text: 'Identify land, development and education-related opportunities with potential for structured partnerships.', icon: Compass, img: '/opportunities/whitefield-3.jpg' },
+  { word: 'Opportunities', title: 'Strategic Opportunities', text: 'Identify land, development and education-related opportunities with potential for structured partnerships.', icon: Compass, img: '/visuals/kips-campus.webp' },
   { word: 'Capital', title: 'Investor Partnerships', text: 'Connect suitable opportunities with investors and strategic partners.', icon: Users, img: '/arcadia/facility_boardroom.jpg' },
   { word: 'Execution', title: 'Collaborative Development', text: 'Create mutually beneficial structures around investment, development and execution.', icon: Layers, img: '/arcadia/arcadia_hero.jpg' },
 ];
@@ -101,7 +101,6 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
     setOpenId(null);
   };
 
-  const featured = opps.find(o => o.featured) || opps[0];
   const open = opps.find(o => o.id === openId) || null;
 
   const enquire = (mode: 'invest' | 'submit', opportunityTitle = '') => {
@@ -116,13 +115,12 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
       <div className="overflow-x-clip bg-[#FBF9F4] text-[#0D2D2B]">
         <SEOHead title="Joint Ventures & Investment Opportunities" description="KIPS brings together strategic investors and high-potential opportunities through carefully structured joint ventures and development partnerships." settings={settings || null} noIndex />
 
-        <Hero featured={featured} count={opps.length} onExplore={() => scrollToId('opportunities')} onInvest={() => enquire('invest')} />
-        {featured && <Featured opp={featured} onView={() => openOpp(featured.id)} onEnquire={() => enquire('invest', featured.title)} />}
-        {featured && featured.images.length > 2 && <FilmStrip opp={featured} onOpen={i => openOpp(featured.id, i)} />}
+        <Hero opps={opps} onExplore={() => scrollToId('opportunities')} onInvest={() => enquire('invest')} />
         <WhyKips />
         <JvExplainer />
-        <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
         <HowItWorks />
+        <OpportunityGrid opps={opps} onOpen={openOpp} onSubmit={() => enquire('submit')} />
+        <ProjectGallery opps={opps} onOpen={openOpp} />
         <JvDiligence onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorCta onInvest={() => enquire('invest')} onSubmit={() => enquire('submit')} />
         <InvestorForm opps={opps} mode={formMode} setMode={setFormMode} opportunity={formOpportunity} setOpportunity={setFormOpportunity} />
@@ -138,83 +136,93 @@ export const JointVenturesPage: React.FC<{ settings?: SystemSettings | null }> =
 // ============================================================================
 // 1. HERO
 // ============================================================================
-const Hero: React.FC<{ featured?: Opportunity; count: number; onExplore: () => void; onInvest: () => void }> = ({ featured, count, onExplore, onInvest }) => {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
-  const area = firstNumber(featured?.area);
-  const slides = (featured?.images?.length ? featured.images : [{ url: '/arcadia/arcadia_hero.jpg', caption: '' }]).slice(0, 5);
-  const reduce = useReducedMotion();
-  const [slide, setSlide] = useState(0);
-  useEffect(() => {
-    if (reduce || slides.length < 2) return;
-    const t = setInterval(() => setSlide(i => (i + 1) % slides.length), 5500);
-    return () => clearInterval(t);
-  }, [reduce, slides.length]);
+// City from a listing location, e.g. "EPIP Zone / Whitefield, Bengaluru – 560048" -> "Bengaluru"
+const cityOf = (loc: string) => loc.replace(/\(.*?\)/g, '').replace(/[–-]\s*\d{6}/, '').split(',').pop()!.trim();
+
+const HUB_NODES = [
+  { label: 'Land', icon: Compass, angle: -90, r: 205 },
+  { label: 'Investors', icon: Users, angle: -30, r: 150 },
+  { label: 'Premises', icon: Building2, angle: 30, r: 205 },
+  { label: 'Operators', icon: Handshake, angle: 90, r: 150 },
+  { label: 'Campuses', icon: Layers, angle: 150, r: 205 },
+  { label: 'Developers', icon: TrendingUp, angle: 210, r: 150 },
+];
+
+// Animated network: KIPS at the centre, connecting land, capital and operators (no site photos)
+const HeroVisual: React.FC = () => (
+  <div aria-hidden="true" className="pointer-events-none absolute right-0 top-1/2 hidden h-[560px] w-[560px] -translate-y-1/2 xl:block 2xl:right-[4%]">
+    <svg viewBox="-280 -280 560 560" className="absolute inset-0 h-full w-full overflow-visible">
+      <defs>
+        <radialGradient id="jvGlow"><stop offset="0%" stopColor="#e2c478" stopOpacity=".35" /><stop offset="100%" stopColor="#e2c478" stopOpacity="0" /></radialGradient>
+      </defs>
+      <circle r="250" fill="url(#jvGlow)" />
+      {[90, 150, 205, 255].map((r, i) => (
+        <motion.circle key={r} r={r} fill="none" stroke={i % 2 ? '#e2c478' : '#ffffff'} strokeOpacity={i % 2 ? 0.35 : 0.14} strokeWidth="1" strokeDasharray={i % 2 ? '2 8' : '1 0'}
+          animate={{ rotate: i % 2 ? 360 : -360 }} transition={{ duration: 60 + i * 20, repeat: Infinity, ease: 'linear' }} />
+      ))}
+      {HUB_NODES.map((n, i) => {
+        const a = (n.angle * Math.PI) / 180;
+        return (
+          <motion.line key={n.label} x1="0" y1="0" x2={Math.cos(a) * n.r} y2={Math.sin(a) * n.r} stroke="#e2c478" strokeOpacity=".45" strokeWidth="1.2" strokeDasharray="4 6"
+            animate={{ strokeDashoffset: [0, -40] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', delay: i * 0.2 }} />
+        );
+      })}
+      {[0, 1, 2].map(i => (
+        <motion.circle key={i} r="70" fill="none" stroke="#e2c478" strokeWidth="1.5"
+          initial={{ scale: 0.6, opacity: 0.6 }} animate={{ scale: 3.4, opacity: 0 }} transition={{ duration: 4.5, repeat: Infinity, delay: i * 1.5, ease: 'easeOut' }} />
+      ))}
+    </svg>
+    {/* Centre hub */}
+    <div className="absolute left-1/2 top-1/2 flex h-36 w-36 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-[#e2c478]/60 bg-[#073D37]/90 text-center shadow-[0_0_80px_rgba(226,196,120,.35)] backdrop-blur">
+      <span style={serif} className="text-3xl tracking-wide text-[#e2c478]">KIPS</span>
+      <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.25em] text-white/70">Joint ventures</span>
+    </div>
+    {/* Orbiting nodes */}
+    {HUB_NODES.map((n, i) => {
+      const a = (n.angle * Math.PI) / 180;
+      const Icon = n.icon;
+      return (
+        <motion.div key={n.label} className="absolute left-1/2 top-1/2" style={{ x: Math.cos(a) * n.r, y: Math.sin(a) * n.r }}
+          initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.6 + i * 0.12, duration: 0.7, ease: EASE }}>
+          <motion.div className="flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-white/25 bg-white/10 py-1.5 pl-1.5 pr-3.5 text-xs font-semibold text-white backdrop-blur-md"
+            animate={{ y: [0, -6, 0] }} transition={{ duration: 4 + i * 0.4, repeat: Infinity, ease: 'easeInOut' }}>
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#B48735] text-white"><Icon className="h-3.5 w-3.5" /></span>
+            {n.label}
+          </motion.div>
+        </motion.div>
+      );
+    })}
+  </div>
+);
+
+const Hero: React.FC<{ opps: Opportunity[]; onExplore: () => void; onInvest: () => void }> = ({ opps, onExplore, onInvest }) => {
+  const cities = new Set(opps.map(o => cityOf(o.location)).filter(Boolean)).size;
+  const categories = new Set(opps.map(o => o.category).filter(Boolean)).size;
 
   return (
-    <section ref={ref} className="relative flex min-h-[92vh] items-end overflow-hidden text-white">
-      <motion.div aria-hidden="true" style={{ y, scale }} className="absolute inset-0 will-change-transform">
-        <AnimatePresence>
-          <motion.div key={slides[slide].url} className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.12 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-            transition={{ opacity: { duration: 1.6 }, scale: { duration: 7, ease: 'linear' } }}>
-            <Photo src={slides[slide].url} eager />
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,61,55,.96)_0%,rgba(7,61,55,.82)_42%,rgba(7,61,55,.35)_75%,rgba(7,61,55,.55)_100%)]" />
+    <section className="relative flex min-h-[92vh] items-center overflow-hidden text-white" style={{ background: `radial-gradient(ellipse at 75% 45%, #0b5a50 0%, ${GREEN} 45%, #04211e 100%)` }}>
       <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:56px_56px]" />
       <div aria-hidden="true" className="absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-[#B48735]/25 blur-3xl kb-drift" />
-
-      {/* Location marker */}
-      {featured && (
-        <motion.div className="absolute right-6 top-28 hidden items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-md lg:flex"
-          initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8 }}>
-          <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#B48735]">
-            <span className="absolute inset-0 animate-ping rounded-full bg-[#B48735]/50" />
-            <MapPin className="relative h-5 w-5" />
-          </span>
-          <span><span className="block text-[10px] uppercase tracking-[0.25em] text-[#e2c478]">Featured location</span><span className="text-sm font-semibold">{featured.location}</span></span>
-        </motion.div>
-      )}
-
-      {slides.length > 1 && (
-        <div className="absolute bottom-5 right-5 z-10 hidden max-w-xs text-right md:block">
-          <AnimatePresence mode="wait">
-            <motion.div key={slide} className="mb-2 text-xs text-white/75" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-              {slides[slide].caption}
-            </motion.div>
-          </AnimatePresence>
-          <div className="flex justify-end gap-1.5">
-            {slides.map((s, i) => (
-              <button key={s.url} onClick={() => setSlide(i)} aria-label={`Show photo ${i + 1}`} className="relative h-1 w-8 overflow-hidden rounded-full bg-white/25">
-                {i === slide && <motion.span key={slide} className="absolute inset-y-0 left-0 bg-[#e2c478]" initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: reduce ? 0 : 5.5, ease: 'linear' }} />}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <HeroVisual />
 
       <div className="relative mx-auto w-full max-w-[1180px] px-5 pb-12 pt-36 sm:pb-16">
-        <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.13, delayChildren: 0.15 } } }} className="max-w-3xl">
+        <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.13, delayChildren: 0.15 } } }} className="max-w-2xl">
           <motion.div variants={fadeUp} className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#e2c478]/50 bg-[#073D37]/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">
-            <Sparkles className="h-3.5 w-3.5" /> Investment opportunity
+            <Sparkles className="h-3.5 w-3.5" /> Joint ventures across India
           </motion.div>
-          <h1 style={serif} className="text-[2.8rem] font-normal leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[5.2rem]">
+          <h1 style={serif} className="text-[2.8rem] font-normal leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[4.6rem]">
             {['Invest in Opportunities.', 'Build What’s Next.'].map((line, i) => (
               <span key={line} className="block overflow-hidden pb-1">
                 <motion.span className={`block ${i === 1 ? 'text-[#e2c478]' : ''}`} variants={{ hidden: { y: '105%' }, show: { y: 0, transition: { duration: 1.1, ease: EASE } } }}>{line}</motion.span>
               </span>
             ))}
           </h1>
-          <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-relaxed text-[#d8e3df] sm:text-xl">
-            KIPS brings together strategic investors and high-potential opportunities through carefully structured joint ventures and development partnerships.
+          <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg leading-relaxed text-[#d8e3df] sm:text-xl">
+            KIPS lists land, premises and education projects across India, and brings landowners, investors, developers and operators together through carefully structured joint ventures.
           </motion.p>
           <motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button onClick={onExplore} className="group inline-flex items-center justify-center gap-2 rounded-md bg-[#B48735] px-7 py-4 font-bold text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#a37a2f]">
-              Explore Investment Opportunities <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              Explore Listings <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
             <button onClick={onInvest} className="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20">
               Become an Investor
@@ -222,14 +230,14 @@ const Hero: React.FC<{ featured?: Opportunity; count: number; onExplore: () => v
           </motion.div>
         </motion.div>
 
-        {/* Animated statistics (from the listings) */}
-        <motion.div className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/15 bg-white/15 backdrop-blur-md sm:grid-cols-4"
+        {/* Animated statistics (from all listings) */}
+        <motion.div className="mt-12 grid max-w-2xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/15 bg-white/15 backdrop-blur-md sm:grid-cols-4"
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.9, ease: EASE }}>
           {[
-            { k: 'Open opportunities', v: <Counter to={count} /> },
-            { k: 'Featured land area', v: area ? <Counter to={area} suffix=" sq. ft." /> : '—' },
-            { k: 'Partnership models', v: <Counter to={featured?.partnershipOptions?.length || 0} /> },
-            { k: 'Featured city', v: (featured?.location.split(',').pop() || '').replace(/[–-]\s*\d+/, '').trim() || '—' },
+            { k: 'Open listings', v: <Counter to={opps.length} /> },
+            { k: cities === 1 ? 'City' : 'Cities', v: <Counter to={cities} /> },
+            { k: 'Categories', v: <Counter to={categories} /> },
+            { k: 'JV structures', v: <Counter to={5} /> },
           ].map(s => (
             <div key={s.k} className="bg-[#073D37]/55 px-5 py-4">
               <div style={serif} className="text-2xl text-white sm:text-3xl">{s.v}</div>
@@ -243,198 +251,7 @@ const Hero: React.FC<{ featured?: Opportunity; count: number; onExplore: () => v
 };
 
 // ============================================================================
-// 2. FEATURED OPPORTUNITY
-// ============================================================================
-const Fact: React.FC<{ icon: React.ElementType; label: string; value?: string }> = ({ icon: Icon, label, value }) => (
-  <motion.div variants={fadeUp} className="flex gap-3 border-b border-[#e4dac8] py-3.5 last:border-0">
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#B48735]/40 text-[#073D37]"><Icon className="h-4 w-4" /></span>
-    <div className="min-w-0">
-      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#B48735]">{label}</div>
-      <div className="text-[15px] leading-snug text-[#0D2D2B]">{value || 'Shared on request'}</div>
-    </div>
-  </motion.div>
-);
-
-const TiltCard: React.FC<{ className?: string; style?: any; children: React.ReactNode }> = ({ className = '', style, children }) => {
-  const reduce = useReducedMotion();
-  const [t, setT] = useState({ x: 0, y: 0 });
-  return (
-    <motion.div className={className} style={{ ...style, perspective: 900 }}
-      onMouseMove={e => {
-        if (reduce) return;
-        const r = e.currentTarget.getBoundingClientRect();
-        setT({ x: ((e.clientY - r.top) / r.height - 0.5) * -8, y: ((e.clientX - r.left) / r.width - 0.5) * 8 });
-      }}
-      onMouseLeave={() => setT({ x: 0, y: 0 })}>
-      <motion.div className="h-full w-full" animate={{ rotateX: t.x, rotateY: t.y }} transition={{ type: 'spring', stiffness: 150, damping: 15 }}>
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const FeaturedCollage: React.FC<{ imgs: Opportunity['images']; status: string; onView: () => void }> = ({ imgs, status, onView }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const yMain = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [30, -30]);
-  const ySide = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [90, -90]);
-  const yRound = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-40, 60]);
-  return (
-    <div ref={ref} className="relative h-[440px] sm:h-[580px]">
-      {/* Gold offset frame */}
-      <motion.div aria-hidden="true" className="absolute inset-0 right-[14%] top-6 left-6 rounded-[30px] border-2" style={{ borderColor: `${GOLD}99`, y: yMain }}
-        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.8, duration: 1 }} />
-      <TiltCard className="absolute inset-0 bottom-[8%] right-[14%]" style={{ y: yMain }}>
-        <motion.div className="kb-frame group relative h-full w-full overflow-hidden rounded-[28px] shadow-2xl shadow-[#073D37]/30"
-          initial={{ clipPath: 'inset(0 100% 0 0 round 28px)' }} whileInView={{ clipPath: 'inset(0 0% 0 0 round 28px)' }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.3, ease: EASE }}>
-          <Photo src={imgs[0].url} alt={imgs[0].caption} eager />
-        </motion.div>
-      </TiltCard>
-      {imgs[1] && (
-        <TiltCard className="absolute -bottom-4 right-0 z-10 h-[42%] w-[48%]" style={{ y: ySide }}>
-          <motion.div className="kb-frame group relative h-full w-full overflow-hidden rounded-2xl border-[6px] border-[#FBF9F4] shadow-2xl"
-            initial={{ clipPath: 'circle(0% at 70% 70%)', rotate: 3 }} whileInView={{ clipPath: 'circle(120% at 70% 70%)', rotate: 2 }} viewport={{ once: true }} transition={{ delay: 0.45, duration: 1.2, ease: EASE }}>
-            <Photo src={imgs[1].url} alt={imgs[1].caption} />
-          </motion.div>
-        </TiltCard>
-      )}
-      {imgs[2] && (
-        <motion.div className="absolute -top-6 right-[2%] z-10 hidden h-32 w-32 overflow-hidden rounded-full border-[6px] border-[#FBF9F4] shadow-xl sm:block" style={{ y: yRound }}
-          initial={{ opacity: 0, scale: 0.6, filter: 'blur(10px)' }} whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} viewport={{ once: true }} transition={{ delay: 0.7, duration: 1, ease: EASE }}>
-          <Photo src={imgs[2].url} alt={imgs[2].caption} />
-        </motion.div>
-      )}
-      {/* Floating caption tags */}
-      <motion.div className="absolute left-5 top-5 z-20 rounded-full bg-[#073D37]/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur"
-        initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.9 }}>
-        {status}
-      </motion.div>
-      {imgs[1]?.caption && (
-        <motion.div className="kb-float absolute bottom-[44%] right-[30%] z-20 hidden max-w-[14rem] rounded-xl border border-white/60 bg-white/85 px-3 py-2 text-[11px] font-semibold text-[#073D37] shadow-lg backdrop-blur md:block"
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 1.3 }}>
-          <span className="mr-1.5 inline-block h-1.5 w-1.5 rotate-45 bg-[#B48735] align-middle" />{imgs[1].caption}
-        </motion.div>
-      )}
-      <button onClick={onView} className="group absolute bottom-[12%] left-5 z-20 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#073D37] shadow-lg backdrop-blur transition hover:bg-white">
-        <Maximize2 className="h-3.5 w-3.5 transition-transform group-hover:scale-110" /> {imgs.length} site photographs
-      </button>
-    </div>
-  );
-};
-
-const Featured: React.FC<{ opp: Opportunity; onView: () => void; onEnquire: () => void }> = ({ opp, onView, onEnquire }) => {
-  const imgs = opp.images.length ? opp.images : [{ url: '/arcadia/arcadia_hero.jpg', caption: '' }];
-  return (
-    <section id="featured" className="px-5 py-20 sm:py-28">
-      <div className="mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
-        {/* Editorial image composition: three layered photos with parallax and tilt */}
-        <FeaturedCollage imgs={imgs} status={opp.status} onView={onView} />
-
-        {/* Investment information */}
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={{ show: { transition: { staggerChildren: 0.07 } } }}>
-          <motion.div variants={fadeUp}><Eyebrow>Featured opportunity</Eyebrow></motion.div>
-          <motion.h2 variants={fadeUp} style={serif} className="text-4xl leading-[1.05] sm:text-5xl">{opp.title}</motion.h2>
-          <motion.p variants={fadeUp} className="mt-3 text-lg text-[#52615e]">{opp.headline}</motion.p>
-          <div className="mt-6 rounded-2xl border border-[#e4dac8] bg-white/70 px-5 py-2 shadow-[0_20px_50px_-30px_rgba(7,61,55,.4)] backdrop-blur">
-            <Fact icon={MapPin} label="Location" value={opp.location} />
-            <Fact icon={Building2} label="Opportunity type" value={opp.category} />
-            <Fact icon={Ruler} label="Land area" value={opp.area} />
-            <Fact icon={IndianRupee} label="Investment requirement" value={opp.investmentRequirement} />
-            <Fact icon={Handshake} label="Partnership model" value={opp.partnershipModel} />
-            <Fact icon={TrendingUp} label="Opportunity" value={opp.potential} />
-            <Fact icon={CalendarClock} label="Timeline" value={opp.timeline} />
-          </div>
-          <motion.div variants={fadeUp} className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button onClick={onView} className="group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:shadow-xl" style={{ background: GREEN }}>
-              View Opportunity <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </button>
-            <button onClick={onEnquire} className="rounded-md border px-6 py-3.5 font-bold transition hover:bg-white" style={{ borderColor: GOLD }}>Submit Investor Enquiry</button>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-// ============================================================================
-// SITE WALKTHROUGH: pinned horizontal film strip on desktop, swipe strip on phones
-// ============================================================================
-const FilmStrip: React.FC<{ opp: Opportunity; onOpen: (i: number) => void }> = ({ opp, onOpen }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const [desktop, setDesktop] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches);
-  const [distance, setDistance] = useState(0);
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const on = () => setDesktop(mq.matches);
-    mq.addEventListener('change', on);
-    const measure = () => track.current && setDistance(Math.max(0, track.current.scrollWidth - window.innerWidth + 80));
-    measure();
-    window.addEventListener('resize', measure);
-    return () => { mq.removeEventListener('change', on); window.removeEventListener('resize', measure); };
-  }, [opp.images.length, desktop]);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
-  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
-  const pinned = desktop && !reduce;
-
-  const cards = opp.images.map((im, i) => (
-    <motion.button key={im.url + i} type="button" onClick={() => onOpen(i)}
-      className={`group relative shrink-0 snap-center overflow-hidden text-left shadow-[0_30px_60px_-25px_rgba(0,0,0,.6)] ${
-        i % 3 === 1 ? 'h-[300px] w-[78vw] rounded-[40px_12px_40px_12px] sm:w-[420px] lg:mt-24 lg:h-[380px] lg:w-[460px]'
-        : i % 3 === 2 ? 'h-[300px] w-[78vw] rounded-full sm:w-[300px] lg:h-[320px] lg:w-[320px] lg:mt-10'
-        : 'h-[300px] w-[78vw] rounded-[24px] sm:w-[360px] lg:h-[460px] lg:w-[380px]'}`}
-      whileHover={{ y: -8 }} transition={{ duration: 0.4, ease: EASE }}>
-      <Photo src={im.url} alt={im.caption} className="transition-transform duration-[1.4s] ease-out group-hover:scale-110" />
-      <div aria-hidden="true" className="absolute inset-0 z-[2] bg-gradient-to-t from-[#062e2a]/90 via-[#062e2a]/10 to-transparent" />
-      <div className={`absolute inset-x-0 bottom-0 z-[3] p-5 ${i % 3 === 2 ? 'text-center' : ''}`}>
-        <div style={serif} className="text-3xl text-[#e2c478]">{String(i + 1).padStart(2, '0')}</div>
-        <div className="mt-1 text-sm font-semibold leading-snug text-white">{im.caption}</div>
-      </div>
-      <span className="absolute right-4 top-4 z-[3] flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur transition group-hover:opacity-100"><Maximize2 className="h-4 w-4" /></span>
-    </motion.button>
-  ));
-
-  const header = (
-    <div className="mx-auto mb-10 flex max-w-[1180px] flex-wrap items-end justify-between gap-4 px-5">
-      <div>
-        <Eyebrow light>Site walkthrough</Eyebrow>
-        <h2 style={serif} className="text-4xl leading-[1.05] text-white sm:text-5xl">{opp.title}</h2>
-        <p className="mt-2 flex items-center gap-2 text-[#d8e3df]"><MapPin className="h-4 w-4 text-[#e2c478]" />{opp.location}</p>
-      </div>
-      <p className="max-w-sm text-sm text-white/60">{opp.images.length} landowner-supplied photographs. Select any photo to view it full size.</p>
-    </div>
-  );
-
-  if (!pinned) {
-    return (
-      <section className="overflow-hidden py-20" style={{ background: GREEN }}>
-        {header}
-        <motion.div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4" initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.9, ease: EASE }}>{cards}</motion.div>
-      </section>
-    );
-  }
-  return (
-    <section ref={ref} className="relative" style={{ background: GREEN, height: `calc(100vh + ${distance}px)` }}>
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-16">
-        <div aria-hidden="true" className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:44px_44px]" />
-        <div className="relative">{header}</div>
-        <motion.div ref={track} style={{ x }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 1 }} className="relative flex items-start gap-8 pl-[max(1.25rem,calc((100vw-1180px)/2+1.25rem))] pr-20 will-change-transform">
-          {cards}
-        </motion.div>
-        <div className="relative mx-auto mt-10 w-full max-w-[1180px] px-5">
-          <div className="h-px w-full bg-white/15">
-            <motion.div className="h-px origin-left bg-[#e2c478]" style={{ scaleX: scrollYProgress }} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// ============================================================================
-// 3. WHY PARTNER WITH KIPS
+// 2. WHY PARTNER WITH KIPS
 // ============================================================================
 const WhyKips: React.FC = () => (
   <section className="relative overflow-hidden px-5 py-20 text-white sm:py-28" style={{ background: GREEN }}>
@@ -475,7 +292,7 @@ const WhyKips: React.FC = () => (
 );
 
 // ============================================================================
-// 4. OPPORTUNITIES OPEN FOR PARTNERSHIP
+// 4. PROJECTS & LISTINGS
 // ============================================================================
 // Card image that cycles through the listing's photos while hovered
 const CardPhotos: React.FC<{ images: Opportunity['images']; title: string }> = ({ images, title }) => {
@@ -503,59 +320,141 @@ const CardPhotos: React.FC<{ images: Opportunity['images']; title: string }> = (
   );
 };
 
-const OpportunityGrid: React.FC<{ opps: Opportunity[]; onOpen: (id: string) => void; onSubmit: () => void }> = ({ opps, onOpen, onSubmit }) => (
-  <section id="opportunities" className="scroll-mt-20 px-5 py-20 sm:py-28">
-    <div className="mx-auto max-w-[1180px]">
-      <div className="mb-12 grid items-end gap-6 lg:grid-cols-[1fr_1fr]">
-        <div>
-          <Eyebrow>Investment opportunities</Eyebrow>
-          <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.3rem]">Opportunities Open for Partnership</h2>
-        </div>
-        <p className="text-lg text-[#52615e] lg:text-right">Each opportunity is presented with the information available today. Particulars are verified during due diligence.</p>
+const ListingCard: React.FC<{ o: Opportunity; n: number; onOpen: (id: string) => void }> = ({ o, n, onOpen }) => (
+  <motion.button layout type="button" onClick={() => onOpen(o.id)}
+    className="group overflow-hidden rounded-[22px] border border-[#e4dac8] bg-white text-left shadow-[0_10px_30px_-20px_rgba(7,61,55,.35)] transition-shadow hover:shadow-[0_30px_60px_-25px_rgba(7,61,55,.45)]"
+    initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.5, ease: EASE }}
+    whileHover={{ y: -8 }}>
+    <div className="relative h-60 overflow-hidden">
+      <CardPhotos images={o.images} title={o.title} />
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#073D37]/70 to-transparent" />
+      <span className="absolute left-4 top-4 rounded-full bg-[#073D37]/85 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">{/rent/i.test(o.category) ? 'For rent' : 'Investment opportunity'}</span>
+      <span style={serif} className="absolute bottom-3 left-4 text-4xl text-white/90">{String(n).padStart(2, '0')}</span>
+    </div>
+    <div className="space-y-3 p-6">
+      <h3 style={serif} className="text-2xl leading-tight text-[#0D2D2B]">{o.title}</h3>
+      <div className="flex items-start gap-1.5 text-sm text-[#52615e]"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#B48735]" />{o.location}</div>
+      {o.area && <div className="flex items-start gap-1.5 text-sm text-[#52615e]"><Ruler className="mt-0.5 h-4 w-4 shrink-0 text-[#B48735]" />{o.area}</div>}
+      <div className="flex flex-wrap gap-2">
+        <span className="rounded-full bg-[#F7F3EA] px-3 py-1 text-xs font-semibold text-[#073D37]">{o.category}</span>
+        <span className="rounded-full border border-[#B48735]/40 px-3 py-1 text-xs font-semibold text-[#8a6726]">{o.status}</span>
       </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {opps.map((o, i) => (
-          <motion.button key={o.id} type="button" onClick={() => onOpen(o.id)}
-            className="group overflow-hidden rounded-[22px] border border-[#e4dac8] bg-white text-left shadow-[0_10px_30px_-20px_rgba(7,61,55,.35)] transition-shadow hover:shadow-[0_30px_60px_-25px_rgba(7,61,55,.45)]"
-            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ delay: i * 0.1, duration: 0.8, ease: EASE }}
-            whileHover={{ y: -8 }}>
-            <div className="relative h-60 overflow-hidden">
-              <CardPhotos images={o.images} title={o.title} />
-              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#073D37]/70 to-transparent" />
-              <span className="absolute left-4 top-4 rounded-full bg-[#073D37]/85 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.25em] text-[#e2c478] backdrop-blur">{/rent/i.test(o.category) ? 'For rent' : 'Investment opportunity'}</span>
-              <span style={serif} className="absolute bottom-3 left-4 text-4xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
-            </div>
-            <div className="space-y-3 p-6">
-              <h3 style={serif} className="text-2xl leading-tight text-[#0D2D2B]">{o.title}</h3>
-              <div className="flex items-start gap-1.5 text-sm text-[#52615e]"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#B48735]" />{o.location}</div>
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#F7F3EA] px-3 py-1 text-xs font-semibold text-[#073D37]">{o.category}</span>
-                <span className="rounded-full border border-[#B48735]/40 px-3 py-1 text-xs font-semibold text-[#8a6726]">{o.status}</span>
-              </div>
-              <div className="flex items-center gap-2 pt-2 text-sm font-bold text-[#073D37]">
-                Explore Opportunity <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
-                <span className="ml-auto h-px flex-1 origin-left scale-x-0 bg-[#B48735] transition-transform duration-500 group-hover:scale-x-100" />
-              </div>
-            </div>
-          </motion.button>
-        ))}
-
-        {/* Invitation card: honest placeholder until more listings are added */}
-        <motion.button type="button" onClick={onSubmit}
-          className="group flex min-h-[420px] flex-col items-start justify-between rounded-[22px] border-2 border-dashed border-[#B48735]/40 bg-[#F7F3EA]/60 p-7 text-left transition hover:border-[#B48735] hover:bg-[#F7F3EA]"
-          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: opps.length * 0.1, duration: 0.8, ease: EASE }}>
-          <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#B48735]/50 text-[#B48735] transition-transform group-hover:rotate-90"><span className="text-2xl leading-none">+</span></span>
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#B48735]">More opportunities to be listed</div>
-            <h3 style={serif} className="mt-2 text-2xl text-[#0D2D2B]">Have land or a project for partnership?</h3>
-            <p className="mt-2 text-sm text-[#52615e]">Landowners and developers can share an opportunity with KIPS for evaluation.</p>
-            <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#073D37]">Submit an Opportunity <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" /></span>
-          </div>
-        </motion.button>
+      <div className="flex items-center gap-2 pt-2 text-sm font-bold text-[#073D37]">
+        View details <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
+        <span className="ml-auto h-px flex-1 origin-left scale-x-0 bg-[#B48735] transition-transform duration-500 group-hover:scale-x-100" />
       </div>
     </div>
-  </section>
+  </motion.button>
 );
+
+// Product-style catalogue: every listing, filterable by category and city
+const OpportunityGrid: React.FC<{ opps: Opportunity[]; onOpen: (id: string) => void; onSubmit: () => void }> = ({ opps, onOpen, onSubmit }) => {
+  const [cat, setCat] = useState('All');
+  const [city, setCity] = useState('All cities');
+  const cats = useMemo(() => ['All', ...new Set(opps.map(o => o.category).filter(Boolean))], [opps]);
+  const cityList = useMemo(() => ['All cities', ...new Set(opps.map(o => cityOf(o.location)).filter(Boolean))], [opps]);
+  const shown = opps.filter(o => (cat === 'All' || o.category === cat) && (city === 'All cities' || cityOf(o.location) === city));
+  const chip = (on: boolean) => `rounded-full border px-4 py-2 text-sm font-semibold transition ${on ? 'border-[#073D37] bg-[#073D37] text-white' : 'border-[#e4dac8] bg-white text-[#073D37] hover:border-[#B48735]'}`;
+
+  return (
+    <section id="opportunities" className="scroll-mt-20 px-5 py-20 sm:py-28">
+      <div className="mx-auto max-w-[1180px]">
+        <div className="mb-10 grid items-end gap-6 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <Eyebrow>Projects & listings</Eyebrow>
+            <h2 style={serif} className="text-4xl leading-[1.05] sm:text-[3.3rem]">Properties Open for Partnership</h2>
+          </div>
+          <p className="text-lg text-[#52615e] lg:text-right">Land, premises and education projects across India. Each listing shows the information available today; particulars are verified during due diligence.</p>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#e4dac8] bg-[#F7F3EA]/70 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+            {cats.map(c => (
+              <button key={c} type="button" onClick={() => setCat(c)} aria-pressed={cat === c} className={chip(cat === c)}>
+                {c} <span className="ml-1 opacity-60">{c === 'All' ? opps.length : opps.filter(o => o.category === c).length}</span>
+              </button>
+            ))}
+          </div>
+          <label className="flex items-center gap-2 text-sm font-semibold text-[#073D37]">
+            <MapPin className="h-4 w-4 text-[#B48735]" />
+            <span className="sr-only">Filter by city</span>
+            <select value={city} onChange={e => setCity(e.target.value)} className="rounded-lg border border-[#e4dac8] bg-white px-3 py-2 text-sm font-semibold text-[#073D37] outline-none focus:border-[#B48735]">
+              {cityList.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="mb-6 text-sm text-[#52615e]" aria-live="polite">Showing {shown.length} of {opps.length} listing{opps.length === 1 ? '' : 's'}</p>
+
+        <motion.div layout className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="popLayout">
+            {shown.map((o, i) => <ListingCard key={o.id} o={o} n={i + 1} onOpen={onOpen} />)}
+          </AnimatePresence>
+
+          {/* Invitation card: landowners and developers can add the next listing */}
+          <motion.button layout type="button" onClick={onSubmit}
+            className="group flex min-h-[420px] flex-col items-start justify-between rounded-[22px] border-2 border-dashed border-[#B48735]/40 bg-[#F7F3EA]/60 p-7 text-left transition hover:border-[#B48735] hover:bg-[#F7F3EA]">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#B48735]/50 text-[#B48735] transition-transform group-hover:rotate-90"><span className="text-2xl leading-none">+</span></span>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#B48735]">More listings coming across India</div>
+              <h3 style={serif} className="mt-2 text-2xl text-[#0D2D2B]">Have land or a project for partnership?</h3>
+              <p className="mt-2 text-sm text-[#52615e]">Landowners and developers can share an opportunity with KIPS for evaluation and listing.</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#073D37]">Submit an Opportunity <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" /></span>
+            </div>
+          </motion.button>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ============================================================================
+// 5. PROJECT GALLERY (photos from every listing, interleaved)
+// ============================================================================
+const ProjectGallery: React.FC<{ opps: Opportunity[]; onOpen: (id: string, photo: number) => void }> = ({ opps, onOpen }) => {
+  const [all, setAll] = useState(false);
+  // Round-robin across listings so no single property fills the gallery; example photos of other premises are left out
+  const tiles = useMemo(() => {
+    const per = opps.map(o => o.images.map((im, idx) => ({ o, im, idx })).filter(t => !/not this property/i.test(t.im.caption)));
+    const out: { o: Opportunity; im: Opportunity['images'][number]; idx: number }[] = [];
+    for (let r = 0; per.some(l => l[r]); r++) per.forEach(l => l[r] && out.push(l[r]));
+    return out;
+  }, [opps]);
+  if (!tiles.length) return null;
+  const visible = all ? tiles : tiles.slice(0, 9);
+
+  return (
+    <section className="px-5 py-20 sm:py-28" style={{ background: GREEN }}>
+      <div className="mx-auto max-w-[1180px]">
+        <div className="mb-10 text-center text-white">
+          <Eyebrow light><span className="mx-auto">Gallery</span></Eyebrow>
+          <h2 style={serif} className="text-4xl sm:text-[3.3rem]">Project Gallery</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-[#d8e3df]">Photographs and visuals from the projects we list. Tap any image to open its listing.</p>
+        </div>
+        <div className="columns-2 gap-3 sm:gap-4 md:columns-3">
+          {visible.map(({ o, im, idx }, i) => (
+            <motion.button key={o.id + im.url} type="button" onClick={() => onOpen(o.id, idx)}
+              className="group relative mb-3 block w-full overflow-hidden rounded-2xl bg-[#062e2a] text-left [break-inside:avoid] sm:mb-4"
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ delay: (i % 3) * 0.08, duration: 0.6, ease: EASE }}>
+              <img src={im.url} alt={im.caption || o.title} loading="lazy" className="block w-full transition-transform duration-700 group-hover:scale-105" />
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#062e2a]/95 via-[#062e2a]/50 to-transparent p-4 pt-10">
+                <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#e2c478]">{o.title}</span>
+                <span className="mt-1 block text-xs text-white/85">{im.caption}</span>
+              </span>
+            </motion.button>
+          ))}
+        </div>
+        {tiles.length > 9 && (
+          <div className="mt-8 text-center">
+            <button type="button" onClick={() => setAll(v => !v)} className="rounded-md border border-white/40 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+              {all ? 'Show fewer' : `Show all ${tiles.length} images`}
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
 
 // ============================================================================
 // 6. HOW THE JOINT VENTURE WORKS

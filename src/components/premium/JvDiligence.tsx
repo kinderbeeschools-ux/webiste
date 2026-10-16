@@ -74,10 +74,10 @@ export const JvDiligence: React.FC<{ onInvest: () => void; onSubmit: () => void 
       <PhotoMosaic
         className="mt-12"
         accent={GREEN}
-        main={{ src: '/opportunities/whitefield-7.jpg', alt: 'Streetscape and elevated metro beside the Whitefield site' }}
+        main={{ src: '/visuals/cbse-planning.webp', alt: 'Planning documents and school setup review' }}
         side={[
-          { src: '/opportunities/whitefield-2.jpg', alt: 'Open land on the Whitefield site' },
-          { src: '/opportunities/whitefield-6.jpg', alt: 'Existing structure on the Whitefield site' },
+          { src: '/arcadia/facility_boardroom.jpg', alt: 'Boardroom for partner discussions' },
+          { src: '/arcadia/facility_auditorium.jpg', alt: 'Institutional auditorium' },
         ]}
         chips={[{ icon: ShieldCheck, label: 'Preliminary and non-binding' }, { icon: FileSignature, label: 'Verify before you commit' }]}
       />
