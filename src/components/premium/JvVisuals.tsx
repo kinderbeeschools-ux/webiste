@@ -25,7 +25,8 @@ export const PillarArt: React.FC<{ kind: 'map' | 'capital' | 'build' }> = ({ kin
           <g key={i}>
             {i > 0 && <motion.path d={`M${a[i - 1][0]} ${a[i - 1][1]} Q ${(a[i - 1][0] + x) / 2} ${Math.min(a[i - 1][1], y) - 50} ${x} ${y}`} fill="none" stroke={GOLD} strokeOpacity=".55" strokeWidth="1.5" strokeDasharray="5 7"
               animate={{ strokeDashoffset: [0, -48] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} />}
-            <motion.circle cx={x} cy={y} r="18" fill={GOLD} fillOpacity=".12" animate={{ r: [10, 26, 10], opacity: [0.6, 0, 0.6] }} transition={loop(3, i * 0.5)} />
+            <motion.circle cx={x} cy={y} r="18" fill={GOLD} fillOpacity=".12" style={{ transformBox: 'fill-box', originX: 0.5, originY: 0.5 }}
+              animate={{ scale: [0.55, 1.45, 0.55], opacity: [0.6, 0, 0.6] }} transition={loop(3, i * 0.5)} />
             <path d={`M${x} ${y + 2} c-9 -12 -14 -18 -14 -25 a14 14 0 0 1 28 0 c0 7 -5 13 -14 25z`} fill={GOLD} />
             <circle cx={x} cy={y - 23} r="5" fill={GREEN} />
           </g>
@@ -60,7 +61,9 @@ export const PillarArt: React.FC<{ kind: 'map' | 'capital' | 'build' }> = ({ kin
         ))}
         <motion.line x1="320" y1="60" x2="320" y2="230" stroke="#fff" strokeOpacity=".5" strokeWidth="2" />
         <motion.line x1="320" y1="62" x2="250" y2="62" stroke="#fff" strokeOpacity=".5" strokeWidth="2" />
-        <motion.line x1="262" y1="62" x2="262" y2="100" stroke={GOLD} strokeWidth="1.5" animate={{ y2: [92, 112, 92] }} transition={loop(3)} />
+        <motion.g animate={{ y: [-8, 8, -8] }} transition={loop(3)}>
+          <line x1="262" y1="62" x2="262" y2="100" stroke={GOLD} strokeWidth="1.5" />
+        </motion.g>
       </g>
     )}
   </svg>
