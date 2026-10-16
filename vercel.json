@@ -11,6 +11,6 @@
     },
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/payments", "destination": "/index.html" },
-    { "source": "/blog/:id", "destination": "/index.html" }
+    { "source": "/blog/:id", "destination": "/blog/index.html" }
   ]
 }

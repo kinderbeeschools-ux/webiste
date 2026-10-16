@@ -18,10 +18,20 @@ setUrl('/');
 
 const { render, PRERENDER_PATHS } = await import(pathToFileURL(path.resolve('dist-ssr/entry-server.js')).href);
 
-// Same posts and FAQs the live API serves (db.json); posts added later still work client-side until the next build
+// Posts and FAQs as the live API serves them (database + seeded journal posts); db.json if the API can't be reached.
+// Posts added after a build still work client-side until the next build.
 const db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
-const blogs = (db.blogs || []).filter(b => !b.status || b.status === 'Published');
-const faqs = db.faqs || [];
+const live = async key => {
+  try {
+    const r = await fetch(`${SITE}/api/${key}`, { signal: AbortSignal.timeout(10000) });
+    const data = r.ok ? await r.json() : null;
+    if (Array.isArray(data) && data.length) return data;
+  } catch {}
+  console.warn(`prerender: /api/${key} unavailable, using db.json`);
+  return db[key] || [];
+};
+const blogs = (await live('blogs')).filter(b => !b.status || b.status === 'Published');
+const faqs = await live('faqs');
 const pages = [...PRERENDER_PATHS, ...blogs.map(b => `/blog/${encodeURIComponent(b.id)}`)];
 // '/404' isn't a real route, so it renders the not-found page; Vercel serves 404.html with a 404 status
 for (const p of [...pages, '/404']) {
