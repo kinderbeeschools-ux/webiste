@@ -44,7 +44,10 @@ const programSliders = [
 ];
 
 export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigateToPayment, settings }) => {
+  // Course posters uploaded from the Kinderbee CRM replace the built-in ones
+  const slides = settings?.nttSlides?.length ? settings.nttSlides : programSliders;
   const [activeSlide, setActiveSlide] = useState(0);
+  useEffect(() => setActiveSlide(0), [slides.length]); // the uploaded list can be shorter than the built-in one
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
@@ -61,17 +64,17 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
   useEffect(() => {
     if (isHovered) return;
     const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % programSliders.length);
+      setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 4500);
     return () => clearInterval(timer);
   }, [isHovered]);
 
   const handlePrevSlide = () => {
-    setActiveSlide((prev) => (prev - 1 + programSliders.length) % programSliders.length);
+    setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const handleNextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % programSliders.length);
+    setActiveSlide((prev) => (prev + 1) % slides.length);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -146,7 +149,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               className="flex w-full transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${activeSlide * 100}%)` }}
             >
-              {programSliders.map((slide, idx) => (
+              {slides.map((slide, idx) => (
                 <div 
                   key={idx} 
                   className="w-full flex-shrink-0 relative aspect-[4/5] sm:aspect-[16/9] bg-stone-950 flex items-center justify-center overflow-hidden cursor-pointer"
@@ -183,7 +186,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
 
             {/* Bottom Indicators & Current Slide Status */}
             <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
-              {programSliders.map((_, idx) => (
+              {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveSlide(idx)}
@@ -202,7 +205,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
           <div className="max-w-5xl mx-auto space-y-4">
             {/* Slide Quick Navigation Pills */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-              {programSliders.map((prog, idx) => (
+              {slides.map((prog, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveSlide(idx)}

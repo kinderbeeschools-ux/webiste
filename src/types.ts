@@ -105,6 +105,7 @@ export interface SystemSettings {
   homeHeroImage?: string;
   aboutHeroImage?: string;
   franchiseHeroImage?: string;
+  nttSlides?: { title: string; image: string; subtitle?: string }[]; // Teacher Training course poster slider; empty = built-in posters
 }
 
 export interface PageConfig {
