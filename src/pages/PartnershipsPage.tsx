@@ -72,7 +72,7 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
             {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
             <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
-                src="/franchise/preschool-hero.webp"
+                src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"}
                 alt="Kinderbee Preschool campus with children playing outside"
                 className="w-full h-full object-cover object-[50%_45%]"
                 fetchPriority="high"
@@ -97,7 +97,7 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
               <div className="max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
                 {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
                 <div className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
-                  <img src="/franchise/preschool-hero.webp" alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
+                  <img src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"} alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
                 </div>
 
                 {/* Pill Badge */}

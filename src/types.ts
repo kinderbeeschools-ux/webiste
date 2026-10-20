@@ -100,7 +100,11 @@ export interface SystemSettings {
   contactHeroSubtitle?: string;
   customHeaderScripts?: string;
   googleAnalyticsId?: string;
-  nttHeroImage?: string; // NTT / teacher-training page hero photo (set from the KinderBee CRM); empty = illustration
+  nttHeroImage?: string; // NTT / teacher-training page hero photo (set from the Kinderbee CRM); empty = illustration
+  // Hero photos set from the Kinderbee CRM; empty = the built-in image (home: the background video)
+  homeHeroImage?: string;
+  aboutHeroImage?: string;
+  franchiseHeroImage?: string;
 }
 
 export interface PageConfig {

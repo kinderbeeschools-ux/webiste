@@ -255,7 +255,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           <div className="absolute -inset-2 bg-gradient-to-br from-[#E1007A]/25 to-amber-500/20 rounded-[28px] blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
           <div className="kb-frame relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] rounded-3xl overflow-hidden border border-stone-200 shadow-xl bg-stone-100">
             <img
-              src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/franchise%20%20(2).jpeg"
+              src={settings?.aboutHeroImage || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Franchise/franchise%20%20(2).jpeg"}
               alt="Kinderbee Story and Purpose - Preschool Franchise Campus"
               className="w-full h-full object-cover object-[55%_40%]"
               referrerPolicy="no-referrer"

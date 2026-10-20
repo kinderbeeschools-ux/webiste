@@ -328,6 +328,10 @@ export const HomePage: React.FC<HomePageProps> = ({
           ========================================================================= */}
       <section className="relative min-h-[460px] sm:min-h-[500px] lg:min-h-[540px] flex items-center justify-center overflow-hidden bg-stone-950 text-white py-10 sm:py-14 border-b border-stone-800">
         {/* Background Video with AutoPlay, Loop, Muted, PlaysInline - purely plays without sound */}
+        {settings?.homeHeroImage ? (
+          <img src={settings.homeHeroImage} alt="Kinderbee International Preschool" fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover object-center kb-kenburns pointer-events-none" />
+        ) : (
         <video
           autoPlay
           loop
@@ -338,6 +342,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         >
           <source src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Video/banner%20Video.mp4" type="video/mp4" />
         </video>
+        )}
 
         {/* Cinematic Translucent Dark Overlay for High Contrast Legibility */}
         <div className="absolute inset-0 bg-black/60 z-10 pointer-events-none" />
