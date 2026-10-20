@@ -153,10 +153,11 @@ export function createPortal(d: Deps) {
     if (legacy && d.safeEqual(header, `Bearer ${legacy}`)) {
       return { id: "ceo-root", name: "CEO", role: "ceo", perms: ALL, scope: null, legacy: true };
     }
-    // KinderBee CRM staff (Website Content module): website images, gallery and property listings only
+    // Kinderbee CRM staff: website images, gallery and property listings (Website Content module),
+    // and payment verification (CRM payment verifiers)
     if (/^Bearer eyJ[\w-]*\.[\w-]+\.[\w-]+$/.test(header)) {
       const u = await crmWebsiteUser(header.slice(7));
-      return u ? { id: u.id, name: u.name, role: "admin", perms: ["website", "gallery", "opportunities"], scope: null } : null;
+      return u ? { id: u.id, name: u.name, role: "admin", perms: u.perms as Perm[], scope: null } : null;
     }
     const m = header.match(/^Bearer (u\.[\w-]+\.[\w-]+)$/);
     if (!m || !secret()) return null;

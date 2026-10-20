@@ -1,12 +1,14 @@
+import type { PaymentRecord } from "../src/types";
+
 // Copies each website lead into the KinderBee CRM (the separate CRM app's Supabase project) through its
 // submit_lead() function. That function can only insert a lead, and the anon key below is public by design:
 // the CRM app ships the same key to every browser. Override both with KB_CRM_SUPABASE_URL / KB_CRM_ANON_KEY.
 const CRM_URL = process.env.KB_CRM_SUPABASE_URL || "https://gihcunqqahehlgrggpyr.supabase.co";
 const CRM_KEY = process.env.KB_CRM_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpaGN1bnFxYWhlaGxncmdncHlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMjU1NzYsImV4cCI6MjEwNzYwMTU3Nn0.VEtmnQUvdgucUPIAQjtGnh2zws_8PObQBlkDKdCZQDE";
 
-// Website category -> CRM lead category (the CRM accepts ntt, consultation, franchise, cbse, degree, jv)
+// Website category -> CRM lead category (the CRM accepts admission, ntt, consultation, franchise, cbse, degree, jv)
 const CRM_CATEGORY: Record<string, string> = {
-  admission: "consultation", franchise: "franchise", ntt: "ntt", cbse: "cbse", degree: "degree", investor: "jv", other: "consultation",
+  admission: "admission", franchise: "franchise", ntt: "ntt", cbse: "cbse", degree: "degree", investor: "jv", other: "consultation",
 };
 
 export async function sendLeadToCrm(category: string, f: Record<string, any>): Promise<void> {
@@ -37,25 +39,49 @@ export async function sendLeadToCrm(category: string, f: Record<string, any>): P
   }
 }
 
+// Copies each payment a visitor confirms (UTR submitted) into the CRM's Website → Payment verification queue
+// through its insert-only submit_payment(), which ignores a repeat of the same website payment id.
+export async function sendPaymentToCrm(p: PaymentRecord): Promise<void> {
+  try {
+    const r = await fetch(`${CRM_URL}/rest/v1/rpc/submit_payment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: CRM_KEY, Authorization: `Bearer ${CRM_KEY}` },
+      body: JSON.stringify({ p: {
+        website_payment_id: p.id, payer_name: p.applicantName, phone: p.payerPhone, email: p.payerEmail || null,
+        amount: p.amount, reference: p.upiRefNumber, paid_on: p.paymentDate, programme: p.programme,
+        booking: p.admissionNumber || null, notes: p.notes || null,
+      } }),
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) console.warn("Kinderbee CRM: payment not saved", r.status, (await r.text()).slice(0, 200));
+  } catch (err) {
+    console.warn("Kinderbee CRM: payment forward failed", err);
+  }
+}
+
 // CRM staff managing website images: a CRM sign-in token (Supabase JWT) is accepted by the website's content APIs
 // when the CRM confirms the account is active and is the CEO or has the "website" module. Checked against the CRM,
 // then cached for a minute per token so deactivating someone in the CRM takes effect within a minute.
-const crmUsers = new Map<string, { user: { id: string; name: string } | null; until: number }>();
+// Someone allowed to verify payments in the CRM may also mark website payments verified / rejected ("payments").
+type CrmUser = { id: string; name: string; perms: string[] };
+const crmUsers = new Map<string, { user: CrmUser | null; until: number }>();
 
-export async function crmWebsiteUser(token: string): Promise<{ id: string; name: string } | null> {
+export async function crmWebsiteUser(token: string): Promise<CrmUser | null> {
   const hit = crmUsers.get(token);
   if (hit && hit.until > Date.now()) return hit.user;
-  let user: { id: string; name: string } | null = null;
+  let user: CrmUser | null = null;
   try {
     const headers = { apikey: CRM_KEY, Authorization: `Bearer ${token}` };
     const me = await fetch(`${CRM_URL}/auth/v1/user`, { headers, signal: AbortSignal.timeout(4000) });
     if (me.ok) {
       const u: any = await me.json();
-      const allowed = await fetch(`${CRM_URL}/rest/v1/rpc/has_module`, {
+      const rpc = (fn: string, body: object) => fetch(`${CRM_URL}/rest/v1/rpc/${fn}`, {
         method: "POST", headers: { ...headers, "Content-Type": "application/json" },
-        body: JSON.stringify({ m: "website" }), signal: AbortSignal.timeout(4000),
-      });
-      if (allowed.ok && (await allowed.json()) === true) user = { id: `crm-${u.id}`, name: `${String(u.email || "").split("@")[0]} (CRM)` };
+        body: JSON.stringify(body), signal: AbortSignal.timeout(4000),
+      }).then(async r => r.ok && (await r.json()) === true);
+      const [website, verify] = await Promise.all([rpc("has_module", { m: "website" }), rpc("can_verify_payments", {})]);
+      const perms = [...(website ? ["website", "gallery", "opportunities"] : []), ...(verify ? ["payments"] : [])];
+      if (perms.length) user = { id: `crm-${u.id}`, name: `${String(u.email || "").split("@")[0]} (CRM)`, perms };
     }
   } catch (err) {
     console.warn("KinderBee CRM: sign-in check failed", err);

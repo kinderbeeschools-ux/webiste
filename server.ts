@@ -7,7 +7,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { submitIndexNow } from "./src/utils/indexnow.js";
-import { sendLeadToCrm } from "./server/kinderbeeCrm.js";
+import { sendLeadToCrm, sendPaymentToCrm } from "./server/kinderbeeCrm.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { COURSE_FEES } from "./src/data/courses.js";
 import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
@@ -949,6 +949,7 @@ async function savePayment(p: PaymentRecord): Promise<{ status: number; error: s
     if (db.payments.some(x => x.upiRefNumber === p.upiRefNumber)) return { status: 409, error: "This UTR number has already been submitted." };
     db.payments.unshift(p);
     saveDb(db);
+    await sendPaymentToCrm(p);
     return null;
   }
   const { data: dup, error: dupErr } = await supabase.from("payments").select("id").eq("upi_ref", p.upiRefNumber).limit(1);
@@ -985,6 +986,8 @@ async function savePayment(p: PaymentRecord): Promise<{ status: number; error: s
     console.error("Payment insert failed:", error.message);
     return { status: 500, error: callUs };
   }
+  // Also lands in the CRM (Website → Payment verification); a CRM outage only logs a warning
+  await sendPaymentToCrm(p);
   return null;
 }
 
