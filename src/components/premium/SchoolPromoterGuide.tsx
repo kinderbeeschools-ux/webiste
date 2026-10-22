@@ -58,7 +58,7 @@ const FAQ = [
 ];
 
 export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: SystemSettings | null }> = ({ onConsult, settings }) => {
-  const wa = (settings?.whatsappNumber || '918122344040').replace(/[^0-9]/g, '');
+  const wa = (settings?.whatsappNumber || '919344906393').replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent('Hello Kinderbee, I would like to discuss setting up a CBSE / IB school.')}`;
 
   return (

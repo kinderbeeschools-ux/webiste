@@ -57,7 +57,7 @@ const COMPANY = [
   { icon: BadgeCheck, k: 'CIN', v: 'U85500TN2024PTC169138' },
   { icon: BadgeCheck, k: 'GSTIN', v: '33AAFCF8851Q1ZZ' },
   { icon: MapPin, k: 'Office', v: 'No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016' },
-  { icon: Phone, k: 'Phone / WhatsApp', v: '+91 81223 44040' },
+  { icon: Phone, k: 'Phone / WhatsApp', v: '+91 93449 06393' },
   { icon: Mail, k: 'Email', v: 'kinderbeeschools@gmail.com' },
   { icon: Clock, k: 'Office hours', v: 'Mon–Fri 10am–5pm · Sat 10am–1pm' },
 ];

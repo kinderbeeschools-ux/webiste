@@ -604,7 +604,7 @@ app.post("/api/enquiries", async (req, res) => {
   const [saved] = await Promise.all([syncPromise, emailPromise, sendLeadToCrm(category, fields)]);
   if (!saved) {
     // The admin alert email (above) still carries the details, but never tell the visitor it worked when the CRM didn't get it
-    return res.status(500).json({ error: "We could not save your enquiry right now. Please call or WhatsApp 81223 44040." });
+    return res.status(500).json({ error: "We could not save your enquiry right now. Please call or WhatsApp 93449 06393." });
   }
 
   res.json({ success: true, enquiryId: newEnquiry.id, aiSummary: newEnquiry.aiSummary });
@@ -646,7 +646,7 @@ app.post("/api/email/test", guard("users"), async (req, res) => {
     type: "Test Verification",
     name: "KIPS Admin Tester",
     email: targetEmail,
-    phone: "+91 81223 44040",
+    phone: "+91 93449 06393",
     program: "Automated Email Verification Test",
     city: "Bengaluru",
     state: "Karnataka",
@@ -942,7 +942,7 @@ const MOBILE_RE = /^[6-9]\d{9}$/;
 
 // Saves a submitted payment. Returns why it couldn't (HTTP status + message for the payer), or null once saved.
 async function savePayment(p: PaymentRecord): Promise<{ status: number; error: string } | null> {
-  const callUs = "We could not record your payment right now. Please call 81223 44040 with your UTR number.";
+  const callUs = "We could not record your payment right now. Please call 93449 06393 with your UTR number.";
   const supabase = getSupabaseClient();
   if (!supabase) {
     const db = loadDb();
@@ -957,7 +957,7 @@ async function savePayment(p: PaymentRecord): Promise<{ status: number; error: s
     console.error("Payment duplicate check failed:", dupErr.message);
     return { status: 500, error: callUs };
   }
-  if (dup && dup.length) return { status: 409, error: "This UTR number has already been submitted. If this is a mistake, please call 81223 44040." };
+  if (dup && dup.length) return { status: 409, error: "This UTR number has already been submitted. If this is a mistake, please call 93449 06393." };
   const row: any = {
     id: p.id,
     applicant_name: p.applicantName,
@@ -1063,7 +1063,7 @@ const consultToRow = (c: Partial<Consultation>) =>
   Object.fromEntries(Object.entries(c).filter(([k]) => CONSULT_COLS[k]).map(([k, v]) => [CONSULT_COLS[k], v === "" ? null : v]));
 // What the customer may see about their own booking
 const publicConsult = ({ adminNotes, paymentId, ...c }: Consultation) => c;
-const CONSULT_UNAVAILABLE = "Consultation booking is temporarily unavailable. Please call or WhatsApp 81223 44040.";
+const CONSULT_UNAVAILABLE = "Consultation booking is temporarily unavailable. Please call or WhatsApp 93449 06393.";
 
 async function findConsultations(match: { ref?: string; phone?: string } = {}): Promise<Consultation[]> {
   const supabase = getSupabaseClient();

@@ -1432,7 +1432,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[#E1007A] shrink-0" />
-                  <a href="tel:8122344040" className="text-white hover:text-[#FFD400] font-bold text-base transition">81223 44040</a>
+                  <a href="tel:9344906393" className="text-white hover:text-[#FFD400] font-bold text-base transition">93449 06393</a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-[#E1007A] shrink-0" />
@@ -1480,7 +1480,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         required 
                         value={enquiryPhone}
                         onChange={e => setEnquiryPhone(e.target.value)}
-                        placeholder="e.g. 81223 44040"
+                        placeholder="e.g. 93449 06393"
                         className="w-full bg-stone-900 border border-stone-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-stone-500 focus:outline-none focus:border-[#E1007A]"
                       />
                     </div>

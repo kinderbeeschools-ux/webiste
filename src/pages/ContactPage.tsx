@@ -135,7 +135,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
               <div>
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Phone Enquiries</h4>
-                <a href={`tel:${settings?.phone || '+91 81223 44040'}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '81223 44040'}</a>
+                <a href={`tel:${settings?.phone || '+91 93449 06393'}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '93449 06393'}</a>
                 <div className="text-[11px] text-stone-400 mt-0.5">10am–5pm (Mon–Fri) | 10am–1pm (Sat)</div>
               </div>
             </div>
@@ -222,7 +222,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                       required
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
-                      placeholder="+91 81223 44040"
+                      placeholder="+91 93449 06393"
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
                     />
                   </div>

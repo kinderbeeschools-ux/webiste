@@ -570,7 +570,7 @@ const InvestorForm: React.FC<{
       setDone(true);
       trackLead(mode === 'invest' ? 'investor' : 'opportunity_submission', 'Joint Ventures form', { opportunity: opportunity || 'General' });
     } catch {
-      setErrors(['Something went wrong. Please try again or call 81223 44040.']);
+      setErrors(['Something went wrong. Please try again or call 93449 06393.']);
     } finally {
       setBusy(false);
     }

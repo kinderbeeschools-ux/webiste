@@ -165,7 +165,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
       }
     } catch (err) {
       console.error(err);
-      setFormErrors(['Network error while recording your payment. Please try again or call 81223 44040.']);
+      setFormErrors(['Network error while recording your payment. Please try again or call 93449 06393.']);
     } finally {
       setIsSubmitting(false);
     }
@@ -755,8 +755,8 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                     </div>
                     <div>
                       <span className="text-stone-400 block text-[10px] uppercase font-semibold">Payment Helpline</span>
-                      <a href="tel:+918122344040" className="font-bold text-stone-900 hover:text-[#E1007A]">
-                        81223 44040 / 99013 32233
+                      <a href="tel:+919344906393" className="font-bold text-stone-900 hover:text-[#E1007A]">
+                        93449 06393 / 99013 32233
                       </a>
                     </div>
                   </div>

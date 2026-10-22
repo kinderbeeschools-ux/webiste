@@ -31,7 +31,7 @@ const localDay = (offsetDays = 0) => {
 const prettyDay = (d: string) => (d ? new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : '');
 
 export const waLink = (settings: SystemSettings | null, text: string) => {
-  const n = String(settings?.whatsappNumber || settings?.phone || '+91 81223 44040').replace(/\D/g, '');
+  const n = String(settings?.whatsappNumber || settings?.phone || '+91 93449 06393').replace(/\D/g, '');
   return `https://wa.me/${n.startsWith('91') ? n : '91' + n}?text=${encodeURIComponent(text)}`;
 };
 

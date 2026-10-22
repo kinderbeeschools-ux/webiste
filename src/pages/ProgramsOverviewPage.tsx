@@ -380,7 +380,7 @@ const EDUCATOR_PROGRAMS: ProgramItem[] = [
         'Teachers’ Day Mega Offer: ₹4,999 only (90% Off regular fee, valid until 5 October 2026)',
         'Capstone Action-Research Project on Classroom Innovation',
         'Preschool Center Director Operational Toolkit',
-        'Direct Admission & Inquiries: Call 81223 44040 | kinderbeeschools@gmail.com'
+        'Direct Admission & Inquiries: Call 93449 06393 | kinderbeeschools@gmail.com'
       ]
     }
   },

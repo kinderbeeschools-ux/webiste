@@ -12,7 +12,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenConsultation }) => {
   const [activePolicy, setActivePolicy] = useState<PolicyType | null>(null);
 
-  const phone = settings?.phone || '81223 44040';
+  const phone = settings?.phone || '93449 06393';
   const cleanPhone = phone.replace(/[^0-9]/g, '');
   const email = settings?.email || 'kinderbeeschools@gmail.com';
   const officeAddress = settings?.officeAddress || 'No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016';

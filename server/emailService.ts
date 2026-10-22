@@ -159,7 +159,7 @@ export async function sendApplicantConfirmationEmail(data: EnquiryEmailData): Pr
       <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;">
         <div style="font-size: 13px; color: #92400e; font-weight: 700; margin-bottom: 4px;">Need Immediate Assistance?</div>
         <div style="font-size: 13px; color: #78350f;">
-          Call our central advisory line at <a href="tel:+918122344040" style="color: #b45309; font-weight: 700; text-decoration: none;">+91 81223 44040</a> or WhatsApp us directly.
+          Call our central advisory line at <a href="tel:+919344906393" style="color: #b45309; font-weight: 700; text-decoration: none;">+91 93449 06393</a> or WhatsApp us directly.
         </div>
       </div>
 
@@ -354,7 +354,7 @@ export async function sendAccessEmail(d: { to: string; name: string; programme: 
         <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#E1007A;margin-bottom:6px;">Your access</div>
         <div>${accessHtml}</div>
       </div>
-      <p style="margin:0;font-size:13px;color:#57534e;">Questions? Reply to this email or WhatsApp us on +91 81223 44040.</p>
+      <p style="margin:0;font-size:13px;color:#57534e;">Questions? Reply to this email or WhatsApp us on +91 93449 06393.</p>
     </div>
   </div></body></html>`;
   try {
@@ -363,7 +363,7 @@ export async function sendAccessEmail(d: { to: string; name: string; programme: 
       to: d.to,
       subject: `Payment verified: your access to ${d.programme}`,
       html,
-      text: `Hi ${d.name},\n\nWe have verified your payment of Rs.${d.amount} for ${d.programme} (UTR ${d.utr}).\n\nYour access:\n${d.access}\n\nQuestions? WhatsApp +91 81223 44040.`,
+      text: `Hi ${d.name},\n\nWe have verified your payment of Rs.${d.amount} for ${d.programme} (UTR ${d.utr}).\n\nYour access:\n${d.access}\n\nQuestions? WhatsApp +91 93449 06393.`,
     });
     return { success: true };
   } catch (err: any) {

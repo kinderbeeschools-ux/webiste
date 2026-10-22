@@ -53,7 +53,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [copiedCaption, setCopiedCaption] = useState(false);
 
-  const instagramCaption = `Advanced Diploma in Early Childhood Care & Education\nFee: ₹4,999 (Limited Period Offer)\nDuration: 3 Months (120 Hours)\nContact: 81223 44040\nEmail: kinderbeeschools@gmail.com\nFinnish-way Academy by Kinderbee`;
+  const instagramCaption = `Advanced Diploma in Early Childhood Care & Education\nFee: ₹4,999 (Limited Period Offer)\nDuration: 3 Months (120 Hours)\nContact: 93449 06393\nEmail: kinderbeeschools@gmail.com\nFinnish-way Academy by Kinderbee`;
 
   const handleCopyCaption = () => {
     navigator.clipboard.writeText(instagramCaption);
@@ -292,7 +292,7 @@ export const FwaPage: React.FC<FwaPageProps> = ({ onOpenConsultation, onNavigate
               <div className="pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <span className="text-xs text-stone-500 font-medium block">Eligible: Aspiring &amp; Working Teachers</span>
-                  <span className="text-[11px] text-stone-700 font-semibold">📞 81223 44040</span>
+                  <span className="text-[11px] text-stone-700 font-semibold">📞 93449 06393</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button

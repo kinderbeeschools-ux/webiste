@@ -343,7 +343,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
       />
 
       {/* Global Floating WhatsApp Quick Action */}
-      <WhatsAppButton phoneNumber={settings?.phone || '81223 44040'} />
+      <WhatsAppButton phoneNumber={settings?.phone || '93449 06393'} />
 
       {/* Modals */}
       <ConsultationModal

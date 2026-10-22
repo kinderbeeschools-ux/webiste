@@ -12,7 +12,7 @@ interface StickyContactWidgetProps {
 
 export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settings }) => {
   const [showPopup, setShowPopup] = useState(false);
-  const phoneNumber = settings?.phone || '+91 81223 44040';
+  const phoneNumber = settings?.phone || '+91 93449 06393';
   const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=Hi%2C%20I%20am%20interested%20in%20Kinderbee%20School%20%26%20Admission%20%2F%20Franchise%20Inquiry.`;
 

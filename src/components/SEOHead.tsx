@@ -102,7 +102,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": settings?.phone || "+91 81223 44040",
+      "telephone": settings?.phone || "+91 93449 06393",
       "contactType": "Customer Support & Franchise Enquiries"
     }
   };

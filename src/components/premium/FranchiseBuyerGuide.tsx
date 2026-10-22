@@ -108,8 +108,8 @@ const FAQ = [
 ];
 
 export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; settings?: SystemSettings | null }> = ({ onOpenConsultation, settings }) => {
-  const phone = settings?.phone || '81223 44040';
-  const wa = (settings?.whatsappNumber || '918122344040').replace(/[^0-9]/g, '');
+  const phone = settings?.phone || '93449 06393';
+  const wa = (settings?.whatsappNumber || '919344906393').replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent('Hello Kinderbee, I would like to know more about the preschool franchise.')}`;
 
   return (

@@ -6,11 +6,11 @@ interface WhatsAppButtonProps {
 }
 
 export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ 
-  phoneNumber = '918122344040' 
+  phoneNumber = '919344906393' 
 }) => {
   const cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
   const message = encodeURIComponent('Hello Kinderbee, I would like to enquire about Admissions / Franchise / Teacher Training.');
-  const whatsappUrl = `https://wa.me/${cleanNumber || '918122344040'}?text=${message}`;
+  const whatsappUrl = `https://wa.me/${cleanNumber || '919344906393'}?text=${message}`;
 
   return (
     <div className="fixed bottom-5 right-5 z-40 print:hidden flex items-center group">

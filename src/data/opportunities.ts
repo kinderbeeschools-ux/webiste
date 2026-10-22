@@ -75,7 +75,7 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
       { url: '/opportunities/whitefield-9.jpg', caption: 'Internal side passage and vegetation' },
     ],
     mapUrl: 'https://maps.app.goo.gl/brPJFJjkKUtgESdN6',
-    contactPhone: '8122344040',
+    contactPhone: '9344906393',
     documents: 'Khata, tax receipts, title and KIADB allotment records are reported by the landowner and remain subject to document review.',
     diligence: [
       { item: 'Title & allotment', status: 'reported', note: 'Reported clear title; originally KIADB-allotted and registered. Documents to be reviewed.' },
@@ -111,7 +111,7 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
     overview: [
       'Explore a spacious 4 BHK duplex house for rent in Bengaluru, with scope to assess a preschool layout suited to your programme.',
       'The property is offered for consideration by educators and preschool operators seeking premises in Bengaluru. Its stated built-up area and duplex arrangement provide a starting point for assessing learning rooms, activity spaces and administration requirements.',
-      'The exact location and site photographs are shared on enquiry. Call or WhatsApp 81223 44040 to confirm current availability and arrange a site visit.',
+      'The exact location and site photographs are shared on enquiry. Call or WhatsApp 93449 06393 to confirm current availability and arrange a site visit.',
     ],
     details: [
       { label: 'Property type', value: '4 BHK duplex house' },
@@ -121,7 +121,7 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
       { label: 'Built-up area', value: '3,000 sq. ft.' },
       { label: 'Proposed use', value: 'Preschool, subject to assessment and approvals' },
       { label: 'Site visit', value: 'Arranged on enquiry; current availability to be confirmed' },
-      { label: 'Enquiry contact', value: 'Call / WhatsApp 81223 44040' },
+      { label: 'Enquiry contact', value: 'Call / WhatsApp 93449 06393' },
       { label: 'Enquiry office', value: 'Finnish-Way Educare Private Limited, No. 1, Old UCO Bank Road, Opp. Vijay Bakery, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016 (enquiry office only; the rental property location is shared privately on enquiry)' },
     ],
     detailsNote: 'Property particulars and asking terms are supplied for preliminary enquiry and should be confirmed during the site visit.',
@@ -148,7 +148,7 @@ export const SEED_OPPORTUNITIES: Opportunity[] = [
       { url: '/opportunities/bengaluru-4bhk-duplex.jpg', caption: 'Property poster with key particulars', fit: 'contain' },
     ],
     posterUrl: '/opportunities/bengaluru-4bhk-duplex.jpg',
-    contactPhone: '8122344040',
+    contactPhone: '9344906393',
     documents: 'Exact location and site photographs shared on enquiry',
     diligence: [
       { item: 'Availability', status: 'verify', note: 'Current availability to be confirmed with the owner.' },
