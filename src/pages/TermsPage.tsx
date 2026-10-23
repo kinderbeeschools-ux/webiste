@@ -313,7 +313,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ setCurrentTab, settings })
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Phone className="w-4 h-4 text-[#E1007A] shrink-0" />
-                  <a href="tel:9344906393" className="text-stone-900 hover:text-[#E1007A] font-semibold">93449 06393</a>
+                  <a href="tel:+919344906393" className="text-stone-900 hover:text-[#E1007A] font-semibold">93449 06393</a>
                 </div>
               </div>
             </div>

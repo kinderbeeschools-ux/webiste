@@ -1432,7 +1432,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[#E1007A] shrink-0" />
-                  <a href="tel:9344906393" className="text-white hover:text-[#FFD400] font-bold text-base transition">93449 06393</a>
+                  <a href="tel:+919344906393" className="text-white hover:text-[#FFD400] font-bold text-base transition">93449 06393</a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-[#E1007A] shrink-0" />

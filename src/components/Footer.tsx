@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, ExternalLink, Facebook, Linkedin, Instagram, ArrowRight, ShieldCheck } from 'lucide-react';
 import { SystemSettings } from '../types';
 import { PolicyModal, PolicyType } from './PolicyModal';
+import { telUrl } from '../utils/contact';
 
 interface FooterProps {
   settings: SystemSettings | null;
@@ -166,7 +167,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
                 <li className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-[#E1007A] shrink-0" />
                   <a 
-                    href={`tel:${cleanPhone}`} 
+                    href={telUrl(phone)} 
                     className="hover:text-white transition font-medium text-stone-200"
                   >
                     {phone}

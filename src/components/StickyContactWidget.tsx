@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, ArrowRight, X, MessageCircle, CalendarCheck } from 'lucide-react';
 import { SystemSettings } from '../types';
 import { openConsultationBooking, waLink } from './ConsultationBooking';
+import { telUrl, waUrl } from '../utils/contact';
 
 const ADMISSION_WHATSAPP_TEXT = 'Hi Kinderbee Team, I would like to enquire about preschool admissions. Please share the details.';
 
@@ -14,7 +15,7 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
   const [showPopup, setShowPopup] = useState(false);
   const phoneNumber = settings?.phone || '+91 93449 06393';
   const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
-  const whatsappUrl = `https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=Hi%2C%20I%20am%20interested%20in%20Kinderbee%20School%20%26%20Admission%20%2F%20Franchise%20Inquiry.`;
+  const whatsappUrl = waUrl(settings?.whatsappNumber || phoneNumber, 'Hi, I am interested in Kinderbee School & Admission / Franchise Inquiry.');
 
   return (
     <aside
@@ -43,7 +44,7 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
 
           <div className="space-y-2">
             <a
-              href={`tel:+91${cleanPhone.slice(-10)}`}
+              href={telUrl(phoneNumber)}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-[#E1007A] text-xs font-bold transition"
             >
               <div className="flex items-center gap-2">
@@ -98,7 +99,7 @@ export const StickyContactWidget: React.FC<StickyContactWidgetProps> = ({ settin
 
       {/* Round Call Button (Sunset Pink-to-Orange Gradient with Soft Glow Ring) */}
       <a
-        href={`tel:${phoneNumber}`}
+        href={telUrl(phoneNumber)}
         className="w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-[#E1007A] via-[#FA2668] to-[#FF7A00] hover:scale-105 active:scale-95 text-white flex items-center justify-center shadow-xl ring-4 ring-pink-500/25 hover:ring-pink-500/40 transition-all duration-300"
         title={`Call us at ${phoneNumber}`}
         aria-label={`Call ${phoneNumber}`}

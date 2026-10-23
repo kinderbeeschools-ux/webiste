@@ -3,6 +3,7 @@ import QRCode from 'qrcode';
 import { X, CalendarCheck, Copy, Check, ArrowRight, RefreshCw, Smartphone, ShieldCheck, Loader2, MessageCircle } from 'lucide-react';
 import type { SystemSettings } from '../types';
 import { trackLead, trackEvent } from '../utils/analytics';
+import { waUrl } from '../utils/contact';
 import {
   CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, UPI_ID, upiLink,
   type Consultation,
@@ -30,10 +31,7 @@ const localDay = (offsetDays = 0) => {
 };
 const prettyDay = (d: string) => (d ? new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : '');
 
-export const waLink = (settings: SystemSettings | null, text: string) => {
-  const n = String(settings?.whatsappNumber || settings?.phone || '+91 93449 06393').replace(/\D/g, '');
-  return `https://wa.me/${n.startsWith('91') ? n : '91' + n}?text=${encodeURIComponent(text)}`;
-};
+export const waLink = (settings: SystemSettings | null, text: string) => waUrl(settings?.whatsappNumber || settings?.phone, text);
 
 type Form = { name: string; phone: string; whatsapp: string; email: string; category: string; preferredDate: string; timeSlot: string; requirement: string };
 const EMPTY: Form = { name: '', phone: '', whatsapp: '', email: '', category: '', preferredDate: '', timeSlot: '', requirement: '' };
@@ -69,6 +67,7 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [booking, setBooking] = useState<Consultation | null>(null);
   const [utr, setUtr] = useState('');
+  const [payerUpi, setPayerUpi] = useState('');
   const [busy, setBusy] = useState(false);
   const [apiError, setApiError] = useState('');
   const [qr, setQr] = useState('');
@@ -166,7 +165,7 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
       setApiError('Enter the 12-digit UPI transaction ID (UTR) shown in your payment app.');
       return;
     }
-    const data = await call(`/api/consultations/${booking.ref}/payment`, { phone: booking.phone, utr: clean, booking });
+    const data = await call(`/api/consultations/${booking.ref}/payment`, { phone: booking.phone, utr: clean, payerUpi, booking });
     if (data?.booking) {
       trackEvent('payment_submitted', { payment_for: 'consultation', value: Number(data.booking.amount) || 99, currency: 'INR' });
       setStep('status');
@@ -328,6 +327,10 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
                 <label htmlFor="cb-utr" className={labelCls}>After paying, enter the UPI transaction ID (UTR) *</label>
                 <input id="cb-utr" value={utr} onChange={e => setUtr(e.target.value.replace(/[^\d\s]/g, ''))} inputMode="numeric" maxLength={14}
                   placeholder="12-digit number, e.g. 412345678901" className={`${inputCls} border-stone-200 font-mono tracking-wider`} />
+                <label htmlFor="cb-upi" className={labelCls}>UPI ID you paid from <span className="font-normal text-stone-400">(optional, helps us match faster)</span></label>
+                <input id="cb-upi" value={payerUpi} onChange={e => setPayerUpi(e.target.value.trim())} autoComplete="off" maxLength={60}
+                  placeholder="e.g. yourname@okhdfcbank" className={`${inputCls} border-stone-200`} />
+                <p className="text-xs text-stone-600">Paying as <strong>{booking.name}</strong> · {booking.phone}</p>
                 <button type="submit" disabled={busy}
                   className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#E1007A] hover:bg-[#c8006d] disabled:opacity-60 text-white font-bold py-3.5 text-sm shadow-md transition cursor-pointer">
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}

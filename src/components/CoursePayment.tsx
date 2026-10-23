@@ -25,6 +25,7 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [utr, setUtr] = useState('');
+  const [payerUpi, setPayerUpi] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [qr, setQr] = useState('');
@@ -83,7 +84,7 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           applicantName: name.trim(), payerPhone: toPhone(phone), payerEmail: email.trim(), programme: course.programme,
-          amount: course.amount, upiRefNumber: clean, paymentDate: today(), notes: 'Course payment (website)',
+          amount: course.amount, upiRefNumber: clean, payerUpi, paymentDate: today(), notes: 'Course payment (website)',
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -172,6 +173,10 @@ export const CoursePayment: React.FC<{ settings: SystemSettings | null }> = ({ s
                 <label htmlFor="cp-utr" className={labelCls}>After paying, enter the 12-digit UTR / UPI reference *</label>
                 <input id="cp-utr" value={utr} onChange={e => setUtr(e.target.value.replace(/[^\d\s]/g, ''))} inputMode="numeric" maxLength={14}
                   placeholder="e.g. 412345678901" className={`${inputCls} font-mono tracking-wider`} />
+                <label htmlFor="cp-upi" className={labelCls}>UPI ID you paid from <span className="font-normal text-stone-400">(optional, helps us match faster)</span></label>
+                <input id="cp-upi" value={payerUpi} onChange={e => setPayerUpi(e.target.value.trim())} autoComplete="off" maxLength={60}
+                  placeholder="e.g. yourname@okhdfcbank" className={inputCls} />
+                <p className="text-xs text-stone-600">Paying as <strong>{name}</strong> · {toPhone(phone)}</p>
                 <button type="submit" disabled={busy} className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-bold py-3.5 text-sm shadow-md transition cursor-pointer">
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
                   {busy ? 'Submitting…' : 'I have paid. Submit'}

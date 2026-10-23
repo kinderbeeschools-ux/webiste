@@ -9,6 +9,7 @@ import {
 import { SystemSettings } from '../../types';
 import { Accordion, Eyebrow, Palette, ReadinessCheck, SERIF, inView, rise, stagger } from './kit';
 import { FloorPlanVisual, KeepAllVisual, PhotoStrip, RangeVisual, VisualTimeline } from './visuals';
+import { telUrl, waUrl } from '../../utils/contact';
 
 // New section for the Preschool Franchise page: written from the point of view of a serious buyer.
 // Every figure below is already published elsewhere on the page; nothing here promises a return.
@@ -109,8 +110,7 @@ const FAQ = [
 
 export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; settings?: SystemSettings | null }> = ({ onOpenConsultation, settings }) => {
   const phone = settings?.phone || '93449 06393';
-  const wa = (settings?.whatsappNumber || '919344906393').replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent('Hello Kinderbee, I would like to know more about the preschool franchise.')}`;
+  const waLinkUrl = waUrl(settings?.whatsappNumber || phone, 'Hello Kinderbee, I would like to know more about the preschool franchise.');
 
   return (
     <section className="relative mx-auto max-w-7xl px-4 sm:px-8" aria-labelledby="buyer-guide-title">
@@ -249,11 +249,11 @@ export const FranchiseBuyerGuide: React.FC<{ onOpenConsultation: () => void; set
             >
               <Download className="h-4 w-4" /> Download Franchise PDF
             </button>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#17050F]/30 bg-white/40 px-6 py-3.5 text-sm font-bold text-[#17050F] transition hover:bg-white/60">
+            <a href={waLinkUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#17050F]/30 bg-white/40 px-6 py-3.5 text-sm font-bold text-[#17050F] transition hover:bg-white/60">
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
           </div>
-          <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#17050F] underline-offset-4 hover:underline">
+          <a href={telUrl(phone)} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#17050F] underline-offset-4 hover:underline">
             <Phone className="h-4 w-4" /> {phone}
           </a>
           </div>

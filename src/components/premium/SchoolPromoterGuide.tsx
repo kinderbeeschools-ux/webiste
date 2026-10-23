@@ -4,6 +4,7 @@ import { MapPinned, Wallet, FileCheck2, UserCheck, Laptop, Megaphone, ShieldAler
 import { SystemSettings } from '../../types';
 import { Accordion, Eyebrow, Palette, ReadinessCheck, SERIF, inView, rise, stagger } from './kit';
 import { OrbitVisual } from './visuals';
+import { waUrl } from '../../utils/contact';
 
 // New section for the CBSE & IB School Setup page: how a promoter should weigh the decision.
 // Outlay ranges, approvals and services are the ones already published on the page.
@@ -58,8 +59,7 @@ const FAQ = [
 ];
 
 export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: SystemSettings | null }> = ({ onConsult, settings }) => {
-  const wa = (settings?.whatsappNumber || '919344906393').replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent('Hello Kinderbee, I would like to discuss setting up a CBSE / IB school.')}`;
+  const waLinkUrl = waUrl(settings?.whatsappNumber || settings?.phone, 'Hello Kinderbee, I would like to discuss setting up a CBSE / IB school.');
 
   return (
     <section className="relative mx-auto max-w-7xl px-4 sm:px-8" aria-labelledby="promoter-guide-title">
@@ -135,7 +135,7 @@ export const SchoolPromoterGuide: React.FC<{ onConsult: () => void; settings?: S
               <button onClick={onConsult} className="group inline-flex w-fit cursor-pointer items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-[#14110F] transition hover:-translate-y-0.5 hover:shadow-xl" style={{ background: `linear-gradient(135deg, ${P.accentSoft}, ${P.accent})` }}>
                 <Sparkles className="h-4 w-4" /> Consult Our Planning Team <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </button>
-              <a href={waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
+              <a href={waLinkUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
             </div>

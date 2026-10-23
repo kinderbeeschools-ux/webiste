@@ -128,7 +128,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ isOpen, onClose, polic
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-[#E1007A] shrink-0" />
-                  <a href="tel:9344906393" className="hover:underline font-semibold">93449 06393</a>
+                  <a href="tel:+919344906393" className="hover:underline font-semibold">93449 06393</a>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[#E1007A] shrink-0" />

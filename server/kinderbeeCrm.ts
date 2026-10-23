@@ -6,9 +6,9 @@ import type { PaymentRecord } from "../src/types";
 const CRM_URL = process.env.KB_CRM_SUPABASE_URL || "https://gihcunqqahehlgrggpyr.supabase.co";
 const CRM_KEY = process.env.KB_CRM_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpaGN1bnFxYWhlaGxncmdncHlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMjU1NzYsImV4cCI6MjEwNzYwMTU3Nn0.VEtmnQUvdgucUPIAQjtGnh2zws_8PObQBlkDKdCZQDE";
 
-// Website category -> CRM lead category (the CRM accepts admission, ntt, consultation, franchise, cbse, degree, jv)
+// Website category -> CRM lead category (the CRM accepts admission, ntt, consultation, franchise, cbse, degree, jv, general)
 const CRM_CATEGORY: Record<string, string> = {
-  admission: "admission", franchise: "franchise", ntt: "ntt", cbse: "cbse", degree: "degree", investor: "jv", other: "consultation",
+  admission: "admission", franchise: "franchise", ntt: "ntt", cbse: "cbse", degree: "degree", investor: "jv", other: "general",
 };
 
 export async function sendLeadToCrm(category: string, f: Record<string, any>): Promise<void> {
@@ -21,7 +21,7 @@ export async function sendLeadToCrm(category: string, f: Record<string, any>): P
     landing_page: f.landing, opportunity: f.opportunity, investor_type: f.investorType, investment_range: f.investmentRange,
   };
   const p: Record<string, unknown> = {
-    category: CRM_CATEGORY[category] || "consultation", name, phone, email: f.email, city: f.city, message: f.message,
+    category: CRM_CATEGORY[category] || "general", name, phone, email: f.email, city: f.city, message: f.message,
     source: String(f.source || "Website").slice(0, 40), ...extra,
   };
   // submit_lead treats a "website" key as a bot honeypot, and stores blanks as text, so drop both

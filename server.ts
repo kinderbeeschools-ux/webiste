@@ -245,10 +245,10 @@ const seedFAQs: FAQItem[] = [
 ];
 
 const seedSettings: SystemSettings = {
-  phone: "+91 99013 32233",
+  phone: "+91 93449 06393",
   email: "kinderbeeschools@gmail.com",
   officeAddress: "No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016",
-  whatsappNumber: "+919901332233",
+  whatsappNumber: "+919344906393",
   facebookUrl: "https://facebook.com/kinderbee",
   linkedinUrl: "https://linkedin.com/company/kinderbee-education",
   instagramUrl: "https://instagram.com/kinderbee",
@@ -933,6 +933,11 @@ app.delete("/api/enquiries/:id", guard("leads_delete"), async (req, res) => {
 // Submit payment transaction confirmation
 // Payment confirmation rules (also enforced in the payment form)
 const UTR_RE = /^\d{12}$/;
+// The UPI ID the payer paid from (optional), kept in the payment notes so staff can match it on the bank statement
+const payerUpiNote = (v: unknown) => {
+  const upi = String(v || "").trim().toLowerCase().slice(0, 60);
+  return /^[a-z0-9._-]{2,}@[a-z0-9]{2,}$/.test(upi) ? `Paid from UPI: ${upi}` : "";
+};
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Indian mobile: keep the last 10 digits after removing +91 / 0 prefixes
 const normalisePhone = (p: string) => String(p || "").replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
@@ -1001,7 +1006,7 @@ app.post("/api/payments", async (req, res) => {
   const payerEmail = String(b.payerEmail || "").trim().toLowerCase();
   const paymentDate = String(b.paymentDate || "").trim();
   const admissionNumber = String(b.admissionNumber || "").trim();
-  const notes = String(b.notes || "").trim().slice(0, 500);
+  const notes = [String(b.notes || "").trim().slice(0, 400), payerUpiNote(b.payerUpi)].filter(Boolean).join(" · ");
 
   const problems: string[] = [];
   if (applicantName.length < 2) problems.push("full name");
@@ -1016,6 +1021,10 @@ app.post("/api/payments", async (req, res) => {
   }
   // Course fees are fixed: a payment for a listed course must be for exactly that fee
   const fee = COURSE_FEES[programme];
+  // Anything that reads like a course must name a listed course exactly, so a reworded name can't skip the fee check
+  if (!fee && /diploma|certificate|teacher|ecce|curriculum design|course/i.test(programme)) {
+    return res.status(400).json({ error: "Please choose one of the listed courses and pay its fee." });
+  }
   if (fee && amount !== fee) {
     return res.status(400).json({ error: `The fee for ${programme} is ₹${fee.toLocaleString("en-IN")}. Please pay and enter that amount.` });
   }
@@ -1236,7 +1245,7 @@ app.post("/api/consultations/:ref/payment", async (req, res) => {
       payerPhone: c.phone,
       payerEmail: c.email || "",
       paymentDate: istToday(),
-      notes: `Consultation booking ${c.ref} · ${c.preferredDate}, ${c.timeSlot}`,
+      notes: [`Consultation booking ${c.ref} · ${c.preferredDate}, ${c.timeSlot}`, payerUpiNote(req.body?.payerUpi)].filter(Boolean).join(" · "),
       status: "pending_verification",
       createdAt: new Date().toISOString(),
     };

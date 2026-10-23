@@ -1,5 +1,6 @@
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
+import { waUrl } from '../utils/contact';
 
 interface WhatsAppButtonProps {
   phoneNumber?: string;
@@ -8,9 +9,7 @@ interface WhatsAppButtonProps {
 export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ 
   phoneNumber = '919344906393' 
 }) => {
-  const cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
-  const message = encodeURIComponent('Hello Kinderbee, I would like to enquire about Admissions / Franchise / Teacher Training.');
-  const whatsappUrl = `https://wa.me/${cleanNumber || '919344906393'}?text=${message}`;
+  const whatsappUrl = waUrl(phoneNumber, 'Hello Kinderbee, I would like to enquire about Admissions / Franchise / Teacher Training.');
 
   return (
     <div className="fixed bottom-5 right-5 z-40 print:hidden flex items-center group">

@@ -49,6 +49,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
   
   // Submission Form State
   const [upiRefNumber, setUpiRefNumber] = useState('');
+  const [payerUpi, setPayerUpi] = useState('');
   const [payerPhone, setPayerPhone] = useState('');
   const [payerEmail, setPayerEmail] = useState('');
   const [paymentDate, setPaymentDate] = useState(() => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); });
@@ -149,6 +150,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
           programme,
           amount: effectiveAmount,
           upiRefNumber,
+          payerUpi,
           payerPhone,
           payerEmail,
           paymentDate,
@@ -611,6 +613,21 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                         Found under "UPI transaction ID", "UTR" or "Bank Reference Number" in your payment app.
                       </span>
                     </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                        UPI ID you paid from <span className="font-normal text-stone-400">(optional, helps us match faster)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={payerUpi}
+                        maxLength={60}
+                        autoComplete="off"
+                        onChange={(e) => setPayerUpi(e.target.value.trim())}
+                        placeholder="e.g. yourname@okhdfcbank"
+                        className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white"
+                      />
+                      {applicantName.trim() && <span className="text-[11px] text-stone-600 mt-1 block">Paying as <strong>{applicantName.trim()}</strong></span>}
+                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                       <div>
@@ -756,7 +773,7 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({
                     <div>
                       <span className="text-stone-400 block text-[10px] uppercase font-semibold">Payment Helpline</span>
                       <a href="tel:+919344906393" className="font-bold text-stone-900 hover:text-[#E1007A]">
-                        93449 06393 / 99013 32233
+                        93449 06393
                       </a>
                     </div>
                   </div>

@@ -4,6 +4,7 @@ import { SystemSettings } from '../types';
 import { HeroDecor } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
 import { trackLead } from '../utils/analytics';
+import { telUrl } from '../utils/contact';
 
 interface ContactPageProps {
   settings: SystemSettings | null;
@@ -135,7 +136,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
               </div>
               <div>
                 <h4 className="font-display font-bold text-stone-900 text-sm mb-1">Phone Enquiries</h4>
-                <a href={`tel:${settings?.phone || '+91 93449 06393'}`} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '93449 06393'}</a>
+                <a href={telUrl(settings?.phone)} className="text-xs text-stone-600 hover:text-[#E1007A] transition font-medium">{settings?.phone || '93449 06393'}</a>
                 <div className="text-[11px] text-stone-400 mt-0.5">10am–5pm (Mon–Fri) | 10am–1pm (Sat)</div>
               </div>
             </div>
