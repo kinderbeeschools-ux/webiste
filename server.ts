@@ -1205,8 +1205,21 @@ app.get("/api/consultations/:ref", async (req, res) => {
 app.post("/api/consultations/:ref/payment", async (req, res) => {
   const phone = normalisePhone(req.body?.phone);
   const utr = String(req.body?.utr || "").replace(/\s/g, "");
+  const ref = String(req.params.ref).trim().toUpperCase();
   try {
-    const [c] = await findConsultations({ ref: String(req.params.ref).trim().toUpperCase() });
+    let [c] = await findConsultations({ ref });
+    const stored = !!c;
+    // Without a database (no Supabase key on the host) the booking made a moment ago was never stored. Take the details
+    // the browser holds instead, as /api/payments does, so the payment still reaches the CRM; staff match the UTR to the bank.
+    const b = req.body?.booking;
+    if (!c && !getSupabaseClient() && b && String(b.ref).toUpperCase() === ref && /^KBC-[A-Z0-9]{6}$/.test(ref)) {
+      c = {
+        ref, phone, name: cleanText(b.name, 80), whatsapp: "", email: cleanText(b.email, 120).toLowerCase(), category: cleanText(b.category, 60),
+        preferredDate: cleanText(b.preferredDate, 10), timeSlot: cleanText(b.timeSlot, 40), requirement: "", amount: CONSULT_FEE,
+        status: "pending_payment", adminNotes: "", createdAt: new Date().toISOString(),
+      } as Consultation;
+      if (c.name.length < 2) return res.status(400).json({ error: "Please book again: your name is missing." });
+    }
     if (!c || !phone || c.phone !== phone) return res.status(404).json({ error: "No booking found for this reference and mobile number." });
     if (c.status !== "pending_payment" && c.status !== "payment_failed") {
       return res.status(409).json({ error: "Payment for this booking has already been submitted.", booking: publicConsult(c) });
@@ -1231,7 +1244,7 @@ app.post("/api/consultations/:ref/payment", async (req, res) => {
     if (failed) return res.status(failed.status).json({ error: failed.error });
 
     const patch = { ref: c.ref, status: "verification_pending" as ConsultStatus, upiRef: utr, paymentId: payment.id };
-    await saveConsultation(patch);
+    if (stored) await saveConsultation(patch);
     await logActivity({ leadKey: c.phone, type: "payment", detail: `Consultation ${c.ref}: ₹${payment.amount} submitted for verification (UTR ${utr})` });
     res.json({ booking: publicConsult({ ...c, ...patch }) });
   } catch (e: any) {

@@ -166,7 +166,7 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
       setApiError('Enter the 12-digit UPI transaction ID (UTR) shown in your payment app.');
       return;
     }
-    const data = await call(`/api/consultations/${booking.ref}/payment`, { phone: booking.phone, utr: clean });
+    const data = await call(`/api/consultations/${booking.ref}/payment`, { phone: booking.phone, utr: clean, booking });
     if (data?.booking) {
       trackEvent('payment_submitted', { payment_for: 'consultation', value: Number(data.booking.amount) || 99, currency: 'INR' });
       setStep('status');
