@@ -2,6 +2,7 @@ import crypto from "crypto";
 import type { Express, Request, Response, NextFunction } from "express";
 import { enquiryCategory, categoryInfo } from "../src/data/enquiry.js";
 import { crmWebsiteUser } from "./kinderbeeCrm.js";
+import { DEFAULT_GALLERY } from "../src/data/gallery.js";
 
 // Role-based access for the Kinderbee management platform (CEO, Admin, Teacher Admin, Sales & Marketing,
 // Franchise Partner). Every rule here is enforced on the server; the admin UI only mirrors it.
@@ -406,12 +407,24 @@ export function createPortal(d: Deps) {
     }));
 
     // ---- event photographs ----
+    // Adds the About page's built-in photos to the stored gallery once ("gallerySeeded"), so the CRM can edit them
+    // and a photo deleted there is not added back.
+    const galleryList = async (): Promise<any[]> => {
+      const list = ((await d.getContent<any[]>("gallery")) || []) as any[];
+      if (await d.getContent("gallerySeeded")) return list;
+      const add = DEFAULT_GALLERY.filter(p => !list.some(x => x.id === p.id))
+        .map(({ id, url, title, category }) => ({ id, url, title, category, branchId: "", date: "", status: "approved", uploadedBy: "Website" }));
+      const next = [...list, ...add];
+      await d.setContent("gallery", next);
+      await d.setContent("gallerySeeded", true);
+      return next;
+    };
     app.get("/api/gallery", wrap(async (_req, res) => {
-      res.json(((await d.getContent<any[]>("gallery")) || []).filter(g => g.status === "approved").map(({ id, title, url, date, branchId }) => ({ id, title, url, date, branchId })));
+      res.json((await galleryList()).filter(g => g.status === "approved").map(({ id, title, url, date, branchId, category }) => ({ id, title, url, date, branchId, category })));
     }));
     app.get("/api/portal/gallery", guard("gallery"), wrap(async (_req, res) => {
       const a = auth(res);
-      res.json(((await d.getContent<any[]>("gallery")) || []).filter(g => inScope(a, g.branchId)));
+      res.json((await galleryList()).filter(g => inScope(a, g.branchId)));
     }));
     app.post("/api/portal/gallery", guard("gallery"), wrap(async (req, res) => {
       const a = auth(res);
@@ -421,21 +434,22 @@ export function createPortal(d: Deps) {
       if (!inScope(a, branchId) && !(a.scope === null && !branchId)) return res.status(403).json({ error: "You can only upload for your own branch." });
       // Staff uploads wait for approval; uploads by people who approve website content go live straight away
       const g = { id: uid("img"), title: clean(req.body?.title, 100), url, branchId, date: clean(req.body?.date, 10) || today(), status: can(a, "website") ? "approved" : "pending", uploadedBy: a.name, createdAt: new Date().toISOString() };
-      await d.setContent("gallery", [g, ...(((await d.getContent<any[]>("gallery")) || []))]);
+      await d.setContent("gallery", [g, ...((await galleryList()))]);
       res.json({ success: true, photo: g });
     }));
     app.put("/api/portal/gallery/:id", guard("website"), wrap(async (req, res) => {
-      const list = ((await d.getContent<any[]>("gallery")) || []) as any[];
+      const list = (await galleryList()) as any[];
       const g = list.find(x => x.id === req.params.id);
       if (!g) return res.status(404).json({ error: "Photo not found." });
       if (["approved", "rejected", "pending"].includes(req.body?.status)) g.status = req.body.status;
       if (clean(req.body?.title, 100).length >= 2) g.title = clean(req.body.title, 100);
+      if (/^https:\/\//.test(clean(req.body?.url, 600))) g.url = clean(req.body.url, 600);
       await d.setContent("gallery", list);
       res.json({ success: true, photo: g });
     }));
     app.delete("/api/portal/gallery/:id", guard("gallery"), wrap(async (req, res) => {
       const a = auth(res);
-      const list = ((await d.getContent<any[]>("gallery")) || []) as any[];
+      const list = (await galleryList()) as any[];
       const g = list.find(x => x.id === req.params.id);
       if (!g || !inScope(a, g.branchId)) return res.status(404).json({ error: "Photo not found." });
       if (g.status === "approved" && !can(a, "website")) return res.status(403).json({ error: "Approved photos can only be removed by the head office." });

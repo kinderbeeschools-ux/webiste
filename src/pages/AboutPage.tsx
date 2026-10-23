@@ -11,6 +11,7 @@ import { Bee, Rainbow, Star, Squiggle, Cloud, Heart, Dots } from '../components/
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
+import { DEFAULT_GALLERY } from '../data/gallery';
 
 interface AboutPageProps {
   onOpenConsultation?: (type?: string) => void;
@@ -26,80 +27,6 @@ interface GalleryPhoto {
   category: string;
   aspect: string;
 }
-
-// Built-in photos; photos approved in the CRM (Photos tab, /api/gallery) are shown before these
-const DEFAULT_GALLERY: GalleryPhoto[] = [
-  {
-    id: 'photo-1',
-    url: '/images/gallery/kinderbee-pretend-play-shop.jpg',
-    title: 'Pretend Play: Running a Little Shop',
-    category: 'Life Skills',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-2',
-    url: '/images/gallery/kinderbee-onam-pookalam.jpg',
-    title: 'Onam Celebration & Flower Pookalam',
-    category: 'Festivals',
-    aspect: 'aspect-[4/3]',
-  },
-  {
-    id: 'photo-3',
-    url: '/images/gallery/kinderbee-independence-day.jpg',
-    title: 'Independence Day: Our Little Freedom Fighters',
-    category: 'Celebrations',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-4',
-    url: '/images/gallery/kinderbee-body-parts-activity.jpg',
-    title: 'Learning About Our Body',
-    category: 'Early Learning',
-    aspect: 'aspect-[4/3]',
-  },
-  {
-    id: 'photo-5',
-    url: '/images/gallery/kinderbee-classroom-learning.jpg',
-    title: 'Focused Learning in Small Groups',
-    category: 'Classroom',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-6',
-    url: '/images/gallery/kinderbee-pretend-play-queue.jpg',
-    title: 'Taking Turns & Waiting in Line',
-    category: 'Social Skills',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-7',
-    url: '/images/gallery/kinderbee-circle-time.jpg',
-    title: 'Circle Time Together',
-    category: 'Classroom',
-    aspect: 'aspect-[4/3]',
-  },
-  {
-    id: 'photo-8',
-    url: '/images/gallery/kinderbee-number-worksheet.jpg',
-    title: 'Counting & Tracing Number Seven',
-    category: 'Early Numeracy',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-9',
-    url: '/images/gallery/kinderbee-colouring-activity.jpg',
-    title: 'Colouring & Fine Motor Skills',
-    category: 'Art & Creativity',
-    aspect: 'aspect-[16/9]',
-  },
-  {
-    id: 'photo-10',
-    url: '/images/gallery/kinderbee-puppet-show.jpg',
-    title: 'Curtain Call Puppet Show',
-    category: 'Storytelling',
-    aspect: 'aspect-[16/9]',
-  },
-];
 
 interface VisionGalleryItem {
   id: string;
@@ -166,13 +93,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
   const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>(DEFAULT_GALLERY);
   useEffect(() => {
     fetch('/api/gallery')
-      .then(res => (res.ok ? res.json() : []))
-      .then((list: { id: string; title: string; url: string }[]) => {
-        if (!Array.isArray(list) || !list.length) return;
-        setGalleryPhotos([
-          ...list.map(p => ({ id: p.id, url: p.url, title: p.title, category: 'Kinderbee Moments', aspect: 'aspect-[4/3]' })),
-          ...DEFAULT_GALLERY,
-        ]);
+      .then(res => (res.ok ? res.json() : null))
+      .then((list: { id: string; title: string; url: string; category?: string }[]) => {
+        // The server's list already includes the built-in photos (and any the CRM edited or removed)
+        if (!Array.isArray(list)) return;
+        setGalleryPhotos(list.map(p => ({
+          id: p.id, url: p.url, title: p.title, category: p.category || 'Kinderbee Moments',
+          aspect: DEFAULT_GALLERY.find(d => d.id === p.id)?.aspect || 'aspect-[4/3]',
+        })));
       })
       .catch(() => {});
   }, []);
