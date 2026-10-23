@@ -7,7 +7,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Enquiry, BlogPost, FAQItem, SystemSettings, PaymentRecord, Opportunity } from "./src/types";
 import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { submitIndexNow } from "./src/utils/indexnow.js";
-import { sendLeadToCrm, sendPaymentToCrm } from "./server/kinderbeeCrm.js";
+import { sendLeadToCrm, sendPaymentToCrm, crmPaymentDecisions } from "./server/kinderbeeCrm.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
 import { COURSE_FEES } from "./src/data/courses.js";
 import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
@@ -1211,6 +1211,7 @@ app.post("/api/consultations", async (req, res) => {
 app.get("/api/consultations/:ref", async (req, res) => {
   const phone = normalisePhone(String(req.query.phone || ""));
   try {
+    await pullCrmDecisions();
     const [c] = await findConsultations({ ref: String(req.params.ref).trim().toUpperCase() });
     if (!c || !phone || c.phone !== phone) return res.status(404).json({ error: "No booking found for this reference and mobile number." });
     res.json({ booking: publicConsult(c) });
@@ -1375,14 +1376,12 @@ async function listPayments(): Promise<PaymentRecord[]> {
   }));
 }
 
-app.get("/api/payments", guard("payments"), handle(async (req, res) => res.json(await listPayments())));
+app.get("/api/payments", guard("payments"), handle(async (req, res) => { await pullCrmDecisions(); res.json(await listPayments()); }));
 
-app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
-  const { id } = req.params;
-  const { status, notes } = req.body;
-  if (status !== undefined && !["pending_verification", "verified", "rejected"].includes(status)) {
-    return res.status(400).json({ error: "Status must be pending_verification, verified or rejected." });
-  }
+// Marks a website payment verified / rejected: also confirms the consultation booking, emails course access the
+// first time a course payment is verified, and moves the lead to Admission. Used by the CRM's push (PUT below)
+// and by pullCrmDecisions(), which fetches decisions from the CRM itself.
+async function applyPaymentDecision(id: string, status?: string, notes?: string): Promise<{ code: number; body: any }> {
   const supabase = getSupabaseClient();
   if (supabase) {
     // Read the current status first, so verifying an already-verified payment doesn't email the access details again
@@ -1396,7 +1395,7 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
     if (notes !== undefined) patch.notes = notes;
     const { data, error } = await supabase.from("payments").update(patch).eq("id", id).select();
     if (error) throw new Error(error.message);
-    if (!data?.length) return res.status(404).json({ error: "Payment record not found." });
+    if (!data?.length) return { code: 404, body: { error: "Payment record not found." } };
     const consultRef = String(data[0].admission_number || "");
     const isConsultation = consultRef.startsWith("KBC-");
     if (status && isConsultation) await syncConsultationPayment(consultRef, id, status);
@@ -1422,13 +1421,13 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
         }
       }
     }
-    return res.json({ success: true, access });
+    return { code: 200, body: { success: true, access } };
   }
   const db = loadDb();
   const p = db.payments.find(p => p.id === id);
-  if (!p) return res.status(404).json({ error: "Payment record not found." });
+  if (!p) return { code: 404, body: { error: "Payment record not found." } };
   const newlyVerified = status === "verified" && p.status !== "verified";
-  if (status) p.status = status;
+  if (status) p.status = status as PaymentRecord["status"];
   if (notes !== undefined) p.notes = notes;
   saveDb(db);
   const isConsult = String(p.admissionNumber || "").startsWith("KBC-");
@@ -1436,8 +1435,38 @@ app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
   const access = newlyVerified && !isConsult
     ? await sendCourseAccess({ email: p.payerEmail, name: p.applicantName, programme: p.programme, amount: String(p.amount), utr: p.upiRefNumber })
     : undefined;
-  res.json({ success: true, access });
+  return { code: 200, body: { success: true, access } };
+}
+
+app.put("/api/payments/:id", guard("payments"), handle(async (req, res) => {
+  const { status, notes } = req.body;
+  if (status !== undefined && !["pending_verification", "verified", "rejected"].includes(status)) {
+    return res.status(400).json({ error: "Status must be pending_verification, verified or rejected." });
+  }
+  const r = await applyPaymentDecision(req.params.id, status, notes);
+  res.status(r.code).json(r.body);
 }));
+
+// Applies Verified / Rejected decisions made in the CRM to payments still pending here. Runs at most once a minute
+// per server instance, from the requests that need fresh statuses (site settings on every page, booking status, admin list).
+// ponytail: piggybacks on visitor traffic; add a Vercel cron hitting /api/settings if decisions must land with no visitors
+let lastCrmPull = 0;
+async function pullCrmDecisions() {
+  if (Date.now() - lastCrmPull < 60_000) return;
+  lastCrmPull = Date.now();
+  const supabase = getSupabaseClient();
+  try {
+    const ids = supabase
+      ? ((await supabase.from("payments").select("id").eq("status", "pending_verification").limit(200)).data || []).map(r => r.id)
+      : loadDb().payments.filter(p => p.status === "pending_verification").map(p => p.id).slice(0, 200);
+    for (const d of await crmPaymentDecisions(ids)) {
+      const status = d.status === "Verified" ? "verified" : d.status === "Rejected" ? "rejected" : "";
+      if (status) await applyPaymentDecision(d.website_payment_id, status);
+    }
+  } catch (err) {
+    console.warn("CRM decision pull failed:", err);
+  }
+}
 
 // Generic list CRUD for blogs and faqs
 // Adds the Kinderbee Journal posts to the stored blog list once. "blogSeeds" remembers which were added,
@@ -1513,7 +1542,7 @@ app.post("/api/blogs/:id/view", handle(async (req, res) => {
 }));
 
 // SETTINGS
-app.get("/api/settings", handle(async (req, res) => res.json(await getContent("settings"))));
+app.get("/api/settings", handle(async (req, res) => { await pullCrmDecisions(); res.json(await getContent("settings")); }));
 
 const saveSettings = handle(async (req, res) => {
   const settings = { ...(await getContent("settings")), ...req.body };

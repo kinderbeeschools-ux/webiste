@@ -98,3 +98,23 @@ export async function crmWebsiteUser(token: string): Promise<CrmUser | null> {
   crmUsers.set(token, { user, until: Date.now() + 60_000, why });
   return user;
 }
+
+// Decisions (Verified / Rejected) the CRM has made on website payments, read through its website_payment_decisions()
+// function. The website pulls these itself, so a verification reaches it even when the CRM's browser push didn't.
+export type CrmDecision = { website_payment_id: string; status: string; reject_reason: string | null };
+export async function crmPaymentDecisions(ids: string[]): Promise<CrmDecision[]> {
+  if (!ids.length) return [];
+  try {
+    const r = await fetch(`${CRM_URL}/rest/v1/rpc/website_payment_decisions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: CRM_KEY, Authorization: `Bearer ${CRM_KEY}` },
+      body: JSON.stringify({ p_ids: ids }),
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) { console.warn("Kinderbee CRM: decisions not read", r.status, (await r.text()).slice(0, 200)); return []; }
+    return await r.json();
+  } catch (err) {
+    console.warn("Kinderbee CRM: decisions read failed", err);
+    return [];
+  }
+}
