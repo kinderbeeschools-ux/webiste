@@ -35,6 +35,16 @@ app.use("/api", (req, res, next) => {
     res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     if (req.method === "OPTIONS") return res.sendStatus(204);
+    // Keep the last 30 changes the CRM sends (site_data "crmLog"), so a failed sync can be traced without the CRM screen.
+    // Saved before the response goes out, as Vercel freezes the function once it has replied.
+    if (req.method !== "GET") {
+      const json = res.json.bind(res);
+      res.json = ((body: any) => {
+        const entry = { at: new Date().toISOString(), method: req.method, path: req.originalUrl.slice(0, 120), status: res.statusCode, error: body?.error ? String(body.error).slice(0, 300) : undefined };
+        getContent<any[]>("crmLog").then(log => setContent("crmLog", [entry, ...(log || [])].slice(0, 30))).catch(() => {}).finally(() => json(body));
+        return res;
+      }) as typeof res.json;
+    }
   }
   next();
 });
