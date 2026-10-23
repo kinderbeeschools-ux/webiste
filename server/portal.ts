@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import type { Express, Request, Response, NextFunction } from "express";
 import { enquiryCategory, categoryInfo } from "../src/data/enquiry.js";
-import { crmWebsiteUser } from "./kinderbeeCrm.js";
+import { crmWebsiteUser, crmWhy } from "./kinderbeeCrm.js";
 import { DEFAULT_GALLERY } from "../src/data/gallery.js";
 
 // Role-based access for the Kinderbee management platform (CEO, Admin, Teacher Admin, Sales & Marketing,
@@ -180,7 +180,10 @@ export function createPortal(d: Deps) {
   const guard = (...need: Perm[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
       const ctx = await authenticate(req);
-      if (!ctx) return res.status(403).json({ error: "Access denied. Please sign in again." });
+      if (!ctx) {
+        const why = crmWhy(String(req.headers.authorization || "").slice(7));
+        return res.status(403).json({ error: `Access denied. Please sign in again.${why ? ` (${why})` : ""}` });
+      }
       if (need.length && !need.some(p => ctx.perms.includes(p))) {
         return res.status(403).json({ error: "You do not have permission for this section." });
       }

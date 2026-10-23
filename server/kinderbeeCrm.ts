@@ -64,16 +64,20 @@ export async function sendPaymentToCrm(p: PaymentRecord): Promise<void> {
 // then cached for a minute per token so deactivating someone in the CRM takes effect within a minute.
 // Someone allowed to verify payments in the CRM may also mark website payments verified / rejected ("payments").
 type CrmUser = { id: string; name: string; perms: string[] };
-const crmUsers = new Map<string, { user: CrmUser | null; until: number }>();
+const crmUsers = new Map<string, { user: CrmUser | null; until: number; why: string }>();
+// Why the last check of a CRM token failed, for the "Access denied" message the CRM shows
+export const crmWhy = (token: string) => crmUsers.get(token)?.why || "";
 
 export async function crmWebsiteUser(token: string): Promise<CrmUser | null> {
   const hit = crmUsers.get(token);
   if (hit && hit.until > Date.now()) return hit.user;
   let user: CrmUser | null = null;
+  let why = "";
   try {
     const headers = { apikey: CRM_KEY, Authorization: `Bearer ${token}` };
     const me = await fetch(`${CRM_URL}/auth/v1/user`, { headers, signal: AbortSignal.timeout(4000) });
-    if (me.ok) {
+    if (!me.ok) why = `CRM sign-in check returned ${me.status}: ${(await me.text()).slice(0, 120)}`;
+    else {
       const u: any = await me.json();
       const rpc = (fn: string, body: object) => fetch(`${CRM_URL}/rest/v1/rpc/${fn}`, {
         method: "POST", headers: { ...headers, "Content-Type": "application/json" },
@@ -81,12 +85,16 @@ export async function crmWebsiteUser(token: string): Promise<CrmUser | null> {
       }).then(async r => r.ok && (await r.json()) === true);
       const [website, verify] = await Promise.all([rpc("has_module", { m: "website" }), rpc("can_verify_payments", {})]);
       const perms = [...(website ? ["website", "gallery", "opportunities"] : []), ...(verify ? ["payments"] : [])];
-      if (perms.length) user = { id: `crm-${u.id}`, name: `${String(u.email || "").split("@")[0]} (CRM)`, perms };
+      if (!perms.length) why = "this CRM account has no Website Content or payment verification access";
+      else user = { id: `crm-${u.id}`, name: `${String(u.email || "").split("@")[0]} (CRM)`, perms };
     }
   } catch (err) {
     console.warn("KinderBee CRM: sign-in check failed", err);
+    why = `CRM sign-in check failed (${(err as Error).message})`;
+    crmUsers.set(token, { user: null, until: 0, why }); // not cached: the next request checks again
+    return null;
   }
   if (crmUsers.size > 500) crmUsers.clear();
-  crmUsers.set(token, { user, until: Date.now() + 60_000 });
+  crmUsers.set(token, { user, until: Date.now() + 60_000, why });
   return user;
 }
