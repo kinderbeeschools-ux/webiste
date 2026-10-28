@@ -363,14 +363,14 @@ export const HomePage: React.FC<HomePageProps> = ({
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
               Kinderbee International Preschool
               <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1">
-                Finnish Play-Based Learning in Bengaluru
+                Nordic-Inspired Play-Based Learning in Bengaluru
               </span>
             </h1>
             <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-2 drop-shadow-sm">
-              World-class Finnish preschool education in Ramamurthy Nagar, Bengaluru. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
+              World-class Nordic-inspired preschool education in Ramamurthy Nagar, Bengaluru. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
             </p>
             <ul className="flex flex-wrap justify-center gap-2 pt-1 text-xs sm:text-sm font-semibold text-white">
-              {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Finnish curriculum'].map((fact) => (
+              {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Nordic-inspired curriculum'].map((fact) => (
                 <li key={fact} className="bg-white/10 border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">{fact}</li>
               ))}
             </ul>
@@ -414,7 +414,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Our Preschool Programmes in Bengaluru
             </h2>
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              From playgroup admission to LKG and UKG, every Kinderbee nursery school stage follows a Finnish curriculum and playful pedagogy that builds curiosity, confidence, literacy and numeracy.
+              From playgroup admission to LKG and UKG, Kinderbee follows a Nordic-inspired curriculum and playful pedagogy that builds curiosity, confidence, literacy and numeracy.
             </p>
           </div>
 
@@ -427,7 +427,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div className="kb-frame relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-stone-100 border border-stone-100 shadow-2xs">
                   <img
                     src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Our%20Preschool%20Programmes/Playgroup.png"
-                    alt="Playgroup Toddler Explorers at Kinderbee"
+                    alt="Playgroup Smart Explorers at Kinderbee"
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -441,7 +441,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                 <div>
                   <h3 className="text-lg sm:text-xl font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors">
-                    Playgroup (Toddler Explorers)
+                    Playgroup (Smart Explorers)
                   </h3>
                   <p className="text-stone-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
                     A gentle, joyful transition from home to school. Focuses on sensory play, gross motor coordination, emotional bonding, and rhythm circles.
@@ -724,7 +724,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   Why Parents Choose <span className="text-[#E1007A]">Kinderbee</span>
                 </h2>
                 <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-                  Parents searching for the best preschool near me choose Kinderbee for its Finnish curriculum, trained teachers and warm, safe classrooms that feel like a second home.
+                  Parents searching for the best preschool near me choose Kinderbee for its Nordic-inspired curriculum, trained teachers and warm, safe classrooms that feel like a second home.
                 </p>
               </div>
               <button
@@ -740,7 +740,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               {[
                 {
                   icon: Sparkles,
-                  title: 'Finnish Playful Pedagogy',
+                  title: 'Nordic-inspired Pedagogy',
                   text: 'Children explore through structured inquiry and hands-on discovery rather than passive rote memorization, building deep critical thinking.',
                   tile: 'from-[#E1007A] to-pink-500 text-white',
                 },
@@ -844,7 +844,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   }}
                   className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer text-sm"
                 >
-                  <span>No Royalty Preschool Franchise</span>
+                  <span>FREE CRM</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -894,7 +894,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </h2>
 
               <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-                Join the Kinderbee NTT course in Bengaluru: an early childhood care and education diploma with Finnish playful pedagogy. Master play-based teaching, child psychology, classroom leadership, and NEP 2020 frameworks.
+                Join the Kinderbee NTT course in Bengaluru: an early childhood care and education diploma with Nordic-inspired playful pedagogy. Master play-based teaching, child psychology, classroom leadership, and NEP 2020 frameworks.
               </p>
             </div>
 
@@ -984,7 +984,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Our Holistic Learning Approach
             </h2>
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              Every day at Kinderbee, our Finnish curriculum preschool integrates cognitive, language, social-emotional and physical growth through balanced, playful exploration.
+              Every day at Kinderbee, our Nordic-inspired curriculum preschool integrates cognitive, language, social-emotional and physical growth through balanced, playful exploration.
             </p>
           </div>
 
