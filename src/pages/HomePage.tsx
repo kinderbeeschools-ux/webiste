@@ -362,12 +362,12 @@ export const HomePage: React.FC<HomePageProps> = ({
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.3, ease: EASE }} className="space-y-3">
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
               Kinderbee International Preschool
-              <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1">
-                Nordic-Inspired Play-Based Learning in Bengaluru
+              <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1 [text-wrap:balance]">
+                Where Nordic-Inspired Play Becomes Learning
               </span>
             </h1>
             <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-2 drop-shadow-sm">
-              World-class Nordic-inspired preschool education in Ramamurthy Nagar, Bengaluru. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
+              Play-based preschool in Ramamurthy Nagar, Bengaluru, with a Nordic-inspired curriculum. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
             </p>
             <ul className="flex flex-wrap justify-center gap-2 pt-1 text-xs sm:text-sm font-semibold text-white">
               {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Nordic-inspired curriculum'].map((fact) => (
@@ -382,7 +382,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={scrollToPreschool}
               className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
             >
-              <span>Explore Programmes</span>
+              <span>Explore Programs</span>
               <span className="text-lg">→</span>
             </button>
 
@@ -410,8 +410,8 @@ export const HomePage: React.FC<HomePageProps> = ({
               <GraduationCap className="w-3.5 h-3.5 text-[#E1007A]" />
               <span>EARLY CHILDHOOD DEVELOPMENT PATHWAYS</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-              Our Preschool Programmes in Bengaluru
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight [text-wrap:balance]">
+              Our Preschool <span className="font-serif-title italic font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#E1007A] to-[#FF8A00]">Programs</span> in Bengaluru
             </h2>
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
               From playgroup admission to LKG and UKG, Kinderbee follows a Nordic-inspired curriculum and playful pedagogy that builds curiosity, confidence, literacy and numeracy.
