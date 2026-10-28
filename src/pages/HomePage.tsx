@@ -317,8 +317,8 @@ export const HomePage: React.FC<HomePageProps> = ({
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
-        title="KinderBee Franchise | Preschool, School & College Setup India"
-        description="Explore KinderBee preschool franchise opportunities, CBSE school setup, degree college establishment and teacher training programs across India."
+        title="Kinderbee International Preschool in Bengaluru | Playgroup to UKG, Franchise & School Setup"
+        description="Kinderbee International Preschool in Ramamurthy Nagar, Bengaluru: Nordic-inspired, play-based Playgroup, Nursery, LKG, UKG and daycare. Admissions open. Also preschool franchise, CBSE school setup and teacher training."
         keywords="KinderBee franchise, preschool franchise India, best preschool franchise in India, no royalty preschool franchise, low investment preschool franchise, play school franchise, CBSE school setup, how to start a CBSE school, school franchise India, degree college establishment, college setup consultancy India, teacher training programs, NTT course, Kinderbee International Preschool Bengaluru"
         settings={settings} 
       />
@@ -361,13 +361,13 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Main Headline */}
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.3, ease: EASE }} className="space-y-3">
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
-              Kinderbee International Preschool
+              Kinderbee International Preschool <span className="block text-[0.42em] sm:text-[0.4em] font-sans font-semibold not-italic uppercase tracking-[0.22em] text-[#FFD400] pt-3">in Ramamurthy Nagar, Bengaluru</span>
               <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1 [text-wrap:balance]">
                 Where Nordic-Inspired Play Becomes Learning
               </span>
             </h1>
-            <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-2 drop-shadow-sm">
-              Play-based preschool in Ramamurthy Nagar, Bengaluru, with a Nordic-inspired curriculum. Trained teachers, safe CCTV-monitored classrooms and a play-based curriculum that builds confidence, language and early numeracy.
+            <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-3 drop-shadow-sm [text-wrap:balance]">
+              Admissions open for Playgroup, Nursery, LKG and UKG. Trained teachers, safe CCTV-monitored classrooms and a play-based Nordic‑inspired curriculum that builds confidence, language and early numeracy.
             </p>
             <ul className="flex flex-wrap justify-center gap-2 pt-1 text-xs sm:text-sm font-semibold text-white">
               {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Nordic-inspired curriculum'].map((fact) => (
