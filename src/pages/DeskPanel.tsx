@@ -4,6 +4,7 @@ import type { Enquiry, PaymentRecord, SystemSettings } from '../types';
 import { STAGES, stageOf, fmtDate, csvCell, phoneKey, rupees, type Api } from './admin/ui';
 import { ENQUIRY_CATEGORIES, enquiryCategory, categoryInfo } from '../data/enquiry';
 import type { Me } from './admin/portal/common';
+import type { Consultation } from '../data/consultation';
 
 // Focused desk for the two daily jobs: answering enquiries and verifying UPI payments.
 // Same login, token and API as /admin; styled with the website's own brand colours.
@@ -37,6 +38,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
   const [view, setView] = useState<View>('enquiries');
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
+  const [bookings, setBookings] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -56,11 +58,12 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
     if (!who) return;
     setLoading(true);
     const list = (r: PromiseSettledResult<any>) => (r.status === 'fulfilled' && Array.isArray(r.value) ? r.value : []);
-    const [e, p] = await Promise.allSettled([
+    const [e, p, b] = await Promise.allSettled([
       who.perms.includes('leads') || who.perms.includes('leads_branch') ? api('/api/enquiries') : Promise.resolve([]),
       who.perms.includes('payments') ? api('/api/payments') : Promise.resolve([]),
+      who.perms.includes('payments') && who.perms.includes('leads') ? api('/api/consultations') : Promise.resolve([]),
     ]);
-    setEnquiries(list(e)); setPayments(list(p)); setLoading(false);
+    setEnquiries(list(e)); setPayments(list(p)); setBookings(list(b).filter((c: Consultation) => c.status === 'pending_payment')); setLoading(false);
   };
 
   useEffect(() => {
@@ -128,12 +131,12 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
 
         <div className="flex gap-2 border-b border-stone-200">
           {showEnq && <TabBtn on={view === 'enquiries'} onClick={() => setView('enquiries')} icon={Inbox} text="Enquiries" count={stats.fresh} />}
-          {showPay && <TabBtn on={view === 'payments'} onClick={() => setView('payments')} icon={CreditCard} text="Payments" count={stats.pending} />}
+          {showPay && <TabBtn on={view === 'payments'} onClick={() => setView('payments')} icon={CreditCard} text="Payments" count={stats.pending + bookings.length} />}
         </div>
 
         {loading ? <p className="text-sm text-stone-500">Loading…</p>
           : view === 'enquiries' && showEnq ? <Enquiries items={enquiries} setItems={setEnquiries} api={api} flash={flash} canDelete={can('leads_delete')} />
-          : showPay ? <Payments items={payments} setItems={setPayments} leads={enquiries} api={api} flash={flash} />
+          : showPay ? <Payments items={payments} setItems={setPayments} leads={enquiries} bookings={bookings} reload={() => load()} api={api} flash={flash} />
           : <p className="text-sm text-stone-500">Your role has no enquiries or payments access.</p>}
       </main>
     </div>
@@ -259,7 +262,7 @@ const FILTERS: { id: PaymentRecord['status'] | 'all'; text: string }[] = [
   { id: 'pending_verification', text: 'To verify' }, { id: 'verified', text: 'Verified' }, { id: 'rejected', text: 'Rejected' }, { id: 'all', text: 'All' },
 ];
 
-const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[] }> = ({ items, setItems, leads, api, flash }) => {
+const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings: Consultation[]; reload: () => void }> = ({ items, setItems, leads, bookings, reload, api, flash }) => {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('pending_verification');
   const [q, setQ] = useState('');
   const [accessNote, setAccessNote] = useState<Record<string, string>>({});
@@ -313,6 +316,16 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[] }> = ({ i
         Match each UTR and amount against your bank / UPI statement before you verify. Verifying a course payment emails the student their access automatically.
       </p>
 
+      {!!bookings.length && (filter === 'pending_verification' || filter === 'all') && !q && (
+        <div className="space-y-2.5 rounded-2xl border-2 border-dashed border-[#E1007A]/30 bg-[#E1007A]/5 p-4">
+          <div>
+            <h3 className="font-display text-base font-extrabold text-[#E1007A]">Booked, no payment proof yet ({bookings.length})</h3>
+            <p className="text-xs text-stone-600">These people booked a ₹99 consultation but have not submitted their UTR, so nothing is in Payments. If they have paid, check your UPI statement and record the payment.</p>
+          </div>
+          {bookings.map(b => <Booking key={b.ref} b={b} api={api} flash={flash} onDone={reload} />)}
+        </div>
+      )}
+
       {!shown.length ? <Empty text={filter === 'pending_verification' ? 'Nothing waiting to be verified.' : 'No payments here.'} /> : (
         <ul className="space-y-2.5">
           {shown.map(p => {
@@ -363,3 +376,39 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[] }> = ({ i
 const Empty: React.FC<{ text: string }> = ({ text }) => (
   <div className="rounded-2xl border-2 border-dashed border-stone-200 py-12 text-center text-sm font-semibold text-stone-400">{text}</div>
 );
+
+const Booking: React.FC<{ b: Consultation; api: Api; flash: (m: string) => void; onDone: () => void }> = ({ b, api, flash, onDone }) => {
+  const [open, setOpen] = useState(false);
+  const [utr, setUtr] = useState('');
+  const [busy, setBusy] = useState(false);
+  const phone = phoneKey(b.phone);
+  const save = async () => {
+    setBusy(true);
+    try {
+      await api(`/api/consultations/${b.ref}/record-payment`, { method: 'POST', body: JSON.stringify({ utr }) });
+      flash('Payment recorded. Verify it under To verify.');
+      onDone();
+    } catch { /* the error banner shows the reason */ } finally { setBusy(false); }
+  };
+  return (
+    <div className="space-y-3 rounded-xl bg-white p-3.5 ring-1 ring-stone-200">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <div className="font-display font-extrabold">{b.name} <span className="font-mono text-xs font-semibold text-stone-400">{b.ref}</span></div>
+          <div className="text-xs text-stone-500">{b.category} · {b.preferredDate}, {b.timeSlot} · booked {SINCE(b.createdAt)}</div>
+        </div>
+        <div className="flex gap-2">
+          <a className={actGhost} href={`tel:+91${phone}`}><Phone className="h-4 w-4" /> {b.phone}</a>
+          <a className={actGhost} href={`https://wa.me/91${phone}`} target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4" /></a>
+          <button className={`${act} bg-[#1C1917] text-white`} onClick={() => setOpen(o => !o)}>Record payment</button>
+        </div>
+      </div>
+      {open && (
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input className={`${field} font-mono`} inputMode="numeric" maxLength={14} placeholder="12-digit UTR from your UPI statement" value={utr} onChange={e => setUtr(e.target.value.replace(/[^\d\s]/g, ''))} />
+          <button className={`${act} bg-emerald-600 text-white hover:bg-emerald-700`} disabled={busy || utr.replace(/\s/g, '').length !== 12} onClick={save}><Check className="h-4 w-4" /> Save</button>
+        </div>
+      )}
+    </div>
+  );
+};

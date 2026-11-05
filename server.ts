@@ -1279,6 +1279,28 @@ app.post("/api/consultations/:ref/payment", async (req, res) => {
   }
 });
 
+// Admin: the customer paid but never submitted the UTR (closed the page, no network). Records the payment against the
+// booking so it appears in Payments for verification, exactly as if the customer had submitted it.
+app.post("/api/consultations/:ref/record-payment", guard("payments"), handle(async (req, res) => {
+  const [c] = await findConsultations({ ref: String(req.params.ref).trim().toUpperCase() });
+  if (!c) return res.status(404).json({ error: "Booking not found." });
+  if (c.status !== "pending_payment" && c.status !== "payment_failed") return res.status(409).json({ error: "A payment is already recorded for this booking." });
+  const utr = String(req.body?.utr || "").replace(/\s/g, "");
+  if (!UTR_RE.test(utr)) return res.status(400).json({ error: "Enter the 12-digit UPI transaction ID (UTR)." });
+  const paymentDate = isRealDate(String(req.body?.paymentDate || "")) ? String(req.body.paymentDate) : istToday();
+  const payment: PaymentRecord = {
+    id: newPaymentId(), applicantName: c.name, admissionNumber: c.ref, programme: `1:1 Consultation – ${c.category}`,
+    amount: String(c.amount || CONSULT_FEE), upiRefNumber: utr, payerPhone: c.phone, payerEmail: c.email || "", paymentDate,
+    notes: `Consultation booking ${c.ref} · ${c.preferredDate}, ${c.timeSlot} · recorded by admin`,
+    status: "pending_verification", createdAt: new Date().toISOString(),
+  };
+  const failed = await savePayment(payment);
+  if (failed) return res.status(failed.status).json({ error: failed.error });
+  await saveConsultation({ ref: c.ref, status: "verification_pending", upiRef: utr, paymentId: payment.id });
+  await logActivity({ leadKey: c.phone, type: "payment", detail: `Consultation ${c.ref}: ₹${payment.amount} recorded by admin (UTR ${utr})` });
+  res.json({ payment });
+}));
+
 // Admin: list and update bookings
 app.get("/api/consultations", guard("leads"), handle(async (req, res) => res.json(await findConsultations())));
 

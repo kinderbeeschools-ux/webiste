@@ -323,6 +323,9 @@ export const ConsultationBooking: React.FC<{ settings: SystemSettings | null }> 
                 <Smartphone className="h-4 w-4" /> Pay ₹{CONSULT_FEE} with a UPI app
               </a>
 
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs font-semibold text-amber-800">
+                Important: your payment is recorded only after you enter the UTR below and press Submit. Paying alone is not enough.
+              </p>
               <form onSubmit={submitUtr} noValidate className="space-y-2.5 border-t border-stone-100 pt-4">
                 <label htmlFor="cb-utr" className={labelCls}>After paying, enter the UPI transaction ID (UTR) *</label>
                 <input id="cb-utr" value={utr} onChange={e => setUtr(e.target.value.replace(/[^\d\s]/g, ''))} inputMode="numeric" maxLength={14}
