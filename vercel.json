@@ -10,6 +10,7 @@
       "destination": "/api"
     },
     { "source": "/admin", "destination": "/index.html" },
+    { "source": "/desk", "destination": "/index.html" },
     { "source": "/payments", "destination": "/index.html" },
     { "source": "/blog/:id", "destination": "/blog/index.html" }
   ]

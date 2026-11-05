@@ -24,6 +24,7 @@ const PATHS: Record<string, string> = {
   'cancellation-refund': '/cancellation-refund',
   'refund-policy': '/cancellation-refund',
   admin: '/admin',
+  desk: '/desk',
 };
 
 export const pathFor = (tab: string, blogId?: string) =>
@@ -43,4 +44,4 @@ export const blogIdFor = (path: string) => {
 };
 
 // Pages written out as static HTML at build time (payments and admin stay client-only)
-export const PRERENDER_PATHS = [...new Set(Object.values(PATHS))].filter(p => p !== '/admin' && p !== '/payments');
+export const PRERENDER_PATHS = [...new Set(Object.values(PATHS))].filter(p => p !== '/admin' && p !== '/desk' && p !== '/payments');

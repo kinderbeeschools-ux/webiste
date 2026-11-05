@@ -56,7 +56,7 @@ fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="
 ${pages.map(p => `  <url><loc>${SITE}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
 </urlset>
 `);
-fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
+fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /admin\nDisallow: /desk\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
 console.log(`prerender: ${pages.length} pages`);
 
 // IndexNow: on production builds, submit only the pages whose content differs from the live site.

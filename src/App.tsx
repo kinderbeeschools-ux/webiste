@@ -26,6 +26,7 @@ import { PaymentPage } from './pages/PaymentPage';
 import { JointVenturesPage } from './pages/JointVenturesPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { AdminPanel } from './pages/AdminPanel';
+import { DeskPanel } from './pages/DeskPanel';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 import { DEFAULT_BLOGS } from './data/defaultBlogs';
@@ -202,7 +203,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
   const handleLoginSuccess = (token: string) => {
     setAdminToken(token);
     localStorage.setItem('kips_admin_token', token);
-    setCurrentTab('admin');
+    setCurrentTab(t => (t === 'desk' ? 'desk' : 'admin'));
   };
 
   const handleLogoutAdmin = () => {
@@ -211,15 +212,18 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
     setCurrentTab('home');
   };
 
-  const inAdmin = currentTab === 'admin' && !!adminToken;
+  const inAdmin = (currentTab === 'admin' || currentTab === 'desk') && !!adminToken;
   useAutoReveal(`${currentTab}|${selectedBlog?.id || ''}|${blogs.length}`, !inAdmin);
 
   // Signed-out /admin: a standalone sign-in page, without the website around it
-  if (currentTab === 'admin' && !adminToken) {
+  if ((currentTab === 'admin' || currentTab === 'desk') && !adminToken) {
     return <AdminLoginModal isOpen asPage onClose={() => setCurrentTab('home')} onLoginSuccess={handleLoginSuccess} />;
   }
 
   // If user is on Admin Tab and authenticated, show the admin panel
+  if (inAdmin && currentTab === 'desk') {
+    return <DeskPanel adminToken={adminToken!} onLogout={() => { handleLogoutAdmin(); setCurrentTab('desk'); }} onVisitSite={() => setCurrentTab('home')} settings={settings} />;
+  }
   if (inAdmin) {
     return (
       <AdminPanel
