@@ -25,6 +25,19 @@ import { createPortal } from "./server/portal.js";
 const app = express();
 app.use(express.json({ limit: "4mb" })); // room for base64 image uploads (Vercel caps bodies at 4.5MB)
 
+// Admin passkey: both sign-in routes (owner and staff) need it before the password is even checked.
+// Stored as a SHA-256 hash; set ADMIN_PASSKEY in the host environment to change it without a code change.
+const PASSKEY_HASH = "18ce8e59c3a10675a4b2b32cffbe1c1055a3b840b08c47ef476c6f4ff55853bc";
+app.post(["/api/auth/login", "/api/auth/user-login"], (req, res, next) => {
+  const given = String(req.body?.passkey ?? "");
+  const h = (s: string) => crypto.createHash("sha256").update(s).digest();
+  const ok = process.env.ADMIN_PASSKEY
+    ? crypto.timingSafeEqual(h(given), h(process.env.ADMIN_PASSKEY))
+    : h(given).toString("hex") === PASSKEY_HASH;
+  if (ok) return next();
+  res.status(401).json({ success: false, error: "Incorrect passkey." });
+});
+
 // The KinderBee CRM (Website Content module) calls the content APIs from its own domain
 const CRM_ORIGINS = ["https://kinderbee-crm.vercel.app", "http://localhost:3400"];
 app.use("/api", (req, res, next) => {

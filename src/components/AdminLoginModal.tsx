@@ -13,6 +13,7 @@ const field = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 te
 
 export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClose, onLoginSuccess, asPage = false }) => {
   const [password, setPassword] = useState('');
+  const [passkey, setPasskey] = useState('');
   const [staff, setStaff] = useState(false); // false = owner (CEO) password, true = staff / partner account
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
@@ -29,7 +30,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
       const res = await fetch(staff ? '/api/auth/user-login' : '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(staff ? { username, password } : { password })
+        body: JSON.stringify(staff ? { username, password, passkey } : { password, passkey })
       });
       const data = await res.json();
       if (data.success && data.token) {
@@ -72,6 +73,13 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
         {error && <div role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700">{error}</div>}
 
         <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-1.5">
+            <label htmlFor="login-passkey" className="block text-xs font-medium text-slate-600">Passkey</label>
+            <div className="relative">
+              <ShieldCheck className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <input id="login-passkey" type="password" required autoFocus autoComplete="off" value={passkey} onChange={e => setPasskey(e.target.value)} className={`${field} pl-9`} />
+            </div>
+          </div>
           {staff && (
             <div className="space-y-1.5">
               <label htmlFor="login-username" className="block text-xs font-medium text-slate-600">Username</label>
@@ -82,7 +90,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
             <label htmlFor="login-password" className="block text-xs font-medium text-slate-600">{staff ? 'Password' : 'Owner password'}</label>
             <div className="relative">
               <Lock className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
-              <input id="login-password" type="password" required autoFocus={!staff} autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} className={`${field} pl-9`} />
+              <input id="login-password" type="password" required autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} className={`${field} pl-9`} />
             </div>
           </div>
           <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 py-2.5 text-sm font-medium text-white shadow-xs transition hover:bg-slate-800 disabled:opacity-60 cursor-pointer">

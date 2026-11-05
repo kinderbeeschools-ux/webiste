@@ -326,76 +326,77 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* =========================================================================
           SECTION 1: HERO BANNER (VIDEO BACKGROUND)
           ========================================================================= */}
-      <section className="relative min-h-[460px] sm:min-h-[500px] lg:min-h-[540px] flex items-center justify-center overflow-hidden bg-stone-950 text-white py-10 sm:py-14 border-b border-stone-800">
-        {/* Background Video with AutoPlay, Loop, Muted, PlaysInline - purely plays without sound */}
+      <section aria-labelledby="hero-title" className="relative isolate flex min-h-[560px] items-center justify-center overflow-hidden bg-stone-950 py-16 text-white sm:min-h-[620px] lg:min-h-[680px]">
         {settings?.homeHeroImage ? (
-          <img src={settings.homeHeroImage} alt="Kinderbee International Preschool" fetchPriority="high"
-            className="absolute inset-0 w-full h-full object-cover object-center kb-kenburns pointer-events-none" />
+          <img src={settings.homeHeroImage} alt="Children learning through play at Kinderbee International Preschool, Ramamurthy Nagar, Bengaluru" fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover object-center kb-kenburns pointer-events-none" />
         ) : (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
+        <video autoPlay loop muted playsInline preload="metadata" aria-hidden="true"
           poster="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"
-          className="absolute inset-0 w-full h-full object-cover object-center kb-kenburns transition-opacity duration-700 pointer-events-none"
-        >
+          className="absolute inset-0 h-full w-full object-cover object-center kb-kenburns pointer-events-none">
           <source src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Video/banner%20Video.mp4" type="video/mp4" />
         </video>
         )}
 
-        {/* Cinematic Translucent Dark Overlay for High Contrast Legibility */}
-        <div className="absolute inset-0 bg-black/60 z-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-black/40 to-stone-950/70 z-10 pointer-events-none" />
+        {/* Layered scrim: deep at the edges for legibility, a soft brand glow behind the headline */}
+        <div className="absolute inset-0 z-10 bg-stone-950/75 pointer-events-none" />
+        <div className="absolute inset-0 z-10 bg-[radial-gradient(60%_50%_at_50%_42%,rgba(225,0,122,0.22),transparent_70%)] pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t from-[#FAF9F6]/10 to-transparent pointer-events-none" />
 
-        {/* Foreground Content: Centered to match exact design in screenshot */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-20 w-full text-center space-y-5 sm:space-y-6 my-auto">
-          {/* Top Pill Badge: THE FUTURE OF EDUCATION STARTS HERE */}
-          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1, ease: EASE }} className="flex justify-center">
-            <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#FFD400] bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
-              <Sparkles className="w-4 h-4 text-[#FFD400]" />
-              <span>Admissions Open · Playgroup to UKG</span>
-            </div>
-          </motion.div>
+        <div className="relative z-20 mx-auto w-full max-w-4xl px-5 text-center sm:px-8">
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.05, ease: EASE }}
+            className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD400]/40 bg-white/5 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#FFD400] backdrop-blur-md sm:text-xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FFD400] shadow-[0_0_10px_#FFD400]" />
+            Admissions open · Playgroup to UKG
+          </motion.p>
 
-          {/* Main Headline */}
-          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.3, ease: EASE }} className="space-y-3">
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-serif-title font-medium tracking-tight text-white leading-[1.12] drop-shadow-md">
-              Kinderbee International Preschool <span className="block text-[0.42em] sm:text-[0.4em] font-sans font-semibold not-italic uppercase tracking-[0.22em] text-[#FFD400] pt-3">in Ramamurthy Nagar, Bengaluru</span>
-              <span className="block font-serif-title italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-400 to-[#E1007A] pt-1 [text-wrap:balance]">
-                Where Nordic-Inspired Play Becomes Learning
-              </span>
-            </h1>
-            <p className="text-stone-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto pt-3 drop-shadow-sm [text-wrap:balance]">
-              Admissions open for Playgroup, Nursery, LKG and UKG. Trained teachers, safe CCTV-monitored classrooms and a play-based Nordic‑inspired curriculum that builds confidence, language and early numeracy.
-            </p>
-            <ul className="flex flex-wrap justify-center gap-2 pt-1 text-xs sm:text-sm font-semibold text-white">
-              {['Ages 1.5 – 8 years', 'Playgroup · Nursery · LKG · UKG', 'Daycare for working parents', 'Nordic-inspired curriculum'].map((fact) => (
-                <li key={fact} className="bg-white/10 border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">{fact}</li>
-              ))}
-            </ul>
-          </motion.div>
+          <motion.h1 id="hero-title" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+            className="mt-7 font-serif-title text-[2.5rem] font-medium leading-[1.08] tracking-tight text-white [text-wrap:balance] sm:text-6xl lg:text-7xl">
+            Kinderbee International Preschool
+            <span className="mt-3 block font-sans text-[0.3em] font-semibold uppercase tracking-[0.3em] text-[#FFD400] sm:text-[0.26em]">
+              Ramamurthy Nagar · Bengaluru
+            </span>
+          </motion.h1>
 
-          {/* Call-to-Action Buttons */}
-          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.55, ease: EASE }} className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1 sm:pt-2">
-            <button
-              onClick={scrollToPreschool}
-              className="bg-[#E1007A] hover:bg-pink-600 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-pink-900/40 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
-            >
-              <span>Explore Programs</span>
-              <span className="text-lg">→</span>
+          <motion.div initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }} transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
+            className="mx-auto mt-7 h-px w-24 bg-gradient-to-r from-transparent via-[#FFD400] to-transparent" />
+
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }}
+            className="mt-6 font-serif-title text-2xl italic leading-snug text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#ff4fa8] [text-wrap:balance] sm:text-4xl">
+            Where Nordic-inspired play becomes learning
+          </motion.p>
+
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
+            className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-stone-200 [text-wrap:balance] sm:text-lg">
+            Playgroup, Nursery, LKG, UKG and daycare, taught by trained teachers in safe, CCTV-monitored classrooms. A play-based curriculum that builds confidence, language and early numeracy.
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
+            className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <button onClick={() => { setCurrentTab('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-8px_rgba(225,0,122,0.7)] transition hover:-translate-y-0.5 hover:bg-[#c90070] sm:w-auto sm:text-base cursor-pointer">
+              Book a School Visit <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </button>
-
-            <button
-              onClick={() => {
-                setCurrentTab('contact');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="bg-stone-800/80 hover:bg-stone-700/90 text-white font-bold px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl border border-white/20 backdrop-blur-md shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
-            >
-              <span>Talk to Our Experts</span>
+            <button onClick={scrollToPreschool}
+              className="inline-flex w-full items-center justify-center rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/15 sm:w-auto sm:text-base cursor-pointer">
+              Explore Programs
             </button>
           </motion.div>
+
+          <motion.ul initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.8, ease: EASE }}
+            className="mx-auto mt-12 grid max-w-3xl grid-cols-2 divide-white/15 rounded-2xl border border-white/15 bg-white/5 py-4 text-left backdrop-blur-md sm:grid-cols-4 sm:divide-x">
+            {[
+              { icon: Smile, k: 'Ages 1.5 – 8', v: 'Playgroup to UKG' },
+              { icon: GraduationCap, k: 'Trained teachers', v: 'Nordic-inspired method' },
+              { icon: ShieldCheck, k: 'CCTV-safe', v: 'Monitored classrooms' },
+              { icon: Clock, k: 'Daycare', v: 'For working parents' },
+            ].map(({ icon: Icon, k, v }) => (
+              <li key={k} className="flex items-center gap-3 px-4 py-2">
+                <Icon className="h-5 w-5 shrink-0 text-[#FFD400]" aria-hidden="true" />
+                <span className="leading-tight"><span className="block text-sm font-bold text-white">{k}</span><span className="block text-xs text-stone-300">{v}</span></span>
+              </li>
+            ))}
+          </motion.ul>
         </div>
       </section>
 
