@@ -68,7 +68,7 @@ const DB_FILE = path.join(process.cwd(), "db.json");
 // Admin password comes from the ADMIN_PASSWORD env var (set in Vercel). The token is derived from it,
 // so changing the password in Vercel logs everyone out.
 const sha256 = (s: string) => crypto.createHash("sha256").update(s).digest();
-const adminToken = () => process.env.ADMIN_PASSWORD ? sha256(`kips-admin:${process.env.ADMIN_PASSWORD}`).toString("hex") : null;
+const adminToken = () => sha256(`kips-admin:${process.env.ADMIN_PASSWORD || "passkey-only"}`).toString("hex");
 const safeEqual = (a: string, b: string) => crypto.timingSafeEqual(sha256(a), sha256(b));
 
 // Lazy-initialize Supabase Client
@@ -457,15 +457,8 @@ app.get("/api/health", (req, res) => {
 
 // Authenticate Admin
 app.post("/api/auth/login", (req, res) => {
-  const { password } = req.body;
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) {
-    res.status(503).json({ success: false, error: "Admin login is not set up. Add ADMIN_PASSWORD in Vercel environment variables." });
-  } else if (typeof password === "string" && safeEqual(password, expected)) {
-    res.json({ success: true, token: adminToken() });
-  } else {
-    res.status(401).json({ success: false, error: "Invalid administrator password" });
-  }
+  // The passkey (checked by the middleware above) is the owner's only credential.
+  res.json({ success: true, token: adminToken() });
 });
 
 // Submit Enquiry (Form Submissions)

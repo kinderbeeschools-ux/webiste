@@ -30,7 +30,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
       const res = await fetch(staff ? '/api/auth/user-login' : '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(staff ? { username, password, passkey } : { password, passkey })
+        body: JSON.stringify(staff ? { username, password, passkey } : { passkey })
       });
       const data = await res.json();
       if (data.success && data.token) {
@@ -86,13 +86,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
               <input id="login-username" required autoFocus autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} className={field} />
             </div>
           )}
+          {staff && (
           <div className="space-y-1.5">
-            <label htmlFor="login-password" className="block text-xs font-medium text-slate-600">{staff ? 'Password' : 'Owner password'}</label>
+            <label htmlFor="login-password" className="block text-xs font-medium text-slate-600">Password</label>
             <div className="relative">
               <Lock className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
               <input id="login-password" type="password" required autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} className={`${field} pl-9`} />
             </div>
           </div>
+          )}
           <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 py-2.5 text-sm font-medium text-white shadow-xs transition hover:bg-slate-800 disabled:opacity-60 cursor-pointer">
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
