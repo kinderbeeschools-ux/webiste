@@ -264,3 +264,8 @@
 @keyframes kbTwinkle { 0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); } 50% { opacity: 0.35; transform: scale(0.75) rotate(20deg); } }
 .kb-twinkle { animation: kbTwinkle 3.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .kb-twinkle { animation: none; } }
+
+/* Kinderbee Desk (admin) uses Manrope throughout, headings included */
+.desk-ui, .desk-ui :is(h1, h2, h3, h4, .font-display) {
+  font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
+}
