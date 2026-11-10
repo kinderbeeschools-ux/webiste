@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, animate, motion } from 'motion/react';
 import {
   Inbox, CreditCard, LogOut, ExternalLink, Download, RefreshCw, Phone, MessageCircle, Mail, Trash2, Search, Check, X, Undo2,
   Clock3, Sparkles, Users, Hourglass, IndianRupee, CircleCheck, CircleX, Copy, ChevronDown, ChevronRight, CalendarDays,
@@ -15,14 +15,15 @@ import type { Consultation } from '../data/consultation';
 // Same login, token and API as /admin; only the presentation lives here.
 
 const PINK = '#E90078', PURPLE = '#7800B9', YELLOW = '#FFD000', INK = '#191919';
-const field = 'w-full rounded-xl border border-black/[0.08] bg-white px-3.5 py-2.5 text-sm text-[#191919] placeholder:text-stone-400 transition focus:border-[#E90078] focus:outline-none focus:ring-4 focus:ring-[#E90078]/10';
-const pill = (on: boolean) => `inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${on ? 'bg-[#191919] text-white shadow-sm' : 'bg-white text-stone-600 ring-1 ring-black/[0.08] hover:text-[#E90078] hover:ring-[#E90078]/40'}`;
+const field = 'w-full rounded-xl border border-white/80 bg-white/70 backdrop-blur-md px-3.5 py-2.5 text-sm text-[#191919] placeholder:text-stone-400 transition focus:border-[#E90078] focus:outline-none focus:ring-4 focus:ring-[#E90078]/10';
+const pill = (on: boolean) => `inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${on ? 'bg-[#191919] text-white shadow-sm' : 'bg-white/60 backdrop-blur-md text-stone-600 ring-1 ring-white/80 shadow-sm hover:text-[#E90078] hover:ring-[#E90078]/40'}`;
 const act = 'inline-flex shrink-0 items-center whitespace-nowrap justify-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-bold transition cursor-pointer active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50';
-const actGhost = `${act} bg-white text-stone-700 ring-1 ring-black/[0.08] hover:bg-stone-50 hover:ring-black/15`;
+const actGhost = `${act} bg-white/65 backdrop-blur-md text-stone-700 ring-1 ring-black/[0.06] shadow-sm hover:bg-white hover:ring-black/10`;
 const actDark = `${act} bg-[#191919] text-white hover:bg-black`;
 const actGreen = `${act} bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 hover:bg-emerald-700`;
 const label = 'text-[11px] font-bold uppercase tracking-wider text-stone-400';
-const card = 'rounded-2xl bg-white ring-1 ring-black/[0.06] shadow-[0_1px_2px_rgba(25,25,25,0.04),0_4px_16px_-8px_rgba(25,25,25,0.08)]';
+const card = 'desk-glass desk-sheen rounded-2xl';
+const spring = { type: 'spring' as const, bounce: 0.4, duration: 0.6 };
 
 const PAY_STYLE: Record<PaymentRecord['status'], { text: string; cls: string; bar: string; icon: LucideIcon }> = {
   pending_verification: { text: 'Pending', cls: 'bg-[#FFD000]/25 text-[#6b5400] ring-[#FFD000]/50', bar: YELLOW, icon: Hourglass },
@@ -30,13 +31,38 @@ const PAY_STYLE: Record<PaymentRecord['status'], { text: string; cls: string; ba
   rejected: { text: 'Rejected', cls: 'bg-red-50 text-red-700 ring-red-200', bar: '#dc2626', icon: CircleX },
 };
 const SINCE = (iso?: string) => { const d = Math.floor((Date.now() - new Date(iso || 0).getTime()) / 864e5); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : `${d}d ago`; };
-const initials = (n?: string) => (n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const initials = (n?: string) => (n || '?').trim().split(/\s+/).filter(w => /\p{L}/u.test(w[0])).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 const download = (name: string, head: string[], rows: unknown[][]) => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([[head, ...rows].map(r => r.map(csvCell).join(',')).join('\n')], { type: 'text/csv' }));
   a.download = `${name}-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
 };
+
+// Number that rolls up to its value whenever the value changes
+const CountUp: React.FC<{ to: number; fmt?: (n: number) => string }> = ({ to, fmt = n => String(n) }) => {
+  const [n, setN] = useState(0);
+  const from = React.useRef(0);
+  useEffect(() => {
+    const c = animate(from.current, to, { duration: 1, ease: [0.16, 1, 0.3, 1], onUpdate: v => { from.current = v; setN(v); } });
+    return () => c.stop();
+  }, [to]);
+  return <>{fmt(Math.round(n))}</>;
+};
+
+// Confetti pop in brand colours, shown when a payment is verified
+const Burst: React.FC = () => (
+  <div className="pointer-events-none fixed inset-0 z-[80] overflow-hidden" aria-hidden>
+    {Array.from({ length: 36 }, (_, i) => {
+      const a = (i / 36) * Math.PI * 2, d = 140 + (i % 5) * 45;
+      return (
+        <motion.span key={i} className="absolute left-1/2 top-1/2 h-2.5 w-2.5" style={{ background: [PINK, PURPLE, YELLOW, '#10b981'][i % 4], borderRadius: i % 3 ? 3 : 999 }}
+          initial={{ x: 0, y: 0, scale: 0, opacity: 1 }} animate={{ x: Math.cos(a) * d, y: Math.sin(a) * d + 160, scale: [0, 1.3, 1], rotate: 540, opacity: [1, 1, 0] }}
+          transition={{ duration: 1.3, ease: [0.2, 0.8, 0.3, 1] }} />
+      );
+    })}
+  </div>
+);
 
 // ---------- Confirmation dialog: `await ask({...})` resolves true on confirm ----------
 type Ask = { title: string; body: string; ok: string; tone: 'danger' | 'success' };
@@ -53,13 +79,13 @@ function useConfirm(): [AskFn, React.ReactNode] {
   const ui = (
     <AnimatePresence>
       {st && (
-        <motion.div className="fixed inset-0 z-[60] grid place-items-center bg-[#191919]/40 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => close(false)}>
+        <motion.div className="fixed inset-0 z-[60] grid place-items-center bg-[#191919]/30 p-4 backdrop-blur-md" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => close(false)}>
           <motion.div role="alertdialog" aria-modal="true" aria-labelledby="desk-confirm-title" onClick={e => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.95, y: 8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-            className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <span className={`grid h-11 w-11 place-items-center rounded-2xl ${st.tone === 'danger' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+            initial={{ opacity: 0, scale: 0.8, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 10 }} transition={spring}
+            className="desk-glass w-full max-w-md rounded-3xl p-6 shadow-2xl">
+            <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ ...spring, delay: 0.1 }} className={`grid h-11 w-11 place-items-center rounded-2xl ${st.tone === 'danger' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
               {st.tone === 'danger' ? <TriangleAlert className="h-5 w-5" /> : <CircleCheck className="h-5 w-5" />}
-            </span>
+            </motion.span>
             <h2 id="desk-confirm-title" className="mt-4 text-lg font-extrabold">{st.title}</h2>
             <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{st.body}</p>
             <div className="mt-6 flex justify-end gap-2">
@@ -87,6 +113,16 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [ask, confirmUi] = useConfirm();
+  const [burst, setBurst] = useState(0);
+  const party = () => { setBurst(Date.now()); setTimeout(() => setBurst(0), 1500); };
+  // Feeds the pointer position to the .desk-sheen glass highlights
+  const sheen = (e: React.PointerEvent) => {
+    const el = (e.target as HTMLElement).closest?.('.desk-sheen') as HTMLElement | null;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    el.style.setProperty('--my', `${e.clientY - r.top}px`);
+  };
 
   const api: Api = async (url, options = {}) => {
     const res = await fetch(url, { ...options, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}`, ...(options.headers || {}) } });
@@ -145,7 +181,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
     { t: 'New enquiries', v: stats.fresh, s: `${stats.today} received today`, icon: Sparkles, color: PINK, go: 'enquiries' as View },
     { t: 'Total enquiries', v: enquiries.length, s: 'all time', icon: Users, color: PURPLE, go: 'enquiries' as View },
     { t: 'Payments to verify', v: stats.pending, s: stats.pending ? 'check each UTR' : 'all caught up', icon: Hourglass, color: '#C9A000', go: 'payments' as View, hot: stats.pending > 0 },
-    { t: 'Verified revenue', v: rupees(stats.revenue), s: `${stats.verified} payment${stats.verified === 1 ? '' : 's'}`, icon: IndianRupee, color: INK, go: 'payments' as View, dark: true },
+    { t: 'Verified revenue', v: stats.revenue, fmt: (n: number) => rupees(n), s: `${stats.verified} payment${stats.verified === 1 ? '' : 's'}`, icon: IndianRupee, color: INK, go: 'payments' as View, dark: true },
   ].filter((_, i) => (i < 2 ? showEnq : showPay));
   const tabs = [
     showEnq && { id: 'enquiries' as View, text: 'Enquiries', icon: Inbox, count: stats.fresh },
@@ -153,22 +189,27 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
   ].filter(Boolean) as { id: View; text: string; icon: LucideIcon; count: number }[];
 
   const TabBar = ({ className = '' }: { className?: string }) => (
-    <nav className={`flex rounded-2xl bg-stone-100 p-1 ${className}`} aria-label="Desk sections">
+    <nav className={`flex rounded-2xl bg-white/40 p-1 shadow-inner ring-1 ring-white/70 backdrop-blur-xl ${className}`} aria-label="Desk sections">
       {tabs.map(t => (
         <button key={t.id} onClick={() => setView(t.id)} aria-current={view === t.id ? 'page' : undefined}
           className={`relative flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition cursor-pointer ${view === t.id ? 'text-[#191919]' : 'text-stone-500 hover:text-[#191919]'}`}>
-          {view === t.id && <motion.span layoutId="desk-tab" className="absolute inset-0 rounded-xl bg-white shadow-sm ring-1 ring-black/5" transition={{ type: 'spring', bounce: 0.15, duration: 0.4 }} />}
+          {view === t.id && <motion.span layoutId="desk-tab" className="absolute inset-0 rounded-xl bg-white/90 shadow-md shadow-[#7800B9]/10 ring-1 ring-white" transition={{ type: 'spring', bounce: 0.3, duration: 0.5 }} />}
           <t.icon className={`relative h-4 w-4 ${view === t.id ? 'text-[#E90078]' : ''}`} />
           <span className="relative">{t.text}</span>
-          {t.count > 0 && <span className="relative min-w-5 rounded-full bg-[#E90078] px-1.5 py-0.5 text-[11px] leading-none text-white tabular-nums">{t.count}</span>}
+          {t.count > 0 && <motion.span key={t.count} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="relative min-w-5 rounded-full bg-[#E90078] px-1.5 py-0.5 text-[11px] leading-none text-white tabular-nums">{t.count}</motion.span>}
         </button>
       ))}
     </nav>
   );
 
   return (
-    <div className="desk-ui min-h-screen bg-[#FAF9F7] text-[#191919]">
-      <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-white/85 backdrop-blur-xl">
+    <div className="desk-ui relative isolate min-h-screen bg-[#FAF9F7] text-[#191919]" onPointerMove={sheen}>
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <span className="desk-blob -left-24 top-10 h-[28rem] w-[28rem] bg-[#E90078]" />
+        <span className="desk-blob -right-32 top-1/4 h-[32rem] w-[32rem] bg-[#7800B9]" style={{ animationDelay: '-7s' }} />
+        <span className="desk-blob -bottom-40 left-1/3 h-[26rem] w-[26rem] bg-[#FFD000]" style={{ animationDelay: '-13s' }} />
+      </div>
+      <header className="sticky top-0 z-30 border-b border-white/60 bg-white/45 shadow-[0_8px_30px_-20px_rgba(120,0,185,0.35)] backdrop-blur-2xl backdrop-saturate-150">
         <div className="h-1 bg-[linear-gradient(90deg,#E90078,#7800B9_55%,#FFD000)]" />
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6">
           <img src={settings?.logoUrl || 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png'} alt={brand} className="hidden h-9 w-auto rounded-lg sm:block" />
@@ -180,8 +221,8 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
           <div className="ml-auto flex items-center gap-2 lg:ml-0">
             <button onClick={() => load()} className={`${actGhost} px-2.5`} aria-label="Refresh" title="Refresh"><RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /></button>
             <button onClick={onVisitSite} className={actGhost} title="Open website"><ExternalLink className="h-4 w-4" /><span className="hidden lg:inline">Website</span></button>
-            <div className="hidden items-center gap-2.5 rounded-xl py-1 pl-1 pr-3 ring-1 ring-black/[0.08] md:flex">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#E90078] text-xs font-extrabold text-white">{initials(who.name)}</span>
+            <div className="hidden items-center gap-2.5 rounded-xl bg-white/50 py-1 pl-1 pr-3 ring-1 ring-white/80 backdrop-blur-md md:flex">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[linear-gradient(135deg,#E90078,#7800B9)] text-xs font-extrabold text-white">{initials(who.name)}</span>
               <span className="leading-tight">
                 <span className="block max-w-36 truncate text-xs font-extrabold">{who.name}</span>
                 {who.role && <span className="block max-w-36 truncate text-[11px] text-stone-500">{who.role}</span>}
@@ -194,12 +235,12 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}</h1>
+          <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={spring} className="text-2xl font-extrabold tracking-tight sm:text-3xl">Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'} <motion.span className="inline-block origin-[70%_70%]" animate={{ rotate: [0, 18, -8, 18, 0] }} transition={{ delay: 0.6, duration: 1.2 }}>👋</motion.span></motion.h1>
           <p className="mt-1 text-sm text-stone-500">Here is what needs your attention today.</p>
         </div>
 
         {error && (
-          <div role="alert" className="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 ring-1 ring-red-200">
+          <div role="alert" className="flex items-center gap-2 rounded-xl bg-red-50/80 backdrop-blur-md px-4 py-3 text-sm font-semibold text-red-700 ring-1 ring-red-200">
             <TriangleAlert className="h-4 w-4 shrink-0" /> {error}
             <button className="ml-auto rounded-lg p-1 hover:bg-red-100" onClick={() => setError('')} aria-label="Dismiss"><X className="h-4 w-4" /></button>
           </div>
@@ -207,16 +248,18 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
 
         <div className={`grid gap-3 sm:gap-4 ${tiles.length > 2 ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2'}`}>
           {tiles.map((t, i) => (
-            <motion.button key={t.t} onClick={() => setView(t.go)} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className={`group relative overflow-hidden p-4 text-left transition hover:-translate-y-0.5 hover:shadow-lg cursor-pointer sm:p-5 ${t.dark ? 'rounded-2xl bg-[#191919] text-white shadow-lg shadow-black/10' : card}`}>
+            <motion.button key={t.t} onClick={() => setView(t.go)} initial={{ opacity: 0, y: 28, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ ...spring, delay: 0.08 + i * 0.07 }} whileHover={{ y: -5, scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              className={`group relative overflow-hidden rounded-2xl p-4 text-left cursor-pointer sm:p-5 ${t.dark ? 'desk-glass-dark desk-sheen text-white' : card}`}>
+              <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-60" style={{ background: t.dark ? PINK : t.color }} />
               <div className="flex items-start justify-between gap-2">
                 <span className={`text-[11px] font-bold uppercase tracking-wider ${t.dark ? 'text-white/60' : 'text-stone-500'}`}>{t.t}</span>
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl transition group-hover:scale-110" style={t.dark ? { background: YELLOW, color: INK } : { background: `${t.color}14`, color: t.color }}>
+                <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl transition duration-300 group-hover:-rotate-12 group-hover:scale-110" style={t.dark ? { background: YELLOW, color: INK } : { background: `${t.color}14`, color: t.color }}>
                   <t.icon className="h-[18px] w-[18px]" />
                 </span>
               </div>
-              {loading ? <div className={`mt-2 h-9 w-20 animate-pulse rounded-lg ${t.dark ? 'bg-white/10' : 'bg-stone-100'}`} />
-                : <div className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight sm:text-[34px]" style={t.dark ? undefined : { color: t.color === '#C9A000' ? INK : t.color }}>{t.v}</div>}
+              {loading ? <div className={`mt-2 h-9 w-20 animate-pulse rounded-lg ${t.dark ? 'bg-white/10' : 'bg-white/70'}`} />
+                : <div className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight sm:text-[34px]" style={t.dark ? undefined : { color: t.color === '#C9A000' ? INK : t.color }}><CountUp to={t.v} fmt={t.fmt} /></div>}
               <div className={`mt-1 flex items-center gap-1.5 text-xs font-medium ${t.dark ? 'text-white/60' : 'text-stone-500'}`}>
                 {t.hot && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E90078]" />}{t.s}
               </div>
@@ -227,22 +270,23 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
 
         {tabs.length > 1 && <TabBar className="lg:hidden" />}
 
-        <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+        <motion.div key={view} initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
             {view === 'enquiries' && showEnq ? <Enquiries items={enquiries} setItems={setEnquiries} api={api} flash={flash} ask={ask} loading={loading} canDelete={can('leads_delete')} />
-              : showPay ? <Payments items={payments} setItems={setPayments} leads={enquiries} bookings={bookings} reload={() => load()} api={api} flash={flash} ask={ask} loading={loading} />
+              : showPay ? <Payments items={payments} setItems={setPayments} leads={enquiries} bookings={bookings} reload={() => load()} api={api} flash={flash} ask={ask} loading={loading} party={party} />
               : <Empty icon={Inbox} title="Nothing to show" text="Your role has no enquiries or payments access." />}
         </motion.div>
       </main>
 
       <AnimatePresence>
         {notice && (
-          <motion.div role="status" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }}
-            className="fixed bottom-5 left-1/2 z-[70] flex -translate-x-1/2 items-center gap-2 rounded-2xl bg-[#191919] px-4 py-3 text-sm font-bold text-white shadow-2xl">
-            <CircleCheck className="h-4 w-4 text-emerald-400" /> {notice}
+          <motion.div role="status" initial={{ opacity: 0, y: 40, scale: 0.8 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.9 }} transition={spring}
+            className="desk-glass-dark fixed bottom-5 left-1/2 z-[70] flex -translate-x-1/2 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold text-white">
+            <motion.span initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ ...spring, delay: 0.1 }}><CircleCheck className="h-4 w-4 text-emerald-400" /></motion.span> {notice}
           </motion.div>
         )}
       </AnimatePresence>
       {confirmUi}
+      {!!burst && <Burst key={burst} />}
     </div>
   );
 };
@@ -253,7 +297,7 @@ const Toolbar: React.FC<{ q: string; setQ: (v: string) => void; placeholder: str
   <div className={`${card} flex flex-col gap-2 p-2 sm:flex-row`}>
     <div className="relative flex-1">
       <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
-      <input className={`${field} border-transparent bg-stone-50 pl-10 focus:bg-white`} placeholder={placeholder} value={q} onChange={e => setQ(e.target.value)} aria-label="Search" />
+      <input className={`${field} border-transparent bg-white/50 pl-10 focus:bg-white`} placeholder={placeholder} value={q} onChange={e => setQ(e.target.value)} aria-label="Search" />
       {q && <button className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-stone-400 hover:bg-stone-200 hover:text-stone-700" onClick={() => setQ('')} aria-label="Clear search"><X className="h-3.5 w-3.5" /></button>}
     </div>
     {children}
@@ -271,20 +315,20 @@ const Skeleton = () => (
   <ul className="space-y-3" aria-label="Loading">
     {[0, 1, 2].map(i => (
       <li key={i} className={`${card} flex animate-pulse items-center gap-4 p-4`}>
-        <span className="h-11 w-11 rounded-xl bg-stone-100" />
-        <span className="flex-1 space-y-2"><span className="block h-3.5 w-1/3 rounded bg-stone-100" /><span className="block h-3 w-1/2 rounded bg-stone-100" /></span>
-        <span className="hidden h-6 w-20 rounded-full bg-stone-100 sm:block" />
+        <span className="h-11 w-11 rounded-xl bg-white/70" />
+        <span className="flex-1 space-y-2"><span className="block h-3.5 w-1/3 rounded bg-white/70" /><span className="block h-3 w-1/2 rounded bg-white/70" /></span>
+        <span className="hidden h-6 w-20 rounded-full bg-white/70 sm:block" />
       </li>
     ))}
   </ul>
 );
 
 const Empty: React.FC<{ icon: LucideIcon; title: string; text: string }> = ({ icon: Icon, title, text }) => (
-  <div className="rounded-2xl border-2 border-dashed border-black/[0.08] bg-white/50 px-6 py-14 text-center">
-    <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#E90078]/10 text-[#E90078]"><Icon className="h-6 w-6" /></span>
+  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="desk-glass rounded-2xl px-6 py-14 text-center">
+    <motion.span animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#E90078]/10 text-[#E90078]"><Icon className="h-6 w-6" /></motion.span>
     <p className="mt-3 font-extrabold">{title}</p>
     <p className="mt-1 text-sm text-stone-500">{text}</p>
-  </div>
+  </motion.div>
 );
 
 // ---------------- Enquiries ----------------
@@ -347,13 +391,13 @@ const Enquiries: React.FC<ListProps<Enquiry> & { canDelete: boolean }> = ({ item
             const phone = phoneKey(e.fields?.phone);
             const isNew = e.status === 'new';
             return (
-              <motion.li key={e.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 10) * 0.025 }}
-                className={`${card} group relative flex flex-col p-4 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-[#E90078]/25`}>
+              <motion.li key={e.id} initial={{ opacity: 0, y: 24, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: Math.min(i, 10) * 0.05 }}
+                whileHover={{ y: -4 }} className={`${card} group flex flex-col p-4 transition-shadow hover:shadow-[0_20px_40px_-18px_rgba(233,0,120,0.35)]`}>
                 <button className="absolute inset-0 rounded-2xl cursor-pointer" onClick={() => setOpenId(e.id)} aria-label={`View details for ${e.fields?.name || 'enquiry'}`} />
                 <div className="flex items-start gap-3">
-                  <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl text-sm font-extrabold text-white" style={{ background: isNew ? PINK : PURPLE }}>
+                  <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl text-sm font-extrabold text-white shadow-lg transition duration-300 group-hover:rotate-[-6deg] group-hover:scale-105" style={{ background: isNew ? `linear-gradient(135deg, ${PINK}, #ff5aa8)` : `linear-gradient(135deg, ${PURPLE}, #a855f7)` }}>
                     {initials(e.fields?.name)}
-                    {isNew && <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-[#FFD000]" title="New" />}
+                    {isNew && <span className="absolute -right-1 -top-1 flex h-3 w-3" title="New"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FFD000] opacity-75" /><span className="relative h-3 w-3 rounded-full border-2 border-white bg-[#FFD000]" /></span>}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -389,6 +433,8 @@ const Enquiries: React.FC<ListProps<Enquiry> & { canDelete: boolean }> = ({ item
   );
 };
 
+const rise = { h: { opacity: 0, y: 14 }, s: { opacity: 1, y: 0, transition: spring } };
+
 const EnquiryDrawer: React.FC<{ e: Enquiry; onClose: () => void; update: (id: string, p: Partial<Enquiry>) => Promise<void>; remove?: (e: Enquiry) => void }> = ({ e, onClose, update, remove }) => {
   const info = categoryInfo(enquiryCategory(e.type, e.fields));
   const phone = phoneKey(e.fields?.phone);
@@ -398,12 +444,12 @@ const EnquiryDrawer: React.FC<{ e: Enquiry; onClose: () => void; update: (id: st
     return () => window.removeEventListener('keydown', k);
   }, [onClose]);
   return (
-    <motion.div className="fixed inset-0 z-50 flex justify-end bg-[#191919]/30 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+    <motion.div className="fixed inset-0 z-50 flex justify-end bg-[#191919]/25 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
       <motion.aside role="dialog" aria-modal="true" aria-label={`Enquiry from ${e.fields?.name || 'unknown'}`} onClick={ev => ev.stopPropagation()}
-        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', bounce: 0, duration: 0.35 }}
-        className="flex h-full w-full max-w-lg flex-col bg-[#FAF9F7] shadow-2xl">
-        <div className="flex items-start gap-3 border-b border-black/[0.06] bg-white p-5">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#E90078] text-base font-extrabold text-white">{initials(e.fields?.name)}</span>
+        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', bounce: 0.15, duration: 0.5 }}
+        className="flex h-full w-full max-w-lg flex-col border-l border-white/70 bg-white/55 shadow-2xl backdrop-blur-2xl backdrop-saturate-150">
+        <div className="flex items-start gap-3 border-b border-white/70 bg-white/50 p-5">
+          <motion.span initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ ...spring, delay: 0.15 }} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,#E90078,#7800B9)] text-base font-extrabold text-white">{initials(e.fields?.name)}</motion.span>
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-lg font-extrabold">{e.fields?.name || 'Unnamed'}</h2>
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
@@ -413,13 +459,13 @@ const EnquiryDrawer: React.FC<{ e: Enquiry; onClose: () => void; update: (id: st
           </div>
           <button className="rounded-xl p-2 text-stone-500 hover:bg-stone-100" onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
-        <div className="flex-1 space-y-5 overflow-y-auto p-5">
-          <div className="grid grid-cols-3 gap-2">
+        <motion.div className="flex-1 space-y-5 overflow-y-auto p-5" initial="h" animate="s" variants={{ s: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } } }}>
+          <motion.div variants={rise} className="grid grid-cols-3 gap-2">
             {phone ? <a className={`${act} flex-col bg-[#E90078] py-3 text-white hover:brightness-95`} href={`tel:+91${phone}`}><Phone className="h-4 w-4" />Call</a> : <span />}
             {phone ? <a className={`${act} flex-col bg-emerald-600 py-3 text-white hover:bg-emerald-700`} href={`https://wa.me/91${phone}`} target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4" />WhatsApp</a> : <span />}
             {e.fields?.email ? <a className={`${actGhost} flex-col py-3`} href={`mailto:${e.fields.email}`}><Mail className="h-4 w-4" />Email</a> : <span />}
-          </div>
-          <div className={`${card} grid gap-3 p-4 sm:grid-cols-[1fr_1.4fr]`}>
+          </motion.div>
+          <motion.div variants={rise} className={`${card} grid gap-3 p-4 sm:grid-cols-[1fr_1.4fr]`}>
             <label className="space-y-1.5"><span className={label}>Status</span>
               <Select value={e.status} onChange={ev => update(e.id, { status: ev.target.value as Enquiry['status'] })}>
                 {STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
@@ -429,7 +475,7 @@ const EnquiryDrawer: React.FC<{ e: Enquiry; onClose: () => void; update: (id: st
               <textarea className={field} rows={2} placeholder="Saved when you click away" defaultValue={e.notes}
                 onBlur={ev => ev.target.value !== (e.notes || '') && update(e.id, { notes: ev.target.value })} />
             </label>
-          </div>
+          </motion.div>
           {e.fields?.message && <div><p className={label}>Message</p><p className={`${card} mt-1.5 whitespace-pre-line p-4 text-sm leading-relaxed`}>{e.fields.message}</p></div>}
           {e.aiSummary && <p className="flex gap-2 rounded-2xl bg-[#FFD000]/20 p-4 text-sm text-stone-700 ring-1 ring-[#FFD000]/40"><Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#7800B9]" /><span><b>AI summary:</b> {e.aiSummary}</span></p>}
           <div>
@@ -441,9 +487,9 @@ const EnquiryDrawer: React.FC<{ e: Enquiry; onClose: () => void; update: (id: st
               <div className="flex gap-4 px-4 py-2.5"><dt className="w-32 shrink-0 text-stone-500">Received</dt><dd className="font-semibold">{fmtDate(e.createdAt)}</dd></div>
             </dl>
           </div>
-        </div>
+        </motion.div>
         {remove && (
-          <div className="border-t border-black/[0.06] bg-white p-4">
+          <div className="border-t border-white/70 bg-white/50 p-4">
             <button className={`${actGhost} w-full text-red-600 hover:bg-red-50`} onClick={() => remove(e)}><Trash2 className="h-4 w-4" /> Delete enquiry</button>
           </div>
         )}
@@ -458,7 +504,7 @@ const FILTERS: { id: PaymentRecord['status'] | 'all'; text: string; icon: Lucide
   { id: 'rejected', text: 'Rejected', icon: CircleX }, { id: 'all', text: 'All', icon: ReceiptText },
 ];
 
-const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings: Consultation[]; reload: () => void }> = ({ items, setItems, leads, bookings, reload, api, flash, ask, loading }) => {
+const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings: Consultation[]; reload: () => void; party: () => void }> = ({ items, setItems, leads, bookings, reload, api, flash, ask, loading, party }) => {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('pending_verification');
   const [q, setQ] = useState('');
   const [accessNote, setAccessNote] = useState<Record<string, string>>({});
@@ -495,6 +541,7 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings
       const r = await api(`/api/payments/${p.id}`, { method: 'PUT', body: JSON.stringify({ status }) });
       if (r.access) setAccessNote(n => ({ ...n, [p.id]: r.access }));
       setItems(l => l.map(x => (x.id === p.id ? { ...x, status, verifiedAt: status === 'pending_verification' ? '' : new Date().toISOString() } : x)));
+      if (status === 'verified') party();
       flash(status === 'verified' ? 'Payment verified' : status === 'rejected' ? 'Payment rejected' : 'Moved back to pending');
     } catch { /* the error banner shows the reason */ } finally { setBusy(''); }
   };
@@ -515,13 +562,13 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings
           </button>
         ))}
       </div>
-      <p className="flex items-start gap-2 rounded-xl bg-[#FFD000]/15 px-4 py-2.5 text-xs leading-relaxed text-stone-700 ring-1 ring-[#FFD000]/40">
+      <p className="flex items-start gap-2 rounded-xl bg-[#FFD000]/20 px-4 py-2.5 text-xs leading-relaxed text-stone-700 ring-1 ring-[#FFD000]/50 backdrop-blur-md">
         <TriangleAlert className="mt-px h-4 w-4 shrink-0 text-[#a08000]" />
         Match each UTR and amount against your bank / UPI statement before you verify. Verifying a course payment emails the student their access automatically.
       </p>
 
       {!loading && !!bookings.length && (filter === 'pending_verification' || filter === 'all') && !q && (
-        <div className="space-y-3 rounded-2xl bg-[#E90078]/[0.04] p-4 ring-1 ring-[#E90078]/20 sm:p-5">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={spring} className="space-y-3 rounded-2xl bg-[#E90078]/[0.06] p-4 ring-1 ring-[#E90078]/25 backdrop-blur-xl sm:p-5">
           <div className="flex items-start gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#E90078]/10 text-[#E90078]"><CalendarDays className="h-[18px] w-[18px]" /></span>
             <div>
@@ -530,7 +577,7 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings
             </div>
           </div>
           {bookings.map(b => <Booking key={b.ref} b={b} api={api} flash={flash} onDone={reload} />)}
-        </div>
+        </motion.div>
       )}
 
       {loading ? <Skeleton /> : !shown.length ? (
@@ -541,33 +588,33 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings
           {shown.map((p, i) => {
             const lead = leadFor(p), st = PAY_STYLE[p.status], note = accessNote[p.id], phone = phoneKey(p.payerPhone);
             return (
-              <motion.li key={p.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 10) * 0.025 }}
-                className={`${card} relative overflow-hidden transition hover:shadow-lg`}>
+              <motion.li key={p.id} initial={{ opacity: 0, y: 24, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: Math.min(i, 10) * 0.05 }}
+                className={`${card} overflow-hidden transition-shadow hover:shadow-[0_20px_40px_-18px_rgba(120,0,185,0.35)]`}>
                 <span className="absolute inset-y-0 left-0 w-1" style={{ background: st.bar }} />
                 <div className="space-y-4 p-4 pl-5 sm:p-5 sm:pl-6">
                   <div className="flex flex-wrap items-start gap-3">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#7800B9] text-sm font-extrabold text-white">{initials(p.applicantName)}</span>
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[linear-gradient(135deg,#7800B9,#a855f7)] shadow-lg text-sm font-extrabold text-white">{initials(p.applicantName)}</span>
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate text-[15px] font-extrabold">{p.applicantName}</h3>
                       <p className="truncate text-[13px] text-stone-500">{p.programme}</p>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-extrabold tabular-nums tracking-tight">{rupees(Number(p.amount) || 0)}</div>
-                      <span className={`mt-1 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${st.cls}`}><st.icon className="h-3.5 w-3.5" />{st.text}</span>
+                      <motion.span key={p.status} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={spring} className={`mt-1 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${st.cls}`}><st.icon className="h-3.5 w-3.5" />{st.text}</motion.span>
                     </div>
                   </div>
 
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-xl bg-stone-50 px-3.5 py-2.5 sm:col-span-2 lg:col-span-1">
+                    <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5 sm:col-span-2 lg:col-span-1">
                       <dt className={label}>Transaction ID (UTR)</dt>
                       <dd className="mt-0.5 flex items-center gap-1.5"><span className="select-all font-mono text-sm font-bold">{p.upiRefNumber}</span>
                         <button className="rounded-md p-1 text-stone-400 hover:bg-white hover:text-[#E90078]" onClick={() => copy(p.upiRefNumber)} aria-label="Copy UTR" title="Copy UTR"><Copy className="h-3.5 w-3.5" /></button></dd>
                     </div>
-                    <div className="rounded-xl bg-stone-50 px-3.5 py-2.5"><dt className={label}>Paid on</dt><dd className="mt-0.5 text-sm font-semibold">{p.paymentDate || '—'}</dd></div>
-                    <div className="rounded-xl bg-stone-50 px-3.5 py-2.5"><dt className={label}>Submitted</dt><dd className="mt-0.5 text-sm font-semibold">{fmtDate(p.createdAt)}</dd></div>
-                    <div className="rounded-xl bg-stone-50 px-3.5 py-2.5"><dt className={label}>Mobile</dt><dd className="mt-0.5 text-sm"><a className="font-bold text-[#E90078] hover:underline" href={`tel:+91${phone}`}>{p.payerPhone}</a></dd></div>
-                    <div className="rounded-xl bg-stone-50 px-3.5 py-2.5 sm:col-span-2"><dt className={label}>Email</dt><dd className="mt-0.5 break-all text-sm font-semibold">{p.payerEmail || '—'}</dd></div>
-                    {p.admissionNumber && <div className="rounded-xl bg-stone-50 px-3.5 py-2.5"><dt className={label}>Admission no.</dt><dd className="mt-0.5 text-sm font-semibold">{p.admissionNumber}</dd></div>}
+                    <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5"><dt className={label}>Paid on</dt><dd className="mt-0.5 text-sm font-semibold">{p.paymentDate || '—'}</dd></div>
+                    <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5"><dt className={label}>Submitted</dt><dd className="mt-0.5 text-sm font-semibold">{fmtDate(p.createdAt)}</dd></div>
+                    <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5"><dt className={label}>Mobile</dt><dd className="mt-0.5 text-sm"><a className="font-bold text-[#E90078] hover:underline" href={`tel:+91${phone}`}>{p.payerPhone}</a></dd></div>
+                    <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5 sm:col-span-2"><dt className={label}>Email</dt><dd className="mt-0.5 break-all text-sm font-semibold">{p.payerEmail || '—'}</dd></div>
+                    {p.admissionNumber && <div className="rounded-xl bg-white/55 ring-1 ring-white/80 px-3.5 py-2.5"><dt className={label}>Admission no.</dt><dd className="mt-0.5 text-sm font-semibold">{p.admissionNumber}</dd></div>}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -580,7 +627,7 @@ const Payments: React.FC<ListProps<PaymentRecord> & { leads: Enquiry[]; bookings
                   {p.notes && <p className="rounded-xl bg-stone-50 px-3.5 py-2 text-xs text-stone-600"><b>Payer note:</b> {p.notes}</p>}
                   {note && <p className={`rounded-xl px-3.5 py-2 text-xs font-bold ${/^Access email sent/.test(note) ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{note}</p>}
 
-                  <div className="flex flex-wrap gap-2 border-t border-black/[0.05] pt-4">
+                  <div className="flex flex-wrap gap-2 border-t border-white/80 pt-4">
                     {p.status !== 'verified' && <button disabled={busy === p.id} className={actGreen} onClick={() => setStatus(p, 'verified')}><Check className="h-4 w-4" /> Verify</button>}
                     {p.status !== 'rejected' && <button disabled={busy === p.id} className={`${actGhost} text-red-600 hover:bg-red-50`} onClick={() => setStatus(p, 'rejected')}><X className="h-4 w-4" /> Reject</button>}
                     {p.status !== 'pending_verification' && <button disabled={busy === p.id} className={actGhost} onClick={() => setStatus(p, 'pending_verification')}><Undo2 className="h-4 w-4" /> Back to pending</button>}

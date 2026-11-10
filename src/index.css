@@ -269,3 +269,37 @@
 .desk-ui, .desk-ui :is(h1, h2, h3, h4, .font-display) {
   font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
 }
+
+/* ---- Kinderbee Desk: liquid glass ---- */
+.desk-glass {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255,255,255,.74), rgba(255,255,255,.42));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(255,255,255,.3),
+    0 12px 32px -14px rgba(120,0,185,.22), 0 2px 6px -2px rgba(25,25,25,.06);
+}
+.desk-glass-dark {
+  position: relative;
+  background: linear-gradient(135deg, rgba(25,25,25,.9), rgba(70,8,105,.82));
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 18px 40px -14px rgba(120,0,185,.5);
+}
+/* Light sheen that follows the pointer (--mx / --my are set from DeskPanel) */
+.desk-sheen::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  opacity: 0; transition: opacity .35s;
+  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.6), transparent 60%);
+}
+.desk-glass-dark.desk-sheen::after { background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(255,208,0,.22), transparent 60%); }
+.desk-sheen:hover::after { opacity: 1; }
+.desk-blob { position: absolute; border-radius: 9999px; filter: blur(80px); opacity: .42; animation: desk-float 20s ease-in-out infinite alternate; }
+@keyframes desk-float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6vw, -5vh) scale(1.18); }
+  100% { transform: translate(-5vw, 6vh) scale(.92); }
+}
+@media (prefers-reduced-motion: reduce) { .desk-blob { animation: none; } }
