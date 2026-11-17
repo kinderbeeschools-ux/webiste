@@ -400,7 +400,7 @@ function loadDb(): { enquiries: Enquiry[]; blogs: BlogPost[]; faqs: FAQItem[]; s
         parsed.payments = [];
         saveDb(parsed);
       }
-      if (!parsed.settings || parsed.settings.email === "partner@kinderbee.in" || parsed.settings.phone === "+91 91500 48800") {
+      if (!parsed.settings || parsed.settings.phone === "+91 91500 48800") {
         parsed.settings = seedSettings;
         saveDb(parsed);
       }

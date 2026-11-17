@@ -95,7 +95,7 @@ function parseInline(text: string): React.ReactNode[] {
           </div>
         );
       } else {
-        // Clean display text for bare URL (e.g. kinderbee.in instead of full long URL string)
+        // Clean display text for bare URL (e.g. kinderbeeschools.com instead of full long URL string)
         let displayUrl = bareUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         if (displayUrl.length > 35) displayUrl = displayUrl.substring(0, 32) + '...';
 

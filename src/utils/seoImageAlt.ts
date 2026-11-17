@@ -83,7 +83,7 @@ function cleanAltText(text: string): string {
 
 function parseKeywordsFromUrl(url: string): string | null {
   try {
-    const pathname = new URL(url, 'https://kinderbee.in').pathname;
+    const pathname = new URL(url, 'https://www.kinderbeeschools.com').pathname;
     const filename = pathname.split('/').pop() || '';
     const nameWithoutExt = filename.split('.')[0];
     
