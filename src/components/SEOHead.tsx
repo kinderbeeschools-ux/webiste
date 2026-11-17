@@ -94,7 +94,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     "name": brandName,
+    "legalName": "Finnishway Educare Private Limited",
     "url": siteUrl,
+    "sameAs": ["https://facebook.com/kinderbee", "https://instagram.com/kinderbee", "https://linkedin.com/company/kinderbee-education"],
     "logo": finalOgImage,
     "description": finalDescription,
     "address": {
@@ -118,6 +120,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       { "@type": "ListItem", "position": 2, "name": finalTitle.split(' | ')[0].split(' – ')[0], "item": finalCanonical }
     ]
   } : null;
+  const siteSchema = !blogPost && currentPath === '/' ? { "@context": "https://schema.org", "@type": "WebSite", "name": brandName, "url": siteUrl + '/' } : null;
   const faqSchema = faq?.length ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -152,6 +155,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <script type="application/ld+json">
         {JSON.stringify(schemaData)}
       </script>
+      {siteSchema && <script type="application/ld+json">{JSON.stringify(siteSchema)}</script>}
       {crumbs && <script type="application/ld+json">{JSON.stringify(crumbs)}</script>}
       {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
     </Helmet>
