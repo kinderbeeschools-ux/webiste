@@ -311,5 +311,49 @@ export const JOURNAL_BLOGS: BlogPost[] = [
     "metaTitle": "Ready for Grade 1",
     "metaDescription": "School readiness is broader than reading a list of words or filling worksheets quickly; it includes language, number sense, independence, attention, confidence and curiosity.",
     "focusKeyword": "ukg grade 1 school readiness india"
+  },
+{
+      "status": "Published",
+      "author": "Kinderbee International Preschool",
+      "date": "2026-11-17",
+      "views": 0,
+      "category": "Franchise & Business Growth",
+      "tags": [
+          "Franchise & Business Growth",
+          "Preschool Franchise",
+          "KIPS"
+      ],
+      "id": "journal-preschool-franchise-cost-india",
+      "slug": "preschool-franchise-cost-india",
+      "title": "Preschool Franchise Cost in India: What a Kinderbee Partner Budgets",
+      "excerpt": "Kinderbee's published capital investment is ₹15 – ₹30 Lakhs with zero monthly royalty. Here is what the budget covers and what to ask before you commit.",
+      "image": "/images/blog/preschool-startup-budget-india.webp",
+      "readTime": "5 min read",
+      "metaTitle": "Preschool Franchise Cost in India | Kinderbee",
+      "metaDescription": "Kinderbee's preschool franchise needs an estimated ₹15 – ₹30 Lakhs and charges zero monthly royalty. See what the budget covers and what to verify.",
+      "focusKeyword": "preschool franchise cost in India",
+      "content": "**Short answer:** a Kinderbee preschool partnership has an estimated capital investment of ₹15 – ₹30 Lakhs, with ₹0 monthly royalty. Partners keep 100% of recurring tuition fees, under the terms of the partnership agreement.\n\n## What does the ₹15 – ₹30 Lakhs cover?\n\nThe estimate covers interior set-up, safety flooring, furniture, activity kits and your marketing launch. The exact figure depends on your city and the condition of your premises, so ask for a city-specific cost break-up when you speak to the team.\n\n## What space do I need?\n\nA ground-floor residential villa or commercial property of about 1,500 – 3,500 sq. ft., with outdoor play space for the children. Property rent or purchase is a separate cost that varies widely by location.\n\n## Is there really no royalty?\n\nKinderbee is a zero-royalty model: ₹0 per month, and the partner keeps 100% of tuition revenue. As with any franchise, this applies under the specific partnership agreement and standard terms, so read the agreement before you commit and have your accountant or lawyer review it.\n\n## What support comes with the partnership?\n\nPartners receive a Franchise Operations Manual, staff recruitment guides, teacher and staff training, a Finnish-inspired curriculum aligned with NEP 2020, admissions support and a mentor at each stage.\n\n## What should I verify before investing?\n\n- The full list of one-time and recurring costs in the agreement.\n- What the investment range includes and excludes for your city.\n- Your own working capital for the first months, while admissions build up.\n\nRead more on the [Kinderbee preschool franchise page](/preschool-franchise), or [speak to an advisor](/contact)."
+  },
+{
+      "status": "Published",
+      "author": "Kinderbee International Preschool",
+      "date": "2026-11-17",
+      "views": 0,
+      "category": "Franchise & Business Growth",
+      "tags": [
+          "Franchise & Business Growth",
+          "Preschool Franchise",
+          "KIPS"
+      ],
+      "id": "journal-how-to-start-a-preschool-in-india",
+      "slug": "how-to-start-a-preschool-in-india",
+      "title": "How to Start a Preschool in India: A Step-by-Step Guide",
+      "excerpt": "The practical steps to open a preschool in India: choose a model, find premises, plan the budget, build a team and launch admissions.",
+      "image": "/images/blog/questions-before-buying-preschool-franchise.webp",
+      "readTime": "6 min read",
+      "metaTitle": "How to Start a Preschool in India | Kinderbee",
+      "metaDescription": "A step-by-step guide to starting a preschool in India: model, premises, budget, curriculum, team, approvals and admissions, with Kinderbee's published figures.",
+      "focusKeyword": "how to start a preschool in India",
+      "content": "**Short answer:** to start a preschool in India you choose a model (independent or franchise), secure suitable premises, plan your budget, set up a curriculum and trained team, complete local approvals, and then launch admissions.\n\n## 1. Choose your model\n\nYou can build an independent brand or join an established partnership. A partnership gives you a tested curriculum, operations manual, training and admissions playbooks. Kinderbee, for example, is a zero-royalty model: ₹0 per month, with partners keeping 100% of tuition revenue under the partnership agreement.\n\n## 2. Find the right premises\n\nKinderbee's published requirement is a ground-floor residential villa or commercial property of about 1,500 – 3,500 sq. ft., with outdoor play space. Whatever model you choose, prioritise safety, ground-floor access and room to play outdoors.\n\n## 3. Plan your budget\n\nKinderbee's estimated capital investment is ₹15 – ₹30 Lakhs, covering interior set-up, safety flooring, furniture, activity kits and marketing launch. Keep working capital aside for the months before admissions stabilise. See [preschool franchise cost in India](/blog/journal-preschool-franchise-cost-india).\n\n## 4. Set up the curriculum\n\nChoose a child-centred, play-based curriculum aligned with NEP 2020. Kinderbee's curriculum is Finnish-inspired and delivered the same way in every classroom.\n\n## 5. Build and train your team\n\nRecruit teachers and support staff and train them in the curriculum. Kinderbee partners receive staff recruitment guides and training for teachers and staff.\n\n## 6. Complete approvals\n\nRegistration and safety requirements differ by state and municipality. Check the current rules with your local authorities and a professional adviser before you open.\n\n## 7. Launch admissions\n\nPlan a pre-launch marketing push and parent communication. Kinderbee partners get admissions playbooks and a mentor to guide the launch.\n\nReady to explore? See the [Kinderbee preschool franchise](/preschool-franchise) or [contact the team](/contact)."
   }
 ];
