@@ -89,7 +89,7 @@ const READINESS = [
   'I have an accountant or lawyer who can review the partnership agreement with me',
 ];
 
-const FAQ = [
+export const FAQ = [
   {
     q: 'Is the zero-royalty promise really unconditional?',
     a: 'Zero royalty is the model: ₹0 per month, with partners keeping 100% of recurring tuition fees. As with any franchise, it applies under the specific partnership agreement and standard terms, so ask to read the agreement before you commit.',

@@ -9,7 +9,7 @@ import { FranchiseDetails } from '../components/FranchiseDetails';
 import { SchoolSetup } from '../components/SchoolSetup';
 import { ArcadiaPage } from '../components/ArcadiaPage';
 import { ConsultationOffer, openConsultationBooking } from '../components/ConsultationBooking';
-import { FranchiseBuyerGuide } from '../components/premium/FranchiseBuyerGuide';
+import { FranchiseBuyerGuide, FAQ as PRESCHOOL_FAQ } from '../components/premium/FranchiseBuyerGuide';
 import { SchoolPromoterGuide } from '../components/premium/SchoolPromoterGuide';
 import { DegreeCollegeDiligence } from '../components/premium/DegreeCollegeDiligence';
 
@@ -63,6 +63,7 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
           ? "best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise"
           : "preschool franchise india, zero royalty play school, CBSE school setup, IB school setup, degree college setup, CBSE and IB consultancy"}
         settings={settings}
+        faq={resolvedTab === 'preschool' ? PRESCHOOL_FAQ : undefined}
       />
 
       {resolvedTab === 'preschool' && (

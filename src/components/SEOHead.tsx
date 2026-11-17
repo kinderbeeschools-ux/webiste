@@ -12,6 +12,7 @@ interface SEOHeadProps {
   blogPost?: BlogPost;
   settings?: SystemSettings | null;
   noIndex?: boolean; // keep a page out of search results
+  faq?: { q: string; a: string }[]; // visible FAQ on the page, emitted as FAQPage schema
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
@@ -23,7 +24,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   ogType = 'website',
   blogPost,
   settings,
-  noIndex = false
+  noIndex = false,
+  faq
 }) => {
   const brandName = settings?.logoText || 'Kinderbee';
   const siteUrl = 'https://www.kinderbeeschools.com';
@@ -107,6 +109,21 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     }
   };
 
+  // Breadcrumb for every non-home, non-blog-post page: Home > this page
+  const crumbs = !blogPost && currentPath !== '/' ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl + '/' },
+      { "@type": "ListItem", "position": 2, "name": finalTitle.split(' | ')[0].split(' – ')[0], "item": finalCanonical }
+    ]
+  } : null;
+  const faqSchema = faq?.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
+  } : null;
+
   return (
     <Helmet>
       {/* Primary Dynamic HTML Meta */}
@@ -135,6 +152,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <script type="application/ld+json">
         {JSON.stringify(schemaData)}
       </script>
+      {crumbs && <script type="application/ld+json">{JSON.stringify(crumbs)}</script>}
+      {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
     </Helmet>
   );
 };
