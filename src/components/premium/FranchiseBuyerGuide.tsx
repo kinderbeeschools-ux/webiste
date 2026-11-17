@@ -89,6 +89,7 @@ const READINESS = [
   'I have an accountant or lawyer who can review the partnership agreement with me',
 ];
 
+export const FAQ_SCHEMA = () => [...QUESTIONS, ...FAQ].filter(x => typeof x.a === 'string').map(x => ({ q: x.q, a: x.a as string }));
 export const FAQ = [
   {
     q: 'Is the zero-royalty promise really unconditional?',

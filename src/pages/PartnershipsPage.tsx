@@ -9,7 +9,7 @@ import { FranchiseDetails } from '../components/FranchiseDetails';
 import { SchoolSetup } from '../components/SchoolSetup';
 import { ArcadiaPage } from '../components/ArcadiaPage';
 import { ConsultationOffer, openConsultationBooking } from '../components/ConsultationBooking';
-import { FranchiseBuyerGuide, FAQ as PRESCHOOL_FAQ } from '../components/premium/FranchiseBuyerGuide';
+import { FranchiseBuyerGuide, FAQ_SCHEMA } from '../components/premium/FranchiseBuyerGuide';
 import { SchoolPromoterGuide } from '../components/premium/SchoolPromoterGuide';
 import { DegreeCollegeDiligence } from '../components/premium/DegreeCollegeDiligence';
 
@@ -57,13 +57,13 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
           "Degree College Setup & Consultancy"
         }
         description={resolvedTab === 'preschool'
-          ? "Start India's best preschool franchise with NO royalty. Finnish curriculum, lesson plans, teacher training and full setup support. Enquire today."
+          ? "Best preschool franchise in India with zero royalty. Play school franchise for ₹15 – ₹30 Lakhs with Finnish curriculum, teacher training and full setup support."
           : "Explore Kinderbee's tailored franchisee partnership models: Preschool Franchises, CBSE & IB World School Setup, and Degree College Consultancy."}
         keywords={resolvedTab === 'preschool'
-          ? "best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise"
+          ? "best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise, preschool franchise in India, play school franchise in India, preschool franchise cost in India, preschool franchise investment, preschool franchise opportunities, how to start a preschool in India"
           : "preschool franchise india, zero royalty play school, CBSE school setup, IB school setup, degree college setup, CBSE and IB consultancy"}
         settings={settings}
-        faq={resolvedTab === 'preschool' ? PRESCHOOL_FAQ : undefined}
+        faq={resolvedTab === 'preschool' ? FAQ_SCHEMA() : undefined}
       />
 
       {resolvedTab === 'preschool' && (
