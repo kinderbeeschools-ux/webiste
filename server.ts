@@ -472,6 +472,13 @@ app.post("/api/enquiries", async (req, res) => {
   } else if (!type || !fields || !fields.name || !fields.email || !fields.phone) {
     return res.status(400).json({ error: "Missing required contact fields" });
   }
+  // Bot spam sends random-case gibberish names ("XGNFLsCfapjeFzehLXH"); real names have at most one lower→Upper (McDonald).
+  // Pretend success so the bot doesn't adapt, but never store it. Also drops a filled hidden "website" honeypot.
+  const botName = String(fields.name || "").split(/\s+/).some(t => (t.match(/[a-z][A-Z]/g) || []).length >= 2);
+  if (botName || fields.website || fields.company_url) {
+    console.warn("Spam enquiry dropped:", String(fields.name).slice(0, 40));
+    return res.json({ success: true, enquiryId: `enq-${Date.now()}` });
+  }
   // Every lead keeps where it came from
   const attribution = attributionFrom(req.headers.cookie);
   fields.source = fields.source || sourceLabel(attribution);
