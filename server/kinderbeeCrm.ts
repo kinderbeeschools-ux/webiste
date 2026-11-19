@@ -1,4 +1,5 @@
 import type { PaymentRecord } from "../src/types";
+import { sendMetaEvent } from "./metaCapi.js";
 
 // Copies each website lead into the KinderBee CRM (the separate CRM app's Supabase project) through its
 // submit_lead() function. That function can only insert a lead, and the anon key below is public by design:
@@ -15,6 +16,7 @@ export async function sendLeadToCrm(category: string, f: Record<string, any>): P
   const name = String(f.name || "").trim();
   const phone = String(f.phone || "").trim();
   if (!name || !phone) return; // e.g. newsletter sign-ups, which have no phone number
+  void sendMetaEvent("Lead", { email: f.email, phone }); // Meta Conversions API; no-op until META_CAPI_TOKEN is set
   const extra: Record<string, unknown> = {
     website_category: category, form: f.formType, programme: f.program || f.partnershipModel || f.courseOfInterest,
     budget: f.budget, state: f.state, utm_source: f.utm_source, utm_medium: f.utm_medium, utm_campaign: f.utm_campaign,
