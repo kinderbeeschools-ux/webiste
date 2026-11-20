@@ -9,6 +9,7 @@ import { SEED_OPPORTUNITIES } from "./src/data/opportunities.js";
 import { submitIndexNow } from "./src/utils/indexnow.js";
 import { sendLeadToCrm, sendPaymentToCrm, crmPaymentDecisions } from "./server/kinderbeeCrm.js";
 import { enquiryCategory, categoryInfo } from "./src/data/enquiry.js";
+import { sheetToLeads, parseTable, sheetCsvUrl, outcomeOf, phone10, type SheetLead } from "./src/data/telesales.js";
 import { COURSE_FEES } from "./src/data/courses.js";
 import { JOURNAL_BLOGS } from "./src/data/journalBlogs.js";
 import { CONSULT_FEE, CONSULT_CATEGORIES, CONSULT_SLOTS, CONSULT_MAX_DAYS, CONSULT_STATUS, type Consultation, type ConsultStatus } from "./src/data/consultation.js";
@@ -864,6 +865,134 @@ app.post("/api/crm/leads", guard("leads"), async (req, res) => {
   await logActivity({ leadKey: leadKeyOf(phone, fields.email), enquiryId: id, type: "created", detail: `Lead added by staff (${fields.source || "Walk-in"})` });
   res.json({ success: true, id });
 });
+
+// ---------- Telesales: Meta-ads leads from a Google Sheet, and call logging ----------
+type SheetCfg = { url?: string; autoAssign?: boolean; lastSync?: string; lastResult?: string };
+const STAGE_ORDER = ["new", "contacted", "interested", "counselling", "visit", "application", "admission"];
+
+// Adds sheet rows as new leads. Skips phones already in the CRM (last 10 digits) and repeats inside the sheet.
+// With autoAssign each new lead goes to the active Sales caller who has the fewest open leads.
+async function importLeads(rows: SheetLead[], autoAssign: boolean) {
+  const supabase = getSupabaseClient();
+  if (!supabase) throw new Error("Supabase is not configured.");
+  const seen = new Set<string>();
+  const load = new Map<string, number>();
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase.from("enquiries").select("phone,status,assigned:raw_data->>assignedTo").order("created_at").range(from, from + 999);
+    if (error) throw new Error(error.message);
+    for (const r of data || []) {
+      seen.add(phone10(r.phone));
+      if (r.assigned && !["admission", "lost"].includes(normaliseStage(r.status))) load.set(r.assigned, (load.get(r.assigned) || 0) + 1);
+    }
+    if ((data || []).length < 1000) break;
+  }
+  const callers = autoAssign ? ((await getContent<any[]>("users")) || []).filter(u => u.active && u.role === "sales") : [];
+  callers.forEach(c => load.set(c.id, load.get(c.id) || 0));
+  const fresh = rows.filter(l => !seen.has(l.phone) && seen.add(l.phone));
+  const type = enquiryCategory("admission");
+  const now = Date.now();
+  const made = fresh.map((l, i) => {
+    const owner = callers.length ? callers.reduce((a, b) => (load.get(b.id)! < load.get(a.id)! ? b : a)) : null;
+    if (owner) load.set(owner.id, load.get(owner.id)! + 1);
+    const t = Date.parse(l.createdAt);
+    const id = `enq-${now}-${i}-${Math.random().toString(36).slice(2, 6)}`;
+    const fields: Record<string, any> = {
+      name: l.name, phone: l.phone, email: l.email, city: l.city, source: l.source, message: l.message, category: type, enquiryType: categoryInfo(type).label,
+      campaign: l.campaign, adset: l.adset, adName: l.ad, metaForm: l.form, metaLeadId: l.leadId, importedFrom: "sheet",
+      ...(owner ? { assignedTo: owner.id, assignedToName: owner.name } : {}),
+    };
+    Object.keys(fields).forEach(k => fields[k] === "" && delete fields[k]);
+    return {
+      row: { id, type, name: l.name, email: l.email || null, phone: l.phone, city: l.city || null, message: l.message || null, status: "new", raw_data: fields, created_at: new Date(t > 0 && t <= now ? t : now).toISOString() },
+      log: { lead_key: l.phone, enquiry_id: id, type: "created", detail: `Imported from Meta sheet${l.campaign ? ` (${l.campaign})` : ""}${owner ? `, assigned to ${owner.name}` : ""}` },
+    };
+  });
+  for (let i = 0; i < made.length; i += 200) {
+    const part = made.slice(i, i + 200);
+    const { error } = await supabase.from("enquiries").insert(part.map(m => m.row));
+    if (error) throw new Error(`Saved ${i} of ${made.length} leads, then: ${error.message}`);
+    await supabase.from("lead_activity").insert(part.map(m => m.log));
+  }
+  return { added: made.length, duplicates: rows.length - made.length };
+}
+
+const resultText = (r: { added: number; duplicates: number; invalid: number }) => `${r.added} new, ${r.duplicates} already in CRM${r.invalid ? `, ${r.invalid} skipped (no name or 10-digit phone)` : ""}`;
+
+// Paste or upload: the browser sends the sheet's CSV / tab-separated text
+app.post("/api/crm/leads/import", guard("leads"), handle(async (req, res) => {
+  const text = String(req.body?.text || "");
+  if (!text.trim()) return res.status(400).json({ error: "Paste or choose the sheet first." });
+  const { leads, invalid } = sheetToLeads(parseTable(text));
+  if (!leads.length && !invalid) return res.status(400).json({ error: "No lead rows found. The first row must be the column headings." });
+  res.json({ ...(await importLeads(leads, !!req.body?.autoAssign)), invalid });
+}));
+
+app.get("/api/crm/sheet", guard("leads"), handle(async (req, res) => res.json((await getContent<SheetCfg>("telesalesSheet")) || {})));
+
+// Pull new rows from the linked Google Sheet (shared as "Anyone with the link: Viewer"). Only CEO/Admin may change the link.
+app.post("/api/crm/sheet/sync", guard("leads"), handle(async (req, res) => {
+  const cfg: SheetCfg = { ...((await getContent<SheetCfg>("telesalesSheet")) || {}) };
+  const ctx = res.locals.auth;
+  if (req.body?.url !== undefined || req.body?.autoAssign !== undefined) {
+    if (!["ceo", "admin"].includes(ctx.role)) return res.status(403).json({ error: "Only the CEO or an Admin can change the sheet settings." });
+    if (req.body.url !== undefined) cfg.url = String(req.body.url).trim();
+    if (req.body.autoAssign !== undefined) cfg.autoAssign = !!req.body.autoAssign;
+  }
+  if (!cfg.url) return res.status(400).json({ error: "Add the Google Sheet link first." });
+  const csvUrl = sheetCsvUrl(cfg.url);
+  if (!csvUrl) return res.status(400).json({ error: "That is not a Google Sheets link." });
+  const r = await fetch(csvUrl);
+  const text = r.ok ? await r.text() : "";
+  if (!r.ok || /^\s*<(!doctype|html)/i.test(text)) {
+    return res.status(400).json({ error: "Could not read the sheet. Share it as \"Anyone with the link: Viewer\" and try again." });
+  }
+  if (text.length > 5_000_000) return res.status(400).json({ error: "The sheet is too large to sync. Remove old rows." });
+  const { leads, invalid } = sheetToLeads(parseTable(text));
+  const result = { ...(await importLeads(leads, !!cfg.autoAssign)), invalid };
+  cfg.lastSync = new Date().toISOString();
+  cfg.lastResult = resultText(result);
+  await setContent("telesalesSheet", cfg);
+  res.json({ ...result, cfg });
+}));
+
+// A caller logs the result of a call: moves the stage forward, sets the next call, records it on the timeline
+app.post("/api/crm/call", guard("leads"), handle(async (req, res) => {
+  const { id, outcome, note, nextFollowUp } = req.body || {};
+  const o = outcomeOf(outcome);
+  if (!id || !o) return res.status(400).json({ error: "Choose what happened on the call." });
+  if (nextFollowUp && !/^\d{4}-\d{2}-\d{2}$/.test(nextFollowUp)) return res.status(400).json({ error: "Invalid follow-up date." });
+  if (["callback", "visit"].includes(o.id) && !nextFollowUp) return res.status(400).json({ error: "Pick the day to call back or the visit day." });
+  const supabase = getSupabaseClient();
+  if (!supabase) return res.status(503).json({ error: "Supabase is not configured." });
+  const { data: rows, error: readErr } = await supabase.from("enquiries").select("id,status,phone,email,touch_count,raw_data").eq("id", id).limit(1);
+  if (readErr) return res.status(500).json({ error: readErr.message });
+  const cur = rows?.[0];
+  if (!cur) return res.status(404).json({ error: "Lead not found." });
+  const ctx = res.locals.auth;
+  const from = normaliseStage(cur.status);
+  const raw = cur.raw_data || {};
+  const patch: any = {
+    touch_count: (cur.touch_count || 0) + 1,
+    next_follow_up: o.stage === "lost" ? null : nextFollowUp || null,
+    follow_up_type: o.stage === "lost" || !nextFollowUp ? null : o.id === "visit" ? "Centre visit" : "Call",
+    raw_data: {
+      ...raw, lastCallAt: new Date().toISOString(), lastCallBy: ctx.name, lastCallById: ctx.id, lastOutcome: o.id,
+      noAnswerCount: o.id === "no_answer" ? (raw.noAnswerCount || 0) + 1 : 0,
+      ...(raw.assignedTo ? {} : { assignedTo: ctx.id, assignedToName: ctx.name }),
+    },
+  };
+  let to = from;
+  if (o.stage === "lost") { to = "lost"; patch.lost_reason = o.lostReason; }
+  else if (o.stage && (STAGE_ORDER.indexOf(o.stage) > STAGE_ORDER.indexOf(from))) { to = o.stage; patch.lost_reason = null; }
+  patch.status = to;
+  const { error } = await supabase.from("enquiries").update(patch).eq("id", id);
+  if (error) return res.status(500).json({ error: error.message });
+  await logActivity({
+    leadKey: leadKeyOf(cur.phone, cur.email), enquiryId: id, type: "call",
+    detail: `${o.label}${to !== from ? ` · ${STAGE_LABEL[from] || from} → ${STAGE_LABEL[to] || to}` : ""}${nextFollowUp ? ` · next ${nextFollowUp}` : ""}${note ? ` · ${String(note).trim().slice(0, 500)}` : ""} (${ctx.name})`,
+  });
+  res.json({ success: true, status: to, touchCount: patch.touch_count, nextFollowUp: patch.next_follow_up || "", fields: patch.raw_data });
+}));
 
 // ---------- Students ----------
 const studentFromRow = (r: any) => ({

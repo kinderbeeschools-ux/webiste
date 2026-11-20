@@ -3,13 +3,14 @@ import { AnimatePresence, animate, motion } from 'motion/react';
 import {
   Inbox, CreditCard, LogOut, ExternalLink, Download, RefreshCw, Phone, MessageCircle, Mail, Trash2, Search, Check, X, Undo2,
   Clock3, Sparkles, Users, Hourglass, IndianRupee, CircleCheck, CircleX, Copy, ChevronDown, ChevronRight, CalendarDays,
-  MapPin, TriangleAlert, ReceiptText, type LucideIcon,
+  MapPin, TriangleAlert, ReceiptText, PhoneCall, type LucideIcon,
 } from 'lucide-react';
 import type { Enquiry, PaymentRecord, SystemSettings } from '../types';
 import { STAGES, stageOf, fmtDate, csvCell, phoneKey, rupees, type Api } from './admin/ui';
 import { ENQUIRY_CATEGORIES, enquiryCategory, categoryInfo } from '../data/enquiry';
 import type { Me } from './admin/portal/common';
 import type { Consultation } from '../data/consultation';
+import { TelesalesDesk } from './TelesalesDesk';
 
 // Focused desk for the two daily jobs: answering enquiries and verifying UPI payments.
 // Same login, token and API as /admin; only the presentation lives here.
@@ -101,7 +102,7 @@ function useConfirm(): [AskFn, React.ReactNode] {
 }
 
 interface Props { adminToken: string; onLogout: () => void; onVisitSite: () => void; settings: SystemSettings | null }
-type View = 'enquiries' | 'payments';
+type View = 'enquiries' | 'payments' | 'telesales';
 
 export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, settings }) => {
   const [me, setMe] = useState<Me | null>(null);
@@ -151,6 +152,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
     api('/api/auth/me').then((m: Me) => {
       setMe(m);
       if (!m.perms.includes('leads') && !m.perms.includes('leads_branch') && m.perms.includes('payments')) setView('payments');
+      if (m.role === 'sales' && m.perms.includes('leads')) setView('telesales'); // callers start on their call queue
       load(m);
     }).catch(() => {});
   }, []);
@@ -174,7 +176,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
     </div>
   );
 
-  const showEnq = can('leads') || can('leads_branch'), showPay = can('payments');
+  const showEnq = can('leads') || can('leads_branch'), showPay = can('payments'), showTele = can('leads');
   const brand = settings?.logoText || 'Kinderbee';
   const who = me.name === me.roleLabel || me.roleLabel.startsWith(me.name) ? { name: me.roleLabel, role: '' } : { name: me.name, role: me.roleLabel };
   const tiles = [
@@ -184,6 +186,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
     { t: 'Verified revenue', v: stats.revenue, fmt: (n: number) => rupees(n), s: `${stats.verified} payment${stats.verified === 1 ? '' : 's'}`, icon: IndianRupee, color: INK, go: 'payments' as View, dark: true },
   ].filter((_, i) => (i < 2 ? showEnq : showPay));
   const tabs = [
+    showTele && { id: 'telesales' as View, text: 'Telesales', icon: PhoneCall, count: 0 },
     showEnq && { id: 'enquiries' as View, text: 'Enquiries', icon: Inbox, count: stats.fresh },
     showPay && { id: 'payments' as View, text: 'Payments', icon: CreditCard, count: stats.pending + bookings.length },
   ].filter(Boolean) as { id: View; text: string; icon: LucideIcon; count: number }[];
@@ -246,7 +249,7 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
           </div>
         )}
 
-        <div className={`grid gap-3 sm:gap-4 ${tiles.length > 2 ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2'}`}>
+        <div className={`grid gap-3 sm:gap-4 ${view === 'telesales' ? 'hidden ' : ''}${tiles.length > 2 ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2'}`}>
           {tiles.map((t, i) => (
             <motion.button key={t.t} onClick={() => setView(t.go)} initial={{ opacity: 0, y: 28, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ ...spring, delay: 0.08 + i * 0.07 }} whileHover={{ y: -5, scale: 1.02 }} whileTap={{ scale: 0.97 }}
@@ -271,7 +274,8 @@ export const DeskPanel: React.FC<Props> = ({ adminToken, onLogout, onVisitSite, 
         {tabs.length > 1 && <TabBar className="lg:hidden" />}
 
         <motion.div key={view} initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
-            {view === 'enquiries' && showEnq ? <Enquiries items={enquiries} setItems={setEnquiries} api={api} flash={flash} ask={ask} loading={loading} canDelete={can('leads_delete')} />
+            {view === 'telesales' && showTele ? <TelesalesDesk items={enquiries} setItems={setEnquiries} api={api} flash={flash} me={me} reload={() => load()} />
+              : view === 'enquiries' && showEnq ? <Enquiries items={enquiries} setItems={setEnquiries} api={api} flash={flash} ask={ask} loading={loading} canDelete={can('leads_delete')} />
               : showPay ? <Payments items={payments} setItems={setPayments} leads={enquiries} bookings={bookings} reload={() => load()} api={api} flash={flash} ask={ask} loading={loading} party={party} />
               : <Empty icon={Inbox} title="Nothing to show" text="Your role has no enquiries or payments access." />}
         </motion.div>
