@@ -20,6 +20,8 @@ const genPassword = () => {
   const r = crypto.getRandomValues(new Uint32Array(10));
   return Array.from(r, n => a[n % a.length]).join('');
 };
+// Usernames allow letters, numbers, dot, dash. "sharmi@kinderbee.com" becomes "sharmi".
+const userOf = (s: string) => s.toLowerCase().split('@')[0].replace(/[^a-z0-9._-]+/g, '.').replace(/^\.+|\.+$/g, '');
 const slug = (n: string) => n.toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
 
 export const TeamDesk: React.FC<{ api: Api; flash: (m: string) => void }> = ({ api, flash }) => {
@@ -39,9 +41,10 @@ export const TeamDesk: React.FC<{ api: Api; flash: (m: string) => void }> = ({ a
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault(); setBusy(true); setErr('');
+    const username = userOf(form.username || form.name); // an email or a blank box still gives a valid username
     try {
-      await api('/api/portal/users', { method: 'POST', body: JSON.stringify({ ...form, perms: [] }) });
-      setCreds({ name: form.name, username: form.username, password: form.password, role: form.role });
+      await api('/api/portal/users', { method: 'POST', body: JSON.stringify({ ...form, username, perms: [] }) });
+      setCreds({ name: form.name, username, password: form.password, role: form.role });
       setForm({ name: '', username: '', phone: '', role: form.role, password: genPassword() }); setTouchedUser(false);
       flash('Account created'); load();
     } catch (x: any) { setErr(x.message || 'Could not create the account'); }
@@ -84,8 +87,8 @@ export const TeamDesk: React.FC<{ api: Api; flash: (m: string) => void }> = ({ a
         <label className="text-xs font-bold text-stone-500">Full name
           <input className={`${field} mt-1`} value={form.name} required onChange={e => setForm({ ...form, name: e.target.value, username: touchedUser ? form.username : slug(e.target.value) })} placeholder="e.g. Priya Nair" />
         </label>
-        <label className="text-xs font-bold text-stone-500">Username (they sign in with this)
-          <input className={`${field} mt-1`} value={form.username} required autoComplete="off" onChange={e => { setTouchedUser(true); setForm({ ...form, username: e.target.value.toLowerCase() }); }} placeholder="priya.nair" />
+        <label className="text-xs font-bold text-stone-500">Username (they sign in with this; no @)
+          <input className={`${field} mt-1`} value={form.username} autoComplete="off" onChange={e => { setTouchedUser(true); setForm({ ...form, username: e.target.value.toLowerCase() }); }} onBlur={() => setForm(f => ({ ...f, username: userOf(f.username) }))} placeholder="priya.nair" />
         </label>
         <label className="text-xs font-bold text-stone-500">Phone (optional)
           <input className={`${field} mt-1`} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} inputMode="tel" />
