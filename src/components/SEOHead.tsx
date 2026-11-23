@@ -16,6 +16,8 @@ interface SEOHeadProps {
   extraSchema?: object; // one more JSON-LD block for this page (e.g. Service)
 }
 
+const DEFAULT_LOGO = 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png';
+
 export const SEOHead: React.FC<SEOHeadProps> = ({
   title,
   description,
@@ -98,11 +100,13 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     "name": brandName,
     "legalName": "Finnishway Educare Private Limited",
     "url": siteUrl,
-    "logo": finalOgImage,
+    "logo": settings?.logoUrl || DEFAULT_LOGO,
     "description": finalDescription,
     "address": {
       "@type": "PostalAddress",
       "streetAddress": settings?.officeAddress || "No. 1, Old UCO Bank Road, Rajarajeshwari Layout, Ramamurthy Nagar, Bengaluru – 560016",
+      "addressLocality": "Bengaluru",
+      "postalCode": "560016",
       "addressCountry": "IN"
     },
     "contactPoint": {
