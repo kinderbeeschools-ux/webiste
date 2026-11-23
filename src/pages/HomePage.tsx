@@ -255,7 +255,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 
                 {/* Main Headline */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
-                  India’s <span className="text-[#E1007A]">AI-Powered Preschool Franchise</span> with Zero Royalty
+                  India’s <span className="text-[#E1007A]">AI-Powered Preschool Franchise</span> with <span className="rounded-xl bg-[#FFE45C] px-2 text-[#1C1917] [box-decoration-break:clone]">Zero Royalty</span>
                 </h1>
                 
                 {/* Subtitle */}
