@@ -172,3 +172,20 @@ What the traces show (local Lighthouse, mobile emulation):
 - The page is rendered by the browser after the JavaScript loads (the prerendered HTML is discarded), so nothing paints until about 4 s on a throttled phone.
 
 Next candidates (not done): replace the scroll-reveal script with CSS-only reveal or limit it to below-the-fold elements; hydrate the prerendered page properly (needs the server and browser output to match exactly, checked with the React hydration warnings in a development build); split the remaining public pages out of the main bundle.
+
+### Update: JavaScript scroll-reveal replaced with CSS (commit b6171e5)
+The site-wide reveal script (`AutoReveal.ts`) is removed. Headings, lists and cards now use a CSS scroll-driven animation (no JavaScript, no layout reads). Browsers that do not support it, and visitors with reduced motion, see everything immediately. Checked locally on Home and About: every revealed element reaches full opacity when scrolled to.
+
+Measured the same way before and after (local Lighthouse, mobile emulation, live URL; this machine is slower than Google's lab, so compare the two columns, not the absolute numbers):
+
+| | Before | After (2 runs) |
+|---|---|---|
+| Performance score | 30 | 43 and 40 |
+| Total blocking time | 3,650 ms | 1,010 and 1,160 ms |
+| Style and Layout | 4,546 ms | 3,381 and 2,565 ms |
+| Script evaluation | 3,054 ms | 1,488 and 1,624 ms |
+| First Contentful Paint | 5.1 s | 4.2 and 4.8 s |
+| **LCP** | 7.4 s | **8.5 and 8.4 s (no improvement, within run-to-run noise)** |
+| SEO | 100 | 100 |
+
+LCP is still poor. The hero photo loads in about 1 to 2.5 s but is painted 4.7 to 6.4 s later, because the page is built in the browser after the JavaScript runs. The proper fix is to hydrate the prerendered HTML (the earlier attempt was reverted; it needs the server and browser output to match exactly, verified with a development build).
