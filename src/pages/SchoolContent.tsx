@@ -21,6 +21,7 @@ interface HomePageProps {
   blogs: BlogPost[];
   onSelectBlog: (blog: BlogPost) => void;
   settings?: SystemSettings | null;
+  children?: React.ReactNode;
 }
 
 const NTT_IMG = 'https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/NTT%20-%20Teacher%20Training/Our%20Programs/';
@@ -64,7 +65,8 @@ export const SchoolContent: React.FC<HomePageProps> = ({
   onOpenConsultation, 
   blogs, 
   onSelectBlog,
-  settings 
+  settings,
+  children
 }) => {
 
   // Card grids that stagger their children in (see .stagger in index.css)
@@ -187,7 +189,7 @@ export const SchoolContent: React.FC<HomePageProps> = ({
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
             className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <button onClick={() => { setCurrentTab('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            <button onClick={() => document.getElementById('contact-enquiry')?.scrollIntoView({ behavior: 'smooth' })}
               className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-8px_rgba(225,0,122,0.7)] transition hover:-translate-y-0.5 hover:bg-[#c90070] sm:w-auto sm:text-base cursor-pointer">
               Book a School Visit <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </button>
@@ -504,6 +506,7 @@ export const SchoolContent: React.FC<HomePageProps> = ({
       </section>
       </Reveal>
 
+
       {/* =========================================================================
           SECTION 3: WHY PARENTS CHOOSE KINDERBEE
           ========================================================================= */}
@@ -607,174 +610,6 @@ export const SchoolContent: React.FC<HomePageProps> = ({
           </div>
       </section>
 
-      <Reveal>
-      {/* =========================================================================
-          SECTION 7: TEACHER-TRAINING (FINNISH-WAY ACADEMY)
-          ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-gradient-to-br from-[#70162A] to-[#4a0d1b] text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-pink-500/10 blur-3xl pointer-events-none"></div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            <div className="lg:col-span-8 space-y-5">
-              <div className="inline-flex items-center gap-2 bg-[#FCECE5] text-[#70162A] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
-                <Award className="w-3.5 h-3.5 text-[#70162A]" />
-                <span>FINNISH-WAY ACADEMY • TEACHER DEVELOPMENT</span>
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
-                Advanced Diploma in Early Childhood Care &amp; Education (NTT)
-              </h2>
-
-              <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-                Join the Kinderbee NTT course in Bengaluru: an early childhood care and education diploma with Nordic-inspired playful pedagogy. Master play-based teaching, child psychology, classroom leadership, and NEP 2020 frameworks.
-              </p>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col items-center sm:items-end justify-center">
-              <button
-                onClick={() => {
-                  setCurrentTab('fwa');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="w-full sm:w-auto bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
-              >
-                <span>Explore Teacher Training</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Course cards (same details as the Teacher Training page) */}
-          <div ref={coursesRef} className={`stagger relative z-10 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 ${coursesIn ? 'is-in' : ''}`}>
-            {FWA_COURSES.map((course, i) => (
-              <button
-                key={course.title}
-                type="button"
-                onClick={() => {
-                  setCurrentTab('fwa');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="group text-left rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-sm p-3 flex flex-col transition-[background-color,border-color,box-shadow,translate] duration-500 hover:-translate-y-2 hover:bg-white/[0.11] hover:border-[#FFD400]/40 hover:shadow-2xl hover:shadow-black/40 cursor-pointer"
-              >
-                <div className="kb-frame relative aspect-[3/2] rounded-xl overflow-hidden bg-white/10">
-                  <img src={course.image} alt={course.title} loading="lazy" className="w-full h-full object-cover" />
-                </div>
-
-                <div className="flex-1 flex flex-col px-1.5 pt-4 pb-1.5 space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="bg-[#FFD400] text-stone-900 text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full">
-                      {course.badge}
-                    </span>
-                    <span className="font-display text-2xl font-extrabold text-white/20 leading-none transition-colors duration-300 group-hover:text-[#FFD400]/60">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base leading-snug text-white group-hover:text-[#FFD400] transition-colors duration-300">
-                      {course.title}
-                    </h3>
-                    <p className="text-xs text-pink-200/80 mt-1">{course.subtitle}</p>
-                  </div>
-
-                  <ul className="space-y-1.5 flex-1">
-                    {course.modules.map((m, j) => (
-                      <li key={m} className="flex items-start gap-2 text-xs text-stone-200">
-                        <span className="shrink-0 w-4 h-4 rounded-full bg-[#E1007A] text-white text-[9px] font-bold flex items-center justify-center mt-px transition-transform duration-300 group-hover:scale-110" style={{ transitionDelay: `${j * 50}ms` }}>
-                          {j + 1}
-                        </span>
-                        <span>{m}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/10">
-                    <span className="text-[11px] font-semibold text-stone-300">{course.note}</span>
-                    <ArrowRight className="w-4 h-4 text-[#FFD400] shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <AiCurriculum tone="dark" className="relative z-10 mt-6" />
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      {/* =========================================================================
-          SECTION 4: OUR HOLISTIC LEARNING APPROACH
-          ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="space-y-10">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
-              <Heart className="w-3.5 h-3.5 text-[#E1007A]" />
-              <span>WHOLE-CHILD PEDAGOGY</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-              Our Holistic Learning Approach
-            </h2>
-            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              Every day at Kinderbee, our Nordic-inspired curriculum preschool integrates cognitive, language, social-emotional and physical growth through balanced, playful exploration.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#E1007A] flex items-center justify-center font-bold">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-stone-900 text-base">Cognitive &amp; STEM</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Pattern matching, block engineering, sensory science experiments, and mathematical reasoning.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-stone-900 text-base">Language &amp; Phonics</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Phonetic awareness, story immersion circles, multilingual vocabulary, and active listening skills.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                <Smile className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-stone-900 text-base">Social &amp; Emotional</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Self-regulation, empathy, conflict resolution, collaborative teamwork, and positive communication.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-                <Sun className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-stone-900 text-base">Physical Agility</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Fine motor precision (puzzles, scissors, threading) and gross motor agility (climbing, balance beams).
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3 sm:col-span-2 lg:col-span-1">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
-                <Award className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-stone-900 text-base">Creative Arts &amp; Music</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Sensory painting, dramatic puppet role-play, rhythmic instruments, and free imaginative expression.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      </Reveal>
 
       <Reveal>
       {/* =========================================================================
@@ -882,71 +717,79 @@ export const SchoolContent: React.FC<HomePageProps> = ({
 
       <Reveal>
       {/* =========================================================================
-          SECTION 9: LATEST BLOGS / SCHOOL ACTIVITIES
+          SECTION 4: OUR HOLISTIC LEARNING APPROACH
           ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="space-y-10">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200 pb-6">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-3.5 py-1 rounded-full">
-                <BookOpen className="w-3.5 h-3.5 text-[#E1007A]" />
-                <span>DEVELOPMENTAL GUIDES &amp; NEWS</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-stone-900 tracking-tight">
-                Latest Articles &amp; School Activities
-              </h2>
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
+              <Heart className="w-3.5 h-3.5 text-[#E1007A]" />
+              <span>WHOLE-CHILD PEDAGOGY</span>
             </div>
-            
-            <button
-              onClick={() => {
-                setCurrentTab('blogs');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#E1007A] hover:text-pink-700 transition cursor-pointer"
-            >
-              <span>View All Articles &rarr;</span>
-            </button>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
+              Our Holistic Learning Approach
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              Every day at Kinderbee, our Nordic-inspired curriculum preschool integrates cognitive, language, social-emotional and physical growth through balanced, playful exploration.
+            </p>
           </div>
 
-          <div ref={blogsRef} className={`stagger grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto gap-8 ${blogsIn ? "is-in" : ""}`}>
-            {blogs && blogs.slice(0, 2).map((blog) => (
-              <div 
-                key={blog.id} 
-                onClick={() => onSelectBlog(blog)}
-                className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer"
-              >
-                <div>
-                  <div className="kb-frame relative h-48 overflow-hidden bg-stone-100">
-                    <img 
-                      src={blog.image || (blog as any).imageUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"} 
-                      alt={blog.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-3 left-3 bg-stone-900/80 text-white text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs">
-                      {blog.category || 'Preschool Education'}
-                    </div>
-                  </div>
-                  <div className="p-6 space-y-3">
-                    <div className="text-xs text-stone-400 font-medium">{blog.date}</div>
-                    <h3 className="text-lg font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors line-clamp-2">
-                      {blog.title}
-                    </h3>
-                    <p className="text-stone-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
-                      {blog.excerpt || blog.content}
-                    </p>
-                  </div>
-                </div>
-                <div className="p-6 pt-0">
-                  <span className="text-xs font-bold text-[#E1007A] inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
-                    Read Full Article &rarr;
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#E1007A] flex items-center justify-center font-bold">
+                <Sparkles className="w-5 h-5" />
               </div>
-            ))}
+              <h3 className="font-display font-bold text-stone-900 text-base">Cognitive &amp; STEM</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Pattern matching, block engineering, sensory science experiments, and mathematical reasoning.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Language &amp; Phonics</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Phonetic awareness, story immersion circles, multilingual vocabulary, and active listening skills.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <Smile className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Social &amp; Emotional</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Self-regulation, empathy, conflict resolution, collaborative teamwork, and positive communication.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                <Sun className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Physical Agility</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Fine motor precision (puzzles, scissors, threading) and gross motor agility (climbing, balance beams).
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-stone-200 hover:border-[#E1007A]/50 transition-colors shadow-xs space-y-3 sm:col-span-2 lg:col-span-1">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <Award className="w-5 h-5" />
+              </div>
+              <h3 className="font-display font-bold text-stone-900 text-base">Creative Arts &amp; Music</h3>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Sensory painting, dramatic puppet role-play, rhythmic instruments, and free imaginative expression.
+              </p>
+            </div>
           </div>
         </div>
       </section>
       </Reveal>
+
+      {children}
 
       <Reveal>
       {/* =========================================================================
@@ -1137,6 +980,169 @@ export const SchoolContent: React.FC<HomePageProps> = ({
               )}
             </div>
 
+          </div>
+        </div>
+      </section>
+      </Reveal>
+
+      <Reveal>
+      {/* =========================================================================
+          SECTION 7: TEACHER-TRAINING (FINNISH-WAY ACADEMY)
+          ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="bg-gradient-to-br from-[#70162A] to-[#4a0d1b] text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-pink-500/10 blur-3xl pointer-events-none"></div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div className="lg:col-span-8 space-y-5">
+              <div className="inline-flex items-center gap-2 bg-[#FCECE5] text-[#70162A] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                <Award className="w-3.5 h-3.5 text-[#70162A]" />
+                <span>FINNISH-WAY ACADEMY • TEACHER DEVELOPMENT</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-white leading-tight">
+                Advanced Diploma in Early Childhood Care &amp; Education (NTT)
+              </h2>
+
+              <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-2xl">
+                Join the Kinderbee NTT course in Bengaluru: an early childhood care and education diploma with Nordic-inspired playful pedagogy. Master play-based teaching, child psychology, classroom leadership, and NEP 2020 frameworks.
+              </p>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col items-center sm:items-end justify-center">
+              <button
+                onClick={() => {
+                  setCurrentTab('fwa');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
+              >
+                <span>Explore Teacher Training</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Course cards (same details as the Teacher Training page) */}
+          <div ref={coursesRef} className={`stagger relative z-10 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 ${coursesIn ? 'is-in' : ''}`}>
+            {FWA_COURSES.map((course, i) => (
+              <button
+                key={course.title}
+                type="button"
+                onClick={() => {
+                  setCurrentTab('fwa');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="group text-left rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-sm p-3 flex flex-col transition-[background-color,border-color,box-shadow,translate] duration-500 hover:-translate-y-2 hover:bg-white/[0.11] hover:border-[#FFD400]/40 hover:shadow-2xl hover:shadow-black/40 cursor-pointer"
+              >
+                <div className="kb-frame relative aspect-[3/2] rounded-xl overflow-hidden bg-white/10">
+                  <img src={course.image} alt={course.title} loading="lazy" className="w-full h-full object-cover" />
+                </div>
+
+                <div className="flex-1 flex flex-col px-1.5 pt-4 pb-1.5 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="bg-[#FFD400] text-stone-900 text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full">
+                      {course.badge}
+                    </span>
+                    <span className="font-display text-2xl font-extrabold text-white/20 leading-none transition-colors duration-300 group-hover:text-[#FFD400]/60">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-base leading-snug text-white group-hover:text-[#FFD400] transition-colors duration-300">
+                      {course.title}
+                    </h3>
+                    <p className="text-xs text-pink-200/80 mt-1">{course.subtitle}</p>
+                  </div>
+
+                  <ul className="space-y-1.5 flex-1">
+                    {course.modules.map((m, j) => (
+                      <li key={m} className="flex items-start gap-2 text-xs text-stone-200">
+                        <span className="shrink-0 w-4 h-4 rounded-full bg-[#E1007A] text-white text-[9px] font-bold flex items-center justify-center mt-px transition-transform duration-300 group-hover:scale-110" style={{ transitionDelay: `${j * 50}ms` }}>
+                          {j + 1}
+                        </span>
+                        <span>{m}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/10">
+                    <span className="text-[11px] font-semibold text-stone-300">{course.note}</span>
+                    <ArrowRight className="w-4 h-4 text-[#FFD400] shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <AiCurriculum tone="dark" className="relative z-10 mt-6" />
+        </div>
+      </section>
+      </Reveal>
+
+      <Reveal>
+      {/* =========================================================================
+          SECTION 9: LATEST BLOGS / SCHOOL ACTIVITIES
+          ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="space-y-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-3.5 py-1 rounded-full">
+                <BookOpen className="w-3.5 h-3.5 text-[#E1007A]" />
+                <span>DEVELOPMENTAL GUIDES &amp; NEWS</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-stone-900 tracking-tight">
+                Latest Articles &amp; School Activities
+              </h2>
+            </div>
+            
+            <button
+              onClick={() => {
+                setCurrentTab('blogs');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#E1007A] hover:text-pink-700 transition cursor-pointer"
+            >
+              <span>View All Articles &rarr;</span>
+            </button>
+          </div>
+
+          <div ref={blogsRef} className={`stagger grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto gap-8 ${blogsIn ? "is-in" : ""}`}>
+            {blogs && blogs.slice(0, 2).map((blog) => (
+              <div 
+                key={blog.id} 
+                onClick={() => onSelectBlog(blog)}
+                className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer"
+              >
+                <div>
+                  <div className="kb-frame relative h-48 overflow-hidden bg-stone-100">
+                    <img 
+                      src={blog.image || (blog as any).imageUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"} 
+                      alt={blog.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3 bg-stone-900/80 text-white text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs">
+                      {blog.category || 'Preschool Education'}
+                    </div>
+                  </div>
+                  <div className="p-6 space-y-3">
+                    <div className="text-xs text-stone-400 font-medium">{blog.date}</div>
+                    <h3 className="text-lg font-display font-bold text-stone-900 group-hover:text-[#E1007A] transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-stone-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                      {blog.excerpt || blog.content}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-6 pt-0">
+                  <span className="text-xs font-bold text-[#E1007A] inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                    Read Full Article &rarr;
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

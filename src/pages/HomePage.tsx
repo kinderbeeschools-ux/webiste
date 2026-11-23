@@ -196,6 +196,67 @@ const TESTIMONIALS: Testimonial[] = [
 ];
 
 
+
+const FranchiseLeadForm: React.FC = () => {
+  const [f, setF] = useState({ name: '', phone: '', city: '' });
+  const [agree, setAgree] = useState(false);
+  const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle');
+  const [err, setErr] = useState('');
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr('');
+    if (!/^[+\d][\d\s-]{8,}$/.test(f.phone.trim())) { setErr('Please enter a valid phone number.'); return; }
+    if (!agree) { setErr('Please agree to the terms and privacy policy.'); return; }
+    setState('sending');
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'Preschool Franchise', fields: { name: f.name, phone: f.phone, city: f.city, message: `City: ${f.city}`, interest: 'Preschool Franchise' } }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed');
+      trackLead('Preschool Franchise', 'Home franchise form');
+      setState('done');
+    } catch (x: any) { setErr(x.message || 'Network error. Please try again.'); setState('idle'); }
+  };
+  const input = 'w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm focus:border-[#E1007A] focus:outline-none focus:ring-2 focus:ring-pink-200';
+  return (
+    <section id="franchise-enquiry" className="max-w-5xl mx-auto px-4 sm:px-8">
+      <div className="grid gap-8 rounded-3xl border border-pink-100 bg-[#FFF6F9] p-6 sm:p-10 md:grid-cols-2 md:items-center">
+        <div className="space-y-3">
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-[#1C1917]">Get the franchise details</h2>
+          <p className="text-stone-600">Investment, space needs and support, explained by our partnership team. We call you back within one working day.</p>
+          <ul className="space-y-1.5 text-sm font-medium text-stone-700">
+            {['Zero royalty, keep 100% of fees', 'Full setup, training and ERP', 'No obligation'].map(x => (
+              <li key={x} className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#E1007A]" />{x}</li>
+            ))}
+          </ul>
+        </div>
+        {state === 'done' ? (
+          <div role="status" className="rounded-2xl bg-white p-8 text-center shadow-sm">
+            <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600" />
+            <p className="mt-3 text-lg font-bold text-stone-900">Thank you, {f.name.split(' ')[0] || 'we'} will call you soon.</p>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="space-y-3 rounded-2xl bg-white p-6 shadow-sm">
+            <input required aria-label="Your name" placeholder="Your name" className={input} value={f.name} onChange={e => setF({ ...f, name: e.target.value })} />
+            <input required type="tel" inputMode="tel" aria-label="Phone number" placeholder="Phone / WhatsApp number" className={input} value={f.phone} onChange={e => setF({ ...f, phone: e.target.value })} />
+            <input required aria-label="City" placeholder="City where you want to open" className={input} value={f.city} onChange={e => setF({ ...f, city: e.target.value })} />
+            <label className="flex items-start gap-2 text-xs text-stone-600">
+              <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-0.5" />
+              <span>I agree to the terms and conditions and privacy policy.</span>
+            </label>
+            {err && <p role="alert" className="text-sm font-medium text-red-600">{err}</p>}
+            <button disabled={state === 'sending'} className="w-full rounded-xl bg-[#E1007A] py-3.5 text-sm font-bold text-white shadow-md hover:bg-[#c90070] disabled:opacity-60 cursor-pointer">
+              {state === 'sending' ? 'Sending...' : 'Send me the details'}
+            </button>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+};
+
 export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsultation, faqs, settings }) => {
   const [activeFaq, setActiveFaq] = useState<string | null>('faq-1');
   const [testimonialFilter, setTestimonialFilter] = useState<'all' | 'franchise' | 'teacher' | 'parent'>('all');
@@ -309,13 +370,6 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                     <span aria-hidden="true">&rarr;</span>
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => openConsultationBooking('Preschool Partnership / Franchise')}
-                  className="text-sm font-semibold text-stone-600 hover:text-[#E1007A] underline decoration-pink-300 underline-offset-4 transition cursor-pointer"
-                >
-                  Prefer a detailed one-to-one session? Book a 1:1 consultation for ₹99
-                </button>
 
                 {/* Bottom Feature Pill Strip */}
                 <div className="pt-2">
@@ -354,97 +408,14 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
           </section>
 
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
-            <ConsultationOffer category="Preschool Partnership / Franchise" />
-          </div>
+      {/* Parents land here too: one line, straight to the school */}
+      <p className="max-w-7xl mx-auto px-4 sm:px-8 text-center text-sm text-stone-600">
+        Looking for admission at our Ramamurthy Nagar preschool, Bengaluru?{' '}
+        <button type="button" onClick={() => setCurrentTab('about')} className="font-bold text-[#E1007A] underline decoration-pink-300 underline-offset-4 hover:decoration-[#E1007A] cursor-pointer">Visit the school page &rarr;</button>
+      </p>
 
 
       <FranchiseShowcase />
-
-      <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
-
-      <Reveal>
-      {/* =========================================================================
-          SECTION 8: PRESCHOOL PARTNERSHIP (KIPS)
-          ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-12">
-            <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#E1007A]" />
-                <span>KIPS • ZERO ROYALTY MODEL</span>
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-stone-900 tracking-tight">
-                Partner with Kinderbee
-              </h2>
-
-              <h3 className="text-xl font-bold text-stone-700">
-                No Royalty Preschool Franchise in India with 360-Degree Support
-              </h3>
-
-              <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-                Start a Kinderbee preschool franchise with zero royalty and keep 100% of your student tuition fees while benefiting from our complete academic syllabus, teacher enablement, campus architecture, and admission marketing engines.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-stone-700 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>0% Recurring Royalty on Tuition</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-stone-700 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Turnkey Setup &amp; Toy Kits</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-stone-700 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Continuous Teacher Development</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-stone-700 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Local Lead Generation Assistance</span>
-                </div>
-              </div>
-
-              <div className="pt-4 flex flex-wrap gap-4">
-                <button
-                  onClick={() => {
-                    onOpenConsultation('preschool');
-                  }}
-                  className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer text-sm"
-                >
-                  <span>FREE CRM</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => openConsultationBooking('Preschool Partnership / Franchise')}
-                  className="bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold px-6 py-3.5 rounded-xl transition text-sm cursor-pointer"
-                >
-                  Book Franchise Consultation · ₹99
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 px-4 py-4">
-              <div className="kb-stack kb-float rounded-2xl">
-              <div className="kb-frame rounded-2xl overflow-hidden shadow-lg border border-stone-200">
-                <img 
-                  src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Image/Partner/Partner%20With%20Kinderbee.jpeg" 
-                  alt="Kinderbee no royalty preschool franchise in India" 
-                  className="w-full aspect-video object-cover"
-                />
-              </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <ConsultationOffer className="mt-6" />
-      </section>
-      </Reveal>
-
-      <FranchiseBuyerGuide onOpenConsultation={() => onOpenConsultation('preschool')} settings={settings} />
 
       <Reveal>
       {/* =========================================================================
@@ -633,6 +604,17 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
       </section>
       </Reveal>
 
+      <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
+
+      <FranchiseLeadForm />
+
+
+      <FranchiseBuyerGuide onOpenConsultation={() => onOpenConsultation('preschool')} settings={settings} />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
+            <ConsultationOffer category="Preschool Partnership / Franchise" />
+          </div>
+
       <Reveal>
       {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-8 pt-6">
@@ -670,6 +652,19 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
         </div>
       </section>
       </Reveal>
+
+
+      <section className="max-w-5xl mx-auto px-4 sm:px-8">
+        <div className="rounded-3xl bg-gradient-to-br from-stone-900 to-stone-950 p-10 sm:p-14 text-center text-white shadow-2xl">
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight">Ready to own a Kinderbee preschool?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-stone-300">Talk to our partnership team. No obligation, and no royalty if you go ahead.</p>
+          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <button onClick={() => onOpenConsultation('preschool')} className="inline-flex items-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#c90070] cursor-pointer">Book Free Consultation <ArrowRight className="h-4 w-4" /></button>
+            <button onClick={() => openBrochureDownload('Home closing CTA')} className="inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold text-white hover:bg-white/10 cursor-pointer">Download Franchise PDF</button>
+          </div>
+        </div>
+      </section>
+
 
     </div></MotionConfig>
   );

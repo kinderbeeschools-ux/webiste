@@ -149,14 +149,66 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         settings={settings}
       />
 
-      {/* The school: programmes, campus, teacher training, journal and enquiry (moved from the old home page) */}
+      {/* Parent journey: school, programmes, why us, campus, proof, enquiry; then teacher training and journal */}
       <SchoolContent
         setCurrentTab={handleNavigate}
         onOpenConsultation={(type) => onOpenConsultation?.(type)}
         blogs={blogs}
         onSelectBlog={(b) => onSelectBlog?.(b)}
         settings={settings}
-      />
+      >
+
+      <Reveal>
+      {/* Testimonials */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-10">
+        <div className="text-center mb-12">
+          <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block mb-3">
+            Voices of Success
+          </div>
+          <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">
+            Testimonials
+          </h2>
+          <Squiggle className="w-24 h-5 mx-auto mt-2" />
+        </div>
+        
+        <div ref={testiRef} className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${testiCls}`}>
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
+            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
+              I always wanted to start a preschool, but I didn't know where to begin. Kinderbee gave me more than a franchise model—it gave me a <strong className="text-stone-900 font-bold not-italic">roadmap</strong>, a <strong className="text-stone-900 font-bold not-italic">support system</strong> and the <strong className="text-stone-900 font-bold not-italic">confidence</strong> to build something meaningful for children.
+            </p>
+            <div className="font-bold text-[#1C1917]">— Meera Krishnan</div>
+          </div>
+          
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
+            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
+              Kinderbee helped us understand that a preschool is not just a building—it is a child's <strong className="text-stone-900 font-bold not-italic">first learning world</strong>. Their approach helped us create a space where children can <strong className="text-stone-900 font-bold not-italic">explore, learn and grow happily</strong>.
+            </p>
+            <div className="font-bold text-[#1C1917]">— Divya Narayanan</div>
+            <div className="text-xs text-stone-500 font-semibold">Kinderbee Franchise Partner | Madurai</div>
+          </div>
+          
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
+            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
+              The <strong className="text-stone-900 font-bold not-italic">NTT program</strong> helped me understand that teaching young children is not simply about lessons—it is about <strong className="text-stone-900 font-bold not-italic">patience, creativity and understanding every child</strong>. I now feel ready to step into a classroom with <strong className="text-stone-900 font-bold not-italic">confidence</strong>.
+            </p>
+            <div className="font-bold text-[#1C1917]">— Ananya Suresh</div>
+            <div className="text-xs text-stone-500 font-semibold">NTT Graduate | Madurai</div>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
+            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
+            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
+              The program taught me that <strong className="text-stone-900 font-bold not-italic">every child learns differently</strong>. The training helped me become <strong className="text-stone-900 font-bold not-italic">more patient, creative and intentional</strong> in the way I approach teaching.
+            </p>
+            <div className="font-bold text-[#1C1917]">— Sneha Mathew</div>
+            <div className="text-xs text-stone-500 font-semibold">NTT Graduate | Kochi</div>
+          </div>
+        </div>
+      </section>
+      </Reveal>
 
       <Reveal>
       {/* Life at Kinderbee - Gallery Section (Matching Reference Design) */}
@@ -485,58 +537,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         </div>
       </section>
       </Reveal>
-
-      <Reveal>
-      {/* Testimonials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-10">
-        <div className="text-center mb-12">
-          <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block mb-3">
-            Voices of Success
-          </div>
-          <h2 className="text-3xl font-display font-extrabold text-[#1C1917]">
-            Testimonials
-          </h2>
-          <Squiggle className="w-24 h-5 mx-auto mt-2" />
-        </div>
-        
-        <div ref={testiRef} className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${testiCls}`}>
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
-            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
-            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
-              I always wanted to start a preschool, but I didn't know where to begin. Kinderbee gave me more than a franchise model—it gave me a <strong className="text-stone-900 font-bold not-italic">roadmap</strong>, a <strong className="text-stone-900 font-bold not-italic">support system</strong> and the <strong className="text-stone-900 font-bold not-italic">confidence</strong> to build something meaningful for children.
-            </p>
-            <div className="font-bold text-[#1C1917]">— Meera Krishnan</div>
-          </div>
-          
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
-            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
-            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
-              Kinderbee helped us understand that a preschool is not just a building—it is a child's <strong className="text-stone-900 font-bold not-italic">first learning world</strong>. Their approach helped us create a space where children can <strong className="text-stone-900 font-bold not-italic">explore, learn and grow happily</strong>.
-            </p>
-            <div className="font-bold text-[#1C1917]">— Divya Narayanan</div>
-            <div className="text-xs text-stone-500 font-semibold">Kinderbee Franchise Partner | Madurai</div>
-          </div>
-          
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
-            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
-            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
-              The <strong className="text-stone-900 font-bold not-italic">NTT program</strong> helped me understand that teaching young children is not simply about lessons—it is about <strong className="text-stone-900 font-bold not-italic">patience, creativity and understanding every child</strong>. I now feel ready to step into a classroom with <strong className="text-stone-900 font-bold not-italic">confidence</strong>.
-            </p>
-            <div className="font-bold text-[#1C1917]">— Ananya Suresh</div>
-            <div className="text-xs text-stone-500 font-semibold">NTT Graduate | Madurai</div>
-          </div>
-
-          <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm relative transition-[translate,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-pink-200">
-            <div className="text-6xl text-pink-100 font-serif absolute top-4 left-6">"</div>
-            <p className="text-stone-700 leading-relaxed relative z-10 italic mb-6">
-              The program taught me that <strong className="text-stone-900 font-bold not-italic">every child learns differently</strong>. The training helped me become <strong className="text-stone-900 font-bold not-italic">more patient, creative and intentional</strong> in the way I approach teaching.
-            </p>
-            <div className="font-bold text-[#1C1917]">— Sneha Mathew</div>
-            <div className="text-xs text-stone-500 font-semibold">NTT Graduate | Kochi</div>
-          </div>
-        </div>
-      </section>
-      </Reveal>
+      </SchoolContent>
 
       <Reveal>
       {/* CTA */}
@@ -559,6 +560,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
         </div>
       </section>
       </Reveal>
+
 
       {/* Fullscreen Lightbox Modal */}
       {selectedPhotoIndex !== null && (
