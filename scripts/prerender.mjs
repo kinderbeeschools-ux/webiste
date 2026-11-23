@@ -39,11 +39,16 @@ for (const p of [...pages, '/404']) {
   setUrl(p);
   const { html, head } = render(blogs, faqs);
   if (!/<h1[\s>]/.test(html)) console.warn(`prerender: no <h1> on ${p}`);
+  // React 19 writes title, meta and link tags at the start of the page HTML. Browsers and crawlers that do not run
+  // scripts only honour them inside <head>, so move that leading run there; the client adopts them from <head>.
+  const lead = html.match(/^(?:<link\b[^>]*>|<title>[\s\S]*?<\/title>|<meta\b[^>]*>)+/);
+  const hoisted = lead ? lead[0] : '';
+  const body = html.slice(hoisted.length);
   const out = template
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description" id="static-description"[^>]*>\s*/, '')
-    .replace('</head>', `${head}\n</head>`)
-    .replace('<div id="root"></div>', `<div id="root" data-ssr-path="${p}">${html}</div>`);
+    .replace('</head>', `${head}\n<!--ssr-head-->${hoisted}<!--/ssr-head-->\n</head>`)
+    .replace('<div id="root"></div>', `<div id="root" data-ssr-path="${p}">${body}</div>`);
   const file = path.join(dist, p === '/' ? 'index.html' : p === '/404' ? '404.html' : `${decodeURIComponent(p)}/index.html`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, out);

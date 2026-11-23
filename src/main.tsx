@@ -23,6 +23,17 @@ const app = (
 if (root.dataset.ssrPath === '/' && window.location.pathname === '/' && !window.location.search && root.firstElementChild) {
   hydrateRoot(root, app);
 } else {
+  // Not attaching to the prerendered HTML: drop its head tags first, React writes the page's own (no duplicates)
+  const start = [...document.head.childNodes].find(n => n.nodeType === 8 && n.nodeValue === 'ssr-head');
+  if (start) {
+    for (let n: ChildNode | null = start; n; ) {
+      const next: ChildNode | null = n.nextSibling;
+      const isEnd = n.nodeType === 8 && n.nodeValue === '/ssr-head';
+      n.remove();
+      if (isEnd) break;
+      n = next;
+    }
+  }
   createRoot(root).render(app);
 }
 
