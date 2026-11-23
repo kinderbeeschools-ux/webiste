@@ -14,6 +14,7 @@ import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
 import { openBrochureDownload } from '../components/BrochureDownload';
 import { FranchiseBuyerGuide, FAQ_SCHEMA } from '../components/premium/FranchiseBuyerGuide';
+import { TrustStrip } from '../components/TrustStrip';
 import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { trackLead } from '../utils/analytics';
@@ -221,9 +222,15 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
               <img 
                 src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"}
                 alt="Kinderbee Preschool campus with children playing outside"
-                className="w-full h-full object-cover object-[50%_45%]"
+                className="w-full h-full object-cover object-[50%_45%] kb-kenburns"
                 fetchPriority="high"
               />
+              <div className="absolute bottom-10 right-8 kb-float rounded-2xl border border-white/70 bg-white/90 px-4 py-2.5 text-sm font-bold text-stone-900 shadow-xl backdrop-blur">
+                <span className="text-[#E1007A]">KinderOS</span> CRM included
+              </div>
+              <div className="absolute top-14 right-10 kb-float rounded-2xl border border-white/70 bg-white/90 px-4 py-2.5 text-sm font-bold text-stone-900 shadow-xl backdrop-blur" style={{ animationDelay: '1.4s' }}>
+                <span className="text-[#E1007A]">Zero</span> royalty
+              </div>
               {/* Smooth gradient feather on the left edge only, keeping the entire building 100% visible */}
               <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 lg:w-44 bg-gradient-to-r from-[#FFF6F9] to-transparent pointer-events-none"></div>
             </div>
@@ -241,7 +248,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
             {/* Foreground Content */}
             <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 pt-5 pb-10 sm:pt-8 lg:py-16 relative z-10">
               {/* Desktop: text ends 2rem before the photo, which covers the right half (left edge 50vw) */}
-              <div className="max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
+              <div className="kb-hero-in max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
                 {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
                 <div className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
                   <img src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"} alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
@@ -283,7 +290,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 <div className="pt-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-3.5">
                   <button
                     onClick={() => onOpenConsultation('preschool')}
-                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 sm:px-7 py-3.5 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2 cursor-pointer"
+                    className="kb-cta bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 sm:px-7 py-3.5 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Book Free Consultation</span>
                     <span aria-hidden="true">&rarr;</span>
@@ -333,6 +340,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
 
 
 
+
+      <TrustStrip />
 
       <KinderOsSection onOpenConsultation={() => onOpenConsultation('preschool')} />
 

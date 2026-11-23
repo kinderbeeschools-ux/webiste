@@ -1,10 +1,14 @@
 import React from 'react';
+import { motion } from 'motion/react';
+import { EASE } from './Motion';
 import {
   Sparkles, LayoutDashboard, Users, UserPlus, CalendarCheck, Wallet, Briefcase, BookOpen,
   Bell, BarChart3, Settings, Brain, Puzzle, ArrowRight, CheckCircle2, Smartphone,
 } from 'lucide-react';
 
 // From the Kinderbee Franchise & CRM booklet
+const rise = (i: number) => ({ initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.3 }, transition: { duration: 0.7, delay: i * 0.1, ease: EASE } });
+
 const MODULES = [
   { icon: LayoutDashboard, t: 'Dashboard & Overview', d: 'Admissions, fees, income & insights' },
   { icon: Users, t: 'Student Management', d: 'Profiles, classes, records, progress' },
@@ -45,15 +49,15 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
 
     {/* The three mantras */}
     <div className="mt-10 grid gap-5 md:grid-cols-3">
-      {MANTRAS.map(({ icon: Icon, n, t, d }) => (
-        <div key={n} className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm">
+      {MANTRAS.map(({ icon: Icon, n, t, d }, i) => (
+        <motion.div key={n} {...rise(i)} whileHover={{ y: -6 }} className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-xl hover:shadow-pink-200/50">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#E1007A] text-white"><Icon className="h-5 w-5" /></span>
             <span className="text-xs font-bold uppercase tracking-widest text-stone-500">KIPS mantra {n}</span>
           </div>
           <h3 className="mt-4 text-lg font-extrabold text-stone-900">{t}</h3>
           <p className="mt-2 text-sm leading-relaxed text-stone-600">{d}</p>
-        </div>
+        </motion.div>
       ))}
     </div>
 
@@ -64,12 +68,12 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
         <p className="text-sm text-stone-300">Included with every franchise, new or rebranded.</p>
       </div>
       <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {MODULES.map(({ icon: Icon, t, d }) => (
-          <li key={t} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        {MODULES.map(({ icon: Icon, t, d }, i) => (
+          <motion.li key={t} {...rise(i % 5)} whileHover={{ y: -4, backgroundColor: 'rgba(255,255,255,0.12)' }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <Icon className="h-5 w-5 text-[#FFD400]" aria-hidden="true" />
             <div className="mt-2 text-sm font-bold">{t}</div>
             <div className="mt-0.5 text-xs text-stone-300">{d}</div>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </div>
@@ -87,7 +91,7 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
     </div>
 
     <div className="mt-8 text-center">
-      <button onClick={onOpenConsultation} className="inline-flex items-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#c90070] cursor-pointer">
+      <button onClick={onOpenConsultation} className="kb-cta inline-flex items-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#c90070] cursor-pointer">
         See KinderOS in a free consultation <ArrowRight className="h-4 w-4" />
       </button>
     </div>

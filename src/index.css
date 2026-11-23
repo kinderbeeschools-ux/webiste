@@ -303,3 +303,26 @@
   100% { transform: translate(-5vw, 6vh) scale(.92); }
 }
 @media (prefers-reduced-motion: reduce) { .desk-blob { animation: none; } }
+
+/* Franchise hero: copy rises in one line at a time; primary button gets a light sweep and a soft pulse */
+.kb-hero-in > * { animation: kbRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.kb-hero-in > *:nth-child(2) { animation-delay: 0.08s; }
+.kb-hero-in > *:nth-child(3) { animation-delay: 0.16s; }
+.kb-hero-in > *:nth-child(4) { animation-delay: 0.26s; }
+.kb-hero-in > *:nth-child(5) { animation-delay: 0.36s; }
+.kb-hero-in > *:nth-child(6) { animation-delay: 0.46s; }
+.kb-hero-in > *:nth-child(7) { animation-delay: 0.56s; }
+.kb-hero-in > *:nth-child(8) { animation-delay: 0.66s; }
+@keyframes kbShine { 0%, 55% { transform: translateX(-120%) skewX(-20deg); } 100% { transform: translateX(260%) skewX(-20deg); } }
+@keyframes kbPinkPulse {
+  0% { box-shadow: 0 0 0 0 rgba(225, 0, 122, 0.45); }
+  70% { box-shadow: 0 0 0 14px rgba(225, 0, 122, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(225, 0, 122, 0); }
+}
+.kb-cta { position: relative; overflow: hidden; animation: kbPinkPulse 2.6s ease-out infinite; }
+.kb-cta::after {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: kbShine 3.6s ease-in-out infinite; pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .kb-hero-in > *, .kb-cta, .kb-cta::after { animation: none; } }
