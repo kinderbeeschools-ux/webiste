@@ -352,7 +352,7 @@ const seedPages = [
   {
     id: "partnerships",
     title: "Our Collaborative Education Models",
-    subtitle: "From high-profit Preschool Franchises to comprehensive CBSE School Setup and existing school upgrades, explore our zero-royalty partnership pathways.",
+    subtitle: "From Preschool Franchises to comprehensive CBSE School Setup and existing school upgrades, explore our zero-royalty partnership pathways.",
     metaTitle: "Education Partnerships - School Setup & Upgrades | Kinderbee",
     metaDescription: "Explore Kinderbee educational models. Get comprehensive assistance for CBSE/IB school setups, play school franchise systems, and existing school transformation with zero royalties.",
     keywords: "cbse school setup, preschool franchise cost, school setup consultant, school rebranding",
@@ -376,8 +376,8 @@ const seedPages = [
     metaTitle: "Investors Hub - Preschool Franchise Investment | Kinderbee",
     metaDescription: "Explore preschool franchise partnership options with a zero-royalty model and full operational support. Returns depend on your city, fees and costs and are not guaranteed.",
     keywords: "education investment, preschool franchise investment, education business opportunity",
-    badgeText: "Capital Appreciation & Enterprise Growth",
-    content1: "Robust Multi-Year Fiscal Security in Indian K-12 Spaces"
+    badgeText: "Early Education Partnerships",
+    content1: "Partnership Opportunities in Indian Early Education and K-12"
   },
   {
     id: "contact",
