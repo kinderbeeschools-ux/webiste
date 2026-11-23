@@ -4,6 +4,11 @@
   "functions": {
     "api/index.ts": { "includeFiles": "db.json" }
   },
+  "headers": [
+    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/(franchise|images|visuals|opportunities|arcadia|files)/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }] },
+    { "source": "/(logo-420.webp|favicon.ico|favicon-48.png|favicon-192.png|apple-touch-icon.png)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }] }
+  ],
   "redirects": [
     { "source": "/preschool-franchise", "destination": "/", "permanent": true }
   ],

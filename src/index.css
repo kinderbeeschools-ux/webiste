@@ -306,6 +306,7 @@
 
 /* Franchise hero: copy rises in one line at a time; primary button gets a light sweep and a soft pulse */
 .kb-hero-in > * { animation: kbRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.kb-hero-in > *:first-child { animation: none; } /* phone hero photo is the LCP element */
 .kb-hero-in > *:nth-child(2) { animation-delay: 0.08s; }
 .kb-hero-in > *:nth-child(3) { animation-delay: 0.16s; }
 .kb-hero-in > *:nth-child(4) { animation-delay: 0.26s; }

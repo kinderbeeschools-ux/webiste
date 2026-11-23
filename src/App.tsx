@@ -25,8 +25,9 @@ import { COURSE_FEES, ECCE } from './data/courses';
 import { PaymentPage } from './pages/PaymentPage';
 import { JointVenturesPage } from './pages/JointVenturesPage';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { AdminPanel } from './pages/AdminPanel';
-import { DeskPanel } from './pages/DeskPanel';
+// Staff screens load only when a signed-in user opens them, so they are not in the public bundle
+const AdminPanel = React.lazy(() => import('./pages/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const DeskPanel = React.lazy(() => import('./pages/DeskPanel').then(m => ({ default: m.DeskPanel })));
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { SystemSettings, BlogPost, FAQItem } from './types';
 import { DEFAULT_BLOGS } from './data/defaultBlogs';
@@ -149,42 +150,50 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
       .then(data => setSettings(data))
       .catch(err => console.error(err));
 
-    fetch('/api/blogs')
-      .then(res => {
-        if (!res.ok) throw new Error('API network response was not ok');
-        return res.json();
-      })
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setBlogs(data.filter((b: BlogPost) => !b.status || b.status === 'Published'));
+    // Journal posts and FAQs are not needed to paint the first screen: load them when the browser is idle,
+    // unless this page is the journal, a post, or the About page that lists posts
+    const loadRest = () => {
+      fetch('/api/blogs')
+        .then(res => {
+          if (!res.ok) throw new Error('API network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            setBlogs(data.filter((b: BlogPost) => !b.status || b.status === 'Published'));
+            const params = new URLSearchParams(window.location.search);
+            const blogIdParam = params.get('blogId') || initialBlogId;
+            if (blogIdParam) {
+              const found = data.find((b: BlogPost) => b.id === blogIdParam);
+              if (found) {
+                setSelectedBlog(found);
+                setCurrentTab('blogs');
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.warn('Using default blogs due to API note:', err);
           const params = new URLSearchParams(window.location.search);
           const blogIdParam = params.get('blogId') || initialBlogId;
           if (blogIdParam) {
-            const found = data.find((b: BlogPost) => b.id === blogIdParam);
+            const found = DEFAULT_BLOGS.find((b: BlogPost) => b.id === blogIdParam);
             if (found) {
               setSelectedBlog(found);
               setCurrentTab('blogs');
             }
           }
-        }
-      })
-      .catch(err => {
-        console.warn('Using default blogs due to API note:', err);
-        const params = new URLSearchParams(window.location.search);
-        const blogIdParam = params.get('blogId') || initialBlogId;
-        if (blogIdParam) {
-          const found = DEFAULT_BLOGS.find((b: BlogPost) => b.id === blogIdParam);
-          if (found) {
-            setSelectedBlog(found);
-            setCurrentTab('blogs');
-          }
-        }
-      });
+        });
 
-    fetch('/api/faqs')
-      .then(res => res.json())
-      .then(data => setFaqs(data))
-      .catch(err => console.error(err));
+      fetch('/api/faqs')
+        .then(res => res.json())
+        .then(data => setFaqs(data))
+        .catch(err => console.error(err));
+    };
+    const needNow = !!initialBlogId || ['blogs', 'about'].includes(tabFor(window.location.pathname) || '');
+    if (needNow) loadRest();
+    else if ('requestIdleCallback' in window) (window as any).requestIdleCallback(loadRest, { timeout: 2500 });
+    else setTimeout(loadRest, 1500);
   }, []);
 
   const handleOpenConsultation = (type = 'franchise') => {
@@ -222,10 +231,11 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
 
   // If user is on Admin Tab and authenticated, show the admin panel
   if (inAdmin && currentTab === 'desk') {
-    return <DeskPanel adminToken={adminToken!} onLogout={() => { handleLogoutAdmin(); setCurrentTab('desk'); }} onVisitSite={() => setCurrentTab('home')} settings={settings} />;
+    return <React.Suspense fallback={null}><DeskPanel adminToken={adminToken!} onLogout={() => { handleLogoutAdmin(); setCurrentTab('desk'); }} onVisitSite={() => setCurrentTab('home')} settings={settings} /></React.Suspense>;
   }
   if (inAdmin) {
     return (
+      <React.Suspense fallback={null}>
       <AdminPanel
         adminToken={adminToken}
         onLogout={() => { handleLogoutAdmin(); setCurrentTab('admin'); }} // back to the sign-in screen
@@ -233,6 +243,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
         settings={settings}
         onUpdateSettings={newSets => setSettings(newSets)}
       />
+      </React.Suspense>
     );
   }
 

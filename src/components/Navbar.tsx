@@ -83,7 +83,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className="h-12 sm:h-13 xl:h-15 w-auto flex items-center px-2.5 sm:px-3 rounded-xl border border-stone-200/90 bg-white group-hover:scale-102 transition duration-300">
               <img 
-                src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
+                src={settings?.logoUrl || "/logo-420.webp"} 
+                width={420} height={130}
                 alt={settings?.logoText || "Kinderbee Logo"} 
                 className="h-full w-auto max-h-10 sm:max-h-11 lg:max-h-11 xl:max-h-13 object-contain contrast-[1.08] brightness-[1.02] filter drop-shadow-xs transition duration-300"
                 style={{ imageRendering: '-webkit-optimize-contrast' }}
@@ -224,7 +225,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="cursor-pointer flex items-center"
               >
                 <img 
-                  src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
+                  src={settings?.logoUrl || "/logo-420.webp"} 
+                width={420} height={130}
                   alt="Kinderbee Logo" 
                   className="h-9 sm:h-10 w-auto object-contain contrast-[1.06] brightness-[1.02]"
                   style={{ imageRendering: '-webkit-optimize-contrast' }}

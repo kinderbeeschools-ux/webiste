@@ -35,7 +35,8 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
                 className="cursor-pointer inline-flex items-center gap-3 bg-white p-2.5 sm:p-3 rounded-2xl shadow-md border border-stone-100 hover:opacity-95 transition"
               >
                 <img 
-                  src={settings?.logoUrl || "https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/website%20Images/Logo.png"} 
+                  src={settings?.logoUrl || "/logo-420.webp"} 
+                width={420} height={130}
                   alt="KIPS - Kinderbee Integrated Partnership System Mascot Logo" 
                   className="h-12 sm:h-14 w-auto object-contain contrast-[1.08] brightness-[1.02]"
                   style={{ imageRendering: '-webkit-optimize-contrast' }}
