@@ -260,39 +260,23 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 
                 {/* Subtitle */}
                 <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed max-w-xl font-normal">
-                  Kinderbee is the best preschool franchise in India with no royalty: own an international preschool franchise with a Finnish curriculum, lesson plans, teacher training and full setup support, and keep 100% of your fees.
+                  Own an AI-powered preschool with a free ERP and KinderOS, a Finnish-style curriculum, lesson plans, teacher training and full setup support. Zero royalty, and you keep 100% of your fees.
                 </p>
                 
-                {/* 4 Stat Cards */}
+                {/* 4 feature cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 max-w-xl pt-1">
-                  {/* Card 1: Royalty Fee */}
-                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
-                    <div className="w-7 h-7 rounded-full bg-[#E1007A] text-white flex items-center justify-center font-bold text-xs shadow-2xs mb-2">
-                      ₹0
+                  {[
+                    { icon: Headphones, k: 'Free', v: 'ERP' },
+                    { icon: TrendingUp, k: 'Zero', v: 'Royalty' },
+                    { icon: Sparkles, k: 'KinderOS', v: 'Operating System' },
+                    { icon: GraduationCap, k: 'Finnish-style', v: 'Curriculum' },
+                  ].map(({ icon: Icon, k, v }) => (
+                    <div key={k} className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center">
+                      <Icon className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
+                      <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">{k}</div>
+                      <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">{v}</div>
                     </div>
-                    <div className="text-xs text-stone-600 font-medium leading-tight">Royalty Fee</div>
-                  </div>
-
-                  {/* Card 2: Profit Retention */}
-                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
-                    <TrendingUp className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
-                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">100%</div>
-                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Profit Retention</div>
-                  </div>
-
-                  {/* Card 3: Pedagogy */}
-                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
-                    <GraduationCap className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
-                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">Finnish</div>
-                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Pedagogy</div>
-                  </div>
-
-                  {/* Card 4: Setup Support */}
-                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
-                    <Headphones className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
-                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">Full</div>
-                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Setup Support</div>
-                  </div>
+                  ))}
                 </div>
 
                 {/* Buttons */}
