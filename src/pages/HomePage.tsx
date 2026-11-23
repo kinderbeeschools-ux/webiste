@@ -15,7 +15,6 @@ import { openConsultationBooking, ConsultationOffer } from '../components/Consul
 import { openBrochureDownload } from '../components/BrochureDownload';
 import { FranchiseBuyerGuide, FAQ_SCHEMA } from '../components/premium/FranchiseBuyerGuide';
 import { KinderOsSection } from '../components/KinderOsSection';
-import { FranchiseShowcase } from '../components/FranchiseShowcase';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { trackLead } from '../utils/analytics';
 
@@ -350,8 +349,6 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
 
 
 
-
-      <FranchiseShowcase />
 
       <KinderOsSection onOpenConsultation={() => onOpenConsultation('preschool')} />
 
