@@ -14,6 +14,7 @@ import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
 import { openBrochureDownload } from '../components/BrochureDownload';
 import { FranchiseBuyerGuide, FAQ_SCHEMA } from '../components/premium/FranchiseBuyerGuide';
+import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseShowcase } from '../components/FranchiseShowcase';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { trackLead } from '../utils/analytics';
@@ -267,9 +268,9 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
   return (
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       <SEOHead
-        title="Best Preschool Franchise in India – No Royalty | Kinderbee"
-        description="Best preschool franchise in India with zero royalty. Play school franchise for ₹15 – ₹30 Lakhs with Finnish curriculum, teacher training and full setup support."
-        keywords="best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise, preschool franchise in India, play school franchise in India, preschool franchise cost in India, preschool franchise investment, preschool franchise opportunities, how to start a preschool in India"
+        title="AI-Powered Preschool Franchise in India | Zero Royalty, Free KinderOS CRM"
+        description="Start an AI-powered preschool franchise in India with zero royalty. Nordic-inspired curriculum, AI-assisted lesson planning and KinderOS, the Kinder Operating System: a free CRM for admissions, fees, attendance and staff."
+        keywords="AI-powered preschool franchise, AI preschool franchise India, KinderOS, Kinder Operating System, free preschool CRM, best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise, preschool franchise in India, play school franchise in India, preschool franchise cost in India, preschool franchise investment, preschool franchise opportunities, how to start a preschool in India"
         settings={settings}
         faq={FAQ_SCHEMA()}
       />
@@ -310,12 +311,12 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 {/* Pill Badge */}
                 <div className="inline-flex items-center gap-2 bg-pink-50/95 border border-pink-200/90 text-[#E1007A] text-[11px] sm:text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-2xs">
                   <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
-                  <span>ZERO ROYALTY PRESCHOOL FRANCHISE</span>
+                  <span>AI-POWERED · ZERO ROYALTY PRESCHOOL FRANCHISE</span>
                 </div>
                 
                 {/* Main Headline */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
-                  India’s Best <span className="text-[#E1007A]">Preschool Franchise</span> with Zero Royalty
+                  India’s <span className="text-[#E1007A]">AI-Powered Preschool Franchise</span> with Zero Royalty
                 </h1>
                 
                 {/* Subtitle */}
@@ -416,6 +417,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
 
 
       <FranchiseShowcase />
+
+      <KinderOsSection onOpenConsultation={() => onOpenConsultation('preschool')} />
 
       <Reveal>
       {/* =========================================================================
