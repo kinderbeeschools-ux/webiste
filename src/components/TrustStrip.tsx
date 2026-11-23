@@ -17,7 +17,8 @@ const Count: React.FC<{ to: number; suffix: string }> = ({ to, suffix }) => {
   useEffect(() => {
     if (!inView || reduce) return;
     const c = animate(0, to, { duration: 1.6, ease: 'easeOut', onUpdate: x => setV(Math.round(x)) });
-    return () => c.stop();
+    const done = setTimeout(() => setV(to), 2000); // frames can be paused (background tab): always land on the real figure
+    return () => { c.stop(); clearTimeout(done); };
   }, [inView, to, reduce]);
   return <><span className="sr-only">{to}{suffix}</span><span ref={ref} aria-hidden="true">{v}{suffix}</span></>;
 };
