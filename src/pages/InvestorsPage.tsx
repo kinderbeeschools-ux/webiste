@@ -202,7 +202,7 @@ export const InvestorsPage: React.FC<InvestorsPageProps> = ({ onOpenConsultation
 
             <div className="flex flex-col gap-3 p-6 bg-stone-50 rounded-2xl border border-stone-200">
               <Sparkles className="w-7 h-7 text-amber-500 shrink-0" />
-              <h3 className="font-bold text-stone-900 text-base">Prestige &amp; ROI</h3>
+              <h3 className="font-bold text-stone-900 text-base">Prestige &amp; Impact</h3>
               <p className="text-stone-600 text-xs leading-relaxed">Build landmark institutions that elevate community education standards.</p>
             </div>
           </div>

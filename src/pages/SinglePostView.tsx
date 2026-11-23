@@ -327,7 +327,7 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
                 Launch Your Finnish Preschool
               </h4>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Unlock full curriculum licensing, architectural design, and 18-month payback guidance.
+                Explore the curriculum, school design blueprint, teacher training and franchise support that come with a KinderBee partnership. No returns are guaranteed.
               </p>
               {/^journal-.*(franchise|startup|how-to-start|combo|recruitment)/.test(blog.id) && (
                 <a href="/" className="block text-xs font-semibold text-[#E1007A] underline underline-offset-4">Explore the KinderBee preschool franchise in India</a>

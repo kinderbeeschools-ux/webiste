@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import {
   Award, Puzzle, Smartphone, Handshake, Building2, RefreshCw, Sun, MapPin,
-  PhoneCall, ClipboardList, GraduationCap, Rocket, ArrowRight, MessageCircle,
+  PhoneCall, ClipboardList, GraduationCap, Rocket, ArrowRight, MessageCircle, ChevronDown,
 } from 'lucide-react';
 import { EASE } from './Motion';
 
@@ -36,7 +36,7 @@ const Card: React.FC<{ icon: React.ElementType; h: string; i?: number; children:
 
 /* ---------- Why choose ---------- */
 export const WhyChooseSection: React.FC = () => (
-  <section id="why-kinderbee" className="mx-auto max-w-7xl px-4 sm:px-8">
+  <section id="why-kinderbee" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Why Choose KinderBee Preschool Franchise?"
       answer="KinderBee is a preschool franchise in India built on a zero-royalty model, a Finnish-inspired play-based curriculum and a free school-management platform, KinderOS. Partners keep 100% of tuition fees and receive curriculum, teacher training, branding and admissions support from a Bengaluru-based education brand with about 26 years of experience."
@@ -60,7 +60,7 @@ export const WhyChooseSection: React.FC = () => (
 
 /* ---------- Franchise models ---------- */
 export const FranchiseModelsSection: React.FC<{ onEnquire: () => void }> = ({ onEnquire }) => (
-  <section id="franchise-opportunities" className="mx-auto max-w-7xl px-4 sm:px-8">
+  <section id="franchise-opportunities" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Explore Our Preschool Franchise Opportunities"
       answer="KinderBee offers three ways to start: open a new preschool, convert an existing preschool to the KinderBee brand, or add daycare to a preschool for an extended-day model. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
@@ -86,7 +86,7 @@ export const FranchiseModelsSection: React.FC<{ onEnquire: () => void }> = ({ on
 
 /* ---------- Curriculum ---------- */
 export const CurriculumSection: React.FC = () => (
-  <section id="curriculum" className="mx-auto max-w-7xl px-4 sm:px-8">
+  <section id="curriculum" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Our International Preschool Curriculum"
       answer="KinderBee's curriculum is Finnish-inspired and play-based, developed by Finnishway Educare and aligned with NEP 2020 and NCF-FS. It combines ten multi-intelligence modules, detailed daily lesson plans and turnkey classroom toolkits, with AI-assisted lesson planning built in."
@@ -114,7 +114,7 @@ const REGIONS = [
 ];
 
 export const IndiaOpportunitySection: React.FC<{ onEnquire: () => void }> = ({ onEnquire }) => (
-  <section id="franchise-india" className="mx-auto max-w-7xl px-4 sm:px-8">
+  <section id="franchise-india" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Preschool Franchise Opportunities Across India"
       answer="KinderBee welcomes preschool franchise enquiries from across India, from metro cities to Tier-2 towns. The parent preschool is in Ramamurthy Nagar, Bengaluru. Whether a territory is available is confirmed by the KinderBee team after you share your city and plan."
@@ -145,7 +145,7 @@ const STEPS = [
 ];
 
 export const HowToStartSection: React.FC = () => (
-  <section id="how-to-start" className="mx-auto max-w-7xl px-4 sm:px-8">
+  <section id="how-to-start" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="How to Start Your KinderBee Preschool Franchise"
       answer="Starting a KinderBee preschool franchise takes four steps: a consultation, planning your model, setup and training, and launch with admissions support."
@@ -196,7 +196,7 @@ export const FRANCHISE_FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'What are the requirements to open a preschool franchise?',
-    a: 'KinderBee publishes an estimated capital investment of ₹15 to ₹30 Lakhs, covering interiors, safety flooring, furniture, activity kits and launch marketing. You need a ground-floor villa or commercial property of about 1,500 to 3,500 sq. ft. with outdoor play space, and a team trained through KinderBee.',
+    a: 'Requirements are confirmed by the KinderBee team for your city and plan. The current indicative figures are an estimated capital investment of ₹15 to ₹30 Lakhs, covering interiors, safety flooring, furniture, activity kits and launch marketing, and a ground-floor villa or commercial property of about 1,500 to 3,500 sq. ft. with outdoor play space. These figures are subject to confirmation.',
   },
   {
     q: 'Does KinderBee provide teacher training and curriculum support?',
@@ -205,19 +205,40 @@ export const FRANCHISE_FAQS: { q: string; a: string }[] = [
 ];
 
 export const FranchiseFaqSection: React.FC = () => (
-  <section id="franchise-faq" className="mx-auto max-w-4xl px-4 sm:px-8">
+  <section id="franchise-faq" className="scroll-mt-28 mx-auto max-w-4xl px-4 sm:px-8">
     <h2 className="text-center text-3xl font-display font-extrabold tracking-tight text-[#1C1917] sm:text-4xl">Frequently Asked Questions</h2>
-    <p className="mt-2 text-center text-sm text-stone-600">Straight answers about the KinderBee preschool franchise in India.</p>
-    {/* Every answer is visible on the page, the same text feeds the FAQPage markup */}
-    <div className="mt-8 space-y-4">
-      {FRANCHISE_FAQS.map(f => (
-        <div key={f.q} className="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
-          <h3 className="text-base font-bold text-stone-900 sm:text-lg">{f.q}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-stone-600 sm:text-base">{f.a}</p>
-        </div>
+    <p className="mt-2 text-center text-sm text-stone-600">Straight answers about the KinderBee preschool franchise in India. Tap a question to open it.</p>
+    {/* Native <details>: every answer stays in the page HTML and is the same text used for the FAQPage markup */}
+    <div className="mt-8 space-y-3">
+      {FRANCHISE_FAQS.map((f, i) => (
+        <details key={f.q} open={i === 0} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white open:shadow-sm">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-stone-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+            <h3 className="text-sm font-bold text-stone-900 sm:text-base">{f.q}</h3>
+            <ChevronDown className="h-4 w-4 shrink-0 text-stone-400 transition-transform group-open:rotate-180 group-open:text-[#E1007A]" />
+          </summary>
+          <p className="border-t border-stone-100 bg-stone-50/60 p-4 text-sm leading-relaxed text-stone-600 sm:p-5 sm:text-base">{f.a}</p>
+        </details>
       ))}
     </div>
   </section>
+);
+
+/* ---------- Jump links ---------- */
+const JUMPS = [
+  ['#why-kinderbee', 'Why KinderBee'], ['#franchise-opportunities', 'Franchise models'], ['#kinderos', 'KIPS & KinderOS'],
+  ['#curriculum', 'Curriculum'], ['#franchise-support', 'Partner support'], ['#franchise-investment', 'Investment'],
+  ['#franchise-india', 'Across India'], ['#how-to-start', 'How to start'], ['#franchise-faq', 'FAQs'],
+];
+export const JumpLinks: React.FC = () => (
+  <nav aria-label="On this page" className="mx-auto max-w-7xl px-4 sm:px-8">
+    <ul className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0">
+      {JUMPS.map(([href, label]) => (
+        <li key={href} className="shrink-0">
+          <a href={href} className="inline-block rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-[#E1007A] hover:text-[#E1007A] sm:text-sm">{label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
 );
 
 export const WhatsAppEnquiry: React.FC<{ phone?: string; className?: string }> = ({ phone = '919344906393', className = '' }) => (

@@ -31,7 +31,7 @@ const BENEFIT_GROUPS = [
     step: '03', title: 'Admissions & Marketing', tint: 'from-sky-50 to-white', accent: 'bg-sky-500 text-white', ring: 'hover:border-sky-200',
     items: [
       { icon: Globe2, name: 'SEO-Optimized Micro-Websites', desc: 'A local website that helps parents find you online.' },
-      { icon: Megaphone, name: 'Admissions Playbooks', desc: 'Proven steps that turn enquiries into admissions.' },
+      { icon: Megaphone, name: 'Admissions Playbooks', desc: 'Step-by-step playbooks that take enquiries through to admissions.' },
       { icon: CalendarHeart, name: 'Monthly Marketing Campaigns', desc: 'Ready-made campaigns to keep your school visible.' },
     ],
   },
@@ -81,7 +81,7 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
   return (
     <>
       {/* ---------- What you receive: 12 items in 4 journey stages ---------- */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
+      <section id="franchise-support" className="relative scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         <Star className="hidden md:block absolute top-0 left-10 w-9 kb-spin-slow" />
         <Heart className="hidden md:block absolute top-10 right-12 w-9 kb-wiggle" />
         <SectionHeading
@@ -116,7 +116,7 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
       </section>
 
       {/* ---------- Investment & space specifications ---------- */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-8">
+      <section id="franchise-investment" className="relative scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-stone-900 via-[#1C1917] to-stone-950 p-5 sm:p-10 shadow-2xl space-y-8">
           <div aria-hidden="true" className="absolute -top-24 right-10 w-80 h-80 rounded-full bg-[#E1007A]/20 blur-3xl kb-drift" />
           <Bee className="hidden md:block absolute top-6 left-8 w-24 kb-fly" />
@@ -124,7 +124,7 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
             dark
             badge="The numbers"
             title="Preschool Franchise Investment and Business Model"
-            sub="A clear picture of what it takes to open your Kinderbee preschool."
+            sub="Indicative figures for opening a Kinderbee preschool. The KinderBee team confirms the numbers for your city and plan before you commit."
           />
 
           <div ref={specsRef} className={`relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 ${specsCls}`}>

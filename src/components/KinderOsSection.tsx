@@ -30,7 +30,7 @@ const MANTRAS = [
 
 
 export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ onOpenConsultation }) => (
-  <section id="kinderos" aria-labelledby="kinderos-title" className="max-w-7xl mx-auto px-4 sm:px-8">
+  <section id="kinderos" aria-labelledby="kinderos-title" className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8">
     <div className="text-center max-w-3xl mx-auto space-y-4">
       <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#E1007A] bg-pink-50 border border-pink-200 px-4 py-1.5 rounded-full">
         <Sparkles className="w-3.5 h-3.5" /> AI-powered preschool franchise

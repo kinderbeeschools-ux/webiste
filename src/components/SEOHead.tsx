@@ -54,7 +54,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   } else if (settings?.metaDescription) {
     finalDescription = settings.metaDescription;
   } else {
-    finalDescription = "Discover Kinderbee, India's leading Zero Royalty preschool franchise system and FinnishWay teacher training academy. 18-month payback, Nordic play-based pedagogy & NEP 2020 compliance.";
+    finalDescription = "Kinderbee is a zero-royalty preschool franchise system and FinnishWay teacher training academy. Nordic play-based pedagogy, NEP 2020 compliance.";
   }
 
   // Keywords
@@ -98,7 +98,6 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     "name": brandName,
     "legalName": "Finnishway Educare Private Limited",
     "url": siteUrl,
-    "sameAs": ["https://facebook.com/kinderbee", "https://instagram.com/kinderbee", "https://linkedin.com/company/kinderbee-education"],
     "logo": finalOgImage,
     "description": finalDescription,
     "address": {

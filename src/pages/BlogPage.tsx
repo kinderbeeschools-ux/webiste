@@ -620,7 +620,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               </h4>
 
               <p className="text-xs text-pink-100/75 leading-relaxed">
-                Curated digests on curriculum best practices, school ROI, and NEP 2020 regulatory updates directly to your inbox.
+                Curated digests on curriculum best practices, running a preschool, and NEP 2020 updates directly to your inbox.
               </p>
 
               {newsletterSubscribed ? (
@@ -683,7 +683,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 Ready to Start Your Finnish Preschool?
               </h4>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Discover our comprehensive setup kit, curriculum licensing, and projected 18-month ROI model.
+                Discover our setup kit, curriculum licensing and franchise support. The assumptions behind any projection are shared on request.
               </p>
               <button type="button" onClick={() => openBrochureDownload('Blog page')} className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >

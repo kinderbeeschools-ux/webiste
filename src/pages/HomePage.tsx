@@ -14,7 +14,7 @@ import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
 import { openBrochureDownload } from '../components/BrochureDownload';
 import { FranchiseBuyerGuide } from '../components/premium/FranchiseBuyerGuide';
-import { WhyChooseSection, FranchiseModelsSection, CurriculumSection, IndiaOpportunitySection, HowToStartSection, FranchiseFaqSection, FRANCHISE_FAQS, WhatsAppEnquiry } from '../components/FranchiseSeoSections';
+import { JumpLinks, WhyChooseSection, FranchiseModelsSection, CurriculumSection, IndiaOpportunitySection, HowToStartSection, FranchiseFaqSection, FRANCHISE_FAQS, WhatsAppEnquiry } from '../components/FranchiseSeoSections';
 import { TrustStrip } from '../components/TrustStrip';
 import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseDetails } from '../components/FranchiseDetails';
@@ -177,6 +177,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
 
 
 
+
+      <JumpLinks />
 
       <TrustStrip />
 
