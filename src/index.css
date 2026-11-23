@@ -331,3 +331,7 @@
   animation: kbShine 3.6s ease-in-out infinite; pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) { .kb-hero-in > *, .kb-cta::after { animation: none; } }
+
+/* Long pages: sections below the first screens are laid out and painted only when they get near the viewport.
+   Their text stays in the page (search, crawlers, find-in-page); "auto" remembers the real height once shown. */
+.kb-cv > :nth-child(n+5) { content-visibility: auto; contain-intrinsic-size: auto 900px; }

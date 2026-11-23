@@ -41,7 +41,7 @@ const FRANCHISE_SERVICE_SCHEMA = {
 export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsultation, settings }) => {
 
   return (
-    <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
+    <MotionConfig reducedMotion="user"><div className="kb-cv space-y-16 sm:space-y-24 pb-12">
       <SEOHead
         title="Preschool Franchise in India – Zero Royalty | KinderBee"
         description="Start a KinderBee preschool franchise in India: zero royalty, Finnish-style curriculum, free KinderOS CRM and full setup support. Book a free consultation."
