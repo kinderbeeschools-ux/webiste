@@ -257,9 +257,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
           <HomePage
             setCurrentTab={setCurrentTab}
             onOpenConsultation={handleOpenConsultation}
-            blogs={blogs}
             faqs={faqs}
-            onSelectBlog={blog => setSelectedBlog(blog)}
             settings={settings}
           />
         )}
@@ -267,6 +265,8 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
           <AboutPage 
             setCurrentTab={setCurrentTab} 
             onOpenConsultation={handleOpenConsultation} 
+            blogs={blogs}
+            onSelectBlog={blog => setSelectedBlog(blog)}
             settings={settings} 
           />
         )}

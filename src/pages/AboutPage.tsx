@@ -10,13 +10,16 @@ import { Reveal, EASE, useStagger } from '../components/Motion';
 import { Bee, Rainbow, Star, Squiggle, Cloud, Heart, Dots } from '../components/Doodles';
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
-import { SystemSettings } from '../types';
+import { SystemSettings, BlogPost } from '../types';
+import { SchoolContent } from './SchoolContent';
 import { DEFAULT_GALLERY } from '../data/gallery';
 
 interface AboutPageProps {
   onOpenConsultation?: (type?: string) => void;
   settings?: SystemSettings | null;
   setCurrentTab?: (tab: string) => void;
+  blogs?: BlogPost[];
+  onSelectBlog?: (blog: BlogPost) => void;
 }
 
 interface GalleryPhoto {
@@ -76,7 +79,7 @@ const FOUNDER_PILLARS = [
   { title: 'Global Standards', node: 'bg-gradient-to-br from-pink-400 to-[#FFD400] text-stone-900', text: <>World-renowned <strong className="text-white font-semibold">Nordic early learning philosophy</strong>.</> },
 ];
 
-export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab }) => {
+export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settings, setCurrentTab, blogs = [], onSelectBlog }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeMentorModal, setActiveMentorModal] = useState<VisionGalleryItem | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
@@ -140,13 +143,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
     <div className="space-y-20 pb-20 overflow-x-clip">
       {/* Dynamic SEO Meta via React Helmet */}
       <SEOHead 
-        title="About Us & Finnish Educational Heritage"
-        description="Learn how Kinderbee and FinnishWay Academy are transforming Indian preschool education through zero-royalty partnership models, faculty training, and active play curricula."
+        title="About Kinderbee International Preschool, Ramamurthy Nagar, Bengaluru"
+        description="Kinderbee International Preschool in Ramamurthy Nagar, Bengaluru: Nordic-inspired, play-based Playgroup to UKG and daycare, our story, campus, teacher training and Finnish educational heritage."
         keywords="about kinderbee, finnish education heritage, zero royalty preschool founders, NEP 2020 compliance"
         settings={settings}
       />
-      
-      
+
+      {/* The school: programmes, campus, teacher training, journal and enquiry (moved from the old home page) */}
+      <SchoolContent
+        setCurrentTab={handleNavigate}
+        onOpenConsultation={(type) => onOpenConsultation?.(type)}
+        blogs={blogs}
+        onSelectBlog={(b) => onSelectBlog?.(b)}
+        settings={settings}
+      />
+
       {/* Story & Philosophy */}
       <section id="story" className="relative max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <motion.div className="relative space-y-6" initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, ease: EASE }}>
@@ -154,9 +165,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenConsultation, settin
           <div className="text-[#E1007A] font-bold text-xs uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full inline-block">
             Our Story and Purpose
           </div>
-          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-[#1C1917]">
             Nurturing Young Minds. Shaping Bright Futures
-          </h1>
+          </h2>
           <Squiggle className="w-28 h-5 -mt-3" />
           <p className="text-stone-600 text-base leading-relaxed">
             Kinderbee was founded with a simple yet meaningful purpose: to create joyful early-learning environments where every child feels safe, valued and inspired to explore. Our child-centred approach combines play-based learning, thoughtful guidance and modern pedagogical perspectives to support each child’s holistic development.
