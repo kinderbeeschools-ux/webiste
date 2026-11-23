@@ -151,3 +151,24 @@ Weekly: queries, indexing, enquiries. Monthly: compare against the week-1 baseli
 - Rankings and search positions.
 - Search Console and GA4 account settings (no access from here).
 - Pages other than the home page for PageSpeed and schema.
+
+## 10. Performance work done after the audit (23 Nov 2026, evening)
+
+Changes deployed:
+- Hero photo exempted from the scroll-reveal script, no entrance animation on the phone photo, width and height set, recompressed (126 KB to 88 KB). The preload comes from React's own `fetchPriority="high"` handling.
+- Staff screens (admin and desk) split out of the public JavaScript: main bundle 1,353 KB to 1,141 KB (gzip 358 to 310 KB).
+- Journal and FAQ data are requested when the browser is idle, except on the journal, a post, or About.
+- Logo: 238 KB external PNG replaced by a 6.6 KB local WebP (the Admin logo setting still overrides it).
+- Cache headers: `/assets/*` immutable for a year, images and icons 30 days.
+- Google Fonts stylesheet no longer blocks the first paint. The CTA pulse that animated box-shadow was removed.
+
+Measured (PageSpeed Insights, mobile, lab): "Improve image delivery" 290 KiB to 21 KiB; "efficient cache lifetimes" 423 KiB to 231 KiB; total blocking time 540 ms to 320 ms in the best run. **Performance score and LCP did not improve reliably: 47 / 67 before, 50 / 53 / 56 after, LCP 7.4 to 7.7 s (still poor).**
+
+Tried and reverted: hydrating the prerendered home page. It showed no gain in FCP and one lab run reported "Document does not have a meta description" (SEO 92), so it was reverted. The final state was checked with a local Lighthouse run against the live URL: SEO 100.
+
+What the traces show (local Lighthouse, mobile emulation):
+- LCP element: the hero photo. The file arrives in under 2 s, but the browser paints it 4 s or more later because the main thread is busy: Style and Layout about 4.5 s, script evaluation about 3 s (4x CPU slowdown).
+- Switching the site-wide scroll-reveal script off cut Style and Layout by more than half and total blocking time from 1.5 s to 0.7 s in a same-conditions test (score 30 to 40). It is the largest single main-thread cost found.
+- The page is rendered by the browser after the JavaScript loads (the prerendered HTML is discarded), so nothing paints until about 4 s on a throttled phone.
+
+Next candidates (not done): replace the scroll-reveal script with CSS-only reveal or limit it to below-the-fold elements; hydrate the prerendered page properly (needs the server and browser output to match exactly, checked with the React hydration warnings in a development build); split the remaining public pages out of the main bundle.
