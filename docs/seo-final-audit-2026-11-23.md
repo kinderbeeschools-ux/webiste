@@ -189,3 +189,14 @@ Measured the same way before and after (local Lighthouse, mobile emulation, live
 | SEO | 100 | 100 |
 
 LCP is still poor. The hero photo loads in about 1 to 2.5 s but is painted 4.7 to 6.4 s later, because the page is built in the browser after the JavaScript runs. The proper fix is to hydrate the prerendered HTML (the earlier attempt was reverted; it needs the server and browser output to match exactly, verified with a development build).
+
+### Update: hydration and head tags (commits 2bfd35a, 13926f4, e426ea5)
+**Found:** the prerendered HTML had its `<title>`, meta description, canonical, Open Graph and robots tags inside the page body, not in `<head>` (React 19 writes them at the start of the page HTML, and the build script only inserted an empty head block). Crawlers and tools that do not run scripts only honour them in `<head>`. The first hydration attempt lost them for several seconds on a throttled phone, which is why one lab run reported "Document does not have a meta description".
+
+**Fixed:**
+- The build now moves those tags into `<head>` on all 39 prerendered pages (verified in the raw HTML: one title, one description, one canonical in the head, none in the body).
+- The home page now hydrates the prerendered HTML instead of rebuilding it. Checked in a development build of React: no hydration warnings, one of each head tag, and Lighthouse's own capture at 4x CPU slowdown shows every tag present. Pages that are not hydrated remove the prerendered head tags before rendering, so there are no duplicates (checked on About and the blog).
+- Date-dependent content (the booking ticket's next five weekdays) now fills in after load, so server and browser output match. It was also showing build-day dates in the HTML.
+- Sections below the first screens use `content-visibility: auto`, so the browser skips laying them out until they are near the screen.
+
+**Result (local Lighthouse on the live URL, mobile emulation):** SEO 100 and meta description present in 5 of 6 runs; the sixth scored 92 because Lighthouse could not fetch `robots.txt` that run (the file returns 200 and is valid). Performance varies between 33 and 49 from run to run on this machine (its benchmark index swung from 928 to 1,838), so small gains cannot be measured here. Rendering time fell from about 1.6 s to 0.5 s with content-visibility, and Style and Layout from about 2.7 s to 2.0 s. First Contentful Paint (4.6 to 5.2 s) and LCP (7.3 to 8.6 s) did not move in the lab, because the first paint still waits on a long style and layout task on a throttled CPU. Real-user data (Search Console Core Web Vitals report, after a few weeks) will show whether phones are faster in practice.
