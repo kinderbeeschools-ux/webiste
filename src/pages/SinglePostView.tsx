@@ -329,6 +329,9 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
               <p className="text-xs text-stone-600 leading-relaxed">
                 Unlock full curriculum licensing, architectural design, and 18-month payback guidance.
               </p>
+              {/^journal-.*(franchise|startup|how-to-start|combo|recruitment)/.test(blog.id) && (
+                <a href="/" className="block text-xs font-semibold text-[#E1007A] underline underline-offset-4">Explore the KinderBee preschool franchise in India</a>
+              )}
               <button type="button" onClick={() => openBrochureDownload('Blog post')} className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Download Free Prospectus PDF &rarr;

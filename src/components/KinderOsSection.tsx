@@ -28,10 +28,6 @@ const MANTRAS = [
   { icon: Brain, n: '3', t: 'Cognitive Developmental Matrix', d: 'A structured assessment for 5–6 year-olds across 6 development areas, rated 1–5, with teacher notes you can share with parents.' },
 ];
 
-const WAYS = [
-  { h: 'Starting fresh? Own a preschool', items: ['Setup guidance', 'Brand identity', 'Curriculum & toolkit', 'Teacher training'] },
-  { h: 'Already running one? Rebrand it', items: ['New Kinderbee identity', 'Curriculum integration', 'Free KinderOS CRM', 'Ongoing support'] },
-];
 
 export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ onOpenConsultation }) => (
   <section id="kinderos" aria-labelledby="kinderos-title" className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -40,10 +36,10 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
         <Sparkles className="w-3.5 h-3.5" /> AI-powered preschool franchise
       </div>
       <h2 id="kinderos-title" className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] [text-wrap:balance]">
-        Meet <span className="text-[#E1007A]">KinderOS</span>, the Kinder Operating System
+        KinderBee Integrated Partnership System (<span className="text-[#E1007A]">KIPS</span>)
       </h2>
       <p className="text-stone-600 text-base sm:text-lg leading-relaxed">
-        Every Kinderbee franchise runs on AI-assisted lesson planning and KinderOS, a free preschool CRM, so you can manage your school from home.
+        KIPS is the system every KinderBee franchise partner runs on: curriculum and toolkits with AI-assisted lesson planning, KinderOS (the Kinder Operating System, a free preschool CRM) and the Cognitive Developmental Matrix assessment.
       </p>
     </div>
 
@@ -76,18 +72,6 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
           </motion.li>
         ))}
       </ul>
-    </div>
-
-    {/* Two ways in */}
-    <div className="mt-8 grid gap-5 md:grid-cols-2">
-      {WAYS.map(({ h, items }) => (
-        <div key={h} className="rounded-3xl border border-stone-200 bg-white p-6">
-          <h3 className="text-lg font-extrabold text-stone-900">{h}</h3>
-          <ul className="mt-3 grid grid-cols-2 gap-2 text-sm text-stone-700">
-            {items.map(i => <li key={i} className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 shrink-0 text-[#E1007A]" />{i}</li>)}
-          </ul>
-        </div>
-      ))}
     </div>
 
     <div className="mt-8 text-center">

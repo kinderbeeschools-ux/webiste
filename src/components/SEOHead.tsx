@@ -13,6 +13,7 @@ interface SEOHeadProps {
   settings?: SystemSettings | null;
   noIndex?: boolean; // keep a page out of search results
   faq?: { q: string; a: string }[]; // visible FAQ on the page, emitted as FAQPage schema
+  extraSchema?: object; // one more JSON-LD block for this page (e.g. Service)
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
@@ -25,7 +26,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   blogPost,
   settings,
   noIndex = false,
-  faq
+  faq,
+  extraSchema
 }) => {
   const brandName = settings?.logoText || 'Kinderbee';
   const siteUrl = 'https://www.kinderbeeschools.com';
@@ -158,6 +160,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       {siteSchema && <script type="application/ld+json">{JSON.stringify(siteSchema)}</script>}
       {crumbs && <script type="application/ld+json">{JSON.stringify(crumbs)}</script>}
       {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
+      {extraSchema && <script type="application/ld+json">{JSON.stringify(extraSchema)}</script>}
     </Helmet>
   );
 };
