@@ -115,38 +115,6 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
         </div>
       </section>
 
-      {/* ---------- Curriculum & learning pillars ---------- */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-stone-200 bg-white p-5 sm:p-10 space-y-8">
-          <Rainbow className="hidden sm:block absolute -top-2 right-8 w-28 opacity-90 kb-float" />
-          <div aria-hidden="true" className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-[#FFD400]/15 blur-3xl" />
-          <SectionHeading
-            badge="What children learn"
-            title="Preschool Curriculum & Learning Pillars"
-            sub="Seven pillars that shape every day in a Kinderbee classroom."
-          />
-          <div ref={pillarsRef} className={`relative grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 ${pillarsCls}`}>
-            {PILLARS.map(p => (
-              <div key={p.name} className="group rounded-2xl border border-stone-200 bg-stone-50/60 p-4 sm:p-5 transition-[translate,box-shadow,background-color] duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg">
-                <span className={`inline-flex w-11 h-11 rounded-2xl ${p.c} items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                  <p.icon className="w-5 h-5" />
-                </span>
-                <h3 className="mt-3 text-sm font-bold text-stone-900 leading-snug">{p.name}</h3>
-                <p className="mt-1 text-xs text-stone-500 leading-relaxed">{p.desc}</p>
-              </div>
-            ))}
-            {/* Closing tile */}
-            <div className="rounded-2xl bg-gradient-to-br from-[#E1007A] to-pink-600 p-4 sm:p-5 text-white flex flex-col justify-between min-h-[150px]">
-              <Sparkles className="w-6 h-6 text-[#FFD400]" />
-              <div>
-                <div className="text-sm font-bold leading-snug">Finnish pedagogy meets NEP 2020</div>
-                <div className="text-xs text-pink-100 mt-1">One curriculum, delivered the same way in every Kinderbee preschool.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ---------- Investment & space specifications ---------- */}
       <section className="relative max-w-7xl mx-auto px-4 sm:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-stone-900 via-[#1C1917] to-stone-950 p-5 sm:p-10 shadow-2xl space-y-8">

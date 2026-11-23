@@ -7,7 +7,7 @@ import { EASE } from './Motion';
 import { Bee, Star } from './Doodles';
 
 // Tabs map 1:1 onto the "What You Receive As a KIPS Preschool Partner" list on this page.
-type TabId = 'setup' | 'branding' | 'admissions' | 'training' | 'curriculum' | 'operations';
+type TabId = 'branding' | 'admissions' | 'training' | 'curriculum' | 'operations';
 
 const TABS: {
   id: TabId;
@@ -19,13 +19,6 @@ const TABS: {
   includes: string[];
   toast: { title: string; lines: string[] };
 }[] = [
-  {
-    id: 'setup', label: 'Setup', icon: Ruler, pill: 'bg-violet-100 text-violet-700',
-    title: 'From empty space to a ready campus',
-    text: 'A complete school design blueprint, your official brand licence and a step-by-step operations manual, so launch day is planned from day one.',
-    includes: ['Official Brand License', 'School Design Blueprint', 'Franchise Operations Manual'],
-    toast: { title: 'Setup assistant', lines: ['Classroom & play-area layout shared', 'Safety flooring checklist ready'] },
-  },
   {
     id: 'branding', label: 'Branding', icon: Palette, pill: 'bg-sky-100 text-sky-700',
     title: 'A brand parents already trust',
@@ -66,7 +59,7 @@ const TABS: {
 const ROTATE_MS = 6000;
 
 export const FranchiseShowcase: React.FC = () => {
-  const [active, setActive] = useState<TabId>('setup');
+  const [active, setActive] = useState<TabId>('branding');
   const [auto, setAuto] = useState(true);
   const [paused, setPaused] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
