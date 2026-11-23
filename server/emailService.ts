@@ -73,6 +73,7 @@ export function getEmailTransporter(): Transporter | null {
  * Sends a confirmation email to the applicant who submitted the form.
  */
 export async function sendApplicantConfirmationEmail(data: EnquiryEmailData): Promise<{ success: boolean; messageId?: string; reason?: string }> {
+  if (!data.email) return { success: true, reason: "No applicant email given, confirmation skipped" };
   const mailer = getEmailTransporter();
   const fromAddress = process.env.SMTP_FROM || `\"KIPS Kinderbee\" <${process.env.SMTP_USER || "kinderbeeschools@gmail.com"}>`;
   const programTitle = data.program || data.type || "School Partnership & Educational Programs";
@@ -247,7 +248,7 @@ export async function sendAdminLeadAlertEmail(data: EnquiryEmailData): Promise<{
         <tr style="border-bottom: 1px solid #44403c;">
           <td style="padding: 8px 0; color: #a8a29e;">Email:</td>
           <td style="padding: 8px 0; color: #ffffff;">
-            <a href="mailto:${data.email}" style="color: #f472b6; text-decoration: none;">${data.email}</a>
+            ${data.email ? `<a href="mailto:${data.email}" style="color: #f472b6; text-decoration: none;">${data.email}</a>` : "Not provided"}
           </td>
         </tr>
         <tr style="border-bottom: 1px solid #44403c;">

@@ -470,7 +470,7 @@ app.post("/api/enquiries", async (req, res) => {
     fields.email = String(fields.email).trim().toLowerCase();
     fields.name = fields.name || "Newsletter subscriber";
     fields.phone = fields.phone || "";
-  } else if (!type || !fields || !fields.name || !fields.email || !fields.phone) {
+  } else if (!type || !fields || !fields.name || !fields.phone) {
     return res.status(400).json({ error: "Missing required contact fields" });
   }
   // Bot spam sends random-case gibberish names ("XGNFLsCfapjeFzehLXH"); real names have at most one lower→Upper (McDonald).
@@ -566,7 +566,7 @@ app.post("/api/enquiries", async (req, res) => {
             id: newEnquiry.id,
             type: newEnquiry.type,
             name: fields.name,
-            email: fields.email,
+            email: fields.email || null,
             phone: fields.phone,
             city: fields.city || null,
             state: fields.state || null,

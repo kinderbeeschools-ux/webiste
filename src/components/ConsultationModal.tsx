@@ -24,13 +24,9 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     submit: 'Submit Admission Enquiry',
     fields: [
       { key: 'name', label: 'Parent / Guardian name', required: true, placeholder: "Parent's full name" },
-      { key: 'childName', label: "Child's name", required: true, placeholder: "Child's full name" },
-      { key: 'childAge', label: "Child's age / date of birth", required: true, placeholder: 'e.g. 2.5 years / 15 Oct 2023' },
-      { key: 'program', label: 'Class of interest', required: true, options: ['Playgroup (1.5 - 2.5 yrs)', 'Nursery (2.5 - 3.5 yrs)', 'LKG (3.5 - 4.5 yrs)', 'UKG (4.5 - 5.5 yrs)', 'Daycare & Extended Care (1.5 - 8 yrs)'] },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 98765 43210' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'parent@gmail.com' },
-      { key: 'city', label: 'City / preferred campus', required: true, placeholder: 'e.g. Bangalore, Ramamurthy Nagar' },
-      { key: 'preferredVisitDate', label: 'Preferred campus visit date', type: 'date' },
+      { key: 'childName', label: "Child's name", required: true, placeholder: "Child's full name" },
+      { key: 'program', label: 'Class of interest', required: true, options: ['Playgroup (1.5 - 2.5 yrs)', 'Nursery (2.5 - 3.5 yrs)', 'LKG (3.5 - 4.5 yrs)', 'UKG (4.5 - 5.5 yrs)', 'Daycare & Extended Care (1.5 - 8 yrs)'] },
     ],
   },
   franchise: {
@@ -39,12 +35,8 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     fields: [
       { key: 'name', label: 'Applicant name', required: true, placeholder: 'e.g. Rajesh Sharma' },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 98234 56789' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'rajesh@gmail.com' },
       { key: 'city', label: 'City & state', required: true, placeholder: 'e.g. Pune, Maharashtra' },
-      { key: 'program', label: 'Franchise model', required: true, options: ['Preschool Franchise (Zero Royalty)', 'Preschool + Daycare Franchise', 'Convert my existing preschool'] },
-      { key: 'propertySpace', label: 'Available space', options: ['1,500 - 2,500 sq ft', '2,500 - 4,000 sq ft', '4,000+ sq ft (Standalone Villa)', 'Looking for Property'] },
-      { key: 'budget', label: 'Investment capacity', options: ['₹15 Lakhs - ₹25 Lakhs', '₹25 Lakhs - ₹35 Lakhs', '₹35 Lakhs - ₹60 Lakhs', '₹60 Lakhs+'] },
-      { key: 'timeline', label: 'When do you plan to start?', options: TIMELINES },
+      { key: 'program', label: 'I am interested in', options: ['Preschool Franchise (Zero Royalty)', 'Preschool + Daycare Franchise', 'Convert my existing preschool'] },
     ],
   },
   ntt: {
@@ -53,11 +45,8 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     fields: [
       { key: 'name', label: 'Applicant name', required: true, placeholder: 'e.g. Priya Nair' },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 98450 12345' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'priya@gmail.com' },
-      { key: 'city', label: 'City / location', required: true, placeholder: 'e.g. Bangalore, Karnataka' },
+      { key: 'city', label: 'City / location', placeholder: 'e.g. Bangalore, Karnataka' },
       { key: 'program', label: 'Course of interest', required: true, options: ['Advanced Diploma in Early Childhood Care & Education', 'Diploma in Play school Teacher Training', 'Certificate in Nordic inspired Preschool Teaching', 'Foundational Stage Curriculum Design', 'Not sure yet, please advise'] },
-      { key: 'qualification', label: 'Highest qualification', options: ['12th Standard / Higher Secondary', 'Graduate / Bachelor Degree', 'Post Graduate / Master Degree', 'B.Ed / D.Ed / Early NTT'] },
-      { key: 'preferredBatch', label: 'Preferred batch mode', options: ['Online Live Batch (Flexible Evening)', 'Weekend Executive Batch', 'Self-Paced Hybrid with Mentorship'] },
     ],
   },
   cbse: {
@@ -65,14 +54,9 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     submit: 'Submit School Setup Enquiry',
     fields: [
       { key: 'name', label: 'Your name', required: true, placeholder: 'e.g. Suresh Reddy' },
-      { key: 'organization', label: 'Trust / organisation', placeholder: 'e.g. Sri Vidya Educational Trust' },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 99000 11223' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'trust@gmail.com' },
       { key: 'city', label: 'Proposed location (city & state)', required: true, placeholder: 'e.g. Hosur, Tamil Nadu' },
       { key: 'program', label: 'Board', required: true, options: ['CBSE School Setup', 'IB School Setup', 'CBSE + IB School Setup', 'Upgrade / affiliate an existing school'] },
-      { key: 'grades', label: 'Grades planned', options: ['Up to Grade 5', 'Up to Grade 8', 'Up to Grade 10', 'Up to Grade 12'] },
-      { key: 'landStatus', label: 'Land / campus', options: ['Own land', 'Leased land / building', 'Existing school campus', 'Looking for land'] },
-      { key: 'timeline', label: 'Planned start', options: TIMELINES },
     ],
   },
   degree: {
@@ -80,13 +64,9 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     submit: 'Submit Degree College Enquiry',
     fields: [
       { key: 'name', label: 'Your name', required: true, placeholder: 'e.g. Dr. Anitha Rao' },
-      { key: 'organization', label: 'Trust / organisation', placeholder: 'e.g. Rao Educational Society' },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 99000 11223' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'society@gmail.com' },
       { key: 'city', label: 'Proposed location (city & state)', required: true, placeholder: 'e.g. Mysuru, Karnataka' },
       { key: 'program', label: 'Courses planned', required: true, options: ['Arts & Science', 'Commerce & Management', 'Engineering & Technology', 'Nursing & Allied Health', 'Education (B.Ed)', 'Not decided yet'] },
-      { key: 'landStatus', label: 'Land / campus', options: ['Own land', 'Leased campus', 'Existing institution', 'Looking for land'] },
-      { key: 'timeline', label: 'Planned start', options: TIMELINES },
     ],
   },
   investor: {
@@ -94,9 +74,7 @@ const FORMS: Record<Tab, { icon: React.ElementType; submit: string; fields: Fiel
     submit: 'Submit Investor Enquiry',
     fields: [
       { key: 'name', label: 'Investor / principal name', required: true, placeholder: 'e.g. Vikram Singh' },
-      { key: 'organization', label: 'Organisation / trust', placeholder: 'e.g. Singh Capital' },
       { key: 'phone', label: 'Mobile number', required: true, type: 'tel', placeholder: '+91 99000 11223' },
-      { key: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'vikram@example.com' },
       { key: 'city', label: 'City', required: true, placeholder: 'e.g. Bangalore' },
       { key: 'budget', label: 'Capital horizon', options: ['₹25 Lakhs - ₹50 Lakhs', '₹50 Lakhs - ₹1 Crore', '₹1 Crore - ₹3 Crores', '₹3 Crores+ (Multi-Campus / K-12)'] },
       { key: 'program', label: 'Strategic interest', required: true, options: ['Multi-City Preschool Chain Expansion', 'K-12 Green-Field School Project', 'Finnish Pedagogical Tech & Franchise Cluster'] },
@@ -257,7 +235,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                 <span>Book a Free Consultation</span>
               </div>
               <h3 id="enq-title" className="text-2xl font-display font-bold text-stone-900">Connect with Kinderbee Advisors</h3>
-              <p className="text-xs sm:text-sm text-stone-500">What would you like to enquire about?</p>
+              <p className="text-xs sm:text-sm text-stone-500">Takes 30 seconds. We call you back within one working day.</p>
             </div>
 
             {/* One tab per line of business: 3 + 2 on phones, a single row on larger screens */}
@@ -282,7 +260,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div key={activeTab} className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 animate-fadeIn">
+              <div key={activeTab} className="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fadeIn">
                 {form.fields.map(f => (
                   <div key={f.key}>
                     <label htmlFor={`enq-${f.key}`} className="block text-xs font-bold text-stone-700 mb-1">{f.label}{f.required ? ' *' : ''}</label>
@@ -307,18 +285,6 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                 ))}
               </div>
 
-              <div>
-                <label htmlFor="enq-message" className="block text-xs font-bold text-stone-700 mb-1">Specific requirements / questions (optional)</label>
-                <textarea
-                  id="enq-message"
-                  rows={2}
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  placeholder="Tell us any specific timeline, location preference, or questions..."
-                  className="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-xs sm:text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#E1007A]"
-                />
-              </div>
-
               <div className="pt-1">
                 <label className="flex items-start gap-2.5 text-xs text-stone-600 cursor-pointer select-none">
                   <input
@@ -329,10 +295,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                     className="mt-0.5 w-4 h-4 rounded text-[#E1007A] focus:ring-[#E1007A] border-stone-300 accent-[#E1007A] cursor-pointer"
                   />
                   <span>
-                    I have reviewed the fee details and agree to the{' '}
-                    <a href="#cancellation-refund" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">Cancellation and No-Refund Policy</a>,{' '}
-                    <a href="#terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">Terms and Conditions</a>, and{' '}
-                    <a href="#privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">Privacy Policy</a>.
+                    I agree to the{' '}
+                    <a href="#terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">Terms</a>,{' '}
+                    <a href="#privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">Privacy</a> and{' '}
+                    <a href="#cancellation-refund" target="_blank" rel="noopener noreferrer" className="text-[#E1007A] underline font-semibold hover:text-pink-700">No-Refund</a> policies.
                   </span>
                 </label>
               </div>
