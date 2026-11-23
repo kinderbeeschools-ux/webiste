@@ -43,7 +43,7 @@ for (const p of [...pages, '/404']) {
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description" id="static-description"[^>]*>\s*/, '')
     .replace('</head>', `${head}\n</head>`)
-    .replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+    .replace('<div id="root"></div>', `<div id="root" data-ssr-path="${p}">${html}</div>`);
   const file = path.join(dist, p === '/' ? 'index.html' : p === '/404' ? '404.html' : `${decodeURIComponent(p)}/index.html`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, out);

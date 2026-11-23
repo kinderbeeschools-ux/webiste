@@ -410,7 +410,9 @@ const nextWeekdays = () => {
 };
 
 export const ConsultationOffer: React.FC<{ category?: string; className?: string }> = ({ category, className = '' }) => {
-  const [days] = useState(nextWeekdays);
+  // Dates are filled in after mount: the HTML is built once, so today's dates must not be baked into it
+  const [days, setDays] = useState<Date[]>([]);
+  useEffect(() => setDays(nextWeekdays()), []);
   const [active, setActive] = useState(1);
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -459,10 +461,10 @@ export const ConsultationOffer: React.FC<{ category?: string; className?: string
           {/* Decorative date picker that hints at the booking step */}
           <div aria-hidden="true" className="rounded-2xl bg-white/10 border border-white/15 p-3 backdrop-blur-sm">
             <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
-              {days.map((d, i) => (
+              {[0, 1, 2, 3, 4].map(i => (
                 <div key={i} className={`rounded-xl py-2 text-center transition-all duration-500 ${i === active ? 'bg-white text-[#E1007A] shadow-lg scale-105' : 'bg-white/5 text-pink-50/80'}`}>
-                  <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">{d.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
-                  <div className="font-display text-base sm:text-lg font-extrabold leading-none mt-0.5">{d.getDate()}</div>
+                  <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">{days[i] ? days[i].toLocaleDateString('en-IN', { weekday: 'short' }) : ' '}</div>
+                  <div className="font-display text-base sm:text-lg font-extrabold leading-none mt-0.5">{days[i] ? days[i].getDate() : ' '}</div>
                 </div>
               ))}
             </div>

@@ -13,9 +13,10 @@ const Count: React.FC<{ to: number; suffix: string }> = ({ to, suffix }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const reduce = useReducedMotion();
-  const [v, setV] = useState(reduce ? to : 0);
+  const [v, setV] = useState(0);
   useEffect(() => {
-    if (!inView || reduce) return;
+    if (reduce) { setV(to); return; }
+    if (!inView) return;
     const c = animate(0, to, { duration: 1.6, ease: 'easeOut', onUpdate: x => setV(Math.round(x)) });
     const done = setTimeout(() => setV(to), 2000); // frames can be paused (background tab): always land on the real figure
     return () => { c.stop(); clearTimeout(done); };
