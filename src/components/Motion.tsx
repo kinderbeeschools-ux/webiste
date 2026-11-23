@@ -4,7 +4,7 @@ import { useInView } from 'motion/react';
 // Smooth "expo-out" curve shared by all page entrance animations
 export const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Section wrapper. The reveal itself is site-wide (AutoReveal.ts): headings, text, images and cards
+// Section wrapper. The reveal itself is site-wide (CSS scroll-driven animation in index.css): headings, text, images and cards
 // inside rise in one by one instead of the whole section fading as a block.
 export const Reveal: React.FC<{ children: React.ReactNode }> = ({ children }) => <div>{children}</div>;
 

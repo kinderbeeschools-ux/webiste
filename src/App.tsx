@@ -6,7 +6,6 @@ import { ConsultationModal } from './components/ConsultationModal';
 import { ConsultationBooking } from './components/ConsultationBooking';
 import { BrochureDownload } from './components/BrochureDownload';
 import { CoursePayment, openCoursePayment } from './components/CoursePayment';
-import { useAutoReveal } from './components/AutoReveal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { StickyContactWidget } from './components/StickyContactWidget';
 import { HomePage } from './pages/HomePage';
@@ -222,7 +221,6 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
   };
 
   const inAdmin = (currentTab === 'admin' || currentTab === 'desk') && !!adminToken;
-  useAutoReveal(`${currentTab}|${selectedBlog?.id || ''}|${blogs.length}`, !inAdmin);
 
   // Signed-out /admin: a standalone sign-in page, without the website around it
   if ((currentTab === 'admin' || currentTab === 'desk') && !adminToken) {
