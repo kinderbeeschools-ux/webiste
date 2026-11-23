@@ -4,8 +4,6 @@ import { Sparkles, CheckCircle2, ArrowRight, Building2, GraduationCap, School, B
 import { SEOHead } from '../components/SEOHead';
 import { SmartImage } from '../components/SmartImage';
 import { SystemSettings } from '../types';
-import { FranchiseShowcase } from '../components/FranchiseShowcase';
-import { FranchiseDetails } from '../components/FranchiseDetails';
 import { SchoolSetup } from '../components/SchoolSetup';
 import { ArcadiaPage } from '../components/ArcadiaPage';
 import { ConsultationOffer, openConsultationBooking } from '../components/ConsultationBooking';
@@ -211,11 +209,6 @@ export const PartnershipsPage: React.FC<PartnershipsPageProps> = ({
           <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
             <ConsultationOffer category="Preschool Partnership / Franchise" />
           </div>
-
-          {/* Illustrated partner ecosystem showcase */}
-          <FranchiseShowcase />
-
-          <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
 
           {/* Buyer's guide: questions, journey, readiness check and FAQ */}
           <FranchiseBuyerGuide onOpenConsultation={() => onOpenConsultation('preschool')} settings={settings} />
