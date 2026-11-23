@@ -10,7 +10,6 @@ interface NotFoundPageProps {
 
 const LINKS = [
   ['home', 'Home'],
-  ['franchise', 'Preschool Franchise'],
   ['partnerships-cbse', 'CBSE School Setup'],
   ['partnerships-degree', 'Degree College Setup'],
   ['fwa', 'Teacher Training'],

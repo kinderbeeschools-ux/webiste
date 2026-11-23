@@ -10,7 +10,7 @@
 - Support: franchise operations manual, curriculum and lesson plans, teacher and staff training, admissions and marketing playbooks, school-management ERP, mentor.
 
 ## Key pages
-- [Preschool franchise](https://www.kinderbeeschools.com/preschool-franchise): zero-royalty preschool franchise, cost, space, support, FAQs
+- [Home: preschool franchise](https://www.kinderbeeschools.com/): zero-royalty preschool franchise, cost, space, support, FAQs
 - [CBSE and IB school setup](https://www.kinderbeeschools.com/cbse-school-setup)
 - [Degree college setup](https://www.kinderbeeschools.com/degree-college-setup)
 - [Teacher training (NTT, ECCE diploma)](https://www.kinderbeeschools.com/teacher-training)

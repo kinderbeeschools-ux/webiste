@@ -253,7 +253,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
       <div className="kb-progress" aria-hidden="true" />
 
       <main key={currentTab} className="flex-1 kb-page">
-        {currentTab === 'home' && (
+        {(currentTab === 'home' || currentTab === 'franchise' || currentTab === 'partnerships' || currentTab === 'partnerships-preschool') && (
           <HomePage
             setCurrentTab={setCurrentTab}
             onOpenConsultation={handleOpenConsultation}
@@ -270,12 +270,12 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
             settings={settings} 
           />
         )}
-        {(currentTab === 'franchise' || currentTab.startsWith('partnerships')) && (
+        {currentTab.startsWith('partnerships') && currentTab !== 'partnerships-preschool' && (
           <PartnershipsPage 
             subTab={
               (currentTab === 'partnerships-cbse' || currentTab === 'partnerships-ib') ? 'cbse' :
               currentTab === 'partnerships-degree' ? 'degree' :
-              'preschool'
+              'cbse'
             }
             onSelectSubTab={(sub) => setCurrentTab(`partnerships-${sub}`)}
             onOpenConsultation={handleOpenConsultation} 

@@ -4,6 +4,9 @@
   "functions": {
     "api/index.ts": { "includeFiles": "db.json" }
   },
+  "redirects": [
+    { "source": "/preschool-franchise", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",

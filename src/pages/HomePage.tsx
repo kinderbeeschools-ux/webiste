@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { 
-  ShieldCheck, Sparkles, ArrowRight, CheckCircle2, Award, BookOpen, 
+  ShieldCheck, Sparkles, TrendingUp, Headphones, Globe, ArrowRight, CheckCircle2, Award, BookOpen, 
   Users, Building, Star, Download, ChevronDown, HelpCircle, 
   GraduationCap, School, Camera, Heart, Sun, Smile, Clock, 
   MapPin, Phone, Mail, Send, Calendar, Check, Play, Pause, UserCheck,
@@ -12,6 +12,8 @@ import { SmartImage } from '../components/SmartImage';
 import { motion, MotionConfig, useInView } from 'motion/react';
 import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
+import { openBrochureDownload } from '../components/BrochureDownload';
+import { FranchiseBuyerGuide, FAQ_SCHEMA } from '../components/premium/FranchiseBuyerGuide';
 import { FranchiseShowcase } from '../components/FranchiseShowcase';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { trackLead } from '../utils/analytics';
@@ -204,86 +206,158 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
   return (
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       <SEOHead
-        title="Kinderbee Preschool Franchise in India | Zero Royalty, Nordic-Inspired Playschool"
-        description="Start a Kinderbee preschool franchise with zero royalty: NEP 2020 aligned, Nordic-inspired play-based curriculum, teacher training, branding, admissions support and a school ERP. Book a free consultation."
-        keywords="KinderBee franchise, preschool franchise India, best preschool franchise in India, no royalty preschool franchise, low investment preschool franchise, play school franchise, Nordic preschool franchise"
+        title="Best Preschool Franchise in India – No Royalty | Kinderbee"
+        description="Best preschool franchise in India with zero royalty. Play school franchise for ₹15 – ₹30 Lakhs with Finnish curriculum, teacher training and full setup support."
+        keywords="best preschool franchise in India with no royalty, preschool franchise with zero royalty, no royalty preschool franchise, preschool with no royalty fee, India's #1 preschool franchise, best preschool franchise India, best international preschool franchise, preschool franchise in India, play school franchise in India, preschool franchise cost in India, preschool franchise investment, preschool franchise opportunities, how to start a preschool in India"
         settings={settings}
+        faq={FAQ_SCHEMA()}
       />
 
-      {/* HERO */}
-      <section aria-labelledby="hero-title" className="relative isolate flex min-h-[560px] items-center justify-center overflow-hidden bg-stone-950 py-16 text-white sm:min-h-[620px] lg:min-h-[680px]">
-        {settings?.homeHeroImage ? (
-          <img src={settings.homeHeroImage} alt="Kinderbee preschool franchise: children learning through play" fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover object-center kb-kenburns pointer-events-none" />
-        ) : (
-        <video autoPlay loop muted playsInline preload="metadata" aria-hidden="true"
-          poster="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Home%20Page%20Images/Kinderbee.jpeg"
-          className="absolute inset-0 h-full w-full object-cover object-center kb-kenburns pointer-events-none">
-          <source src="https://uvsqqvhjtdtsexfsinvp.supabase.co/storage/v1/object/public/Video/banner%20Video.mp4" type="video/mp4" />
-        </video>
-        )}
+      {/* Franchise hero (moved from the Franchise page) */}
+          <section className="relative overflow-hidden bg-[#FFF6F9] border-b border-pink-100/80 lg:min-h-[640px] flex items-center">
+            {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
+            <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-1/2 pointer-events-none overflow-hidden select-none">
+              <img 
+                src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"}
+                alt="Kinderbee Preschool campus with children playing outside"
+                className="w-full h-full object-cover object-[50%_45%]"
+                fetchPriority="high"
+              />
+              {/* Smooth gradient feather on the left edge only, keeping the entire building 100% visible */}
+              <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 lg:w-44 bg-gradient-to-r from-[#FFF6F9] to-transparent pointer-events-none"></div>
+            </div>
 
-        {/* Layered scrim: deep at the edges for legibility, a soft brand glow behind the headline */}
-        <div className="absolute inset-0 z-10 bg-stone-950/75 pointer-events-none" />
-        <div className="absolute inset-0 z-10 bg-[radial-gradient(60%_50%_at_50%_42%,rgba(225,0,122,0.22),transparent_70%)] pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t from-[#FAF9F6]/10 to-transparent pointer-events-none" />
+            {/* Soft decorative botanical leaves watermark at top-left corner */}
+            <div className="absolute top-0 left-0 w-48 sm:w-64 h-48 sm:h-64 pointer-events-none opacity-20 overflow-hidden">
+              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-[#E1007A]">
+                <path d="M-20 -20 C40 10, 60 70, 40 120 C20 70, -10 40, -20 -20 Z" fill="currentColor" fillOpacity="0.45" />
+                <path d="M-10 20 C50 30, 90 90, 70 150 C40 100, 10 70, -10 20 Z" fill="currentColor" fillOpacity="0.35" />
+                <path d="M20 -10 C70 40, 110 80, 140 70 C100 100, 50 70, 20 -10 Z" fill="currentColor" fillOpacity="0.3" />
+                <path d="M60 -15 C95 25, 125 55, 160 50 C130 75, 85 50, 60 -15 Z" fill="currentColor" fillOpacity="0.25" />
+              </svg>
+            </div>
 
-        <div className="relative z-20 mx-auto w-full max-w-4xl px-5 text-center sm:px-8">
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.05, ease: EASE }}
-            className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD400]/40 bg-white/5 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#FFD400] backdrop-blur-md sm:text-xs">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#FFD400] shadow-[0_0_10px_#FFD400]" />
-            Preschool franchise · Zero royalty
-          </motion.p>
+            {/* Foreground Content */}
+            <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 pt-5 pb-10 sm:pt-8 lg:py-16 relative z-10">
+              {/* Desktop: text ends 2rem before the photo, which covers the right half (left edge 50vw) */}
+              <div className="max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
+                {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
+                <div className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
+                  <img src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp"} alt="Kinderbee Preschool campus with children playing outside" className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_40%]" fetchPriority="high" />
+                </div>
 
-          <motion.h1 id="hero-title" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
-            className="mt-7 font-serif-title text-[2.5rem] font-medium leading-[1.08] tracking-tight text-white [text-wrap:balance] sm:text-6xl lg:text-7xl">
-            Kinderbee Preschool Franchise
-            <span className="mt-3 block font-sans text-[0.3em] font-semibold uppercase tracking-[0.3em] text-[#FFD400] sm:text-[0.26em]">
-              Pan-India · 360° partner support
-            </span>
-          </motion.h1>
+                {/* Pill Badge */}
+                <div className="inline-flex items-center gap-2 bg-pink-50/95 border border-pink-200/90 text-[#E1007A] text-[11px] sm:text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-[#E1007A]" />
+                  <span>ZERO ROYALTY PRESCHOOL FRANCHISE</span>
+                </div>
+                
+                {/* Main Headline */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
+                  India’s Best <span className="text-[#E1007A]">Preschool Franchise</span> with Zero Royalty
+                </h1>
+                
+                {/* Subtitle */}
+                <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed max-w-xl font-normal">
+                  Kinderbee is the best preschool franchise in India with no royalty: own an international preschool franchise with a Finnish curriculum, lesson plans, teacher training and full setup support, and keep 100% of your fees.
+                </p>
+                
+                {/* 4 Stat Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 max-w-xl pt-1">
+                  {/* Card 1: Royalty Fee */}
+                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
+                    <div className="w-7 h-7 rounded-full bg-[#E1007A] text-white flex items-center justify-center font-bold text-xs shadow-2xs mb-2">
+                      ₹0
+                    </div>
+                    <div className="text-xs text-stone-600 font-medium leading-tight">Royalty Fee</div>
+                  </div>
 
-          <motion.div initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }} transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
-            className="mx-auto mt-7 h-px w-24 bg-gradient-to-r from-transparent via-[#FFD400] to-transparent" />
+                  {/* Card 2: Profit Retention */}
+                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
+                    <TrendingUp className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
+                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">100%</div>
+                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Profit Retention</div>
+                  </div>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }}
-            className="mt-6 font-serif-title text-2xl italic leading-snug text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-pink-300 to-[#ff4fa8] [text-wrap:balance] sm:text-4xl">
-            Own a Nordic-inspired preschool. Keep 100% of your fees.
-          </motion.p>
+                  {/* Card 3: Pedagogy */}
+                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
+                    <GraduationCap className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
+                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">Finnish</div>
+                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Pedagogy</div>
+                  </div>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
-            className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-stone-200 [text-wrap:balance] sm:text-lg">
-            Start a Kinderbee preschool with a NEP 2020 aligned, play-based curriculum, teacher training, branding, admissions support and a school management ERP, with no royalty on your tuition.
-          </motion.p>
+                  {/* Card 4: Setup Support */}
+                  <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-pink-100/90 shadow-xs hover:shadow-sm p-3 sm:p-3.5 text-center flex flex-col items-center justify-center min-h-[96px] transition">
+                    <Headphones className="w-5 h-5 text-[#E1007A] mb-1.5 stroke-[2.2]" />
+                    <div className="font-extrabold text-stone-900 text-sm sm:text-base leading-tight">Full</div>
+                    <div className="text-xs text-stone-600 font-medium leading-tight mt-0.5">Setup Support</div>
+                  </div>
+                </div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
-            className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <button onClick={() => onOpenConsultation('preschool')}
-              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-8px_rgba(225,0,122,0.7)] transition hover:-translate-y-0.5 hover:bg-[#c90070] sm:w-auto sm:text-base cursor-pointer">
-              Book Free Consultation <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </button>
-            <button onClick={() => { setCurrentTab('franchise'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="inline-flex w-full items-center justify-center rounded-full border border-white/30 bg-white/5 px-8 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/15 sm:w-auto sm:text-base cursor-pointer">
-              See Franchise Details
-            </button>
-          </motion.div>
+                {/* Buttons */}
+                <div className="pt-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-3.5">
+                  <button
+                    onClick={() => onOpenConsultation('preschool')}
+                    className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-6 sm:px-7 py-3.5 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Book Free Consultation</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </button>
+                  <button type="button" onClick={() => openBrochureDownload('Franchise page')} className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 hover:border-stone-400 font-bold px-5 sm:px-6 py-3.5 rounded-xl shadow-xs transition text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Download Franchise PDF</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => openConsultationBooking('Preschool Partnership / Franchise')}
+                  className="text-sm font-semibold text-stone-600 hover:text-[#E1007A] underline decoration-pink-300 underline-offset-4 transition cursor-pointer"
+                >
+                  Prefer a detailed one-to-one session? Book a 1:1 consultation for ₹99
+                </button>
 
-          <motion.ul initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.8, ease: EASE }}
-            className="mx-auto mt-12 grid max-w-3xl grid-cols-2 divide-white/15 rounded-2xl border border-white/15 bg-white/5 py-4 text-left backdrop-blur-md sm:grid-cols-4 sm:divide-x">
-            {[
-              { icon: Award, k: 'Zero royalty', v: 'Keep 100% of fees' },
-              { icon: GraduationCap, k: 'Teacher training', v: 'Nordic-inspired method' },
-              { icon: ShieldCheck, k: 'NEP 2020', v: 'Aligned curriculum' },
-              { icon: Building, k: 'Full setup', v: 'Brand to ERP' },
-            ].map(({ icon: Icon, k, v }) => (
-              <li key={k} className="flex items-center gap-3 px-4 py-2">
-                <Icon className="h-5 w-5 shrink-0 text-[#FFD400]" aria-hidden="true" />
-                <span className="leading-tight"><span className="block text-sm font-bold text-white">{k}</span><span className="block text-xs text-stone-300">{v}</span></span>
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-      </section>
+                {/* Bottom Feature Pill Strip */}
+                <div className="pt-2">
+                  <div className="grid grid-cols-3 sm:inline-flex sm:flex-nowrap items-center bg-white/95 backdrop-blur-xs border border-pink-100/90 rounded-2xl p-2.5 sm:p-3 shadow-xs gap-1 sm:gap-4 max-w-xl w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
+                      <ShieldCheck className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
+                      <div className="sm:text-left">
+                        <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">NEP 2020</div>
+                        <div className="text-[11px] text-stone-500 font-medium">Aligned</div>
+                      </div>
+                    </div>
+
+                    <div className="hidden sm:block w-px h-7 bg-stone-200"></div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
+                      <BookOpen className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
+                      <div className="sm:text-left">
+                        <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">Child-Centric</div>
+                        <div className="text-[11px] text-stone-500 font-medium">Education</div>
+                      </div>
+                    </div>
+
+                    <div className="hidden sm:block w-px h-7 bg-stone-200"></div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 px-1 sm:px-2 text-center sm:text-left">
+                      <Globe className="w-5 h-5 text-[#E1007A] shrink-0 stroke-[2.2]" />
+                      <div className="sm:text-left">
+                        <div className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">Global Standards</div>
+                        <div className="text-[11px] text-stone-500 font-medium">Local Relevance</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
+            <ConsultationOffer category="Preschool Partnership / Franchise" />
+          </div>
+
 
       <FranchiseShowcase />
 
@@ -336,8 +410,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
               <div className="pt-4 flex flex-wrap gap-4">
                 <button
                   onClick={() => {
-                    setCurrentTab('partnerships');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    onOpenConsultation('preschool');
                   }}
                   className="bg-[#E1007A] hover:bg-pink-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer text-sm"
                 >
@@ -370,6 +443,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
         <ConsultationOffer className="mt-6" />
       </section>
       </Reveal>
+
+      <FranchiseBuyerGuide onOpenConsultation={() => onOpenConsultation('preschool')} settings={settings} />
 
       <Reveal>
       {/* =========================================================================

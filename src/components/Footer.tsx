@@ -112,7 +112,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab, onOpenC
                 </li>
                 <li>
                   <button 
-                    onClick={() => { setCurrentTab('partnerships'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                    onClick={() => { setCurrentTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                     className="hover:text-[#E1007A] transition flex items-center gap-2 cursor-pointer text-left"
                   >
                     <ArrowRight className="w-3.5 h-3.5 text-[#E1007A] shrink-0" />

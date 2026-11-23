@@ -2,9 +2,6 @@
 const PATHS: Record<string, string> = {
   home: '/',
   about: '/about',
-  franchise: '/preschool-franchise',
-  partnerships: '/preschool-franchise',
-  'partnerships-preschool': '/preschool-franchise',
   'partnerships-cbse': '/cbse-school-setup',
   'partnerships-ib': '/cbse-school-setup',
   'partnerships-degree': '/degree-college-setup',
@@ -35,6 +32,7 @@ const clean = (path: string) => path.toLowerCase().replace(/\/+$/, '') || '/';
 export const tabFor = (path: string): string | null => {
   const p = clean(path);
   if (p.startsWith('/blog/')) return 'blogs';
+  if (p === '/preschool-franchise') return 'home'; // retired page
   return Object.keys(PATHS).find(tab => PATHS[tab] === p) || null;
 };
 
