@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import './index.css';
@@ -18,5 +18,11 @@ const app = (
   </React.StrictMode>
 );
 
-createRoot(root).render(app);
+// The home page ships fully rendered HTML: attach to it instead of rebuilding it, so it paints before the
+// JavaScript has run. Other pages still render in the browser (their journal and FAQ data loads after the HTML was built).
+if (root.dataset.ssrPath === '/' && window.location.pathname === '/' && !window.location.search && root.firstElementChild) {
+  hydrateRoot(root, app);
+} else {
+  createRoot(root).render(app);
+}
 
