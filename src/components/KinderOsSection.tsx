@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { EASE } from './Motion';
+import { KinderOsMockup } from './FranchiseVisuals';
 import {
   Sparkles, LayoutDashboard, Users, UserPlus, CalendarCheck, Wallet, Briefcase, BookOpen,
   Bell, BarChart3, Settings, Brain, Puzzle, ArrowRight, CheckCircle2, Smartphone,
@@ -57,21 +58,23 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
       ))}
     </div>
 
-    {/* KinderOS modules */}
-    <div className="mt-8 rounded-3xl bg-stone-900 p-6 sm:p-10 text-white">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <h3 className="text-2xl sm:text-3xl font-display font-extrabold">What you manage in KinderOS, free</h3>
-        <p className="text-sm text-stone-300">Included with every franchise, new or rebranded.</p>
+    {/* KinderOS modules, with the screens they live on */}
+    <div className="mt-8 overflow-hidden rounded-3xl bg-stone-900 p-6 sm:p-10 text-white">
+      <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.05fr]">
+        <div>
+          <h3 className="text-2xl sm:text-3xl font-display font-extrabold">What you manage in KinderOS, free</h3>
+          <p className="mt-2 text-sm text-stone-300">Included with every franchise, new or rebranded.</p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {MODULES.map(({ icon: Icon, t, d }, i) => (
+              <motion.li key={t} {...rise(i % 4)} whileHover={{ y: -3, backgroundColor: 'rgba(255,255,255,0.12)' }} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[#FFD400]" aria-hidden="true" />
+                <span><span className="block text-sm font-bold">{t}</span><span className="block text-xs text-stone-300">{d}</span></span>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+        <KinderOsMockup />
       </div>
-      <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {MODULES.map(({ icon: Icon, t, d }, i) => (
-          <motion.li key={t} {...rise(i % 5)} whileHover={{ y: -4, backgroundColor: 'rgba(255,255,255,0.12)' }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <Icon className="h-5 w-5 text-[#FFD400]" aria-hidden="true" />
-            <div className="mt-2 text-sm font-bold">{t}</div>
-            <div className="mt-0.5 text-xs text-stone-300">{d}</div>
-          </motion.li>
-        ))}
-      </ul>
     </div>
 
     <div className="mt-8 text-center">

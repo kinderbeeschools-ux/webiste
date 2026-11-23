@@ -5,6 +5,7 @@ import {
   PhoneCall, ClipboardList, GraduationCap, Rocket, ArrowRight, MessageCircle, ChevronDown,
 } from 'lucide-react';
 import { EASE } from './Motion';
+import { CdmRadar, ModelArt } from './FranchiseVisuals';
 
 // Only facts already published on kinderbeeschools.com or in the Kinderbee Franchise & CRM booklet.
 // Blog links point to articles that exist (ids in src/data/journalBlogs.ts).
@@ -26,11 +27,14 @@ const Head: React.FC<{ badge?: string; title: React.ReactNode; answer: React.Rea
   </div>
 );
 
-const Card: React.FC<{ icon: React.ElementType; h: string; i?: number; children: React.ReactNode }> = ({ icon: Icon, h, i = 0, children }) => (
-  <motion.div {...rise(i)} className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
-    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-pink-50 text-[#E1007A]"><Icon className="h-5 w-5" /></span>
-    <h3 className="mt-4 text-lg font-extrabold text-stone-900">{h}</h3>
-    <p className="mt-2 text-sm leading-relaxed text-stone-600">{children}</p>
+const Card: React.FC<{ icon: React.ElementType; h: string; i?: number; art?: React.ReactNode; children: React.ReactNode }> = ({ icon: Icon, h, i = 0, art, children }) => (
+  <motion.div {...rise(i)} whileHover={{ y: -4 }} className="group relative overflow-hidden rounded-3xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-xl hover:shadow-pink-200/40">
+    <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#E1007A] via-[#ff7ab8] to-[#FFD400]" />
+    <span aria-hidden="true" className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-pink-50 transition-transform duration-500 group-hover:scale-125" />
+    {art}
+    <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E1007A] to-[#ff5aa5] text-white shadow-lg shadow-pink-300/50"><Icon className="h-6 w-6" /></span>
+    <h3 className="relative mt-4 text-lg font-extrabold text-stone-900">{h}</h3>
+    <p className="relative mt-2 text-sm leading-relaxed text-stone-600">{children}</p>
   </motion.div>
 );
 
@@ -66,13 +70,13 @@ export const FranchiseModelsSection: React.FC<{ onEnquire: () => void }> = ({ on
       answer="KinderBee offers three ways to start: open a new preschool, convert an existing preschool to the KinderBee brand, or add daycare to a preschool for an extended-day model. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
     />
     <div className="mt-10 grid gap-5 md:grid-cols-3">
-      <Card i={0} icon={Building2} h="New preschool setup">
+      <Card i={0} icon={Building2} h="New preschool setup" art={<div className="relative mb-4"><ModelArt kind="new" /></div>}>
         For first-time owners: setup guidance, brand identity, curriculum and toolkit, and teacher training, so you open with a tested model behind you.
       </Card>
-      <Card i={1} icon={RefreshCw} h="Rebrand an existing preschool">
+      <Card i={1} icon={RefreshCw} h="Rebrand an existing preschool" art={<div className="relative mb-4"><ModelArt kind="rebrand" /></div>}>
         For running schools: a new KinderBee identity, curriculum integration, the free KinderOS CRM and ongoing support.
       </Card>
-      <Card i={2} icon={Sun} h="Preschool plus daycare">
+      <Card i={2} icon={Sun} h="Preschool plus daycare" art={<div className="relative mb-4"><ModelArt kind="daycare" /></div>}>
         A combined model that adds extended-day care. <a className={link} href={`${BLOG}preschool-daycare-combo-business-model-india`}>When a combined early-years model makes sense</a>.
       </Card>
     </div>
@@ -102,6 +106,20 @@ export const CurriculumSection: React.FC = () => (
         The Cognitive Developmental Matrix is a structured assessment for 5 to 6 year-olds across six development areas, rated 1 to 5, with a summary teachers can share with parents.
       </Card>
     </div>
+      <motion.div {...rise(0)} className="mt-8 grid items-center gap-8 overflow-hidden rounded-3xl border border-pink-100 bg-gradient-to-br from-[#FFF6F9] to-white p-6 sm:p-10 lg:grid-cols-2">
+      <div className="space-y-4">
+        <h3 className="text-2xl font-display font-extrabold tracking-tight text-stone-900 sm:text-3xl">See every child grow, across six areas</h3>
+        <p className="text-sm leading-relaxed text-stone-600 sm:text-base">
+          The Cognitive Developmental Matrix rates each child from 1 to 5 in play, socio-emotional growth, wellness, language, literacy and cognitive development, with space for the teacher&rsquo;s observations. The summary can be printed, downloaded or shared with parents, and is shared across branches in KinderOS.
+        </p>
+        <ul className="grid grid-cols-2 gap-2 text-sm font-semibold text-stone-700">
+          {['Play', 'Socio-emotional', 'Wellness', 'Language', 'Literacy', 'Cognitive'].map(x => (
+            <li key={x} className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#E1007A]" />{x}</li>
+          ))}
+        </ul>
+      </div>
+      <CdmRadar />
+    </motion.div>
   </section>
 );
 
@@ -150,10 +168,11 @@ export const HowToStartSection: React.FC = () => (
       title="How to Start Your KinderBee Preschool Franchise"
       answer="Starting a KinderBee preschool franchise takes four steps: a consultation, planning your model, setup and training, and launch with admissions support."
     />
-    <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <ol className="relative mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <span aria-hidden="true" className="pointer-events-none absolute left-[12%] right-[12%] top-0 hidden h-0.5 -translate-y-[9px] bg-gradient-to-r from-[#E1007A]/10 via-[#E1007A]/50 to-[#FFD400] lg:block" />
       {STEPS.map(({ icon: Icon, t, d }, i) => (
         <motion.li key={t} {...rise(i)} className="relative rounded-3xl border border-pink-100 bg-[#FFF6F9] p-6">
-          <span className="absolute -top-3 left-6 flex h-7 w-7 items-center justify-center rounded-full bg-[#E1007A] text-xs font-extrabold text-white">{i + 1}</span>
+          <span className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-[#E1007A] text-sm font-extrabold text-white ring-4 ring-white shadow-md">{i + 1}</span>
           <Icon className="h-6 w-6 text-[#E1007A]" aria-hidden="true" />
           <h3 className="mt-3 text-base font-extrabold text-stone-900">{t}</h3>
           <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{d}</p>
@@ -241,9 +260,11 @@ export const JumpLinks: React.FC = () => (
   </nav>
 );
 
+export const WA_MESSAGE = 'Hi, I would like details about the KinderBee preschool franchise.';
+
 export const WhatsAppEnquiry: React.FC<{ phone?: string; className?: string }> = ({ phone = '919344906393', className = '' }) => (
   <a
-    href={`https://wa.me/${phone}?text=${encodeURIComponent('Hi, I would like details about the KinderBee preschool franchise.')}`}
+    href={`https://wa.me/${phone}?text=${encodeURIComponent(WA_MESSAGE)}`}
     target="_blank" rel="noopener noreferrer"
     className={`inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold hover:bg-white/10 ${className}`}
   >

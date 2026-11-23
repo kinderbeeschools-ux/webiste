@@ -14,8 +14,9 @@ import { Reveal, EASE } from '../components/Motion';
 import { openConsultationBooking, ConsultationOffer } from '../components/ConsultationBooking';
 import { openBrochureDownload } from '../components/BrochureDownload';
 import { FranchiseBuyerGuide } from '../components/premium/FranchiseBuyerGuide';
-import { JumpLinks, WhyChooseSection, FranchiseModelsSection, CurriculumSection, IndiaOpportunitySection, HowToStartSection, FranchiseFaqSection, FRANCHISE_FAQS, WhatsAppEnquiry } from '../components/FranchiseSeoSections';
+import { JumpLinks, WhyChooseSection, FranchiseModelsSection, CurriculumSection, IndiaOpportunitySection, HowToStartSection, FranchiseFaqSection, FRANCHISE_FAQS, WhatsAppEnquiry, WA_MESSAGE } from '../components/FranchiseSeoSections';
 import { TrustStrip } from '../components/TrustStrip';
+import { WhatsAppMockup } from '../components/FranchiseVisuals';
 import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseDetails } from '../components/FranchiseDetails';
 import { trackLead } from '../utils/analytics';
@@ -41,7 +42,7 @@ const FRANCHISE_SERVICE_SCHEMA = {
 export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsultation, settings }) => {
 
   return (
-    <MotionConfig reducedMotion="user"><div className="kb-cv space-y-16 sm:space-y-24 pb-12">
+    <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       <SEOHead
         title="Preschool Franchise in India – Zero Royalty | KinderBee"
         description="Start a KinderBee preschool franchise in India: zero royalty, Finnish-style curriculum, free KinderOS CRM and full setup support. Book a free consultation."
@@ -212,14 +213,17 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
       <FranchiseFaqSection />
 
       <section className="max-w-5xl mx-auto px-4 sm:px-8">
-        <div className="rounded-3xl bg-gradient-to-br from-stone-900 to-stone-950 p-10 sm:p-14 text-center text-white shadow-2xl">
+        <div className="grid items-center gap-10 overflow-hidden rounded-3xl bg-gradient-to-br from-stone-900 to-stone-950 p-10 sm:p-14 text-white shadow-2xl md:grid-cols-[1fr_260px]">
+          <div className="text-center md:text-left">
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight">Ready to own a Kinderbee preschool?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-stone-300">Talk to our partnership team. No obligation, and no royalty if you go ahead.</p>
-          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <p className="mx-auto mt-3 max-w-xl text-stone-300 md:mx-0">Talk to our partnership team. No obligation, and no royalty if you go ahead.</p>
+          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap md:justify-start">
             <button onClick={() => onOpenConsultation('preschool')} className="inline-flex items-center gap-2 rounded-full bg-[#E1007A] px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#c90070] cursor-pointer">Book Free Consultation <ArrowRight className="h-4 w-4" /></button>
             <button onClick={() => openBrochureDownload('Home closing CTA')} className="inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold text-white hover:bg-white/10 cursor-pointer">Download Franchise PDF</button>
             <WhatsAppEnquiry phone={(settings?.phone || '93449 06393').replace(/\D/g, '').replace(/^(\d{10})$/, '91$1')} className="text-white" />
           </div>
+        </div>
+          <div className="hidden md:block"><WhatsAppMockup message={WA_MESSAGE} /></div>
         </div>
       </section>
 
