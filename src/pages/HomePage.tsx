@@ -47,7 +47,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
         title="Preschool Franchise in India – Zero Royalty | KinderBee"
         description="Start a KinderBee preschool franchise in India: zero royalty, Finnish-style curriculum, free KinderOS CRM and full setup support. Book a free consultation."
         keywords="preschool franchise, preschool franchise in India, preschool franchise opportunities, preschool franchise business, nursery franchise, kindergarten franchise, playgroup franchise, preschool franchise in Tamil Nadu, zero royalty preschool franchise, KinderOS"
-        ogImage="https://www.kinderbeeschools.com/franchise/preschool-hero.webp?v=3"
+        ogImage="https://www.kinderbeeschools.com/franchise/preschool-hero.webp?v=4"
         settings={settings}
         faq={FRANCHISE_FAQS}
         extraSchema={FRANCHISE_SERVICE_SCHEMA}
@@ -58,9 +58,9 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
             {/* Background Image on Right with Seamless Fade - Full Building Clearly Visible */}
             <div className="hidden lg:block absolute top-0 right-0 bottom-0 lg:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
-                src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp?v=3"}
+                src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp?v=4"}
                 alt="Kinderbee Preschool campus with children playing outside"
-                width={768} height={1024}
+                width={1031} height={850}
                 data-no-reveal
                 className="w-full h-full object-cover object-[50%_45%] kb-kenburns"
                 fetchPriority="high"
@@ -91,7 +91,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
               <div className="kb-hero-in max-w-2xl lg:max-w-[min(35rem,calc(50vw-5rem))] space-y-5 sm:space-y-6">
                 {/* Phone & tablet: the campus photo sits above the text instead of behind it */}
                 <div data-no-reveal className="lg:hidden overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-pink-900/10">
-                  <img src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp?v=3"} alt="Kinderbee Preschool campus with children playing outside" width={768} height={1024} data-no-reveal className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_72%]" fetchPriority="high" />
+                  <img src={settings?.franchiseHeroImage || "/franchise/preschool-hero.webp?v=4"} alt="Kinderbee Preschool campus with children playing outside" width={1031} height={850} data-no-reveal className="w-full aspect-[4/3] sm:aspect-[16/10] object-cover object-[50%_60%]" fetchPriority="high" />
                 </div>
 
                 {/* Pill Badge */}
