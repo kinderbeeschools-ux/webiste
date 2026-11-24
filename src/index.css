@@ -331,3 +331,8 @@
   animation: kbShine 3.6s ease-in-out infinite; pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) { .kb-hero-in > *, .kb-cta::after { animation: none; } }
+
+/* Mobile tap targets: footer text links at least 44px tall */
+@media (max-width: 639px) {
+  footer li > a, footer li > button { min-height: 44px; display: inline-flex; align-items: center; }
+}

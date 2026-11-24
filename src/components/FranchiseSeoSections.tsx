@@ -253,7 +253,7 @@ export const JumpLinks: React.FC = () => (
     <ul className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0">
       {JUMPS.map(([href, label]) => (
         <li key={href} className="shrink-0">
-          <a href={href} className="inline-block rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-[#E1007A] hover:text-[#E1007A] sm:text-sm">{label}</a>
+          <a href={href} className="inline-block rounded-full border border-stone-200 bg-white px-4 py-3 text-xs sm:py-2 font-semibold text-stone-700 transition hover:border-[#E1007A] hover:text-[#E1007A] sm:text-sm">{label}</a>
         </li>
       ))}
     </ul>
