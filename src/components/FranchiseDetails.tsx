@@ -87,7 +87,7 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
         <SectionHeading
           badge="Your complete partner kit"
           title={<>Preschool Franchise Business Support: <span className="text-[#E1007A]">What a KIPS Partner Receives</span></>}
-          sub="KinderBee supports franchise partners with twelve essentials across four stages: setup and infrastructure, branding and marketing, admissions, and training and academic support."
+          sub="Kinderbee supports franchise partners with twelve essentials across four stages: setup and infrastructure, branding and marketing, admissions, and training and academic support."
         />
 
         <div ref={groupsRef} className={`grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 ${groupsCls}`}>
@@ -124,7 +124,7 @@ export const FranchiseDetails: React.FC<{ onOpenConsultation: () => void }> = ({
             dark
             badge="The numbers"
             title="Preschool Franchise Investment and Business Model"
-            sub="Indicative figures for opening a Kinderbee preschool. The KinderBee team confirms the numbers for your city and plan before you commit."
+            sub="Indicative figures for opening a Kinderbee preschool. The Kinderbee team confirms the numbers for your city and plan before you commit."
           />
 
           <div ref={specsRef} className={`relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 ${specsCls}`}>

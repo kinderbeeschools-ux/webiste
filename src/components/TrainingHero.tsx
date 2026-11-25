@@ -102,7 +102,7 @@ export const TrainingHero: React.FC<{ onExplore: () => void; onEnquire: () => vo
         />
         <div aria-hidden="true" className="kb-morph absolute inset-[14%] bg-white/15 [animation-delay:-4s]" />
 
-        {/* Hero photo (set from the KinderBee CRM) replaces the fanned course cards */}
+        {/* Hero photo (set from the Kinderbee CRM) replaces the fanned course cards */}
         {photo && (
           <motion.img
             src={photo}

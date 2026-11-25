@@ -39,7 +39,7 @@ app.post(["/api/auth/login", "/api/auth/user-login"], (req, res, next) => {
   res.status(401).json({ success: false, error: "Incorrect passkey." });
 });
 
-// The KinderBee CRM (Website Content module) calls the content APIs from its own domain
+// The Kinderbee CRM (Website Content module) calls the content APIs from its own domain
 const CRM_ORIGINS = ["https://kinderbee-crm.vercel.app", "http://localhost:3400"];
 app.use("/api", (req, res, next) => {
   const origin = String(req.headers.origin || "");

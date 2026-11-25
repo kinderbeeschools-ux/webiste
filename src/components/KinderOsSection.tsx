@@ -37,10 +37,10 @@ export const KinderOsSection: React.FC<{ onOpenConsultation: () => void }> = ({ 
         <Sparkles className="w-3.5 h-3.5" /> AI-powered preschool franchise
       </div>
       <h2 id="kinderos-title" className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#1C1917] [text-wrap:balance]">
-        KinderBee Integrated Partnership System (<span className="text-[#E1007A]">KIPS</span>)
+        Kinderbee Integrated Partnership System (<span className="text-[#E1007A]">KIPS</span>)
       </h2>
       <p className="text-stone-600 text-base sm:text-lg leading-relaxed">
-        KIPS is the system every KinderBee franchise partner runs on: curriculum and toolkits with AI-assisted lesson planning, KinderOS (the Kinder Operating System, a free preschool CRM) and the Cognitive Developmental Matrix assessment.
+        KIPS is the system every Kinderbee franchise partner runs on: curriculum and toolkits with AI-assisted lesson planning, KinderOS (the Kinder Operating System, a free preschool CRM) and the Cognitive Developmental Matrix assessment.
       </p>
     </div>
 

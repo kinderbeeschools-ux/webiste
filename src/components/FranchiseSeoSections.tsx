@@ -42,8 +42,8 @@ const Card: React.FC<{ icon: React.ElementType; h: string; i?: number; art?: Rea
 export const WhyChooseSection: React.FC = () => (
   <section id="why-kinderbee" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
-      title="Why Choose KinderBee Preschool Franchise?"
-      answer="KinderBee is a preschool franchise in India built on a zero-royalty model, a Finnish-inspired play-based curriculum and a free school-management platform, KinderOS. Partners keep 100% of tuition fees and receive curriculum, teacher training, branding and admissions support from a Bengaluru-based education brand with about 26 years of experience."
+      title="Why Choose Kinderbee Preschool Franchise?"
+      answer="Kinderbee is a preschool franchise in India built on a zero-royalty model, a Finnish-inspired play-based curriculum and a free school-management platform, KinderOS. Partners keep 100% of tuition fees and receive curriculum, teacher training, branding and admissions support from a Bengaluru-based education brand with about 26 years of experience."
     />
     <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       <Card i={0} icon={Award} h="Zero royalty, 100% of tuition">
@@ -67,14 +67,14 @@ export const FranchiseModelsSection: React.FC<{ onEnquire: () => void }> = ({ on
   <section id="franchise-opportunities" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Explore Our Preschool Franchise Opportunities"
-      answer="KinderBee offers three ways to start: open a new preschool, convert an existing preschool to the KinderBee brand, or add daycare to a preschool for an extended-day model. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
+      answer="Kinderbee offers three ways to start: open a new preschool, convert an existing preschool to the Kinderbee brand, or add daycare to a preschool for an extended-day model. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
     />
     <div className="mt-10 grid gap-5 md:grid-cols-3">
       <Card i={0} icon={Building2} h="New preschool setup" art={<div className="relative mb-4"><ModelArt kind="new" /></div>}>
         For first-time owners: setup guidance, brand identity, curriculum and toolkit, and teacher training, so you open with a tested model behind you.
       </Card>
       <Card i={1} icon={RefreshCw} h="Rebrand an existing preschool" art={<div className="relative mb-4"><ModelArt kind="rebrand" /></div>}>
-        For running schools: a new KinderBee identity, curriculum integration, the free KinderOS CRM and ongoing support.
+        For running schools: a new Kinderbee identity, curriculum integration, the free KinderOS CRM and ongoing support.
       </Card>
       <Card i={2} icon={Sun} h="Preschool plus daycare" art={<div className="relative mb-4"><ModelArt kind="daycare" /></div>}>
         A combined model that adds extended-day care. <a className={link} href={`${BLOG}preschool-daycare-combo-business-model-india`}>When a combined early-years model makes sense</a>.
@@ -93,7 +93,7 @@ export const CurriculumSection: React.FC = () => (
   <section id="curriculum" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Our International Preschool Curriculum"
-      answer="KinderBee's curriculum is Finnish-inspired and play-based, developed by Finnishway Educare and aligned with NEP 2020 and NCF-FS. It combines ten multi-intelligence modules, detailed daily lesson plans and turnkey classroom toolkits, with AI-assisted lesson planning built in."
+      answer="Kinderbee's curriculum is Finnish-inspired and play-based, developed by Finnishway Educare and aligned with NEP 2020 and NCF-FS. It combines ten multi-intelligence modules, detailed daily lesson plans and turnkey classroom toolkits, with AI-assisted lesson planning built in."
     />
     <div className="mt-10 grid gap-5 md:grid-cols-3">
       <Card i={0} icon={Puzzle} h="Modules, lesson plans and toolkits">
@@ -135,7 +135,7 @@ export const IndiaOpportunitySection: React.FC<{ onEnquire: () => void }> = ({ o
   <section id="franchise-india" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Preschool Franchise Opportunities Across India"
-      answer="KinderBee welcomes preschool franchise enquiries from across India, from metro cities to Tier-2 towns. The parent preschool is in Ramamurthy Nagar, Bengaluru. Whether a territory is available is confirmed by the KinderBee team after you share your city and plan."
+      answer="Kinderbee welcomes preschool franchise enquiries from across India, from metro cities to Tier-2 towns. The parent preschool is in Ramamurthy Nagar, Bengaluru. Whether a territory is available is confirmed by the Kinderbee team after you share your city and plan."
     />
     <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {REGIONS.map((x, i) => (
@@ -165,8 +165,8 @@ const STEPS = [
 export const HowToStartSection: React.FC = () => (
   <section id="how-to-start" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
-      title="How to Start Your KinderBee Preschool Franchise"
-      answer="Starting a KinderBee preschool franchise takes four steps: a consultation, planning your model, setup and training, and launch with admissions support."
+      title="How to Start Your Kinderbee Preschool Franchise"
+      answer="Starting a Kinderbee preschool franchise takes four steps: a consultation, planning your model, setup and training, and launch with admissions support."
     />
     <ol className="relative mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       <span aria-hidden="true" className="pointer-events-none absolute left-[12%] right-[12%] top-0 hidden h-0.5 -translate-y-[9px] bg-gradient-to-r from-[#E1007A]/10 via-[#E1007A]/50 to-[#FFD400] lg:block" />
@@ -191,42 +191,42 @@ export const HowToStartSection: React.FC = () => (
 export const FRANCHISE_FAQS: { q: string; a: string }[] = [
   {
     q: 'What documents and details are needed for a preschool franchise?',
-    a: 'You typically need your preferred city, details of the premises with ownership or lease papers, your investment plan, and valid identity and business details. KinderBee shares the exact checklist during consultation, because requirements vary by city, premises and local norms. Start by sharing your city, budget and plans on the first call.',
+    a: 'You typically need your preferred city, details of the premises with ownership or lease papers, your investment plan, and valid identity and business details. Kinderbee shares the exact checklist during consultation, because requirements vary by city, premises and local norms. Start by sharing your city, budget and plans on the first call.',
   },
   {
     q: 'How much profit does a preschool and daycare franchise make?',
-    a: 'No profit is guaranteed. Earnings from a preschool and daycare franchise depend on your city, location, fees, enrolment, staffing and running costs. KinderBee is zero royalty, so partners keep 100% of tuition fees, and daycare can add extended-day income. Ask the team for the assumptions behind any projection before you decide.',
+    a: 'No profit is guaranteed. Earnings from a preschool and daycare franchise depend on your city, location, fees, enrolment, staffing and running costs. Kinderbee is zero royalty, so partners keep 100% of tuition fees, and daycare can add extended-day income. Ask the team for the assumptions behind any projection before you decide.',
   },
   {
     q: 'What is the difference between a preschool franchise and an independent preschool?',
-    a: 'A franchise gives you an established brand, a tested curriculum, training and systems from day one, while an independent preschool means building each of these yourself. The trade-off is that a franchise operates under a partnership agreement. With KinderBee there is no monthly royalty, so you keep 100% of tuition fees.',
+    a: 'A franchise gives you an established brand, a tested curriculum, training and systems from day one, while an independent preschool means building each of these yourself. The trade-off is that a franchise operates under a partnership agreement. With Kinderbee there is no monthly royalty, so you keep 100% of tuition fees.',
   },
   {
     q: 'Which cities offer preschool franchise opportunities in India?',
-    a: 'KinderBee welcomes enquiries from across India, including Bengaluru, Hyderabad, Chennai, Coimbatore, Pune, Mumbai, Ahmedabad, Delhi NCR, Jaipur, Lucknow and Kolkata. Availability depends on the territory, so the team confirms whether your city is open after you share your location and plan.',
+    a: 'Kinderbee welcomes enquiries from across India, including Bengaluru, Hyderabad, Chennai, Coimbatore, Pune, Mumbai, Ahmedabad, Delhi NCR, Jaipur, Lucknow and Kolkata. Availability depends on the territory, so the team confirms whether your city is open after you share your location and plan.',
   },
   {
-    q: 'What support does KinderBee provide to franchise partners?',
+    q: 'What support does Kinderbee provide to franchise partners?',
     a: 'Partners receive setup guidance and a school design blueprint, brand identity, a franchise operations manual, curriculum and lesson plans, teacher and staff training, admissions playbooks, marketing campaigns, the KinderOS CRM and ERP, quality audits and a mentor. Support continues after launch through ongoing mentorship advisory.',
   },
   {
-    q: 'How do I start a KinderBee preschool franchise?',
+    q: 'How do I start a Kinderbee preschool franchise?',
     a: 'Book a free consultation, or a detailed one-to-one session for ₹99. Then plan your model (new preschool, rebrand or preschool plus daycare), complete setup and training, and launch with admissions support. The consultation covers the franchise model, the curriculum, KinderOS and your business plans.',
   },
   {
     q: 'What are the requirements to open a preschool franchise?',
-    a: 'Requirements are confirmed by the KinderBee team for your city and plan. The current indicative figures are an estimated capital investment of ₹15 to ₹30 Lakhs, covering interiors, safety flooring, furniture, activity kits and launch marketing, and a ground-floor villa or commercial property of about 1,500 to 3,500 sq. ft. with outdoor play space. These figures are subject to confirmation.',
+    a: 'Requirements are confirmed by the Kinderbee team for your city and plan. The current indicative figures are an estimated capital investment of ₹15 to ₹30 Lakhs, covering interiors, safety flooring, furniture, activity kits and launch marketing, and a ground-floor villa or commercial property of about 1,500 to 3,500 sq. ft. with outdoor play space. These figures are subject to confirmation.',
   },
   {
-    q: 'Does KinderBee provide teacher training and curriculum support?',
-    a: 'Yes. Partners receive the Finnish-inspired curriculum with ten multi-intelligence modules, daily lesson plans and toolkits, plus training for teachers and staff and staff recruitment guides. Teachers can also take KinderBee teacher training programmes, and a mentor advises you at each stage.',
+    q: 'Does Kinderbee provide teacher training and curriculum support?',
+    a: 'Yes. Partners receive the Finnish-inspired curriculum with ten multi-intelligence modules, daily lesson plans and toolkits, plus training for teachers and staff and staff recruitment guides. Teachers can also take Kinderbee teacher training programmes, and a mentor advises you at each stage.',
   },
 ];
 
 export const FranchiseFaqSection: React.FC = () => (
   <section id="franchise-faq" className="scroll-mt-28 mx-auto max-w-4xl px-4 sm:px-8">
     <h2 className="text-center text-3xl font-display font-extrabold tracking-tight text-[#1C1917] sm:text-4xl">Frequently Asked Questions</h2>
-    <p className="mt-2 text-center text-sm text-stone-600">Straight answers about the KinderBee preschool franchise in India. Tap a question to open it.</p>
+    <p className="mt-2 text-center text-sm text-stone-600">Straight answers about the Kinderbee preschool franchise in India. Tap a question to open it.</p>
     {/* Native <details>: every answer stays in the page HTML and is the same text used for the FAQPage markup */}
     <div className="mt-8 space-y-3">
       {FRANCHISE_FAQS.map((f, i) => (
@@ -244,7 +244,7 @@ export const FranchiseFaqSection: React.FC = () => (
 
 /* ---------- Jump links ---------- */
 const JUMPS = [
-  ['#why-kinderbee', 'Why KinderBee'], ['#franchise-opportunities', 'Franchise models'], ['#kinderos', 'KIPS & KinderOS'],
+  ['#why-kinderbee', 'Why Kinderbee'], ['#franchise-opportunities', 'Franchise models'], ['#kinderos', 'KIPS & KinderOS'],
   ['#curriculum', 'Curriculum'], ['#franchise-support', 'Partner support'], ['#franchise-investment', 'Investment'],
   ['#franchise-india', 'Across India'], ['#how-to-start', 'How to start'], ['#franchise-faq', 'FAQs'],
 ];
@@ -260,7 +260,7 @@ export const JumpLinks: React.FC = () => (
   </nav>
 );
 
-export const WA_MESSAGE = 'Hi, I would like details about the KinderBee preschool franchise.';
+export const WA_MESSAGE = 'Hi, I would like details about the Kinderbee preschool franchise.';
 
 export const WhatsAppEnquiry: React.FC<{ phone?: string; className?: string }> = ({ phone = '919344906393', className = '' }) => (
   <a

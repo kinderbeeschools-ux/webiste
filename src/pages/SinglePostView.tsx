@@ -327,10 +327,10 @@ export const SinglePostView: React.FC<SinglePostViewProps> = ({
                 Launch Your Finnish Preschool
               </h4>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Explore the curriculum, school design blueprint, teacher training and franchise support that come with a KinderBee partnership. No returns are guaranteed.
+                Explore the curriculum, school design blueprint, teacher training and franchise support that come with a Kinderbee partnership. No returns are guaranteed.
               </p>
               {/^journal-.*(franchise|startup|how-to-start|combo|recruitment)/.test(blog.id) && (
-                <a href="/" className="block text-xs font-semibold text-[#E1007A] underline underline-offset-4">Explore the KinderBee preschool franchise in India</a>
+                <a href="/" className="block text-xs font-semibold text-[#E1007A] underline underline-offset-4">Explore the Kinderbee preschool franchise in India</a>
               )}
               <button type="button" onClick={() => openBrochureDownload('Blog post')} className="w-full bg-[#E1007A] hover:bg-pink-700 text-white text-xs font-bold py-2 rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >

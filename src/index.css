@@ -169,6 +169,13 @@
   color: transparent;
   animation: kbShimmer 6s linear infinite;
 }
+/* Pink/gold shimmer for text on light backgrounds */
+.kb-shimmer-pink {
+  background: linear-gradient(90deg, #E1007A, #FF7A59, #E1007A) 0 center / 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: kbShimmer 5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .kb-shimmer-pink { animation: none; background-position: 0 center; } }
 @keyframes kbDrift {
   0%, 100% { transform: translate(0, 0); }
   50%      { transform: translate(-30px, 24px); }

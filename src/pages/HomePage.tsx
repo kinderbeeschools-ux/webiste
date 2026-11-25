@@ -19,6 +19,7 @@ import { TrustStrip } from '../components/TrustStrip';
 import { WhatsAppMockup } from '../components/FranchiseVisuals';
 import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseDetails } from '../components/FranchiseDetails';
+import { KinderbeeGallery } from '../components/KinderbeeGallery';
 import { trackLead } from '../utils/analytics';
 
 interface HomePageProps {
@@ -31,7 +32,7 @@ interface HomePageProps {
 const FRANCHISE_SERVICE_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "KinderBee Preschool Franchise",
+  "name": "Kinderbee Preschool Franchise",
   "serviceType": "Preschool franchise",
   "description": "A zero-royalty preschool franchise with a Finnish-inspired, NEP 2020 aligned curriculum, teacher training, branding, admissions support and the KinderOS school-management platform.",
   "provider": { "@type": "EducationalOrganization", "name": "Kinderbee International Preschool", "url": "https://www.kinderbeeschools.com" },
@@ -44,8 +45,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
   return (
     <MotionConfig reducedMotion="user"><div className="space-y-16 sm:space-y-24 pb-12">
       <SEOHead
-        title="Preschool Franchise in India – Zero Royalty | KinderBee"
-        description="Start a KinderBee preschool franchise in India: zero royalty, Finnish-style curriculum, free KinderOS CRM and full setup support. Book a free consultation."
+        title="Preschool Franchise in India – Zero Royalty | Kinderbee"
+        description="Start a Kinderbee preschool franchise in India: zero royalty, Finnish-style curriculum, free KinderOS CRM and full setup support. Book a free consultation."
         keywords="preschool franchise, preschool franchise in India, preschool franchise opportunities, preschool franchise business, nursery franchise, kindergarten franchise, playgroup franchise, preschool franchise in Tamil Nadu, zero royalty preschool franchise, KinderOS"
         ogImage="https://www.kinderbeeschools.com/franchise/preschool-hero.webp?v=4"
         settings={settings}
@@ -75,6 +76,9 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
               <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 lg:w-44 bg-gradient-to-r from-[#FFF6F9] to-transparent pointer-events-none"></div>
             </div>
 
+            <span aria-hidden="true" className="kb-morph pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 bg-[#FFD400]/25 blur-2xl" />
+            <span aria-hidden="true" className="kb-drift pointer-events-none absolute top-24 left-[42%] h-4 w-4 rounded-full bg-[#E1007A]/40" />
+            <span aria-hidden="true" className="kb-wiggle pointer-events-none absolute bottom-24 left-6 h-5 w-5 rounded-md bg-[#FFD400]/70" />
             {/* Soft decorative botanical leaves watermark at top-left corner */}
             <div className="absolute top-0 left-0 w-48 sm:w-64 h-48 sm:h-64 pointer-events-none opacity-20 overflow-hidden">
               <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-[#E1007A]">
@@ -102,12 +106,12 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
                 
                 {/* Main Headline */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-display font-extrabold tracking-tight text-[#1C1917] leading-[1.12]">
-                  <span className="text-[#E1007A]">AI-Powered Preschool Franchise in India</span> with <span className="rounded-xl bg-[#FFE45C] px-2 text-[#1C1917] [box-decoration-break:clone]">Zero Royalty</span>
+                  <span className="kb-shimmer-pink">AI-Powered Preschool Franchise in India</span> with <span className="rounded-xl bg-[#FFE45C] px-2 text-[#1C1917] [box-decoration-break:clone]">Zero Royalty</span>
                 </h1>
                 
                 {/* Subtitle */}
                 <p className="text-stone-600 text-sm sm:text-base md:text-[17px] leading-relaxed max-w-xl font-normal">
-                  Start a KinderBee preschool franchise with a free ERP and KinderOS, a Finnish-style curriculum, lesson plans, teacher training and full setup support. Zero royalty, and you keep 100% of your fees.
+                  Start a Kinderbee preschool franchise with a free ERP and KinderOS, a Finnish-style curriculum, lesson plans, teacher training and full setup support. Zero royalty, and you keep 100% of your fees.
                 </p>
                 
                 {/* 4 feature cards */}
@@ -192,6 +196,8 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
       <KinderOsSection onOpenConsultation={() => onOpenConsultation('preschool')} />
 
       <CurriculumSection />
+
+      <KinderbeeGallery />
 
 
       <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
