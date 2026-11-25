@@ -63,21 +63,22 @@ export const WhyChooseSection: React.FC = () => (
 );
 
 /* ---------- Franchise models ---------- */
+const ModelPhoto: React.FC<{ src: string; w: number; h: number; alt: string }> = ({ src, w, h, alt }) => (
+  <div className="kb-frame mb-4 aspect-[16/10] overflow-hidden rounded-2xl"><img src={src} alt={alt} width={w} height={h} loading="lazy" decoding="async" className="h-full w-full object-cover" /></div>
+);
+
 export const FranchiseModelsSection: React.FC<{ onEnquire: () => void }> = ({ onEnquire }) => (
   <section id="franchise-opportunities" className="scroll-mt-28 mx-auto max-w-7xl px-4 sm:px-8">
     <Head
       title="Explore Our Preschool Franchise Opportunities"
-      answer="Kinderbee offers three ways to start: open a new preschool, convert an existing preschool to the Kinderbee brand, or add daycare to a preschool for an extended-day model. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
+      answer="Kinderbee offers two ways to start: open a new preschool, or convert an existing preschool to the Kinderbee brand. The curriculum covers playgroup, nursery, LKG and UKG, so one franchise serves the playgroup, nursery and kindergarten stages. The right model depends on your space, city and budget."
     />
-    <div className="mt-10 grid gap-5 md:grid-cols-3">
-      <Card i={0} icon={Building2} h="New preschool setup" art={<div className="relative mb-4"><ModelArt kind="new" /></div>}>
+    <div className="mt-10 grid gap-5 md:grid-cols-2 md:max-w-5xl md:mx-auto">
+      <Card i={0} icon={Building2} h="New preschool setup" art={<ModelPhoto src="/visuals/kips-campus.webp" w={1400} h={933} alt="New Kinderbee preschool campus with colourful entrance and playground" />}>
         For first-time owners: setup guidance, brand identity, curriculum and toolkit, and teacher training, so you open with a tested model behind you.
       </Card>
-      <Card i={1} icon={RefreshCw} h="Rebrand an existing preschool" art={<div className="relative mb-4"><ModelArt kind="rebrand" /></div>}>
+      <Card i={1} icon={RefreshCw} h="Rebrand an existing preschool" art={<ModelPhoto src="/visuals/kips-partner-school.webp" w={1200} h={697} alt="Existing preschool rebranded as a Kinderbee partner school" />}>
         For running schools: a new Kinderbee identity, curriculum integration, the free KinderOS CRM and ongoing support.
-      </Card>
-      <Card i={2} icon={Sun} h="Preschool plus daycare" art={<div className="relative mb-4"><ModelArt kind="daycare" /></div>}>
-        A combined model that adds extended-day care. <a className={link} href={`${BLOG}preschool-daycare-combo-business-model-india`}>When a combined early-years model makes sense</a>.
       </Card>
     </div>
     <div className="mt-8 text-center">
@@ -157,7 +158,7 @@ export const IndiaOpportunitySection: React.FC<{ onEnquire: () => void }> = ({ o
 /* ---------- How to start ---------- */
 const STEPS = [
   { icon: PhoneCall, t: 'Book a consultation', d: 'Start with a free consultation, or a detailed one-to-one session for ₹99. Share your city, budget and plans.' },
-  { icon: ClipboardList, t: 'Plan your model', d: 'Choose a new preschool, a rebrand or a preschool-plus-daycare model, mapped to your location.' },
+  { icon: ClipboardList, t: 'Plan your model', d: 'Choose a new preschool or a rebrand, mapped to your location.' },
   { icon: GraduationCap, t: 'Setup and training', d: 'Curriculum, KinderOS CRM and Cognitive Developmental Matrix onboarding, with teacher and staff training.' },
   { icon: Rocket, t: 'Launch and admissions', d: 'Open your doors with admissions playbooks, marketing support and ongoing mentorship.' },
 ];
@@ -211,7 +212,7 @@ export const FRANCHISE_FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'How do I start a Kinderbee preschool franchise?',
-    a: 'Book a free consultation, or a detailed one-to-one session for ₹99. Then plan your model (new preschool, rebrand or preschool plus daycare), complete setup and training, and launch with admissions support. The consultation covers the franchise model, the curriculum, KinderOS and your business plans.',
+    a: 'Book a free consultation, or a detailed one-to-one session for ₹99. Then plan your model (new preschool or rebrand), complete setup and training, and launch with admissions support. The consultation covers the franchise model, the curriculum, KinderOS and your business plans.',
   },
   {
     q: 'What are the requirements to open a preschool franchise?',

@@ -19,7 +19,6 @@ import { TrustStrip } from '../components/TrustStrip';
 import { WhatsAppMockup } from '../components/FranchiseVisuals';
 import { KinderOsSection } from '../components/KinderOsSection';
 import { FranchiseDetails } from '../components/FranchiseDetails';
-import { KinderbeeGallery } from '../components/KinderbeeGallery';
 import { trackLead } from '../utils/analytics';
 
 interface HomePageProps {
@@ -196,8 +195,6 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentTab, onOpenConsult
       <KinderOsSection onOpenConsultation={() => onOpenConsultation('preschool')} />
 
       <CurriculumSection />
-
-      <KinderbeeGallery />
 
 
       <FranchiseDetails onOpenConsultation={() => onOpenConsultation('preschool')} />
