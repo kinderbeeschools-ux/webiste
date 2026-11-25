@@ -2,6 +2,7 @@
 const PATHS: Record<string, string> = {
   home: '/',
   about: '/about',
+  products: '/products',
   'partnerships-cbse': '/cbse-school-setup',
   'partnerships-ib': '/cbse-school-setup',
   'partnerships-degree': '/degree-college-setup',

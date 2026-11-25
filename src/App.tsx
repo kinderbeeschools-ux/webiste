@@ -10,6 +10,7 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { StickyContactWidget } from './components/StickyContactWidget';
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
+import { ProductsPage } from './pages/ProductsPage';
 import { PartnershipsPage } from './pages/PartnershipsPage';
 import { FwaPage } from './pages/FwaPage';
 import { ProgramsOverviewPage } from './pages/ProgramsOverviewPage';
@@ -270,6 +271,7 @@ export function App({ initialBlogs = DEFAULT_BLOGS, initialFaqs = [] }: { initia
             settings={settings}
           />
         )}
+        {currentTab === 'products' && <ProductsPage onOpenConsultation={handleOpenConsultation} settings={settings} />}
         {currentTab === 'about' && (
           <AboutPage 
             setCurrentTab={setCurrentTab} 
